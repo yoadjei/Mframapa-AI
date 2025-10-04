@@ -1,0 +1,279 @@
+
+
+##  MASTER PROMPT: Mframapa AI - Full Stack Development
+
+ROLE: You are a senior full-stack Python developer with expertise in data science, geospatial analysis, and cloud application deployment. Your task is to execute the following technical specification to build the "Mframapa AI" application. You will write clean, modular, efficient, and production-ready code.
+
+## 📜 1. Project Overview & Mission
+
+Project Name: Mframapa AI
+
+Objective: Develop a multi-page Streamlit web app for the NASA Space Apps Challenge 2025.
+
+Core Function: Forecast Air Quality Index (AQI) for PM2.5, O₃, and NO₂.
+
+Dual Focus: The application must function for two distinct regions:
+
+North America: Leveraging high-resolution TEMPO satellite data.
+
+Ghana: Using global reanalysis models (MERRA-2) to provide forecasts in a data-sparse region.
+
+End Goal: Provide personalized, actionable health recommendations to users based on forecasted air quality and their health profiles.
+
+## 🛠️ 2. Technical Specifications & Architecture
+
+Framework: Streamlit 1.38.0
+
+Language: Python 3.11+
+
+Architecture:
+
+Offline Training: The core machine learning model (XGBoost) will be trained using a separate script (train_model.py). This script will process historical data and save a trained model file.
+
+Live Inference: The Streamlit application is the user-facing interface. It will load the pre-trained model file to make real-time predictions; it will not perform any training itself.
+
+Modular & Cached: All data fetching and complex calculations will be in utils.py, with functions cached for performance using @st.cache_data.
+
+Security: All API keys and credentials must be loaded from Streamlit secrets (st.secrets). They must never be hardcoded.
+
+## 📁 3. Project Setup & File Structure
+
+First, you will create the complete project structure. Then, you will populate the configuration files.
+
+mframapa-ai/
+
+└── training_data/
+
+    ├── us/
+
+    │   ├── daily_44201_2025.csv  (Ozone)
+
+    │   ├── daily_42602_2025.csv  (NO2)
+
+    │   ├── daily_88502_2025.csv  (PM2.5)
+
+    │   └── ... (and the files for 2023, 2024 etc.)
+
+    └── ghana/
+
+        └── accra-us embassy-air-quality.csv
+
+AI Task: Create the following structure and files:
+
+mframapa-ai/
+
+├── .streamlit/
+
+│   └── secrets.toml.example
+
+├── pages/
+
+│   ├── 1_Home.py
+
+│   ├── 2_Forecast.py
+
+│   ├── 3_Profile.py
+
+│   ├── 4_Compare.py
+
+│   ├── 5_Insights.py
+
+│   ├── 6_Explain.py
+
+│   ├── 7_Policy_Dashboard.py
+
+│   ├── 8_Cross-Border_Tracker.py
+
+│   ├── 9_Health_Integration.py
+
+│   ├── 10_Gamified_Learning.py
+
+│   ├── 11_Historical_Explorer.py
+
+│   └── 12_Crowdsourcing.py
+
+├── app.py
+
+├── train_model.py
+
+├── utils.py
+
+├── requirements.txt
+
+└── (The training_data folder created by the user(find attached the csv files)
+
+Populate requirements.txt:
+
+streamlit==1.38.0
+
+pandas==2.2.3
+
+numpy==2.3.3
+
+scikit-learn==1.7.2
+
+xgboost==3.0.5
+
+plotly==6.3.0
+
+requests==2.32.5
+
+folium==0.20.0
+
+streamlit-folium==0.25.2
+
+reportlab==4.4.4
+
+earthaccess==0.14.0
+
+xarray==2025.9.1
+
+netcdf4==1.7.2
+
+pytz==2025.2
+
+pillow==10.4.0
+
+matplotlib==3.10.6
+
+geopy==2.4.1
+
+Populate .streamlit/secrets.toml.example:
+
+Ini, TOML
+
+
+
+# Copy this file to .streamlit/secrets.toml and add your keysOPENWEATHER_KEY = "YOUR_KEY_HERE"AIRNOW_KEY = "YOUR_KEY_HERE"AQICN_TOKEN = "YOUR_KEY_HERE"EARTHDATA_USER = "YOUR_USERNAME_HERE"EARTHDATA_PASS = "YOUR_PASSWORD_HERE"PURPLEAIR_KEY = "YOUR_KEY_HERE"
+
+## 🧠 4. Phase 1: Model Training (Offline Scripting)
+
+Generate the code for these two files first. They are the engine of the project.
+
+utils.py:
+
+Create all the following functions. Use @st.cache_data(ttl=3600) for all data fetching functions. Authenticate to NASA Earthdata using earthaccess.login() with credentials from st.secrets.
+
+get_lat_lon(city_name): Uses geopy.Nominatim to get coordinates for a city.
+
+fetch_openweather_forecast(lat, lon): Fetches forecast data from OpenWeatherMap.
+
+fetch_merra2_data(lat, lon, start_date, end_date): Downloads data from NASA MERRA-2 collections M2T1NXAER and M2T1NXSLV. Extract these variables: BCSMASS, OCSMASS, DUSMASS, SSSMASS, SO4SMASS (for PM2.5 proxy), T2M (temperature), RH2M (humidity), U2M, V2M (wind), PBLH (Planetary Boundary Layer Height), and CLDFRC (Cloud Fraction). Process the data for the given coordinate point.
+
+fetch_tempo_data(bounding_box, start_date, end_date): For North America only. Downloads data from NASA TEMPO (S5P_L2__NO2___). Extract NO2_column_number_density, O3_column_number_density, HCHO_tropospheric_column, and aerosol_index_354_388.
+
+calculate_aqi_from_components(pm25, o3, no2): Converts pollutant concentrations to the US EPA AQI scale.
+
+get_health_recommendation(aqi_value, user_profile): Returns personalized advice.
+
+train_model.py:
+
+This script is for offline use. It must perform the following steps:
+
+Load Ground Truth Data:
+
+Load all CSV files from the training_data/us/ and training_data/ghana/ folders into Pandas DataFrames.
+
+Filter the large US data files to keep only the data for these specific Site IDs: 060371103 (LA), 080310027 (Denver), 360810124 (NYC).
+
+Combine all ground truth data into a single, clean DataFrame.
+
+Fetch Feature Data:
+
+For each unique location and date in the ground truth data, call the appropriate functions from utils.py (fetch_merra2_data, fetch_tempo_data) to download the corresponding satellite and weather data. This will take a long time.
+
+Merge & Feature Engineer:
+
+Merge the ground truth data with the feature data, aligning them by location and timestamp.
+
+Create time-based features (e.g., hour of day, day of week, month). Handle any missing data.
+
+Train Model:
+
+Define your feature matrix X and target variables y (PM2.5, O₃, NO₂). You may need to train a separate model for each pollutant.
+
+Split into training and testing sets.
+
+Train an xgboost.XGBRegressor model.
+
+Evaluate and print the model's performance (RMSE).
+
+Save Model: Save the final trained model: model.save_model("xgboost_model.json").
+
+## 🖥️ 5. Phase 2: Application Development (Streamlit App)
+
+Now, generate the code for the user-facing Streamlit application.
+
+app.py:
+
+Set page config: st.set_page_config(page_title="Mframapa AI", page_icon="🌍", layout="wide").
+
+Display a welcome message and a brief introduction.
+
+pages/1_Home.py:
+
+Display the project's mission.
+
+Use st.text_input for city entry and a button to trigger geolocation using utils.get_lat_lon.
+
+Store the selected city and coordinates in st.session_state.
+
+pages/2_Forecast.py:
+
+Load the model: model = xgboost.Booster(); model.load_model('xgboost_model.json').
+
+Get the selected city from st.session_state.
+
+Fetch real-time feature data using functions from utils.py (OpenWeather forecast, latest available MERRA-2 and TEMPO data).
+
+Use the loaded model to predict the AQI for the next 48 hours.
+
+Display the current AQI using st.metric.
+
+Display an hourly forecast chart using plotly.express.line_chart.
+
+Display a folium map showing the location.
+
+Implement All Other Pages:
+
+Generate the code for the remaining 10 pages based on the previously defined feature list. Ensure they are user-friendly and functional. For example, the Profile page should use st.selectbox and st.slider to collect user health data and save it to st.session_state. The Insights page should display static facts and figures.
+
+## 🚀 6. Deployment & Execution
+
+Local Execution: The user will run python train_model.py once to generate the model file. Then, they will run streamlit run app.py to launch the web app.
+
+Deployment: The app is designed for Streamlit Cloud. The user will need to add their secrets (from the secrets.toml file) to the Streamlit Cloud dashboard.
+
+Execute these instructions to build the complete application.
+
+
+
+# ----------------------------------------------------
+
+# Secrets for Mframapa AI Streamlit Application
+
+# ----------------------------------------------------
+
+
+
+# Core APIs for Weather and Air Quality Data
+
+OPENWEATHER_KEY = "0a4839c0c8c19b79cc0ca4f75c81fdd47f3c106e5167c991767512798ab79425"
+
+AIRNOW_KEY = "B35765AA-9840-4D20-85DD-434C70B662CA"
+
+AQICN_TOKEN = "64f7221761847d4ca6b6a95ab8a27511d15b6777"
+
+
+
+# NASA Earthdata Credentials for Satellite Data
+
+EARTHDATA_USER = "yoadjei"
+
+EARTHDATA_PASS = "RY+4#F&w5s,D@-?"
+
+
+
+# Optional APIs for Enhanced Features
+
+PURPLEAIR_KEY = "7A4E8E77-A129-11F0-BDE5-4201AC1DC121"      # For real-time sensor data
