@@ -216,14 +216,17 @@ with st.sidebar:
     required_keys = ['OPENWEATHER_KEY', 'EARTHDATA_USER', 'EARTHDATA_PASS']
     missing_keys = []
     
-    for key in required_keys:
-        if key not in st.secrets or not st.secrets[key]:
-            missing_keys.append(key)
-    
-    if missing_keys:
-        st.warning(f"⚠️ Missing API keys: {', '.join(missing_keys)}")
-    else:
-        st.success("✅ API keys configured")
+    try:
+        for key in required_keys:
+            if not hasattr(st, 'secrets') or key not in st.secrets or not st.secrets.get(key):
+                missing_keys.append(key)
+        
+        if missing_keys:
+            st.warning(f"⚠️ Missing API keys: {', '.join(missing_keys)}")
+        else:
+            st.success("✅ API keys configured")
+    except Exception as e:
+        st.warning("⚠️ Secrets file not configured. Some features may use demo data.")
     
     st.markdown("### Quick Access")
     if st.button("🏠 Reset to Home"):
