@@ -78,9 +78,20 @@ def engineer_features(df):
     df['dayofweek_sin'] = np.sin(2 * np.pi * df['dayofweek'] / 7)
     df['dayofweek_cos'] = np.cos(2 * np.pi * df['dayofweek'] / 7)
     
-    # Spatial features
-    df['lat_norm'] = (df['lat'] - df['lat'].mean()) / df['lat'].std()
-    df['lon_norm'] = (df['lon'] - df['lon'].mean()) / df['lon'].std()
+    # Spatial features - save normalization params
+    lat_mean = df['lat'].mean()
+    lat_std = df['lat'].std()
+    lon_mean = df['lon'].mean()
+    lon_std = df['lon'].std()
+    
+    df['lat_norm'] = (df['lat'] - lat_mean) / lat_std
+    df['lon_norm'] = (df['lon'] - lon_mean) / lon_std
+    
+    # Store normalization params for inference
+    df.attrs['lat_mean'] = lat_mean
+    df.attrs['lat_std'] = lat_std
+    df.attrs['lon_mean'] = lon_mean
+    df.attrs['lon_std'] = lon_std
     
     # Interaction features
     df['lat_month'] = df['lat_norm'] * df['month']
@@ -188,7 +199,7 @@ def train_models(df):
     
     return models, feature_columns, results
 
-def save_models(models, feature_columns):
+def save_models(models, feature_columns, normalization_params=None):
     """Save trained models and metadata."""
     print("\n" + "="*60)
     print("Saving models...")
@@ -215,6 +226,12 @@ def save_models(models, feature_columns):
         pickle.dump({}, f)
     print(f"✓ Saved label encoders")
     
+    # Save normalization parameters
+    if normalization_params:
+        with open('models/normalization_params.pkl', 'wb') as f:
+            pickle.dump(normalization_params, f)
+        print(f"✓ Saved normalization parameters")
+    
     print("\n✅ All models saved successfully!")
 
 def main():
@@ -233,6 +250,14 @@ def main():
     # Engineer features
     df = engineer_features(df)
     
+    # Extract normalization parameters
+    normalization_params = {
+        'lat_mean': df.attrs.get('lat_mean'),
+        'lat_std': df.attrs.get('lat_std'),
+        'lon_mean': df.attrs.get('lon_mean'),
+        'lon_std': df.attrs.get('lon_std')
+    }
+    
     # Train models
     models, feature_columns, results = train_models(df)
     
@@ -241,7 +266,7 @@ def main():
         return
     
     # Save models
-    save_models(models, feature_columns)
+    save_models(models, feature_columns, normalization_params)
     
     # Print summary
     print("\n" + "="*60)

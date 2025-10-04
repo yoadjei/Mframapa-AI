@@ -48,6 +48,7 @@ def load_models():
     models = {}
     feature_columns = []
     label_encoders = {}
+    normalization_params = {}
     
     try:
         # Load feature columns
@@ -57,6 +58,12 @@ def load_models():
         # Load label encoders
         with open(os.path.join(model_dir, 'label_encoders.pkl'), 'rb') as f:
             label_encoders = pickle.load(f)
+        
+        # Load normalization parameters
+        norm_path = os.path.join(model_dir, 'normalization_params.pkl')
+        if os.path.exists(norm_path):
+            with open(norm_path, 'rb') as f:
+                normalization_params = pickle.load(f)
         
         # Load models for each pollutant
         model_files = [f for f in os.listdir(model_dir) if f.endswith('.json')]
@@ -69,13 +76,13 @@ def load_models():
             model.load_model(model_path)
             models[pollutant] = model
         
-        return models, feature_columns, label_encoders
+        return models, feature_columns, label_encoders, normalization_params
     
     except Exception as e:
         st.error(f"Error loading models: {str(e)}")
-        return {}, [], {}
+        return {}, [], {}, {}
 
-models, feature_columns, label_encoders = load_models()
+models, feature_columns, label_encoders, normalization_params = load_models()
 
 if not models:
     st.error("❌ No models loaded. Please ensure model training completed successfully.")
@@ -124,17 +131,50 @@ def fetch_forecast_features(lat, lon):
     
     # Create feature vectors for each forecast time
     for forecast_date in forecast_dates:
+        dayofweek = forecast_date.weekday()
+        dayofyear = forecast_date.timetuple().tm_yday
+        week = forecast_date.isocalendar()[1]
+        
         features = {
-            'Latitude': lat,
-            'Longitude': lon,
+            'lat': lat,
+            'lon': lon,
             'year': forecast_date.year,
             'month': forecast_date.month,
             'day': forecast_date.day,
-            'dayofweek': forecast_date.dayofweek,
-            'dayofyear': forecast_date.dayofyear,
+            'dayofweek': dayofweek,
+            'dayofyear': dayofyear,
+            'week': week,
             'season': (forecast_date.month - 1) // 3,
-            'is_weekend': 1 if forecast_date.dayofweek >= 5 else 0,
+            'is_weekend': 1 if dayofweek >= 5 else 0,
+            'month_sin': np.sin(2 * np.pi * forecast_date.month / 12),
+            'month_cos': np.cos(2 * np.pi * forecast_date.month / 12),
+            'day_sin': np.sin(2 * np.pi * forecast_date.day / 31),
+            'day_cos': np.cos(2 * np.pi * forecast_date.day / 31),
+            'dayofweek_sin': np.sin(2 * np.pi * dayofweek / 7),
+            'dayofweek_cos': np.cos(2 * np.pi * dayofweek / 7),
         }
+        
+        # Apply proper normalization using saved parameters
+        if normalization_params:
+            lat_mean = normalization_params.get('lat_mean', lat)
+            lat_std = normalization_params.get('lat_std', 1.0)
+            lon_mean = normalization_params.get('lon_mean', lon)
+            lon_std = normalization_params.get('lon_std', 1.0)
+            
+            features['lat_norm'] = (lat - lat_mean) / lat_std
+            features['lon_norm'] = (lon - lon_mean) / lon_std
+            
+            # Interaction features using normalized values
+            features['lat_month'] = features['lat_norm'] * forecast_date.month
+            features['lon_month'] = features['lon_norm'] * forecast_date.month
+            features['lat_lon'] = features['lat_norm'] * features['lon_norm']
+        else:
+            # Fallback if normalization params not available
+            features['lat_norm'] = 0.0
+            features['lon_norm'] = 0.0
+            features['lat_month'] = 0.0
+            features['lon_month'] = 0.0
+            features['lat_lon'] = 0.0
         
         # Add weather features (use closest forecast)
         closest_weather = None
@@ -222,10 +262,10 @@ if predictions:
     for pollutant, pred_values in predictions.items():
         current_values[pollutant] = pred_values[0] if len(pred_values) > 0 else 0
     
-    # Calculate AQI
-    pm25_val = current_values.get('pm25', current_values.get('pm2.5', 0))
-    o3_val = current_values.get('o3', current_values.get('ozone', 0))
-    no2_val = current_values.get('no2', current_values.get('nitrogen dioxide (no2)', 0))
+    # Calculate AQI - normalize pollutant names
+    pm25_val = current_values.get('PM2.5', current_values.get('pm25', 0))
+    o3_val = current_values.get('O3', current_values.get('o3', 0))
+    no2_val = current_values.get('NO2', current_values.get('no2', 0))
     
     aqi_data = calculate_aqi_from_components(pm25_val, o3_val, no2_val)
     overall_aqi = aqi_data.get('Overall', 0)
@@ -298,8 +338,12 @@ if predictions and len(forecast_df) > 1:
 # Health recommendations
 st.markdown("## 🏥 Health Recommendations")
 
-user_profile = st.session_state.get('user_profile', {})
-health_advice = get_health_recommendation(overall_aqi, user_profile)
+if predictions:
+    user_profile = st.session_state.get('user_profile', {})
+    health_advice = get_health_recommendation(overall_aqi, user_profile)
+else:
+    st.warning("No predictions available for health recommendations.")
+    st.stop()
 
 col1, col2 = st.columns([1, 2])
 
@@ -333,11 +377,17 @@ map_center = [lat, lon]
 m = folium.Map(location=map_center, zoom_start=10)
 
 # Add marker with AQI information
-popup_text = f"""
-<b>{city}</b><br>
-AQI: {overall_aqi} ({category})<br>
-Coordinates: {lat:.4f}, {lon:.4f}
-"""
+if predictions and overall_aqi:
+    popup_text = f"""
+    <b>{city}</b><br>
+    AQI: {overall_aqi} ({category})<br>
+    Coordinates: {lat:.4f}, {lon:.4f}
+    """
+else:
+    popup_text = f"""
+    <b>{city}</b><br>
+    Coordinates: {lat:.4f}, {lon:.4f}
+    """
 
 folium.Marker(
     location=map_center,

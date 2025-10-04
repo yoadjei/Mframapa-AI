@@ -39,11 +39,18 @@ with col1:
 
 with col2:
     # Activity level
+    activity_options = ["Low", "Moderate", "High", "Very High"]
+    saved_activity = st.session_state.user_profile.get('activity_level', "Moderate")
+    # Case-insensitive matching
+    try:
+        activity_index = next(i for i, opt in enumerate(activity_options) if opt.lower() == saved_activity.lower())
+    except (StopIteration, AttributeError):
+        activity_index = 1  # Default to Moderate
+    
     activity_level = st.selectbox(
         "Activity Level",
-        ["Low", "Moderate", "High", "Very High"],
-        index=1 if 'activity_level' not in st.session_state.user_profile else
-              ["Low", "Moderate", "High", "Very High"].index(st.session_state.user_profile.get('activity_level', "Moderate")),
+        activity_options,
+        index=activity_index,
         help="Higher activity levels increase exposure to air pollution"
     )
     

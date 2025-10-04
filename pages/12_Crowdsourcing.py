@@ -94,7 +94,9 @@ with contribution_tab1:
             lat_input = st.number_input("Latitude", value=0.0, format="%.6f")
             lon_input = st.number_input("Longitude", value=0.0, format="%.6f")
         
-        measurement_time = st.datetime_input("Measurement Time", datetime.now())
+        measurement_date = st.date_input("Measurement Date", datetime.now())
+        measurement_time_val = st.time_input("Measurement Time", datetime.now().time())
+        measurement_time = datetime.combine(measurement_date, measurement_time_val)
     
     with col2:
         st.markdown("#### Measurement Data")
