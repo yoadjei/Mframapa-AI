@@ -4,6 +4,7 @@ address = "localhost"
 port = 8501
 enableCORS = false
 enableXsrfProtection = true
+fileWatcherType = "poll"
 
 [theme]
 primaryColor = "#1f77b4"
