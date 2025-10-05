@@ -1,6 +1,5 @@
 [server]
-headless = false
-address = "localhost"
+headless = true
 port = 8501
 enableCORS = false
 enableXsrfProtection = true
