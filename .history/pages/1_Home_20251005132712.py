@@ -13,6 +13,11 @@ st.set_page_config(
 # High-Contrast Accessible Theme (Light)
 # ---------------------------
 
+# ---------------------------
+# DARK COLOR THEME (DIMMED / LEGIBLE)
+# ---------------------------
+
+
 # Modern, responsive, attractive home page CSS
 st.markdown("""
 <style>
@@ -336,6 +341,8 @@ with col1:
         """,
         unsafe_allow_html=True,
     )
+    if st.button("Explore Insights", key="insights_btn"):
+        st.switch_page("pages/5_Insights.py")
 with col2:
     st.markdown(
         """
@@ -346,6 +353,8 @@ with col2:
         """,
         unsafe_allow_html=True,
     )
+    if st.button("Explore Explain", key="explain_btn"):
+        st.switch_page("pages/6_Explain.py")
 with col3:
     st.markdown(
         """
@@ -356,6 +365,8 @@ with col3:
         """,
         unsafe_allow_html=True,
     )
+    if st.button("Health Recommendations", key="health_btn"):
+        st.switch_page("pages/9_Health_Integration.py")
 st.markdown("</div>", unsafe_allow_html=True)
 
 # Stats

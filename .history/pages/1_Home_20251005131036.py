@@ -13,6 +13,11 @@ st.set_page_config(
 # High-Contrast Accessible Theme (Light)
 # ---------------------------
 
+# ---------------------------
+# DARK COLOR THEME (DIMMED / LEGIBLE)
+# ---------------------------
+
+
 # Modern, responsive, attractive home page CSS
 st.markdown("""
 <style>
@@ -67,45 +72,47 @@ html, body, [data-testid="stAppViewContainer"] > .main {
   overflow:hidden;
   position:relative;
 }
-.hero .title {
-  color: var(--text-main);
-  font-weight:900;
-  font-size: clamp(2.2rem, 4vw, 3.2rem);
-  letter-spacing: 0.8px;
-  line-height: 1.08;
-  text-shadow: 0 6px 18px rgba(0,0,0,0.08);
-}
-.hero .desc {
-  color: var(--text-sub);
-  margin-top:18px;
-  font-weight:500;
-  font-size: clamp(1.1rem, 2vw, 1.3rem);
-}
-.hero .cta {
-  margin-top:28px;
-  display:inline-block;
-  background: linear-gradient(90deg, var(--accent-cta), var(--accent-2));
-  color: #fff;
-  font-weight:900;
-  font-size:1.18rem;
-  padding: 16px 32px;
-  border-radius: 999px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.10);
-  text-decoration:none;
-  transition: transform .16s ease, box-shadow .16s ease;
-}
-.hero .cta:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 22px rgba(0,0,0,0.18);
-}
-.quick-nav {
-  display:flex;
-  flex-wrap:wrap;
-  gap:18px;
-  margin: 32px 0 0 0;
+with col1:
+    st.markdown(
+        """
+        <div class="feature">
+          <h4>🛰️ Satellite-grade Data</h4>
+          <p>High-res TEMPO & global MERRA-2 inputs tuned and validated against ground sensors.</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+    if st.button("Explore Insights", key="insights_btn"):
+        st.switch_page("pages/5_Insights.py")
+
+with col2:
+    st.markdown(
+        """
+        <div class="feature">
+          <h4>🤖 AI + Explainability</h4>
+          <p>XGBoost & explainable models that produce actionable alerts and model attribution for credibility.</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+    if st.button("Explore Explain", key="explain_btn"):
+        st.switch_page("pages/6_Explain.py")
+
+with col3:
+    st.markdown(
+        """
+        <div class="feature">
+          <h4>🏥 Health-first Recommendations</h4>
+          <p>Activity-specific guidance and exposure risk summaries tailored for vulnerable groups.</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+    if st.button("Health Recommendations", key="health_btn"):
+        st.switch_page("pages/9_Health_Integration.py")
   justify-content:center;
 }
-.quick-nav button {
+.quick-nav a {
   background: var(--accent-2);
   color: #fff;
   font-weight:700;
@@ -115,20 +122,10 @@ html, body, [data-testid="stAppViewContainer"] > .main {
   font-size:1.08rem;
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   transition: background .18s, box-shadow .18s;
-  border: none;
-  cursor: pointer;
 }
-.quick-nav button:hover {
+.quick-nav a:hover {
   background: var(--accent-1);
   box-shadow: 0 6px 18px rgba(0,0,0,0.12);
-}
-.get-started-btn {
-  background: linear-gradient(90deg, var(--accent-cta), var(--accent-2));
-  font-size: 1.18rem;
-  padding: 16px 32px;
-}
-.get-started-btn:hover {
-  box-shadow: 0 8px 22px rgba(0,0,0,0.18);
 }
 .features {
   display:grid;
@@ -196,22 +193,6 @@ html, body, [data-testid="stAppViewContainer"] > .main {
 .footer .social a:hover {
   color: var(--accent-2);
 }
-[data-testid="stButton"] button {
-  background: linear-gradient(90deg, var(--accent-cta), var(--accent-2));
-  color: #fff;
-  font-weight:900;
-  border: none;
-  padding: 12px 28px;
-  border-radius: 999px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.10);
-  font-size: 1.08rem;
-  transition: all 0.2s ease;
-  cursor: pointer;
-}
-[data-testid="stButton"] button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 22px rgba(0,0,0,0.18);
-}
 @media (max-width: 980px) {
   .features { grid-template-columns: repeat(2, 1fr); }
   .hero { flex-direction:column; gap:22px; align-items:flex-start; padding:28px; }
@@ -222,11 +203,6 @@ html, body, [data-testid="stAppViewContainer"] > .main {
   .stats { flex-direction: column; }
   .hero .title { font-size:1.6rem; }
   .search-box { padding:0 12px; }
-  [data-testid="stButton"] button {
-    width: 100%;
-    padding: 16px;
-    font-size: 1.15rem;
-  }
 }
 </style>
 """, unsafe_allow_html=True)
@@ -257,13 +233,66 @@ with st.sidebar:
 # Main container
 st.markdown('<div class="main-container">', unsafe_allow_html=True)
 
-# Hero + Welcome (buttons moved out)
+# Hero + Welcome + CTA
 st.markdown(
     """
 <div class="hero">
   <div style="flex:1; min-width:220px;">
     <div class="title">🌬️ Mframapa AI</div>
     <div class="desc">Welcome to your intelligent air quality companion. Get real-time forecasts, health guidance, and actionable insights for your city and beyond.</div>
+    <div style="margin-top:28px;">
+      <div style="display:flex;flex-wrap:wrap;gap:14px;justify-content:center;">
+        <form>
+          <button type="button" class="cta" onclick="document.getElementById('city_input').focus();">Get Started</button>
+        </form>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:18px;">
+        <form>
+          <button type="button" class="quick-nav-btn" onclick="window.parent.postMessage({type: 'streamlit:customEvent', event: 'switch_page', page: 'pages/2_Forecast.py'}, '*')">Forecast</button>
+        </form>
+        <form>
+          <button type="button" class="quick-nav-btn" onclick="window.parent.postMessage({type: 'streamlit:customEvent', event: 'switch_page', page: 'pages/5_Insights.py'}, '*')">Insights</button>
+        </form>
+        <form>
+          <button type="button" class="quick-nav-btn" onclick="window.parent.postMessage({type: 'streamlit:customEvent', event: 'switch_page', page: 'pages/6_Explain.py'}, '*')">Explain</button>
+        </form>
+        <form>
+          <button type="button" class="quick-nav-btn" onclick="window.parent.postMessage({type: 'streamlit:customEvent', event: 'switch_page', page: 'pages/9_Health_Integration.py'}, '*')">Health</button>
+        </form>
+        <form>
+          <button type="button" class="quick-nav-btn" onclick="window.parent.postMessage({type: 'streamlit:customEvent', event: 'switch_page', page: 'pages/7_Policy_Dashboard.py'}, '*')">Policy</button>
+        </form>
+        <form>
+          <button type="button" class="quick-nav-btn" onclick="window.parent.postMessage({type: 'streamlit:customEvent', event: 'switch_page', page: 'pages/12_Crowdsourcing.py'}, '*')">Community</button>
+        </form>
+      </div>
+    </div>
+<style>
+.quick-nav-btn {
+  background: var(--accent-2);
+  color: #fff;
+  font-weight:700;
+  padding: 12px 24px;
+  border-radius: 999px;
+  border: none;
+  font-size:1.08rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  margin: 0 2px 8px 2px;
+  cursor:pointer;
+  transition: background .18s, box-shadow .18s;
+}
+.quick-nav-btn:hover {
+  background: var(--accent-1);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+@media (max-width: 640px) {
+  .quick-nav-btn {
+    width: 100%;
+    font-size:1.15rem;
+    padding: 16px 0;
+  }
+}
+</style>
   </div>
   <div style="width:46%; min-width:280px; display:flex; align-items:center; justify-content:flex-end;">
     <img src="https://img.icons8.com/ios-filled/120/66d9ef/cloud.png" alt="cloud" style="opacity:0.9;max-width:100%;height:auto;" />
@@ -273,41 +302,11 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Navigation buttons row (styled via CSS)
-st.markdown('<div class="quick-nav">', unsafe_allow_html=True)
-cols = st.columns(7)
-with cols[0]:
-    if st.button('Get Started', key='get_started', help='Jump to city input'):
-        st.session_state.focus_search = True
-        st.rerun()
-with cols[1]:
-    if st.button('Forecast', key='nav_forecast'):
-        st.switch_page("pages/2_Forecast.py")
-with cols[2]:
-    if st.button('Insights', key='nav_insights'):
-        st.switch_page("pages/5_Insights.py")
-with cols[3]:
-    if st.button('Explain', key='nav_explain'):
-        st.switch_page("pages/6_Explain.py")
-with cols[4]:
-    if st.button('Health', key='nav_health'):
-        st.switch_page("pages/9_Health_Integration.py")
-with cols[5]:
-    if st.button('Policy', key='nav_policy'):
-        st.switch_page("pages/7_Policy.py")
-with cols[6]:
-    if st.button('Community', key='nav_community'):
-        st.switch_page("pages/8_Community.py")
-st.markdown('</div>', unsafe_allow_html=True)
-
-# Search (with anchor for CTA)
-st.markdown('<a id="search"></a>', unsafe_allow_html=True)
+# Search (sleek input/button)
 col_center_left, col_center, col_center_right = st.columns([1, 2, 1])
 with col_center:
-  city_input = st.text_input("", placeholder="Type a city (e.g., Accra, Lagos, Los Angeles)", key="city_input", value="" if "focus_search" not in st.session_state else "")
-  if "focus_search" in st.session_state:
-      del st.session_state.focus_search
-  search_btn = st.button("Search City", key="home_search")
+  city_input = st.text_input("", placeholder="Type a city (e.g., Accra, Lagos, Los Angeles)", key="city_input")
+  search_btn = st.button("🔎 Search City", key="home_search")
 
 if search_btn and city_input:
   with st.spinner(f"🔎 Finding coordinates for {city_input}..."):
@@ -323,29 +322,74 @@ if search_btn and city_input:
     else:
       st.error("❌ Could not find this city. Try a different spelling or add the country (e.g., 'Accra, Ghana').")
 
-# Features
-st.markdown("<div class='features'>", unsafe_allow_html=True)
-col1, col2, col3 = st.columns(3, gap="small")
-with col1:
-    st.markdown(
-        """
-        <div class="feature">
-          <h4>🛰️ Satellite-grade Data</h4>
-          <p>High-res TEMPO & global MERRA-2 inputs tuned and validated against ground sensors.</p>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-with col2:
-    st.markdown(
-        """
-        <div class="feature">
-          <h4>🤖 AI + Explainability</h4>
-          <p>XGBoost & explainable models that produce actionable alerts and model attribution for credibility.</p>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+st.markdown("""
+<style>
+.quick-nav-btn {
+  background: var(--accent-2);
+  color: #fff;
+  font-weight:700;
+  padding: 12px 24px;
+  border-radius: 999px;
+  border: none;
+  font-size:1.08rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  margin: 0 2px 8px 2px;
+  cursor:pointer;
+  transition: background .18s, box-shadow .18s;
+}
+.quick-nav-btn:hover {
+  background: var(--accent-1);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+.stTextInput > div > div > input#city_input {
+    border-radius: 999px;
+    border: 2px solid var(--accent-1);
+    padding: 22px 26px;
+    font-size: 1.18rem;
+    background: var(--card);
+    color: var(--text-main);
+    font-weight:700;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: box-shadow .2s ease, border-color .2s ease;
+}
+.stTextInput > div > div > input#city_input:focus {
+    border-color: var(--accent-2);
+    box-shadow: 0 6px 22px rgba(0,0,0,0.10), 0 0 8px rgba(124,231,255,0.08);
+}
+.stButton > button#home_search {
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+  color: #fff;
+  font-weight:900;
+  font-size:1.18rem;
+  padding: 16px 32px;
+  border: none;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+  transition: transform .16s ease, box-shadow .16s ease;
+}
+.stButton > button#home_search:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 22px rgba(0,0,0,0.18);
+}
+@media (max-width: 640px) {
+  .quick-nav-btn {
+    width: 100%;
+    font-size:1.15rem;
+    padding: 16px 0;
+  }
+  .stTextInput > div > div > input#city_input {
+    font-size:1.15rem;
+    padding: 18px 16px;
+  }
+  .stButton > button#home_search {
+    font-size:1.15rem;
+    padding: 14px 0;
+    width:100%;
+  }
+}
+</style>
+""", unsafe_allow_html=True)
+        st.switch_page("pages/6_Explain.py")
 with col3:
     st.markdown(
         """
@@ -356,6 +400,8 @@ with col3:
         """,
         unsafe_allow_html=True,
     )
+    if st.button("Health Recommendations", key="health_btn"):
+        st.switch_page("pages/9_Health_Integration.py")
 st.markdown("</div>", unsafe_allow_html=True)
 
 # Stats
@@ -387,9 +433,9 @@ st.markdown(
     """
 <div class="footer">
   <div class="social">
-    <a href="mailto:adjeiyawosei@gmail.com" title="Email"><span>📧</span></a>
-    <a href="https://twitter.com/yawoseii" target="_blank" title="Twitter"><span>🐦</span></a>
-    <a href="https://github.com/yoadjei/Mframapa-AI/" target="_blank" title="GitHub"><span>💻</span></a>
+    <a href="mailto:adjeiyawosei@gmail.com" title="Email"><span>📧 adjeiyawosei@gmail.com</span></a>
+    <a href="https://x.com/yawoseii" target="_blank" title="X"><span>🐦 @yawoseii</span></a>
+    <a href="https://github.com/yoadjei/Mframapa-AI/" target="_blank" title="GitHub"><span>💻 GitHub</span></a>
   </div>
   <div>Built for NASA Space Apps Challenge 2025 &mdash; Mframapa AI</div>
   <div style="margin-top:8px;font-size:0.98rem;">&copy; 2025 Mframapa AI. All rights reserved.</div>

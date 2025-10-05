@@ -13,7 +13,12 @@ st.set_page_config(
 # High-Contrast Accessible Theme (Light)
 # ---------------------------
 
-# Modern, responsive, attractive home page CSS
+# ---------------------------
+# DARK COLOR THEME (DIMMED / LEGIBLE)
+# ---------------------------
+
+
+# High-contrast, accessible, single light theme
 st.markdown("""
 <style>
 :root {
@@ -21,11 +26,11 @@ st.markdown("""
   --bg-2: #e3f2fd;
   --accent-1: #0077c2;
   --accent-2: #00bcd4;
-  --accent-cta: #388e3c;
   --glass: #ffffffcc;
   --card: #ffffff;
   --muted: #2d3a4a;
   --deep: #e3f2fd;
+  --success: #388e3c;
   --text-main: #1a2636;
   --text-sub: #2d3a4a;
 }
@@ -40,11 +45,11 @@ html, body, [data-testid="stAppViewContainer"] > .main {
   -moz-osx-font-smoothing:grayscale;
 }
 .main-container {
-  width: 99%;
+  width: 98%;
   max-width: 1400px;
-  margin: 24px auto 40px;
-  border-radius: 24px;
-  padding: 48px 24px 32px 24px;
+  margin: 32px auto 60px;
+  border-radius: 22px;
+  padding: 44px 36px;
   background: var(--glass);
   box-shadow: 0 10px 40px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.02);
   border: 2px solid #e3f2fd;
@@ -56,11 +61,10 @@ html, body, [data-testid="stAppViewContainer"] > .main {
 }
 .hero {
   display:flex;
-  flex-wrap:wrap;
   gap: 32px;
   align-items:center;
   justify-content:space-between;
-  padding: 44px 32px 24px 32px;
+  padding: 44px 32px;
   border-radius: 18px;
   background: linear-gradient(135deg, #e3f2fd 60%, #b5d9e8 100%);
   box-shadow: 0 10px 40px rgba(0,0,0,0.08);
@@ -70,64 +74,57 @@ html, body, [data-testid="stAppViewContainer"] > .main {
 .hero .title {
   color: var(--text-main);
   font-weight:900;
-  font-size: clamp(2.2rem, 4vw, 3.2rem);
+  font-size: clamp(2rem, 4vw, 3.2rem);
   letter-spacing: 0.8px;
   line-height: 1.08;
   text-shadow: 0 6px 18px rgba(0,0,0,0.08);
 }
-.hero .desc {
+.hero .subtitle {
   color: var(--text-sub);
-  margin-top:18px;
-  font-weight:500;
-  font-size: clamp(1.1rem, 2vw, 1.3rem);
+  margin-top:14px;
+  font-weight:700;
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
 }
-.hero .cta {
+.search-section {
+  display:flex;
+  justify-content:center;
   margin-top:28px;
-  display:inline-block;
-  background: linear-gradient(90deg, var(--accent-cta), var(--accent-2));
+  margin-bottom:18px;
+}
+.search-box {
+  width:100%;
+  max-width:920px;
+  display:flex;
+  gap:18px;
+  align-items:center;
+}
+.stTextInput > div > div > input {
+    border-radius: 999px;
+    border: 2px solid var(--accent-1);
+    padding: 22px 26px;
+    font-size: 1.18rem;
+    background: var(--card);
+    color: var(--text-main);
+    font-weight:700;
+    transition: box-shadow .2s ease, border-color .2s ease;
+}
+.stTextInput > div > div > input:focus {
+    border-color: var(--accent-2);
+    box-shadow: 0 6px 22px rgba(0,0,0,0.10), 0 0 8px rgba(124,231,255,0.08);
+}
+.stButton > button {
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
   color: #fff;
   font-weight:900;
   font-size:1.18rem;
   padding: 16px 32px;
-  border-radius: 999px;
+  border: none;
   box-shadow: 0 4px 16px rgba(0,0,0,0.10);
-  text-decoration:none;
   transition: transform .16s ease, box-shadow .16s ease;
 }
-.hero .cta:hover {
+.stButton > button:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 22px rgba(0,0,0,0.18);
-}
-.quick-nav {
-  display:flex;
-  flex-wrap:wrap;
-  gap:18px;
-  margin: 32px 0 0 0;
-  justify-content:center;
-}
-.quick-nav button {
-  background: var(--accent-2);
-  color: #fff;
-  font-weight:700;
-  padding: 12px 24px;
-  border-radius: 999px;
-  text-decoration:none;
-  font-size:1.08rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  transition: background .18s, box-shadow .18s;
-  border: none;
-  cursor: pointer;
-}
-.quick-nav button:hover {
-  background: var(--accent-1);
-  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
-}
-.get-started-btn {
-  background: linear-gradient(90deg, var(--accent-cta), var(--accent-2));
-  font-size: 1.18rem;
-  padding: 16px 32px;
-}
-.get-started-btn:hover {
   box-shadow: 0 8px 22px rgba(0,0,0,0.18);
 }
 .features {
@@ -174,59 +171,15 @@ html, body, [data-testid="stAppViewContainer"] > .main {
   color: var(--text-sub);
   font-size:1.12rem;
 }
-.footer {
-  margin-top: 48px;
-  padding: 24px 0 0 0;
-  text-align:center;
-  color: var(--text-sub);
-  font-size:1.08rem;
-  border-top: 1.5px solid #e3f2fd;
-}
-.footer .social {
-  margin: 12px 0;
-}
-.footer .social a {
-  display:inline-block;
-  margin: 0 8px;
-  color: var(--accent-1);
-  font-size:1.3rem;
-  text-decoration:none;
-  transition: color .18s;
-}
-.footer .social a:hover {
-  color: var(--accent-2);
-}
-[data-testid="stButton"] button {
-  background: linear-gradient(90deg, var(--accent-cta), var(--accent-2));
-  color: #fff;
-  font-weight:900;
-  border: none;
-  padding: 12px 28px;
-  border-radius: 999px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.10);
-  font-size: 1.08rem;
-  transition: all 0.2s ease;
-  cursor: pointer;
-}
-[data-testid="stButton"] button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 22px rgba(0,0,0,0.18);
-}
 @media (max-width: 980px) {
   .features { grid-template-columns: repeat(2, 1fr); }
   .hero { flex-direction:column; gap:22px; align-items:flex-start; padding:28px; }
-  .quick-nav { flex-direction:column; gap:12px; }
 }
 @media (max-width: 640px) {
   .features { grid-template-columns: 1fr; }
   .stats { flex-direction: column; }
   .hero .title { font-size:1.6rem; }
   .search-box { padding:0 12px; }
-  [data-testid="stButton"] button {
-    width: 100%;
-    padding: 16px;
-    font-size: 1.15rem;
-  }
 }
 </style>
 """, unsafe_allow_html=True)
@@ -253,79 +206,52 @@ with st.sidebar:
 # ---------------------------
 # Main container
 # ---------------------------
-
-# Main container
 st.markdown('<div class="main-container">', unsafe_allow_html=True)
 
-# Hero + Welcome (buttons moved out)
+# Hero
 st.markdown(
     """
 <div class="hero">
   <div style="flex:1; min-width:220px;">
-    <div class="title">🌬️ Mframapa AI</div>
-    <div class="desc">Welcome to your intelligent air quality companion. Get real-time forecasts, health guidance, and actionable insights for your city and beyond.</div>
+    <div class="title">🌬️ Mframapa AI — Intelligent Air Quality</div>
+    <div class="subtitle">Judge-ready forecasts & health guidance using NASA satellite datasets + modern AI.</div>
+    <div style="margin-top:12px; color:var(--text-sub); font-size:0.92rem">
+      Fast. Global. Scientific. Built to inform communities and policymakers.
+    </div>
   </div>
+
   <div style="width:46%; min-width:280px; display:flex; align-items:center; justify-content:flex-end;">
-    <img src="https://img.icons8.com/ios-filled/120/66d9ef/cloud.png" alt="cloud" style="opacity:0.9;max-width:100%;height:auto;" />
+    <img src="https://img.icons8.com/ios-filled/80/66d9ef/cloud.png" alt="cloud" style="opacity:0.9" />
   </div>
 </div>
 """,
     unsafe_allow_html=True,
 )
 
-# Navigation buttons row (styled via CSS)
-st.markdown('<div class="quick-nav">', unsafe_allow_html=True)
-cols = st.columns(7)
-with cols[0]:
-    if st.button('Get Started', key='get_started', help='Jump to city input'):
-        st.session_state.focus_search = True
-        st.rerun()
-with cols[1]:
-    if st.button('Forecast', key='nav_forecast'):
-        st.switch_page("pages/2_Forecast.py")
-with cols[2]:
-    if st.button('Insights', key='nav_insights'):
-        st.switch_page("pages/5_Insights.py")
-with cols[3]:
-    if st.button('Explain', key='nav_explain'):
-        st.switch_page("pages/6_Explain.py")
-with cols[4]:
-    if st.button('Health', key='nav_health'):
-        st.switch_page("pages/9_Health_Integration.py")
-with cols[5]:
-    if st.button('Policy', key='nav_policy'):
-        st.switch_page("pages/7_Policy.py")
-with cols[6]:
-    if st.button('Community', key='nav_community'):
-        st.switch_page("pages/8_Community.py")
-st.markdown('</div>', unsafe_allow_html=True)
-
-# Search (with anchor for CTA)
-st.markdown('<a id="search"></a>', unsafe_allow_html=True)
+# Search
 col_center_left, col_center, col_center_right = st.columns([1, 2, 1])
 with col_center:
-  city_input = st.text_input("", placeholder="Type a city (e.g., Accra, Lagos, Los Angeles)", key="city_input", value="" if "focus_search" not in st.session_state else "")
-  if "focus_search" in st.session_state:
-      del st.session_state.focus_search
-  search_btn = st.button("Search City", key="home_search")
+    city_input = st.text_input("", placeholder="Type a city (e.g., Accra, Lagos, Los Angeles)")
+    search_btn = st.button("Search City", key="home_search")
 
 if search_btn and city_input:
-  with st.spinner(f"🔎 Finding coordinates for {city_input}..."):
-    time.sleep(0.9)
-    coords = get_lat_lon(city_input)
-    if coords:
-      lat, lon = coords
-      st.session_state.selected_city = city_input
-      st.session_state.selected_coordinates = coords
-      st.success(f"✅ Found {city_input} — {lat:.4f}, {lon:.4f}. Redirecting to Forecast...")
-      time.sleep(1.1)
-      st.switch_page("pages/2_Forecast.py")
-    else:
-      st.error("❌ Could not find this city. Try a different spelling or add the country (e.g., 'Accra, Ghana').")
+    with st.spinner(f"🔎 Finding coordinates for {city_input}..."):
+        time.sleep(0.9)
+        coords = get_lat_lon(city_input)
+        if coords:
+            lat, lon = coords
+            st.session_state.selected_city = city_input
+            st.session_state.selected_coordinates = coords
+            st.success(f"✅ Found {city_input} — {lat:.4f}, {lon:.4f}. Redirecting to Forecast...")
+            time.sleep(1.1)
+            st.switch_page("pages/2_Forecast.py")
+        else:
+            st.error("❌ Could not find this city. Try a different spelling or add the country (e.g., 'Accra, Ghana').")
 
 # Features
 st.markdown("<div class='features'>", unsafe_allow_html=True)
 col1, col2, col3 = st.columns(3, gap="small")
+
 with col1:
     st.markdown(
         """
@@ -336,6 +262,9 @@ with col1:
         """,
         unsafe_allow_html=True,
     )
+    if st.button("Explore Insights", key="insights_btn"):
+        st.switch_page("pages/5_Insights.py")
+
 with col2:
     st.markdown(
         """
@@ -346,6 +275,9 @@ with col2:
         """,
         unsafe_allow_html=True,
     )
+    if st.button("Explore Explain", key="explain_btn"):
+        st.switch_page("pages/6_Explain.py")
+
 with col3:
     st.markdown(
         """
@@ -356,6 +288,9 @@ with col3:
         """,
         unsafe_allow_html=True,
     )
+    if st.button("Health Recommendations", key="health_btn"):
+        st.switch_page("pages/9_Health_Integration.py")
+
 st.markdown("</div>", unsafe_allow_html=True)
 
 # Stats
@@ -379,20 +314,4 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# End main container
 st.markdown("</div>", unsafe_allow_html=True)
-
-# Footer
-st.markdown(
-    """
-<div class="footer">
-  <div class="social">
-    <a href="mailto:adjeiyawosei@gmail.com" title="Email"><span>📧</span></a>
-    <a href="https://twitter.com/yawoseii" target="_blank" title="Twitter"><span>🐦</span></a>
-    <a href="https://github.com/yoadjei/Mframapa-AI/" target="_blank" title="GitHub"><span>💻</span></a>
-  </div>
-  <div>Built for NASA Space Apps Challenge 2025 &mdash; Mframapa AI</div>
-  <div style="margin-top:8px;font-size:0.98rem;">&copy; 2025 Mframapa AI. All rights reserved.</div>
-</div>
-""",
-    unsafe_allow_html=True)
