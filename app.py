@@ -1,6 +1,7 @@
 import streamlit as st
 import os
 
+st.write("✅ App starting up on Streamlit Cloud...")
 # ---------------------------------------------------------------------
 # 🌍 PAGE CONFIGURATION
 # ---------------------------------------------------------------------
