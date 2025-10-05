@@ -187,47 +187,58 @@ if 'user_profile' not in st.session_state:
     st.session_state.user_profile = {}
 
 # Check for model files
-model_files_exist = os.path.exists('models') and any(
-    f.endswith('.json') for f in os.listdir('models') if os.path.isfile(os.path.join('models', f))
-)
+model_files_exist = False
+model_formats = (".json", ".pkl")
+
+if os.path.exists("models"):
+    model_files_exist = any(
+        f.endswith(model_formats)
+        for f in os.listdir("models")
+        if os.path.isfile(os.path.join("models", f))
+    )
 
 if not model_files_exist:
     st.warning("""
-    ⚠️ **Model files not found!** 
-    
-    Please run the training script first:
-    ```bash
-    python train_model.py
+    ⚠️ **Model files not found!**
+    Please make sure your trained model files (.json or .pkl) are inside the `/models` folder.
+
+    **Expected structure:**
     ```
-    
-    This will download satellite data and train the ML models. The training process may take several hours.
+    models/
+    ├── xgboost_model_pm25.json
+    ├── xgboost_model_o3.json
+    ├── xgboost_model_no2.json
+    ├── feature_columns.pkl
+    ├── normalization_params.pkl
+    ├── label_encoders.pkl
+    ```
     """)
 
-# Debug info in sidebar
+# --- SIDEBAR STATUS PANEL ---
 with st.sidebar:
     st.markdown("### System Status")
-    
+
     if model_files_exist:
-        st.success("✅ Models loaded")
+        st.success("✅ Models detected (.json / .pkl)")
     else:
-        st.error("❌ Models not found")
-    
-    # Check API keys
-    required_keys = ['OPENWEATHER_KEY', 'EARTHDATA_USER', 'EARTHDATA_PASS']
+        st.error("❌ Models missing — run `train_model.py` to generate them")
+
+    # --- Check API keys from Streamlit secrets ---
+    required_keys = ["OPENWEATHER_KEY", "EARTHDATA_USER", "EARTHDATA_PASS"]
     missing_keys = []
-    
-    try:
-        for key in required_keys:
-            if not hasattr(st, 'secrets') or key not in st.secrets or not st.secrets.get(key):
+
+    for key in required_keys:
+        try:
+            if key not in st.secrets or not st.secrets[key]:
                 missing_keys.append(key)
-        
-        if missing_keys:
-            st.warning(f"⚠️ Missing API keys: {', '.join(missing_keys)}")
-        else:
-            st.success("✅ API keys configured")
-    except Exception as e:
-        st.warning("⚠️ Secrets file not configured. Some features may use demo data.")
-    
+        except Exception:
+            missing_keys.append(key)
+
+    if missing_keys:
+        st.warning(f"⚠️ Missing secrets: {', '.join(missing_keys)}")
+    else:
+        st.success("✅ API keys configured")
+
     st.markdown("### Quick Access")
     if st.button("🏠 Reset to Home"):
         st.session_state.selected_city = None
