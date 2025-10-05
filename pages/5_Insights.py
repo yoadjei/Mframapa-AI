@@ -14,7 +14,7 @@ st.title("💡 Air Quality Insights & Patterns")
 
 st.markdown("""
 Discover global air quality patterns, seasonal trends, and environmental insights powered by satellite data analysis.
-Understanding these patterns helps predict air quality changes and make informed health decisions.
+Understanding these patterns helps predict air quality changes and make informed health decisions and policy actions.
 """)
 
 # Key insights section
@@ -25,25 +25,25 @@ col1, col2, col3 = st.columns(3)
 with col1:
     st.metric(
         "Global Average AQI",
-        "67",
-        "↓ 3.2 from last year",
-        help="Based on MERRA-2 global satellite data analysis"
+        "80",
+        "stable from last year",
+        help="Based on MERRA-2 global satellite data analysis and IQAir 2023 report (population-weighted PM2.5 ~23.5 μg/m³ ≈ AQI 80)"
     )
 
 with col2:
     st.metric(
         "Cities Above WHO Limit",
-        "85%",
-        "↑ 2.1% from last year",
-        help="Cities exceeding WHO PM2.5 annual guideline of 5 μg/m³"
+        "83%",
+        "↓ 8% from last year",
+        help="Cities exceeding WHO PM2.5 annual guideline of 5 μg/m³ (source: IQAir 2024 report)"
     )
 
 with col3:
     st.metric(
         "Data Coverage",
-        "99.7%",
+        "100%",
         "Global satellite coverage",
-        help="Percentage of global area covered by MERRA-2 and TEMPO data"
+        help="Percentage of global area covered by MERRA-2 polar-orbiting satellites"
     )
 
 # Seasonal patterns
@@ -111,8 +111,8 @@ with tab1:
     with col1:
         st.markdown("""
         **🌟 Positive Trends:**
-        - 15% improvement in urban NO₂ levels since 2020
-        - Cleaner air during COVID-19 lockdowns persisting
+        - 25% reduction in urban NO₂ levels during COVID-19, with improvements persisting
+        - Cleaner air in many cities due to emission controls
         - Better compliance with EPA standards in major cities
         - Increased adoption of electric vehicles reducing emissions
         
@@ -211,7 +211,7 @@ with tab4:
     
     # Pollution sources pie chart
     sources = ['Transportation', 'Industrial', 'Residential', 'Power Generation', 'Natural Sources']
-    values = [28, 24, 18, 16, 14]
+    values = [28, 24, 18, 16, 14]  # Percentage contribution
     colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7']
     
     fig = px.pie(values=values, names=sources, title="Global Air Pollution Sources (%)",
@@ -306,7 +306,7 @@ with prediction_col2:
     **Technology Solutions:**
     - Satellite data resolution improving 10x every decade
     - AI models becoming more accurate with more data
-    - Real-time monitoring networks expanding globally
+    - Real-time monitoring networks networks expanding globally
     """)
 
 # Interactive insights explorer
