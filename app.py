@@ -1,15 +1,19 @@
 import streamlit as st
 import os
 
-# Set page configuration
+# ---------------------------------------------------------------------
+# 🌍 PAGE CONFIGURATION
+# ---------------------------------------------------------------------
 st.set_page_config(
-    page_title="Mframapa AI", 
-    page_icon="🌍", 
+    page_title="Mframapa AI",
+    page_icon="🌍",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for better styling
+# ---------------------------------------------------------------------
+# 🎨 CUSTOM CSS STYLES
+# ---------------------------------------------------------------------
 st.markdown("""
 <style>
     .main-header {
@@ -40,7 +44,9 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Main header
+# ---------------------------------------------------------------------
+# 🏠 MAIN HEADER
+# ---------------------------------------------------------------------
 st.markdown("""
 <div class="main-header">
     <h1>🌍 Mframapa AI</h1>
@@ -49,7 +55,9 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Welcome message
+# ---------------------------------------------------------------------
+# 💬 WELCOME MESSAGE
+# ---------------------------------------------------------------------
 st.markdown("## Welcome to Mframapa AI")
 
 st.markdown("""
@@ -57,10 +65,11 @@ st.markdown("""
 from NASA with machine learning to provide accurate 48-hour predictions for PM2.5, O₃, and NO₂ levels.
 
 ### 🚀 Key Features
-
 """)
 
-# Feature columns
+# ---------------------------------------------------------------------
+# 💡 FEATURE CARDS
+# ---------------------------------------------------------------------
 col1, col2, col3 = st.columns(3)
 
 with col1:
@@ -87,7 +96,9 @@ with col3:
     </div>
     """, unsafe_allow_html=True)
 
-# Region coverage
+# ---------------------------------------------------------------------
+# 🌐 REGIONAL COVERAGE
+# ---------------------------------------------------------------------
 st.markdown("### 🌐 Regional Coverage")
 
 col1, col2 = st.columns(2)
@@ -108,7 +119,9 @@ with col2:
     - Climate-adapted modeling
     """)
 
-# Quick stats
+# ---------------------------------------------------------------------
+# 📊 SYSTEM STATISTICS
+# ---------------------------------------------------------------------
 st.markdown("### 📊 System Statistics")
 
 col1, col2, col3, col4 = st.columns(4)
@@ -145,38 +158,33 @@ with col4:
     </div>
     """, unsafe_allow_html=True)
 
-# Navigation guide
+# ---------------------------------------------------------------------
+# 🗺️ NAVIGATION GUIDE
+# ---------------------------------------------------------------------
 st.markdown("### 🗺️ Navigation Guide")
 
 st.markdown("""
 Use the sidebar to navigate through different features of Mframapa AI:
 
-1. **🏠 Home** - Welcome page and overview
-2. **📈 Forecast** - Get 48-hour air quality predictions for any city
-3. **👤 Profile** - Set up your health profile for personalized recommendations
-4. **🔄 Compare** - Compare air quality between different locations
-5. **💡 Insights** - Learn about air quality patterns and trends
-6. **🔬 Explain** - Understand how our AI models work
-7. **🏛️ Policy Dashboard** - Air quality policy and regulation information
-8. **🌏 Cross-Border Tracker** - Monitor transboundary pollution patterns
-9. **🏥 Health Integration** - Detailed health impact analysis
-10. **🎮 Gamified Learning** - Interactive air quality education
-11. **📚 Historical Explorer** - Explore historical air quality data
+1. **🏠 Home** - Welcome page and overview  
+2. **📈 Forecast** - Get 48-hour air quality predictions for any city  
+3. **👤 Profile** - Set up your health profile for personalized recommendations  
+4. **🔄 Compare** - Compare air quality between different locations  
+5. **💡 Insights** - Learn about air quality patterns and trends  
+6. **🔬 Explain** - Understand how our AI models work  
+7. **🏛️ Policy Dashboard** - Air quality policy and regulation information  
+8. **🌏 Cross-Border Tracker** - Monitor transboundary pollution patterns  
+9. **🏥 Health Integration** - Detailed health impact analysis  
+10. **🎮 Gamified Learning** - Interactive air quality education  
+11. **📚 Historical Explorer** - Explore historical air quality data  
 12. **👥 Crowdsourcing** - Community-driven data collection
 
 **Get started by clicking on "📈 Forecast" in the sidebar to make your first prediction!**
 """)
 
-# Footer
-st.markdown("---")
-st.markdown("""
-<div style="text-align: center; color: #666; padding: 1rem;">
-    <p>🌍 Mframapa AI - Making air quality data accessible to everyone</p>
-    <p>Built for NASA Space Apps Challenge 2025</p>
-</div>
-""", unsafe_allow_html=True)
-
-# Initialize session state
+# ---------------------------------------------------------------------
+# ⚙️ SESSION STATE INITIALIZATION
+# ---------------------------------------------------------------------
 if 'selected_city' not in st.session_state:
     st.session_state.selected_city = None
 
@@ -186,7 +194,9 @@ if 'selected_coordinates' not in st.session_state:
 if 'user_profile' not in st.session_state:
     st.session_state.user_profile = {}
 
-# Check for model files
+# ---------------------------------------------------------------------
+# 🧠 MODEL FILE VALIDATION
+# ---------------------------------------------------------------------
 model_files_exist = False
 model_formats = (".json", ".pkl")
 
@@ -214,33 +224,44 @@ if not model_files_exist:
     ```
     """)
 
-# --- SIDEBAR STATUS PANEL ---
+# ---------------------------------------------------------------------
+# 🧭 SIDEBAR PANEL
+# ---------------------------------------------------------------------
 with st.sidebar:
     st.markdown("### System Status")
 
+    # --- Model Files Check ---
     if model_files_exist:
         st.success("✅ Models detected (.json / .pkl)")
     else:
         st.error("❌ Models missing — run `train_model.py` to generate them")
 
-    # --- Check API keys from Streamlit secrets ---
-    required_keys = ["OPENWEATHER_KEY", "EARTHDATA_USER", "EARTHDATA_PASS"]
-    missing_keys = []
-
-    for key in required_keys:
-        try:
-            if key not in st.secrets or not st.secrets[key]:
-                missing_keys.append(key)
-        except Exception:
-            missing_keys.append(key)
+    # --- Safe Secrets Check ---
+    try:
+        required_keys = ["OPENWEATHER_KEY", "EARTHDATA_USER", "EARTHDATA_PASS"]
+        missing_keys = [key for key in required_keys if not st.secrets.get(key)]
+    except Exception:
+        missing_keys = ["OPENWEATHER_KEY", "EARTHDATA_USER", "EARTHDATA_PASS"]
 
     if missing_keys:
         st.warning(f"⚠️ Missing secrets: {', '.join(missing_keys)}")
     else:
         st.success("✅ API keys configured")
 
+    # --- Sidebar Quick Access ---
     st.markdown("### Quick Access")
     if st.button("🏠 Reset to Home"):
         st.session_state.selected_city = None
         st.session_state.selected_coordinates = None
         st.rerun()
+
+# ---------------------------------------------------------------------
+# 🧾 FOOTER
+# ---------------------------------------------------------------------
+st.markdown("---")
+st.markdown("""
+<div style="text-align: center; color: #666; padding: 1rem;">
+    <p>🌍 Mframapa AI - Making air quality data accessible to everyone</p>
+    <p>Built for NASA Space Apps Challenge 2025</p>
+</div>
+""", unsafe_allow_html=True)
