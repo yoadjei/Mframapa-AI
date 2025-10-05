@@ -104,8 +104,8 @@ def fetch_forecast_features(lat, lon):
     weather_data = fetch_openweather_forecast(lat, lon)
     
     # Fetch satellite data for recent dates
-    start_date = (current_date - timedelta(days=60)).strftime('%Y-%m-%d')
-    end_date = (current_date - timedelta(days=30)).strftime('%Y-%m-%d')
+    start_date = (current_date - timedelta(days=1)).strftime('%Y-%m-%d')
+    end_date = current_date.strftime('%Y-%m-%d')
     
     merra_data = fetch_merra2_data(lat, lon, start_date, end_date)
     
@@ -418,7 +418,7 @@ with col2:
     - 🤖 XGBoost Regression
     - ⏱️ 48-hour forecast horizon
     - 📊 Multi-pollutant prediction
-    - 📺 Location-specific training
+    - 🎯 Location-specific training
     """)
 
 region_info = "North America (TEMPO + MERRA-2)" if -170 <= lon <= -50 and 15 <= lat <= 75 else "Global (MERRA-2)"

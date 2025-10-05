@@ -102,18 +102,27 @@ def fetch_forecast_features(lat, lon):
     
     # Fetch weather forecast
     weather_data = fetch_openweather_forecast(lat, lon)
+    if not weather_data:
+        st.warning("⚠️ Could not fetch OpenWeatherMap data. Using fallback values for weather features.")
+        weather_data = {'list': []}
     
-    # Fetch satellite data for recent dates
-    start_date = (current_date - timedelta(days=60)).strftime('%Y-%m-%d')
-    end_date = (current_date - timedelta(days=30)).strftime('%Y-%m-%d')
+    # Fetch satellite data for historical period (7–14 days ago to avoid latency)
+    start_date = (current_date - timedelta(days=14)).strftime('%Y-%m-%d')  # 14 days ago
+    end_date = (current_date - timedelta(days=7)).strftime('%Y-%m-%d')     # 7 days ago
     
     merra_data = fetch_merra2_data(lat, lon, start_date, end_date)
+    if not merra_data:
+        st.warning("⚠️ Could not fetch MERRA-2 data. Using fallback values for MERRA-2 features.")
+        merra_data = {}
     
     # Check if location is in North America for TEMPO data
     tempo_data = None
     if -170 <= lon <= -50 and 15 <= lat <= 75:
         bounding_box = (lon - 0.5, lat - 0.5, lon + 0.5, lat + 0.5)
         tempo_data = fetch_tempo_data(bounding_box, start_date, end_date)
+        if not tempo_data:
+            st.warning("⚠️ Could not fetch TEMPO data. Using fallback values for TEMPO features.")
+            tempo_data = {}
     
     # Process weather forecast data
     weather_forecasts = {}
@@ -176,7 +185,7 @@ def fetch_forecast_features(lat, lon):
             features['lon_month'] = 0.0
             features['lat_lon'] = 0.0
         
-        # Add weather features (use closest forecast)
+        # Add weather features (use closest forecast or fallback)
         closest_weather = None
         min_time_diff = float('inf')
         
@@ -192,19 +201,25 @@ def fetch_forecast_features(lat, lon):
             features['weather_pressure'] = closest_weather['pressure']
             features['weather_wind_speed'] = closest_weather['wind_speed']
             features['weather_clouds'] = closest_weather['clouds']
+        else:
+            # Fallback values for weather features
+            features['weather_temp'] = 20.0  # Average temperature in °C
+            features['weather_humidity'] = 50.0  # Average humidity %
+            features['weather_pressure'] = 1013.0  # Average pressure in hPa
+            features['weather_wind_speed'] = 3.0  # Average wind speed in m/s
+            features['weather_clouds'] = 50.0  # Average cloud cover %
         
-        # Add MERRA-2 features (use latest available)
-        if merra_data:
-            for key, value in merra_data.items():
-                if isinstance(value, (np.ndarray, list)) and len(value) > 0:
-                    features[f'merra2_{key}'] = np.mean(value)
-                elif isinstance(value, (int, float)):
-                    features[f'merra2_{key}'] = value
+        # Add MERRA-2 features (use fallback if unavailable)
+        for key in ['BCSMASS', 'OCSMASS', 'DUSMASS', 'SSSMASS', 'SO4SMASS', 'T2M', 'QV2M', 'U2M', 'V2M', 'PBLH', 'CLDTOT']:
+            features[f'merra2_{key}'] = merra_data.get(key, 0.0)
         
-        # Add TEMPO features for North America
+        # Add TEMPO features for North America (use fallback if unavailable)
         if tempo_data:
             for key, value in tempo_data.items():
                 features[f'tempo_{key}'] = value
+        else:
+            for key in ['NO2_vertical_column_troposphere', 'NO2_column_uncertainty']:
+                features[f'tempo_{key}'] = 0.0
         
         # Create interaction features
         if 'weather_temp' in features and 'weather_humidity' in features:
@@ -418,7 +433,7 @@ with col2:
     - 🤖 XGBoost Regression
     - ⏱️ 48-hour forecast horizon
     - 📊 Multi-pollutant prediction
-    - 📺 Location-specific training
+    - 🎯 Location-specific training
     """)
 
 region_info = "North America (TEMPO + MERRA-2)" if -170 <= lon <= -50 and 15 <= lat <= 75 else "Global (MERRA-2)"

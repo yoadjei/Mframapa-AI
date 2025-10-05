@@ -236,7 +236,7 @@ with condition_tab4:
         fig.add_trace(go.Bar(x=trimesters, y=low_birth_weight, name='Low Birth Weight (%)', 
                            marker_color='lightpink'))
         fig.add_trace(go.Bar(x=trimesters, y=preterm_birth, name='Preterm Birth (%)',
-                           marker_color='#C71585'))  # Fixed color
+                           marker_color='darkpink'))
         
         fig.update_layout(
             title='Pregnancy Risk by Trimester of PM2.5 Exposure',

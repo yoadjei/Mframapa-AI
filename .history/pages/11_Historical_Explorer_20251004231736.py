@@ -476,67 +476,51 @@ edu_col1, edu_col2 = st.columns(2)
 with edu_col1:
     st.markdown("""
     ### 🎓 Key Historical Lessons
-
+    
     **Policy Impact**
-    - 🇺🇸 **Clean Air Act (1970s–1990s onward):**  
-      By 2020, the Clean Air Act Amendments are projected to prevent over **230,000 premature deaths** in the U.S. from particulate matter and ozone reductions.  
-      *(EPA: “Benefits and Costs of the Clean Air Act, 1990-2020”) [🔗](https://www.epa.gov/clean-air-act-overview/benefits-and-costs-clean-air-act-1990-2020-second-prospective-study) :contentReference[oaicite:0]{index=0}*  
-    - 🇨🇳 **Beijing Olympics (2008):**  
-      Temporary traffic restrictions and factory shutdowns improved air quality during the games, though ~60% of improvement dissipated by late 2009.  
-      *(NBER: “Evaluating the Impact of the 2008 Olympic Games on Air Quality”) [🔗](https://www.nber.org/papers/w16907) :contentReference[oaicite:1]{index=1}*  
-    - 🇪🇺 **EU Emission Standards (Euro I–VI):**  
-      Since the 1990s, vehicle NOₓ and particulate emission limits tightened dramatically, contributing to long-term decreases in urban NO₂ levels.  
-      *(European Environment Agency reports, e.g. EEA Air Quality in Europe)*  
-
+    - Clean Air Act (1970s-1990s): Dramatic US air quality improvements
+    - Beijing Olympics (2008): Short-term policy measures can work
+    - European emission standards: Long-term NO₂ reductions
+    
     **Technology Effects**
-    - 🚗 **Catalytic Converters (1970s onward):**  
-      Introduced into vehicles to reduce CO, HC, and NOₓ emissions, widely adopted under clean-air regulations.  
-    - ⚙️ **Flue-gas Scrubbers & SO₂ control (1980s):**  
-      In the U.S. and Europe, power plants added scrubbers to cut SO₂ emissions by over 80–90%.  
-    - 🌞 **Renewable Energy Transition:**  
-      Scaling of wind and solar from the 2000s onward displaced coal and reduced emissions of particulates and NOₓ globally (IEA data).  
+    - Catalytic converters: Major reduction in vehicle emissions
+    - Scrubber technology: Power plant SO₂ reductions  
+    - Renewable energy: Gradual displacement of fossil fuels
     """)
 
 with edu_col2:
     st.markdown("""
     ### 🔬 Scientific Understanding
-
+    
     **Research Evolution**
-    - **1950s–60s:** Smog episodes (e.g. London, Donora) catalyzed links between pollution and mortality.  
-    - **1970s–80s:** Recognition of **acid rain** and long-range pollutant transport (e.g. from power plants)  
-    - **1990s–2000s:** Epidemiological studies showing chronic PM₂.₅ exposure increases cardiovascular and respiratory risks  
-    - **2010s–Present:** Models coupling climate change and air quality, showing co-benefits of carbon mitigation  
-
+    - 1950s-60s: Recognition of smog health effects
+    - 1970s-80s: Acid rain and long-range transport
+    - 1990s-2000s: Fine particle (PM2.5) health impacts
+    - 2010s-Present: Climate-air quality interactions
+    
     **Monitoring Advances**
-    - **1970s:** Establishment of national ground-based monitoring networks (e.g. U.S. EPA, EMEP in Europe)  
-    - **1990s–2000s:** Satellite aerosol instruments (e.g. MODIS, MISR, OMI) provided global aerosol coverage  
-    - **2010s–Now:** Machine learning models combine satellite, ground, and reanalysis (MERRA-2, Sentinel-5P) for high-resolution estimates  
+    - Ground networks: 1970s establishment
+    - Satellite monitoring: 1990s-2000s development
+    - AI analysis: 2010s-Present integration
     """)
 
 st.markdown("""
 ### 💡 Using Historical Data
 
-**For Policymakers**  
-- Compare air quality outcomes before and after regulations to estimate health gains  
-- Use historical episodes to stress-test new policy proposals  
-- Identify which interventions (e.g. traffic control, industrial limits) produced the largest returns  
+**For Policymakers:**
+- Evaluate effectiveness of past regulations
+- Predict impacts of proposed policies
+- Identify successful intervention strategies
 
-**For Researchers**  
-- Use decades of data to validate and calibrate atmospheric chemistry models  
-- Detect nonlinear interactions, e.g. pollution + climate coupling  
-- Explore relationships between emission sources and pollutant trends  
+**For Researchers:** 
+- Study long-term trends and cycles
+- Validate air quality models
+- Understand climate-pollution interactions
 
-**For Citizens**  
-- Understand how air quality in your city has changed over time  
-- Relate pollution peaks (e.g. wildfires, lockdowns) to health risks  
-- Use evidence to support effective environmental advocacy  
+**For Citizens:**
+- Learn about local air quality patterns
+- Understand seasonal health risks
+- Advocate for evidence-based policies
 
----
-
-**Sources & References**  
-- EPA: *Benefits and Costs of the Clean Air Act, 1990–2020* [🔗](https://www.epa.gov/clean-air-act-overview/benefits-and-costs-clean-air-act-1990-2020-second-prospective-study) :contentReference[oaicite:2]{index=2}  
-- NBER: *Impact of 2008 Beijing Olympics on Air Quality* [🔗](https://www.nber.org/papers/w16907) :contentReference[oaicite:3]{index=3}  
-- PMC: *Health benefits from original Clean Air Act* (prevented ~205,000 early deaths) [🔗](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4133758/) :contentReference[oaicite:4]{index=4}  
-- Air Pollution & Mortality Studies (China) [🔗](https://www.sciencedirect.com/science/article/abs/pii/S0095069616300237) :contentReference[oaicite:5]{index=5}  
-- China PM₂.₅ Improvements (2013–2017) study [🔗](https://www.pnas.org/doi/10.1073/pnas.1907956116) :contentReference[oaicite:6]{index=6}  
+*Historical data provides the foundation for understanding air quality trends and making informed decisions about future actions.*
 """)

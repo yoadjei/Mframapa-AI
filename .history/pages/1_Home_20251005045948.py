@@ -304,6 +304,7 @@ if search_btn and city_input:
 # ---------------------------
 st.markdown("<div class='features'>", unsafe_allow_html=True)
 
+# We'll render each feature in a column so each has its own Explore button below
 col1, col2, col3 = st.columns(3, gap="small")
 
 with col1:
@@ -319,7 +320,8 @@ with col1:
         unsafe_allow_html=True,
     )
     if st.button("Explore Insights", key="insights_btn"):
-        # link to pages/5_Insights.py
+        # link to pages/5_Insights
+        st.experimental_set_query_params()  # keep URL tidy (no-op)
         st.switch_page("pages/5_Insights.py")
 
 with col2:
@@ -335,6 +337,7 @@ with col2:
         unsafe_allow_html=True,
     )
     if st.button("Explore Explain", key="explain_btn"):
+        st.experimental_set_query_params()
         st.switch_page("pages/6_Explain.py")
 
 with col3:
@@ -350,6 +353,7 @@ with col3:
         unsafe_allow_html=True,
     )
     if st.button("Health Recommendations", key="health_btn"):
+        st.experimental_set_query_params()
         st.switch_page("pages/9_Health_Integration.py")
 
 st.markdown("</div>", unsafe_allow_html=True)

@@ -10,7 +10,7 @@ st.set_page_config(
 )
 
 # ---------------------------
-# Bold Visual Theme + Animations (no search buttons in hero)
+# Bold Visual Theme + Animations
 # ---------------------------
 st.markdown(
     """
@@ -29,7 +29,7 @@ st.markdown(
 
 /* Full animated gradient background */
 html, body, [data-testid="stAppViewContainer"] > .main {
-  min-height: 100%;
+  height: 100%;
   background: radial-gradient(1200px 600px at 10% 10%, rgba(0,150,200,0.08), transparent 8%),
               conic-gradient(from 180deg at 50% 50%, rgba(6,66,98,0.14), rgba(2,138,199,0.06), rgba(6,66,98,0.14));
   background-color: var(--bg-1);
@@ -109,50 +109,60 @@ html, body, [data-testid="stAppViewContainer"] > .main {
   font-size: clamp(0.9rem, 1.6vw, 1.15rem);
 }
 
-/* Search area (separate, not inside hero) */
-.search-section {
+/* neon CTA */
+.cta {
+  text-align:right;
   display:flex;
-  justify-content:center;
-  margin-top:18px;
-  margin-bottom:8px;
-}
-.search-box {
-  width:100%;
-  max-width:920px;
-  display:flex;
-  gap:10px;
+  gap:12px;
   align-items:center;
 }
-.stTextInput > div > div > input {
-    border-radius: 999px;
-    border: 2px solid rgba(255,255,255,0.08);
-    padding: 14px 18px;
-    font-size: 1rem;
-    background: rgba(255,255,255,0.03);
-    color: #eafcff;
-    transition: box-shadow .2s ease, border-color .2s ease;
-}
-.stTextInput > div > div > input:focus {
-    border-color: rgba(124,231,255,0.9);
-    box-shadow: 0 6px 26px rgba(0,0,0,0.28), 0 0 12px rgba(124,231,255,0.06);
-}
-
-/* Button global styling (search/explore) */
-.stButton > button {
-  border-radius: 999px;
+.cta .primary {
   background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
   color: #012233;
   font-weight:700;
-  padding: 10px 18px;
+  padding: 12px 20px;
+  border-radius: 999px;
   border: none;
-  transition: transform .16s ease, box-shadow .16s ease;
+  cursor:pointer;
+  box-shadow: 0 8px 30px rgba(0,230,255,0.12), 0 0 18px rgba(0,230,255,0.06);
+  transition: transform .18s ease, box-shadow .18s ease;
 }
-.stButton > button:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.18);
-}
+.cta .primary:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 18px 60px rgba(0,230,255,0.16); }
 
-/* Feature Grid - glass cards with strong contrast; clickable via 'Explore' button below each */
+/* glass search area */
+.search-wrap {
+  display:flex;
+  gap:12px;
+  align-items:center;
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+  border-radius: 999px;
+  padding: 10px;
+  border: 1px solid rgba(255,255,255,0.04);
+  width:100%;
+  max-width:720px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+}
+.search-wrap input {
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  color: #eafcff !important;
+  font-size: 1rem;
+  padding: 8px 12px;
+  width: 100%;
+}
+.search-wrap .ghost-btn {
+  background: rgba(255,255,255,0.06);
+  color: var(--accent-2);
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.06);
+  cursor:pointer;
+  transition: all .18s ease;
+}
+.search-wrap .ghost-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.35); }
+
+/* Feature Grid - glass cards with strong contrast */
 .features {
   display:grid;
   grid-template-columns: repeat(3, 1fr);
@@ -164,12 +174,9 @@ html, body, [data-testid="stAppViewContainer"] > .main {
   border-radius: 12px;
   padding: 18px;
   border-left: 4px solid rgba(124,231,255,0.12);
-  min-height:140px;
+  min-height:110px;
   box-shadow: 0 8px 30px rgba(0,0,0,0.45);
   transition: transform .18s ease, box-shadow .18s ease;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
 }
 .feature:hover { transform: translateY(-8px); box-shadow: 0 18px 50px rgba(0,0,0,0.55); }
 .feature h4 { color: var(--accent-2); margin: 0 0 8px 0; font-weight:700; }
@@ -205,12 +212,12 @@ html, body, [data-testid="stAppViewContainer"] > .main {
 @media (max-width: 980px) {
   .features { grid-template-columns: repeat(2, 1fr); }
   .hero { flex-direction:column; gap:14px; align-items:flex-start; padding:18px; }
+  .cta { width:100%; justify-content:space-between; }
 }
 @media (max-width: 640px) {
   .features { grid-template-columns: 1fr; }
   .stats { flex-direction: column; }
   .hero .title { font-size:1.4rem; }
-  .search-box { padding:0 12px; }
 }
 </style>
 """,
@@ -241,10 +248,10 @@ with st.sidebar:
 # ---------------------------
 st.markdown('<div class="main-container">', unsafe_allow_html=True)
 
-# Hero area (NO search controls or ghost buttons here)
+# Hero area: left-rich text, right-CTA & search
 st.markdown(
     """
-<div class="hero" role="banner" aria-label="Mframapa AI hero">
+<div class="hero">
   <div style="flex:1; min-width:220px;">
     <div class="title">🌬️ Mframapa AI — Intelligent Air Quality</div>
     <div class="subtitle">Judge-ready forecasts & health guidance using NASA satellite datasets + modern AI.</div>
@@ -253,38 +260,48 @@ st.markdown(
     </div>
   </div>
 
-  <div style="width:46%; min-width:280px; display:flex; align-items:center; justify-content:flex-end;">
-    <!-- reserved space for future hero visuals or tiny preview -->
-    <img src="https://img.icons8.com/ios-filled/80/00e5ff/cloud.png" alt="cloud" style="opacity:0.95" />
-  </div>
-</div>
-""",
+  <div style="width:46%; min-width:280px;">
+    <div style="display:flex; flex-direction:column; gap:10px;">
+      <div class="search-wrap" role="search" aria-label="City search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="margin-left:8px; margin-right:6px;">
+          <path d="M21 21l-4.35-4.35" stroke="rgba(255,255,255,0.8)" stroke-width="1.6" stroke-linecap="round"/>
+          <circle cx="10.5" cy="10.5" r="5.2" stroke="rgba(255,255,255,0.8)" stroke-width="1.6"/>
+        </svg>
+        <!-- streamlit input sits here -->
+        <div style="flex:1">
+"""
+    ,
     unsafe_allow_html=True,
 )
 
-# ---------------------------
-# Dedicated Search Section (clean, centered)
-# ---------------------------
+# Streamlit input placed inside the hero search wrap
+col1, col2 = st.columns([3, 1])
+with col1:
+    # Use a text_input here; CSS colors applied above
+    city_input = st.text_input("", placeholder="Type a city (e.g., Accra, Lagos, Los Angeles)")
+with col2:
+    lookup_button = st.button("Search", key="hero_search")
+
+# close the hero wrap divs
 st.markdown(
     """
-<div class="search-section" aria-label="Search for city">
-  <div class="search-box">
+        </div>
+        <button class="ghost-btn" onclick="document.querySelectorAll('input[type=text]')[0].focus()">Try keyboard</button>
+      </div>
+      <div style="display:flex; gap:10px; justify-content:flex-end; align-items:center; margin-top:6px;">
+        <button class="primary" style="padding:10px 18px;" onclick="document.querySelectorAll('button')[document.querySelectorAll('button').length-1].click()">Get Forecast</button>
+      </div>
+    </div>
   </div>
 </div>
 """,
     unsafe_allow_html=True,
 )
-
-# Streamlit inputs for search (centered using columns)
-col_center_left, col_center, col_center_right = st.columns([1, 2, 1])
-with col_center:
-    city_input = st.text_input("", placeholder="Type a city (e.g., Accra, Lagos, Los Angeles)")
-    search_btn = st.button("Search City", key="home_search")
 
 # ---------------------------
 # Search logic & redirect (keeps your app logic)
 # ---------------------------
-if search_btn and city_input:
+if lookup_button and city_input:
     with st.spinner(f"🔎 Finding coordinates for {city_input}..."):
         time.sleep(0.9)
         coords = get_lat_lon(city_input)
@@ -294,63 +311,45 @@ if search_btn and city_input:
             st.session_state.selected_coordinates = coords
             st.success(f"✅ Found {city_input} — {lat:.4f}, {lon:.4f}. Redirecting to Forecast...")
             time.sleep(1.1)
-            # redirect to your forecast page
+            # corrected directory you provided
             st.switch_page("pages/2_Forecast.py")
         else:
             st.error("❌ Could not find this city. Try a different spelling or add the country (e.g., 'Accra, Ghana').")
 
 # ---------------------------
-# Flashy Feature grid with explicit Explore buttons (which call st.switch_page)
+# Feature grid (flashy, judge-friendly)
 # ---------------------------
 st.markdown("<div class='features'>", unsafe_allow_html=True)
 
-col1, col2, col3 = st.columns(3, gap="small")
+st.markdown(
+    """
+<div class="feature">
+  <h4>🛰️ Satellite-grade Data</h4>
+  <p>High-res TEMPO & global MERRA-2 inputs tuned and validated against ground sensors.</p>
+</div>
+""",
+    unsafe_allow_html=True,
+)
 
-with col1:
-    st.markdown(
-        """
-        <div class="feature" role="region" aria-label="Satellite-grade Data">
-          <div>
-            <h4>🛰️ Satellite-grade Data</h4>
-            <p>High-res TEMPO & global MERRA-2 inputs tuned and validated against ground sensors.</p>
-          </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-    if st.button("Explore Insights", key="insights_btn"):
-        # link to pages/5_Insights.py
-        st.switch_page("pages/5_Insights.py")
+st.markdown(
+    """
+<div class="feature">
+  <h4>🤖 AI + Explainability</h4>
+  <p>XGBoost & explainable models that produce actionable alerts and model attribution for credibility.</p>
+</div>
+""",
+    unsafe_allow_html=True,
+)
 
-with col2:
-    st.markdown(
-        """
-        <div class="feature" role="region" aria-label="AI and Explainability">
-          <div>
-            <h4>🤖 AI + Explainability</h4>
-            <p>XGBoost & explainable models that produce actionable alerts and model attribution for credibility.</p>
-          </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-    if st.button("Explore Explain", key="explain_btn"):
-        st.switch_page("pages/6_Explain.py")
-
-with col3:
-    st.markdown(
-        """
-        <div class="feature" role="region" aria-label="Health-first Recommendations">
-          <div>
-            <h4>🏥 Health-first Recommendations</h4>
-            <p>Activity-specific guidance and exposure risk summaries tailored for vulnerable groups.</p>
-          </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-    if st.button("Health Recommendations", key="health_btn"):
-        st.switch_page("pages/9_Health_Integration.py")
+st.markdown(
+    """
+<div class="feature">
+  <h4>🏥 Health-first Recommendations</h4>
+  <p>Activity-specific guidance and exposure risk summaries tailored for vulnerable groups.</p>
+</div>
+""",
+    unsafe_allow_html=True,
+)
 
 st.markdown("</div>", unsafe_allow_html=True)
 
@@ -359,7 +358,7 @@ st.markdown("</div>", unsafe_allow_html=True)
 # ---------------------------
 st.markdown(
     """
-<div class="stats" role="contentinfo" aria-label="Key stats">
+<div class="stats">
   <div class="stat-card">
     <div class="num">48h</div>
     <div>Forecast Horizon</div>
@@ -377,5 +376,17 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+# ---------------------------
+# Footer and call-to-action
+# ---------------------------
+st.markdown(
+    """
+<div class="footer-note">
+  <strong>Judge-ready mode:</strong> crisp visuals, strong contrast, animated accents, and scientific credibility. 
+  <span style="opacity:.9">Start by entering a city above — we auto-redirect to the Forecast page with your selection.</span>
+</div>
+""",
+    unsafe_allow_html=True,
+)
 
 st.markdown("</div>", unsafe_allow_html=True)
