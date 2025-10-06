@@ -294,10 +294,10 @@ with cols[4]:
         st.switch_page("pages/9_Health_Integration.py")
 with cols[5]:
     if st.button('Policy', key='nav_policy'):
-        st.switch_page("pages/7_Policy_Dashboard")
+        st.switch_page("pages/7_Policy_Dashboard.py")
 with cols[6]:
     if st.button('Community', key='nav_community'):
-        st.switch_page("pages/12_Crowdsourcingy")
+        st.switch_page("pages/12_Crowdsourcing.py")
 st.markdown('</div>', unsafe_allow_html=True)
 
 # Search (with anchor for CTA)
