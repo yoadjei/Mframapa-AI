@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { MapPin, Activity, Search, AlertTriangle, CloudRain, Info, Share2, Globe, Zap, Menu } from 'lucide-react';
-import Map, { Marker, NavigationControl, ScaleControl } from 'react-map-gl';
+import { MapPin, Activity, Search, AlertTriangle, CloudRain, Info, Share2, Globe, Zap } from 'lucide-react';
+import Map, { Marker, NavigationControl } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 // Using Real Token
