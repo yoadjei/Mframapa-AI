@@ -47,7 +47,7 @@ const MapContainer = ({ viewState, onMove, mapRef, locationData, isDark }) => {
     }, []);
 
     return (
-        <div className="absolute inset-0 z-0 bg-gray-50 dark:bg-gray-900 transition-colors duration-500">
+        <div className="absolute inset-0 z-0 bg-gray-50 dark:bg-gray-900">
             <Map
                 ref={mapRef}
                 {...viewState}

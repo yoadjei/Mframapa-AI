@@ -16,15 +16,15 @@ const SearchBar = ({ onSearch, isSearching }) => {
         <div className="absolute top-24 left-6 z-40 w-full max-w-sm md:max-w-md animate-in slide-in-from-left duration-700 pointer-events-auto">
 
             {/* Glass Card Container */}
-            <div className="glass rounded-2xl p-4 space-y-3 bg-white/80 dark:bg-[rgba(10,15,28,0.8)] backdrop-blur-xl border border-gray-200 dark:border-white/10 shadow-2xl transition-all focus-within:border-primary-500/50 focus-within:ring-1 focus-within:ring-primary-500/20">
+            <div className="glass rounded-2xl p-4 space-y-3 bg-white/80 dark:bg-[rgba(10,15,28,0.8)] backdrop-blur-xl border border-gray-200 dark:border-white/10 shadow-2xl transition-all focus-within:shadow-[0_0_20px_rgba(0,255,179,0.2)]">
 
-                {/* Input Form */}
-                <form onSubmit={handleSearch} className="relative flex items-center">
-                    <Search className="absolute left-3 w-5 h-5 text-gray-400" />
+                {/* Input Form with Primary Border */}
+                <form onSubmit={handleSearch} className="relative flex items-center rounded-xl border border-primary-500 overflow-hidden bg-white/50 dark:bg-black/20">
+                    <Search className="absolute left-3 w-5 h-5 text-primary-500" />
 
                     <input
                         type="text"
-                        className="w-full bg-transparent border-0 text-gray-900 dark:text-white placeholder-gray-500 focus:ring-0 pl-10 pr-10 text-base"
+                        className="w-full bg-transparent border-0 text-gray-900 dark:text-white placeholder-gray-500 focus:ring-0 pl-10 pr-10 py-3 text-base"
                         placeholder="Search any African city..."
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}

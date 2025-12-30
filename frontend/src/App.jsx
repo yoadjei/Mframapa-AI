@@ -76,31 +76,46 @@ function App() {
     }
 
     try {
+      let locationResult = null;
+
       // 1. Resolve Location
-      // Mocking for now since backend might be down
-      // const locRes = await axios.get(`/api/resolve-location?city=${city}`);
-      // setLocationData(locRes.data);
-
-      // Fallback Mock Logic so UI works w/o backend
-      // In prod removing this
-      let locMock = { lat: 5.6037, lon: -0.1870, name: "Accra, GH", is_africa: true };
-      if (city.toLowerCase().includes('lagos')) locMock = { lat: 6.5244, lon: 3.3792, name: "Lagos, NG" };
-      if (city.toLowerCase().includes('nairobi')) locMock = { lat: -1.2921, lon: 36.8219, name: "Nairobi, KE" };
-
-      // Try real API, catch and use mock if fails (for dev preview)
+      // Priority 1: Backend API
       try {
         const realRes = await axios.get(`/api/resolve-location?city=${city}`);
-        locMock = realRes.data;
+        locationResult = realRes.data;
       } catch (e) {
-        console.warn("Backend unreachable, using mock data for UI demo");
+        console.warn("Backend unreachable, trying Mapbox Geocoding directly");
+
+        // Priority 2: Mapbox Geocoding API (Frontend Fallback)
+        try {
+          const token = "pk.eyJ1IjoieW9hZGplaSIsImEiOiJjbWprcjI4b3QyNHBpM2Nxem4xM2VwNWF4In0.z6NbrlGRmQdT-vlYk5bjMw";
+          const mapboxRes = await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(city)}.json?access_token=${token}&limit=1`);
+
+          if (mapboxRes.data.features && mapboxRes.data.features.length > 0) {
+            const feature = mapboxRes.data.features[0];
+            locationResult = {
+              lat: feature.center[1],
+              lon: feature.center[0],
+              name: feature.place_name,
+              is_africa: true
+            };
+          }
+        } catch (mapboxErr) {
+          console.error("Mapbox geocoding failed", mapboxErr);
+        }
       }
 
-      setLocationData(locMock);
+      // If still no location, ensure we don't show a random one unless it's a hard error
+      if (!locationResult) {
+        throw new Error("City not found");
+      }
+
+      setLocationData(locationResult);
 
       // 2. Cinematic Fly-To
       if (mapRef.current) {
         mapRef.current.flyTo({
-          center: [locMock.lon, locMock.lat],
+          center: [locationResult.lon, locationResult.lat],
           zoom: 12.5,
           duration: 4000,
           pitch: 55,
@@ -111,16 +126,16 @@ function App() {
 
       // 3. Get AI Prediction
       // const predRes = await axios.get(`/api/predict`, { params: ... });
-      // Mocking again for UI demo
+      // Mocking for UI demo (Randomized data)
       const mockPred = {
-        location: locMock,
+        location: locationResult,
         pm25: Math.floor(Math.random() * 60) + 10,
         aqi_category: "Moderate",
         factors: { satellite_no2: "Low", satellite_aod: "0.42" },
         timestamp: new Date().toISOString()
       };
 
-      // Update Category based on PM2.5
+      // Update Category/Color based on PM2.5
       if (mockPred.pm25 <= 12) mockPred.aqi_category = "Good";
       else if (mockPred.pm25 <= 35) mockPred.aqi_category = "Moderate";
       else if (mockPred.pm25 <= 55) mockPred.aqi_category = "Unhealthy for Sensitive Groups";
@@ -129,7 +144,7 @@ function App() {
       setTimeout(() => {
         setPrediction(mockPred);
         setLoading(false);
-      }, 1500); // Fake delay for drama
+      }, 1500);
 
     } catch (err) {
       console.error(err);
@@ -139,13 +154,13 @@ function App() {
   };
 
   return (
-    <div className="h-screen w-full flex flex-col bg-gray-50 dark:bg-background text-gray-900 dark:text-white overflow-hidden font-sans relative selection:bg-primary-500/30 transition-colors duration-500">
+    <div className="h-screen w-full flex flex-col bg-gray-50 dark:bg-background text-gray-900 dark:text-white overflow-hidden font-sans relative selection:bg-primary-500/30">
 
       {/* Background Atmosphere - Dark Mode Only */}
-      <div className="absolute inset-0 bg-nebula pointer-events-none z-0 opacity-0 dark:opacity-80 transition-opacity duration-500"></div>
+      <div className="absolute inset-0 bg-nebula pointer-events-none z-0 opacity-0 dark:opacity-80"></div>
 
       {/* Light Mode Plain Background */}
-      <div className="absolute inset-0 bg-gray-50 pointer-events-none z-0 opacity-100 dark:opacity-0 transition-opacity duration-500"></div>
+      <div className="absolute inset-0 bg-gray-50 pointer-events-none z-0 opacity-100 dark:opacity-0"></div>
 
       {/* --- LAYER 1: 3D MAP --- */}
       <MapContainer

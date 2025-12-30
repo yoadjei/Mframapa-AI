@@ -32,9 +32,9 @@ const NavBar = ({ setAppMode, appMode, onOpenAbout, toggleTheme }) => {
 
                     {/* Desktop Links */}
                     <div className="hidden md:flex items-center gap-8">
-                        <button onClick={() => setAppMode('landing')} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-primary-500 dark:hover:text-white transition-colors">Map</button>
-                        <button onClick={onOpenAbout} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-primary-500 dark:hover:text-white transition-colors">Data</button>
-                        <button onClick={onOpenAbout} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-primary-500 dark:hover:text-white transition-colors">About</button>
+                        <button onClick={() => setAppMode('landing')} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Map</button>
+                        <button onClick={onOpenAbout} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Data</button>
+                        <button onClick={onOpenAbout} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">About</button>
                         <button className="text-sm font-medium text-gray-400 dark:text-gray-500 cursor-not-allowed">API Docs</button>
 
                         <div className="h-4 w-px bg-gray-300 dark:bg-white/10"></div>
