@@ -41,7 +41,7 @@ backend/data/*.tif
 *.pkl
 *.h5
 *.joblib
-*.json
+# *.json
 !universal_african_model.json
 
 # Logs
