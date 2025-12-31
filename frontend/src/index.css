@@ -106,8 +106,7 @@
 }
 
 body {
-  background: #0A0F1C;
-  color: white;
+  @apply bg-gray-50 dark:bg-[#0A0F1C] text-gray-900 dark:text-white transition-colors duration-300;
 }
 
 /* Custom Scrollbar */

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { CloudRain, Menu, X, Github, Mail, Sun, Moon } from 'lucide-react';
 
-const NavBar = ({ setAppMode, appMode, onOpenAbout, toggleTheme }) => {
+const NavBar = ({ setAppMode, appMode, onOpenAbout, onOpenReport, toggleTheme, onReset }) => {
     const [scrolled, setScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -19,7 +19,7 @@ const NavBar = ({ setAppMode, appMode, onOpenAbout, toggleTheme }) => {
                     {/* Brand */}
                     <div
                         className="flex items-center gap-3 cursor-pointer group"
-                        onClick={() => setAppMode('landing')}
+                        onClick={() => window.location.reload()}
                     >
                         <div className="relative">
                             <CloudRain className="text-primary-500 h-8 w-8 group-hover:scale-110 transition-transform duration-300" />
@@ -32,10 +32,10 @@ const NavBar = ({ setAppMode, appMode, onOpenAbout, toggleTheme }) => {
 
                     {/* Desktop Links */}
                     <div className="hidden md:flex items-center gap-8">
-                        <button onClick={() => setAppMode('landing')} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Map</button>
+                        <button onClick={onReset} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Map</button>
+                        <button onClick={onOpenReport} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Report</button>
                         <button onClick={onOpenAbout} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Data</button>
                         <button onClick={onOpenAbout} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">About</button>
-                        <button className="text-sm font-medium text-gray-400 dark:text-gray-500 cursor-not-allowed">API Docs</button>
 
                         <div className="h-4 w-px bg-gray-300 dark:bg-white/10"></div>
 
@@ -52,10 +52,6 @@ const NavBar = ({ setAppMode, appMode, onOpenAbout, toggleTheme }) => {
                                 <Moon className="w-5 h-5 text-blue-300 block dark:hidden animate-in zoom-in spin-in-90 duration-300" />
                             </div>
                         </button>
-
-                        <a href="https://github.com/yoadjei/Mframapa-AI" target="_blank" rel="noreferrer" className="group text-gray-400 hover:text-white transition-colors">
-                            <Github className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                        </a>
                     </div>
 
                     {/* Mobile Menu Toggle */}
@@ -79,19 +75,29 @@ const NavBar = ({ setAppMode, appMode, onOpenAbout, toggleTheme }) => {
                     </div>
 
                     <div className="flex flex-col gap-8 text-3xl font-display font-bold text-white">
-                        <button onClick={() => { setAppMode('landing'); setMobileMenuOpen(false); }} className="text-left py-2 hover:text-primary-500 transition-colors">Explore Map</button>
-                        <button onClick={() => { onOpenAbout(); setMobileMenuOpen(false); }} className="text-left py-2 hover:text-primary-500 transition-colors">Science & Data</button>
-                        <button className="text-left py-2 hover:text-primary-500 transition-colors opacity-50">API Documentation</button>
-                    </div>
+                        <button onClick={() => { onReset(); setMobileMenuOpen(false); }} className="text-left py-2 hover:text-primary-500 transition-colors">Map</button>
+                        <button onClick={() => { onOpenReport(); setMobileMenuOpen(false); }} className="text-left py-2 hover:text-primary-500 transition-colors">Report</button>
+                        <button onClick={() => { onOpenAbout(); setMobileMenuOpen(false); }} className="text-left py-2 hover:text-primary-500 transition-colors">Data</button>
+                        <button onClick={() => { onOpenAbout(); setMobileMenuOpen(false); }} className="text-left py-2 hover:text-primary-500 transition-colors">About</button>
 
-                    <div className="mt-auto pt-12 border-t border-white/10 flex gap-6">
-                        <Github className="w-6 h-6 text-gray-400" />
-                        <Mail className="w-6 h-6 text-gray-400" />
+                        <div className="h-px bg-white/10 my-4"></div>
+
+                        <button
+                            onClick={() => { toggleTheme(); }}
+                            className="flex items-center gap-4 text-left py-2 hover:text-primary-500 transition-colors"
+                        >
+                            {/* Icon */}
+                            <div className="p-2 rounded-full bg-white/5 border border-white/10">
+                                <Sun className="w-6 h-6 text-yellow-400 hidden dark:block" />
+                                <Moon className="w-6 h-6 text-blue-300 block dark:hidden" />
+                            </div>
+                            <span className="text-xl font-medium text-gray-300">Switch Theme</span>
+                        </button>
                     </div>
                 </div>
             )}
         </>
-    );
+    )
 };
 
 export default NavBar;

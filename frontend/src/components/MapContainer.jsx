@@ -5,7 +5,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 
 const MAPBOX_TOKEN = "pk.eyJ1IjoieW9hZGplaSIsImEiOiJjbWprcjI4b3QyNHBpM2Nxem4xM2VwNWF4In0.z6NbrlGRmQdT-vlYk5bjMw";
 
-const MapContainer = ({ viewState, onMove, mapRef, locationData, isDark }) => {
+const MapContainer = ({ viewState, onMove, mapRef, locationData, isDark, onClick }) => {
 
     // Generate "Virtual Network" Data
     const { stations, arcs } = useMemo(() => {
@@ -52,6 +52,7 @@ const MapContainer = ({ viewState, onMove, mapRef, locationData, isDark }) => {
                 ref={mapRef}
                 {...viewState}
                 onMove={onMove}
+                onClick={onClick}
                 style={{ width: '100%', height: '100%' }}
                 mapStyle={isDark ? "mapbox://styles/mapbox/dark-v11" : "mapbox://styles/mapbox/light-v11"}
                 mapboxAccessToken={MAPBOX_TOKEN}
@@ -84,8 +85,8 @@ const MapContainer = ({ viewState, onMove, mapRef, locationData, isDark }) => {
                 {locationData && (
                     <Marker longitude={locationData.lon} latitude={locationData.lat} anchor="bottom">
                         <div className="relative group">
-                            <MapPin className="h-12 w-12 text-primary-500 drop-shadow-[0_0_20px_rgba(34,197,94,0.8)] animate-bounce" />
-                            <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-6 h-2 bg-primary-500/50 blur-md rounded-full"></div>
+                            <MapPin className="h-12 w-12 text-gray-900 dark:text-white drop-shadow-2xl animate-bounce" />
+                            <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-6 h-2 bg-black/50 dark:bg-white/50 blur-md rounded-full"></div>
                         </div>
                     </Marker>
                 )}
