@@ -17,10 +17,34 @@ const ReportModal = ({ onClose }) => {
     };
 
     const categories = [
-        { label: 'Good', icon: Smile, color: 'text-green-400', bg: 'bg-green-400/10 border-green-400/20' },
-        { label: 'Moderate', icon: Meh, color: 'text-yellow-400', bg: 'bg-yellow-400/10 border-yellow-400/20' },
-        { label: 'Unhealthy', icon: Frown, color: 'text-orange-400', bg: 'bg-orange-400/10 border-orange-400/20' },
-        { label: 'Hazardous', icon: AlertTriangle, color: 'text-red-400', bg: 'bg-red-400/10 border-red-400/20' },
+        {
+            label: 'Good',
+            icon: Smile,
+            color: 'text-green-400',
+            bg: 'bg-green-400/10 border-green-400/20',
+            clue: "Air feels fresh. No visible haze. Visibility is clear."
+        },
+        {
+            label: 'Moderate',
+            icon: Meh,
+            color: 'text-yellow-400',
+            bg: 'bg-yellow-400/10 border-yellow-400/20',
+            clue: "Air is acceptable. Very faint haze might be visible on distant horizons."
+        },
+        {
+            label: 'Unhealthy',
+            icon: Frown,
+            color: 'text-orange-400',
+            bg: 'bg-orange-400/10 border-orange-400/20',
+            clue: "Visible smog/smoke. Slight irritation in throat/eyes or distinct odor."
+        },
+        {
+            label: 'Hazardous',
+            icon: AlertTriangle,
+            color: 'text-red-400',
+            bg: 'bg-red-400/10 border-red-400/20',
+            clue: "Heavy smoke/dust. Poor visibility. Breathing feels difficult or heavy."
+        },
     ];
 
     const [selectedCategory, setSelectedCategory] = useState(categories[0].label);
@@ -65,15 +89,15 @@ const ReportModal = ({ onClose }) => {
                         {/* Perception Selector */}
                         <div>
                             <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">How does the air feel?</label>
-                            <div className="grid grid-cols-2 gap-3">
+                            <div className="grid grid-cols-2 gap-3 mb-4">
                                 {categories.map((cat) => (
                                     <button
                                         key={cat.label}
                                         type="button"
                                         onClick={() => setSelectedCategory(cat.label)}
                                         className={`p-3 rounded-xl border flex flex-col items-center gap-2 transition-all duration-200 ${selectedCategory === cat.label
-                                                ? `${cat.bg} border-current ring-1 ring-white/20`
-                                                : 'bg-gray-50 dark:bg-white/5 border-transparent hover:bg-gray-100 dark:hover:bg-white/10 text-gray-500 hover:text-gray-900 dark:hover:text-gray-300'
+                                            ? `${cat.bg} border-current ring-1 ring-white/20`
+                                            : 'bg-gray-50 dark:bg-white/5 border-transparent hover:bg-gray-100 dark:hover:bg-white/10 text-gray-500 hover:text-gray-900 dark:hover:text-gray-300'
                                             }`}
                                     >
                                         <cat.icon className={`w-6 h-6 ${selectedCategory === cat.label ? cat.color : 'text-current'}`} />
@@ -82,6 +106,14 @@ const ReportModal = ({ onClose }) => {
                                         </span>
                                     </button>
                                 ))}
+                            </div>
+
+                            {/* Clue Panel */}
+                            <div className="p-3 rounded-xl bg-blue-500/5 border border-blue-500/10 text-center animate-in fade-in duration-300">
+                                <p className="text-xs text-gray-600 dark:text-blue-200">
+                                    <span className="font-bold text-blue-500 dark:text-blue-400 mr-2">Guide:</span>
+                                    {categories.find(c => c.label === selectedCategory)?.clue}
+                                </p>
                             </div>
                         </div>
 
