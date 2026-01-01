@@ -34,7 +34,6 @@ const NavBar = ({ setAppMode, appMode, onOpenAbout, onOpenReport, toggleTheme, o
                     <div className="hidden md:flex items-center gap-8">
                         <button onClick={onReset} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Map</button>
                         <button onClick={onOpenReport} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Report</button>
-                        <button onClick={onOpenAbout} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Data</button>
                         <button onClick={onOpenAbout} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">About</button>
 
                         <div className="h-4 w-px bg-gray-300 dark:bg-white/10"></div>
@@ -77,7 +76,6 @@ const NavBar = ({ setAppMode, appMode, onOpenAbout, onOpenReport, toggleTheme, o
                     <div className="flex flex-col gap-8 text-3xl font-display font-bold text-white">
                         <button onClick={() => { onReset(); setMobileMenuOpen(false); }} className="text-left py-2 hover:text-primary-500 transition-colors">Map</button>
                         <button onClick={() => { onOpenReport(); setMobileMenuOpen(false); }} className="text-left py-2 hover:text-primary-500 transition-colors">Report</button>
-                        <button onClick={() => { onOpenAbout(); setMobileMenuOpen(false); }} className="text-left py-2 hover:text-primary-500 transition-colors">Data</button>
                         <button onClick={() => { onOpenAbout(); setMobileMenuOpen(false); }} className="text-left py-2 hover:text-primary-500 transition-colors">About</button>
 
                         <div className="h-px bg-white/10 my-4"></div>

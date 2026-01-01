@@ -18,7 +18,7 @@ const HeroSection = ({ onStart }) => {
 
                 {/* Subheadline */}
                 <p className="text-xl md:text-2xl text-gray-600 dark:text-white/70 font-light max-w-2xl animate-in slide-in-from-bottom-5 duration-1000 delay-200 fade-in transition-colors">
-                    AI-powered air quality predictions for <span className="text-gray-900 dark:text-white font-medium">54 nations</span>. No sensors required.
+                    AI-powered air quality predictions for <span className="text-gray-900 dark:text-white font-medium">African nations</span>. No sensors required.
                 </p>
 
                 {/* CTA Button */}
