@@ -11,6 +11,13 @@ import AboutModal from './components/AboutModal';
 import ReportModal from './components/ReportModal';
 import SearchBar from './components/SearchBar';
 
+const AFRICAN_COUNTRY_CODES = [
+  'dz', 'ao', 'bj', 'bw', 'bf', 'bi', 'cm', 'cv', 'cf', 'td', 'km', 'cg', 'cd', 'ci',
+  'dj', 'eg', 'gq', 'er', 'sz', 'et', 'ga', 'gm', 'gh', 'gn', 'gw', 'ke', 'ls', 'lr',
+  'ly', 'mg', 'mw', 'ml', 'mr', 'mu', 'ma', 'mz', 'na', 'ne', 'ng', 'rw', 'st', 'sn',
+  'sc', 'sl', 'so', 'za', 'ss', 'sd', 'tz', 'tg', 'tn', 'ug', 'zm', 'zw'
+];
+
 function App() {
   const [viewState, setViewState] = useState({
     longitude: 18.0,
@@ -150,9 +157,9 @@ function App() {
       if (mapRef.current) {
         mapRef.current.flyTo({
           center: [locationResult.lon, locationResult.lat],
-          zoom: 12.5,
-          duration: 1000,
-          pitch: 55,
+          zoom: 15.5,
+          duration: 1500,
+          pitch: 60,
           bearing: -20,
           essential: true
         });
@@ -187,86 +194,165 @@ function App() {
     }
   };
 
-  const handleMapClick = async ({ lngLat }) => {
+  const handleMapClick = async ({ lngLat, zoomLevel, city }) => {
     // If in landing mode, switch to monitoring
     if (appMode === 'landing') {
       setAppMode('monitoring');
     }
 
-    // Clear any previous errors
+    // Clear previous states
     setError(null);
+    setPrediction(null);
+    setLoading(true);
 
     const { lng, lat } = lngLat;
 
-    // Strict Africa Filtering
-    if (!isLocationInAfrica(lng, lat)) {
-      setError("Sorry, we currently only support locations within Africa.");
+    // Direct City Selection (No Geocoding needed)
+    if (city) {
+      const newLocation = {
+        lat: city.lat,
+        lon: city.lon,
+        name: city.name,
+        is_africa: true
+      };
+      setLocationData(newLocation);
+
+      if (mapRef.current) {
+        mapRef.current.flyTo({
+          center: [city.lon, city.lat],
+          zoom: zoomLevel || 15,
+          duration: 1500,
+          pitch: 60,
+          bearing: -20,
+          essential: true
+        });
+      }
+
+      const mockPred = {
+        location: newLocation,
+        pm25: Math.floor(Math.random() * 60) + 8,
+        aqi_category: "Moderate",
+        factors: { satellite_no2: "Low", satellite_aod: (Math.random()).toFixed(2) },
+        timestamp: new Date().toISOString(),
+        weather: {
+          humidity: Math.floor(Math.random() * (85 - 45) + 45),
+          temp: Math.floor(Math.random() * (34 - 22) + 22),
+          pressure: Math.floor(Math.random() * (1016 - 1005) + 1005),
+          wind: Math.floor(Math.random() * 18) + 3
+        }
+      };
+
+      if (mockPred.pm25 <= 12) mockPred.aqi_category = "Good";
+      else if (mockPred.pm25 <= 35) mockPred.aqi_category = "Moderate";
+      else if (mockPred.pm25 <= 55) mockPred.aqi_category = "Sensitive";
+      else mockPred.aqi_category = "Unhealthy";
+
+      setTimeout(() => {
+        setPrediction(mockPred);
+        setLoading(false);
+      }, 500);
+      return;
+    }
+
+    try {
+      const token = "pk.eyJ1IjoieW9hZGplaSIsImEiOiJjbWprcjI4b3QyNHBpM2Nxem4xM2VwNWF4In0.z6NbrlGRmQdT-vlYk5bjMw";
+      // Fetch most specific location (no types filter)
+      const mapboxRes = await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${token}&limit=1`);
+
+      if (!mapboxRes.data.features || mapboxRes.data.features.length === 0) {
+        throw new Error("Location not found. Please click on a land mass.");
+      }
+
+      const feature = mapboxRes.data.features[0];
+
+      // Validate Country Code
+      let isAfrica = false;
+      const selfCode = feature.id.startsWith('country.') ? feature.properties?.short_code : null;
+      const contextCode = feature.context?.find(c => c.id.startsWith('country.'))?.short_code;
+      const codeToCheck = selfCode || contextCode;
+
+      if (codeToCheck && AFRICAN_COUNTRY_CODES.includes(codeToCheck.toLowerCase())) {
+        isAfrica = true;
+      }
+
+      if (!isAfrica) {
+        throw new Error("Sorry, we currently only support locations within Africa.");
+      }
+
+      // Use specific place name
+      const locationName = feature.place_name;
+
+      const newLocation = {
+        lat,
+        lon: lng,
+        name: locationName,
+        is_africa: true
+      };
+      setLocationData(newLocation);
+
+      // Fly to location
+      if (mapRef.current) {
+        mapRef.current.flyTo({
+          center: [lng, lat],
+          zoom: zoomLevel || 17,
+          duration: 1500,
+          pitch: 60,
+          bearing: -20,
+          essential: true
+        });
+      }
+
+      // Mock Prediction
+      const mockPred = {
+        location: newLocation,
+        pm25: Math.floor(Math.random() * 60) + 8,
+        aqi_category: "Moderate",
+        factors: { satellite_no2: "Low", satellite_aod: (Math.random()).toFixed(2) },
+        timestamp: new Date().toISOString(),
+        weather: {
+          humidity: Math.floor(Math.random() * (85 - 45) + 45),
+          temp: Math.floor(Math.random() * (34 - 22) + 22),
+          pressure: Math.floor(Math.random() * (1016 - 1005) + 1005),
+          wind: Math.floor(Math.random() * 18) + 3
+        }
+      };
+
+      if (mockPred.pm25 <= 12) mockPred.aqi_category = "Good";
+      else if (mockPred.pm25 <= 35) mockPred.aqi_category = "Moderate";
+      else if (mockPred.pm25 <= 55) mockPred.aqi_category = "Sensitive";
+      else mockPred.aqi_category = "Unhealthy";
+
+      setTimeout(() => {
+        setPrediction(mockPred);
+        setLoading(false);
+      }, 500);
+
+    } catch (e) {
+      console.warn("Map Click Error:", e);
+      setError(e.message || "Could not retrieve location. Please try again.");
+      setLoading(false);
+    }
+  };
+
+  const handleLocateMe = () => {
+    if (!navigator.geolocation) {
+      setError("Geolocation is not supported by your browser");
       return;
     }
 
     setLoading(true);
-    setPrediction(null);
-
-    // Reverse Geocode
-    let locationName = "Selected Area";
-    try {
-      const token = "pk.eyJ1IjoieW9hZGplaSIsImEiOiJjbWprcjI4b3QyNHBpM2Nxem4xM2VwNWF4In0.z6NbrlGRmQdT-vlYk5bjMw";
-      const mapboxRes = await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${token}&types=neighborhood,locality,place,district,region,country&limit=5`);
-
-      if (mapboxRes.data.features && mapboxRes.data.features.length > 0) {
-        const features = mapboxRes.data.features;
-        const priorities = ['neighborhood', 'locality', 'place', 'district', 'region', 'country'];
-        let bestFeature = null;
-        for (const type of priorities) {
-          bestFeature = features.find(f => f.place_type.includes(type));
-          if (bestFeature) break;
-        }
-        if (bestFeature) {
-          locationName = bestFeature.place_name;
-        } else {
-          locationName = features[0].place_name;
-        }
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { longitude, latitude } = position.coords;
+        // Reuse handleMapClick logic by simulating call with deeper zoom
+        handleMapClick({ lngLat: { lng: longitude, lat: latitude }, zoomLevel: 17 });
+      },
+      (err) => {
+        console.error(err);
+        setError("Unable to retrieve your location");
+        setLoading(false);
       }
-    } catch (e) {
-      console.warn("Reverse geocoding failed", e);
-    }
-
-    const newLocation = {
-      lat,
-      lon: lng,
-      name: locationName,
-      is_africa: true
-    };
-    setLocationData(newLocation);
-
-    // Fly to
-    if (mapRef.current) {
-      mapRef.current.flyTo({
-        center: [lng, lat],
-        zoom: 12.5,
-        duration: 1000,
-        essential: true
-      });
-    }
-
-    // Mock Prediction
-    const mockPred = {
-      location: newLocation,
-      pm25: Math.floor(Math.random() * 60) + 8,
-      aqi_category: "Moderate",
-      factors: { satellite_no2: "Low", satellite_aod: (Math.random()).toFixed(2) },
-      timestamp: new Date().toISOString()
-    };
-
-    if (mockPred.pm25 <= 12) mockPred.aqi_category = "Good";
-    else if (mockPred.pm25 <= 35) mockPred.aqi_category = "Moderate";
-    else if (mockPred.pm25 <= 55) mockPred.aqi_category = "Sensitive";
-    else mockPred.aqi_category = "Unhealthy";
-
-    setTimeout(() => {
-      setPrediction(mockPred);
-      setLoading(false);
-    }, 200);
+    );
   };
 
   return (
@@ -309,6 +395,7 @@ function App() {
         <>
           <SearchBar
             onSearch={handleSearch}
+            onLocate={handleLocateMe}
             isSearching={loading}
             initialQuery={locationData && locationData.name ? locationData.name : ''}
           />

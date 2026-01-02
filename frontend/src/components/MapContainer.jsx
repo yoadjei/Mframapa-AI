@@ -1,50 +1,74 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import Map, { Marker, Layer, Source } from 'react-map-gl';
 import { MapPin } from 'lucide-react';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import { africanCities } from '../data/africanCities';
 
 const MAPBOX_TOKEN = "pk.eyJ1IjoieW9hZGplaSIsImEiOiJjbWprcjI4b3QyNHBpM2Nxem4xM2VwNWF4In0.z6NbrlGRmQdT-vlYk5bjMw";
 
 const MapContainer = ({ viewState, onMove, mapRef, locationData, isDark, onClick }) => {
+    const [cursor, setCursor] = useState('auto');
 
     // Generate "Virtual Network" Data
-    const { stations, arcs } = useMemo(() => {
-        const points = [];
+    const { stationsGeoJSON, arcs } = useMemo(() => {
+        const points = africanCities.map((city, index) => ({
+            ...city,
+            id: index, // Ensure numeric ID for feature state if needed, though properties are easier
+        }));
+
+        const featureCollection = {
+            type: 'FeatureCollection',
+            features: points.map(p => ({
+                type: 'Feature',
+                geometry: { type: 'Point', coordinates: [p.lon, p.lat] },
+                properties: p
+            }))
+        };
+
         const arcFeatures = [];
-        const count = 40;
-
-        // Bounds for Africa approximations
-        const minLon = -15, maxLon = 45;
-        const minLat = -30, maxLat = 30;
-
-        // Generate Points
-        for (let i = 0; i < count; i++) {
-            points.push({
-                id: i,
-                lon: minLon + Math.random() * (maxLon - minLon),
-                lat: minLat + Math.random() * (maxLat - minLat),
-                delay: Math.random() * 2
-            });
-        }
-
-        // Generate Connecting Arcs (Simple geodesics)
-        for (let i = 0; i < count - 1; i++) {
-            if (Math.random() > 0.7) { // Only connect some
-                arcFeatures.push({
-                    type: 'Feature',
-                    geometry: {
-                        type: 'LineString',
-                        coordinates: [
-                            [points[i].lon, points[i].lat],
-                            [points[i + 1].lon, points[i + 1].lat]
-                        ]
-                    }
-                });
+        // Generate Connecting Arcs (Simple geodesics between random cities)
+        for (let i = 0; i < points.length; i++) {
+            // Connect to 1-2 other random points to create a web
+            if (Math.random() > 0.8) {
+                const targetIndex = Math.floor(Math.random() * points.length);
+                if (targetIndex !== i) {
+                    arcFeatures.push({
+                        type: 'Feature',
+                        geometry: {
+                            type: 'LineString',
+                            coordinates: [
+                                [points[i].lon, points[i].lat],
+                                [points[targetIndex].lon, points[targetIndex].lat]
+                            ]
+                        }
+                    });
+                }
             }
         }
 
-        return { stations: points, arcs: { type: 'FeatureCollection', features: arcFeatures } };
+        return { stationsGeoJSON: featureCollection, arcs: { type: 'FeatureCollection', features: arcFeatures } };
     }, []);
+
+    const handleMapClick = (event) => {
+        const feature = event.features && event.features[0];
+        if (feature && feature.layer.id === 'station-points') {
+            // Clicked a city dot
+            const cityData = feature.properties;
+            // Mapbox normalizes properties, need to ensure numbers are numbers if used for math, 
+            // but for passing to App, the text fields are most important, and lat/lon are needed.
+            // GeoJSON coordinates strictly used for location.
+            const [lon, lat] = feature.geometry.coordinates;
+
+            onClick({
+                lngLat: { lng: lon, lat: lat },
+                zoomLevel: 14,
+                city: { ...cityData, lat, lon }
+            });
+        } else {
+            // Background click
+            onClick({ lngLat: event.lngLat });
+        }
+    };
 
     return (
         <div className="absolute inset-0 z-0 bg-gray-50 dark:bg-gray-900">
@@ -52,14 +76,20 @@ const MapContainer = ({ viewState, onMove, mapRef, locationData, isDark, onClick
                 ref={mapRef}
                 {...viewState}
                 onMove={onMove}
-                onClick={onClick}
+                onClick={handleMapClick}
+                onMouseEnter={(e) => {
+                    if (e.features?.length > 0) setCursor('pointer');
+                }}
+                onMouseLeave={() => setCursor('auto')}
+                interactiveLayerIds={!locationData ? ['station-points'] : []}
+                cursor={cursor}
                 style={{ width: '100%', height: '100%' }}
                 mapStyle={isDark ? "mapbox://styles/mapbox/dark-v11" : "mapbox://styles/mapbox/light-v11"}
                 mapboxAccessToken={MAPBOX_TOKEN}
                 projection="globe"
                 fog={{
                     "range": [0.5, 10],
-                    "color": isDark ? "#0A0F1C" : "#eff6ff", // Deep Space vs Blue-50
+                    "color": isDark ? "#0A0F1C" : "#eff6ff",
                     "horizon-blend": 0.2,
                     "high-color": isDark ? "#1e293b" : "#bfdbfe",
                     "space-color": isDark ? "#000000" : "#dbeafe",
@@ -81,6 +111,26 @@ const MapContainer = ({ viewState, onMove, mapRef, locationData, isDark, onClick
                     />
                 </Source>
 
+                {/* Virtual Stations (Optimized Layer) */}
+                {!locationData && (
+                    <Source id="stations-source" type="geojson" data={stationsGeoJSON}>
+                        <Layer
+                            id="station-points"
+                            type="circle"
+                            paint={{
+                                'circle-radius': 5,
+                                'circle-color': '#00FFB3',
+                                'circle-opacity': 0.9,
+                                'circle-stroke-width': 2,
+                                'circle-stroke-color': '#00FFB3',
+                                'circle-stroke-opacity': 0.3,
+                                // Add a subtle pulse-like glow using halo
+                                'circle-blur': 0.2
+                            }}
+                        />
+                    </Source>
+                )}
+
                 {/* Active Search Marker */}
                 {locationData && (
                     <Marker longitude={locationData.lon} latitude={locationData.lat} anchor="bottom">
@@ -90,21 +140,6 @@ const MapContainer = ({ viewState, onMove, mapRef, locationData, isDark, onClick
                         </div>
                     </Marker>
                 )}
-
-                {/* Virtual Stations (Pulsing Nodes) */}
-                {!locationData && stations.map(station => (
-                    <Marker key={station.id} longitude={station.lon} latitude={station.lat} anchor="center">
-                        <div className="relative">
-                            <div
-                                className="w-1.5 h-1.5 bg-primary-400 rounded-full shadow-[0_0_8px_#00FFB3]"
-                            ></div>
-                            <div
-                                className="absolute inset-0 bg-primary-500 rounded-full animate-ping opacity-40"
-                                style={{ animationDelay: `${station.delay}s`, animationDuration: '3s' }}
-                            ></div>
-                        </div>
-                    </Marker>
-                ))}
             </Map>
         </div>
     );

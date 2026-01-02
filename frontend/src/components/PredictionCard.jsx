@@ -190,7 +190,7 @@ const PredictionCard = ({ prediction, onClose }) => {
                                     <Droplets className="w-4 h-4" />
                                     <span className="text-xs font-bold">Humidity</span>
                                 </div>
-                                <div className="text-lg font-bold">64%</div>
+                                <div className="text-lg font-bold">{prediction.weather?.humidity || 65}%</div>
                             </div>
 
                             {/* Temp */}
@@ -199,7 +199,7 @@ const PredictionCard = ({ prediction, onClose }) => {
                                     <Thermometer className="w-4 h-4" />
                                     <span className="text-xs font-bold">Temp</span>
                                 </div>
-                                <div className="text-lg font-bold">28°C</div>
+                                <div className="text-lg font-bold">{prediction.weather?.temp || 28}°C</div>
                             </div>
 
                             {/* Pressure */}
@@ -208,7 +208,7 @@ const PredictionCard = ({ prediction, onClose }) => {
                                     <Gauge className="w-4 h-4" />
                                     <span className="text-xs font-bold">Pressure</span>
                                 </div>
-                                <div className="text-lg font-bold">1012 hPa</div>
+                                <div className="text-lg font-bold">{prediction.weather?.pressure || 1012} hPa</div>
                             </div>
 
                             {/* Wind */}
@@ -217,7 +217,7 @@ const PredictionCard = ({ prediction, onClose }) => {
                                     <Wind className="w-4 h-4" />
                                     <span className="text-xs font-bold">Wind</span>
                                 </div>
-                                <div className="text-lg font-bold">12 km/h</div>
+                                <div className="text-lg font-bold">{prediction.weather?.wind || 12} km/h</div>
                             </div>
                         </div>
 
