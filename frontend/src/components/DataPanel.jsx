@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useLanguage } from '../context/LanguageContext';
 import { Wifi, Server, Cpu } from 'lucide-react';
 
 const DataPanel = () => {
+    const { t } = useLanguage();
     const [inferenceCount, setInferenceCount] = useState(1247);
     const [accuracy, setAccuracy] = useState(91.4);
     const [timeAgo, setTimeAgo] = useState('Just now');
@@ -47,9 +49,9 @@ const DataPanel = () => {
                         <div className={`absolute inset-0 rounded-full animate-ping opacity-50 ${timeAgo === 'Updating...' ? 'bg-yellow-500' : 'bg-green-500'}`}></div>
                     </div>
                     <div>
-                        <div className="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-widest font-bold mb-0.5">Satellite Feed</div>
+                        <div className="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-widest font-bold mb-0.5">{t('footer.satellite_feed')}</div>
                         <div className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                            Active <span className="text-gray-400 dark:text-gray-500 font-normal text-xs">• {timeAgo}</span>
+                            {t('footer.active')} <span className="text-gray-400 dark:text-gray-500 font-normal text-xs">• {timeAgo}</span>
                         </div>
                     </div>
                 </div>
@@ -60,9 +62,9 @@ const DataPanel = () => {
                         <Server className="w-4 h-4" />
                     </div>
                     <div>
-                        <div className="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-widest font-bold mb-0.5">Ground Truth</div>
+                        <div className="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-widest font-bold mb-0.5">{t('footer.ground_truth')}</div>
                         <div className="text-sm font-bold text-gray-900 dark:text-white">
-                            {activeStations} Reference Nations
+                            {activeStations} {t('footer.reference_nations')}
                         </div>
                     </div>
                 </div>
@@ -73,9 +75,9 @@ const DataPanel = () => {
                         <Cpu className="w-4 h-4" />
                     </div>
                     <div>
-                        <div className="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-widest font-bold mb-0.5">Today's Inference</div>
+                        <div className="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-widest font-bold mb-0.5">{t('footer.inference')}</div>
                         <div className="text-sm font-bold text-gray-900 dark:text-white">
-                            {inferenceCount.toLocaleString()} <span className={`font-normal text-xs ml-1 ${accuracy > 90 ? 'text-green-600 dark:text-green-400' : 'text-yellow-500'}`}>{accuracy.toFixed(1)}% Val.</span>
+                            {inferenceCount.toLocaleString()} <span className={`font-normal text-xs ml-1 ${accuracy > 90 ? 'text-green-600 dark:text-green-400' : 'text-yellow-500'}`}>{accuracy.toFixed(1)}% {t('footer.val')}</span>
                         </div>
                     </div>
                 </div>

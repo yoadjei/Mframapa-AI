@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLanguage } from '../context/LanguageContext';
 import { Search, Loader2, MapPin, Crosshair } from 'lucide-react';
 import axios from 'axios';
 
@@ -12,6 +13,7 @@ const AFRICAN_COUNTRY_CODES = [
 ];
 
 const SearchBar = ({ onSearch, onLocate, isSearching, initialQuery }) => {
+    const { t } = useLanguage();
     const [query, setQuery] = useState('');
     const [suggestions, setSuggestions] = useState([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
@@ -96,7 +98,7 @@ const SearchBar = ({ onSearch, onLocate, isSearching, initialQuery }) => {
                     <input
                         type="text"
                         className="w-full bg-transparent border-0 text-gray-900 dark:text-white placeholder-gray-500 focus:ring-0 pl-10 pr-20 py-3 text-base outline-none"
-                        placeholder="Search any African city..."
+                        placeholder={t('search.placeholder')}
                         value={query}
                         onChange={(e) => {
                             setQuery(e.target.value);
@@ -116,7 +118,7 @@ const SearchBar = ({ onSearch, onLocate, isSearching, initialQuery }) => {
                                 type="button"
                                 onClick={onLocate}
                                 className="p-1.5 rounded-lg text-gray-400 hover:text-primary-500 hover:bg-primary-500/10 transition-colors"
-                                title="Use my location"
+                                title={t('search.locate')}
                             >
                                 <MapPin className="w-5 h-5" />
                             </button>

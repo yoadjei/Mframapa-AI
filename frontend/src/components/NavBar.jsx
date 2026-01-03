@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useLanguage } from '../context/LanguageContext';
 import { CloudRain, Menu, X, Github, Mail, Sun, Moon } from 'lucide-react';
 
 const NavBar = ({ setAppMode, appMode, onOpenAbout, onOpenReport, toggleTheme, onReset }) => {
+    const { t } = useLanguage();
     const [scrolled, setScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -32,9 +34,9 @@ const NavBar = ({ setAppMode, appMode, onOpenAbout, onOpenReport, toggleTheme, o
 
                     {/* Desktop Links */}
                     <div className="hidden md:flex items-center gap-8">
-                        <button onClick={onReset} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Map</button>
-                        <button onClick={onOpenReport} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Report</button>
-                        <button onClick={onOpenAbout} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">About</button>
+                        <button onClick={onReset} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">{t('nav.monitoring')}</button>
+                        <button onClick={onOpenReport} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">{t('nav.report')}</button>
+                        <button onClick={onOpenAbout} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">{t('nav.about')}</button>
 
                         <div className="h-4 w-px bg-gray-300 dark:bg-white/10"></div>
 
@@ -74,9 +76,9 @@ const NavBar = ({ setAppMode, appMode, onOpenAbout, onOpenReport, toggleTheme, o
                     </div>
 
                     <div className="flex flex-col gap-8 text-3xl font-display font-bold text-white">
-                        <button onClick={() => { onReset(); setMobileMenuOpen(false); }} className="text-left py-2 hover:text-primary-500 transition-colors">Map</button>
-                        <button onClick={() => { onOpenReport(); setMobileMenuOpen(false); }} className="text-left py-2 hover:text-primary-500 transition-colors">Report</button>
-                        <button onClick={() => { onOpenAbout(); setMobileMenuOpen(false); }} className="text-left py-2 hover:text-primary-500 transition-colors">About</button>
+                        <button onClick={() => { onReset(); setMobileMenuOpen(false); }} className="text-left py-2 hover:text-primary-500 transition-colors">{t('nav.monitoring')}</button>
+                        <button onClick={() => { onOpenReport(); setMobileMenuOpen(false); }} className="text-left py-2 hover:text-primary-500 transition-colors">{t('nav.report')}</button>
+                        <button onClick={() => { onOpenAbout(); setMobileMenuOpen(false); }} className="text-left py-2 hover:text-primary-500 transition-colors">{t('nav.about')}</button>
 
                         <div className="h-px bg-white/10 my-4"></div>
 

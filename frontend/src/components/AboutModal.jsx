@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
+import { useLanguage } from '../context/LanguageContext';
 import { X, Satellite, Info, AlertTriangle, Users } from 'lucide-react';
 
 const AboutModal = ({ onClose }) => {
+    const { t } = useLanguage();
     const [activeTab, setActiveTab] = useState(0);
 
     const tabs = [
-        { id: 0, title: "Overview", icon: Info },
-        { id: 1, title: "How It Works", icon: Satellite },
-        { id: 2, title: "Limitations", icon: AlertTriangle },
-        { id: 3, title: "Who It's For", icon: Users },
+        { id: 0, title: t('about.tab.overview'), icon: Info },
+        { id: 1, title: t('about.tab.how_it_works'), icon: Satellite },
+        { id: 2, title: t('about.tab.limitations'), icon: AlertTriangle },
+        { id: 3, title: t('about.tab.who_its_for'), icon: Users },
     ];
 
     return (
@@ -30,7 +32,7 @@ const AboutModal = ({ onClose }) => {
 
                 {/* Sidebar Navigation */}
                 <div className="w-full md:w-64 bg-gray-50 dark:bg-white/5 border-r border-gray-200 dark:border-white/5 p-6 pt-14 md:pt-6 flex flex-col gap-2">
-                    <h2 className="text-xl font-display font-bold text-gray-900 dark:text-white mb-6 pl-2 hidden md:block">About</h2>
+                    <h2 className="text-xl font-display font-bold text-gray-900 dark:text-white mb-6 pl-2 hidden md:block">{t('nav.about')}</h2>
                     {tabs.map((tab) => (
                         <button
                             key={tab.id}
@@ -53,19 +55,19 @@ const AboutModal = ({ onClose }) => {
 
                     {activeTab === 0 && (
                         <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
-                            <h3 className="text-3xl font-display font-bold text-gray-900 dark:text-white">About Mframapa AI</h3>
+                            <h3 className="text-3xl font-display font-bold text-gray-900 dark:text-white">{t('about.title')}</h3>
 
                             <div className="p-6 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5">
-                                <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-3">What We Do</h4>
+                                <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-3">{t('about.overview.what_we_do')}</h4>
                                 <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
-                                    Mframapa AI estimates daily PM2.5 concentrations across all 54 African nations and translates them into color-coded AQI categories (Good, Moderate, Unhealthy, etc.). Predictions update daily as new satellite data becomes available.
+                                    {t('about.overview.desc')}
                                 </p>
                             </div>
 
                             <div className="p-6 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5">
-                                <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-3">The Problem</h4>
+                                <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-3">{t('about.overview.problem')}</h4>
                                 <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
-                                    Most African cities lack public air quality monitors. Mframapa AI provides air quality estimates for unmonitored regions.
+                                    {t('about.overview.problem_desc')}
                                 </p>
                             </div>
                         </div>
@@ -73,31 +75,31 @@ const AboutModal = ({ onClose }) => {
 
                     {activeTab === 1 && (
                         <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
-                            <h3 className="text-3xl font-display font-bold text-gray-900 dark:text-white">How It Works</h3>
+                            <h3 className="text-3xl font-display font-bold text-gray-900 dark:text-white">{t('about.tab.how_it_works')}</h3>
                             <p className="text-gray-400 text-lg leading-relaxed">
-                                Leveraging satellite data and machine learning to infer air quality without ground sensors.
+                                {t('about.how.intro')}
                             </p>
 
                             <div className="grid gap-6">
                                 <div className="p-6 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5 flex gap-4">
                                     <div className="w-12 h-12 rounded-full bg-blue-500/10 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 font-bold">1</div>
                                     <div>
-                                        <h4 className="text-gray-900 dark:text-white font-bold text-lg mb-2">Satellites as Sensors</h4>
-                                        <p className="text-sm text-gray-400">We use ESA Sentinel-5P (NO₂) and NASA MERRA-2 (aerosol optical depth) to observe atmospheric conditions daily.</p>
+                                        <h4 className="text-gray-900 dark:text-white font-bold text-lg mb-2">{t('about.how.step1.title')}</h4>
+                                        <p className="text-sm text-gray-400">{t('about.how.step1.desc')}</p>
                                     </div>
                                 </div>
                                 <div className="p-6 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5 flex gap-4">
                                     <div className="w-12 h-12 rounded-full bg-primary-500/10 dark:bg-primary-500/20 text-primary-600 dark:text-primary-400 flex items-center justify-center shrink-0 font-bold">2</div>
                                     <div>
-                                        <h4 className="text-gray-900 dark:text-white font-bold text-lg mb-2">Ground Calibration</h4>
-                                        <p className="text-sm text-gray-400">The model learns from 425 physical monitoring stations across 29 African countries.</p>
+                                        <h4 className="text-gray-900 dark:text-white font-bold text-lg mb-2">{t('about.how.step2.title')}</h4>
+                                        <p className="text-sm text-gray-400">{t('about.how.step2.desc')}</p>
                                     </div>
                                 </div>
                                 <div className="p-6 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5 flex gap-4">
                                     <div className="w-12 h-12 rounded-full bg-accent-500/10 dark:bg-accent-500/20 text-accent-600 dark:text-accent-400 flex items-center justify-center shrink-0 font-bold">3</div>
                                     <div>
-                                        <h4 className="text-gray-900 dark:text-white font-bold text-lg mb-2">Continental Inference</h4>
-                                        <p className="text-sm text-gray-400">An XGBoost model translates satellite observations into ground-level PM2.5 estimates for any location.</p>
+                                        <h4 className="text-gray-900 dark:text-white font-bold text-lg mb-2">{t('about.how.step3.title')}</h4>
+                                        <p className="text-sm text-gray-400">{t('about.how.step3.desc')}</p>
                                     </div>
                                 </div>
                             </div>
@@ -106,23 +108,23 @@ const AboutModal = ({ onClose }) => {
 
                     {activeTab === 2 && (
                         <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
-                            <h3 className="text-3xl font-display font-bold text-gray-900 dark:text-white">Limitations</h3>
+                            <h3 className="text-3xl font-display font-bold text-gray-900 dark:text-white">{t('about.tab.limitations')}</h3>
                             <p className="text-gray-400 text-lg leading-relaxed">
-                                While powerful, satellite-based estimation has constraints you should be aware of.
+                                {t('about.limit.intro')}
                             </p>
 
                             <div className="grid gap-4">
                                 <div className="p-6 rounded-2xl bg-yellow-500/10 border border-yellow-500/20">
-                                    <h4 className="text-yellow-600 dark:text-yellow-400 font-bold text-lg mb-2">Cloud Blindness</h4>
-                                    <p className="text-sm text-gray-600 dark:text-gray-400">Satellites cannot measure through thick clouds.</p>
+                                    <h4 className="text-yellow-600 dark:text-yellow-400 font-bold text-lg mb-2">{t('about.limit.cloud')}</h4>
+                                    <p className="text-sm text-gray-600 dark:text-gray-400">{t('about.limit.cloud_desc')}</p>
                                 </div>
                                 <div className="p-6 rounded-2xl bg-yellow-500/10 border border-yellow-500/20">
-                                    <h4 className="text-yellow-600 dark:text-yellow-400 font-bold text-lg mb-2">Temporal Gaps</h4>
-                                    <p className="text-sm text-gray-600 dark:text-gray-400">One daily satellite pass may miss short pollution spikes.</p>
+                                    <h4 className="text-yellow-600 dark:text-yellow-400 font-bold text-lg mb-2">{t('about.limit.gap')}</h4>
+                                    <p className="text-sm text-gray-600 dark:text-gray-400">{t('about.limit.gap_desc')}</p>
                                 </div>
                                 <div className="p-6 rounded-2xl bg-red-500/10 border border-red-500/20">
-                                    <h4 className="text-red-600 dark:text-red-400 font-bold text-lg mb-2">Not for Medical/Legal Use</h4>
-                                    <p className="text-sm text-gray-600 dark:text-gray-400">Estimates are not certified measurements.</p>
+                                    <h4 className="text-red-600 dark:text-red-400 font-bold text-lg mb-2">{t('about.limit.legal')}</h4>
+                                    <p className="text-sm text-gray-600 dark:text-gray-400">{t('about.limit.legal_desc')}</p>
                                 </div>
                             </div>
                         </div>
@@ -130,7 +132,7 @@ const AboutModal = ({ onClose }) => {
 
                     {activeTab === 3 && (
                         <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
-                            <h3 className="text-3xl font-display font-bold text-gray-900 dark:text-white">Who It's For</h3>
+                            <h3 className="text-3xl font-display font-bold text-gray-900 dark:text-white">{t('about.tab.who_its_for')}</h3>
                             <div className="grid gap-6">
                                 <div className="p-6 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5">
                                     <div className="flex items-start gap-4">
@@ -138,8 +140,8 @@ const AboutModal = ({ onClose }) => {
                                             <Users className="w-6 h-6" />
                                         </div>
                                         <div>
-                                            <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Citizens</h4>
-                                            <p className="text-gray-600 dark:text-gray-400 text-sm">Checking air quality before outdoor activities.</p>
+                                            <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{t('about.who.citizens')}</h4>
+                                            <p className="text-gray-600 dark:text-gray-400 text-sm">{t('about.who.citizens_desc')}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -150,8 +152,8 @@ const AboutModal = ({ onClose }) => {
                                             <Info className="w-6 h-6" />
                                         </div>
                                         <div>
-                                            <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Researchers</h4>
-                                            <p className="text-gray-600 dark:text-gray-400 text-sm">Identifying pollution patterns.</p>
+                                            <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{t('about.who.researchers')}</h4>
+                                            <p className="text-gray-600 dark:text-gray-400 text-sm">{t('about.who.researchers_desc')}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -162,8 +164,8 @@ const AboutModal = ({ onClose }) => {
                                             <AlertTriangle className="w-6 h-6" />
                                         </div>
                                         <div>
-                                            <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Advocacy Groups</h4>
-                                            <p className="text-gray-600 dark:text-gray-400 text-sm">Building evidence for policy.</p>
+                                            <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{t('about.who.advocacy')}</h4>
+                                            <p className="text-gray-600 dark:text-gray-400 text-sm">{t('about.who.advocacy_desc')}</p>
                                         </div>
                                     </div>
                                 </div>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useLanguage } from './context/LanguageContext';
 import axios from 'axios';
 import { AlertTriangle } from 'lucide-react';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -19,6 +20,13 @@ const AFRICAN_COUNTRY_CODES = [
 ];
 
 function App() {
+  const { t, isRTL } = useLanguage();
+
+  // Apply RTL direction to body/root
+  useEffect(() => {
+    document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
+  }, [isRTL]);
+
   const [viewState, setViewState] = useState({
     longitude: 18.0,
     latitude: 5.0,
@@ -127,7 +135,7 @@ function App() {
             const [lon, lat] = feature.center;
 
             if (!isLocationInAfrica(lon, lat)) {
-              throw new Error("Sorry, Mframapa AI only covers African nations.");
+              throw new Error(t('error.outside_africa'));
             }
 
             locationResult = {
@@ -148,7 +156,7 @@ function App() {
 
       // If still no location, ensure we don't show a random one unless it's a hard error
       if (!locationResult) {
-        throw new Error("City not found or outside coverage.");
+        throw new Error(t('error.city_not_found'));
       }
 
       setLocationData(locationResult);
@@ -189,7 +197,7 @@ function App() {
 
     } catch (err) {
       console.error(err);
-      setError(err.message || "Could not locate city. Please try again.");
+      setError(err.message || t('error.generic'));
       setLoading(false);
     }
   };
@@ -260,7 +268,7 @@ function App() {
       const mapboxRes = await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${token}&limit=1`);
 
       if (!mapboxRes.data.features || mapboxRes.data.features.length === 0) {
-        throw new Error("Location not found. Please click on a land mass.");
+        throw new Error(t('error.land_mass'));
       }
 
       const feature = mapboxRes.data.features[0];
@@ -276,7 +284,7 @@ function App() {
       }
 
       if (!isAfrica) {
-        throw new Error("Sorry, we currently only support locations within Africa.");
+        throw new Error(t('error.outside_africa'));
       }
 
       // Use specific place name
@@ -329,14 +337,14 @@ function App() {
 
     } catch (e) {
       console.warn("Map Click Error:", e);
-      setError(e.message || "Could not retrieve location. Please try again.");
+      setError(e.message || t('error.generic'));
       setLoading(false);
     }
   };
 
   const handleLocateMe = () => {
     if (!navigator.geolocation) {
-      setError("Geolocation is not supported by your browser");
+      setError(t('error.geolocation_unsupported'));
       return;
     }
 
@@ -349,7 +357,7 @@ function App() {
       },
       (err) => {
         console.error(err);
-        setError("Unable to retrieve your location");
+        setError(t('error.location_retrieval'));
         setLoading(false);
       }
     );

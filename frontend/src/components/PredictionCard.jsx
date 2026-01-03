@@ -1,10 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLanguage } from '../context/LanguageContext';
+import { generateInsight } from '../services/gemini';
 import { Share2, MapPin, Activity, AlertTriangle, Wind, Info, ExternalLink, Twitter, Linkedin, Link, MessageCircle, X, ChevronDown, ChevronUp, Droplets, Thermometer, Gauge, Check } from 'lucide-react';
 
 const PredictionCard = ({ prediction, onClose }) => {
+    const { t, language } = useLanguage();
     const [showShare, setShowShare] = useState(false);
     const [showDetails, setShowDetails] = useState(false);
     const [showCopyToast, setShowCopyToast] = useState(false);
+    const [aiInsight, setAiInsight] = useState('');
+
+    useEffect(() => {
+        if (prediction) {
+            generateInsight(prediction.pm25, prediction.weather, language, prediction.location.name)
+                .then(setAiInsight);
+        }
+    }, [prediction, language]);
 
     if (!prediction) return null;
 
@@ -21,16 +32,16 @@ const PredictionCard = ({ prediction, onClose }) => {
     const aqiColor = getAQIColor(prediction.pm25);
 
     const getHealthMessage = (pm25) => {
-        if (pm25 <= 12) return { text: "Air quality is good. Enjoy outdoor activities!", icon: Activity };
-        if (pm25 <= 35) return { text: "Moderate quality. Sensitive individuals should limit prolonged exposure.", icon: Info };
-        if (pm25 <= 55) return { text: "Unhealthy for sensitive groups.", icon: AlertTriangle };
-        return { text: "Air quality is degraded. Reduce outdoor activity.", icon: AlertTriangle };
+        if (pm25 <= 12) return { text: t('advice.good'), icon: Activity };
+        if (pm25 <= 35) return { text: t('advice.moderate'), icon: Info };
+        if (pm25 <= 55) return { text: t('advice.sensitive'), icon: AlertTriangle };
+        return { text: t('advice.unhealthy'), icon: AlertTriangle };
     };
 
     const health = getHealthMessage(prediction.pm25);
     const HealthIcon = health.icon;
 
-    const shareText = `Checking air quality in ${prediction.location.name}. PM2.5 level is ${Math.round(prediction.pm25)} µg/m³. #MframapaAI`;
+    const shareText = `${t('card.checking')} ${prediction.location.name}. ${t('card.pm25_label')} ${Math.round(prediction.pm25)} ${t('card.unit')}. #MframapaAI`;
     const shareUrl = "https://mframapa.ai"; // Placeholder URL
 
     const handleShare = (platform) => {
@@ -96,8 +107,8 @@ const PredictionCard = ({ prediction, onClose }) => {
                         {Math.round(prediction.pm25)}
                     </span>
                     <div className="flex flex-col mb-1">
-                        <span className="text-sm font-bold text-gray-400 dark:text-gray-300">PM2.5</span>
-                        <span className="text-xs text-gray-500">µg/m³</span>
+                        <span className="text-sm font-bold text-gray-400 dark:text-gray-300">{t('card.pm25_label')}</span>
+                        <span className="text-xs text-gray-500">{t('card.unit')}</span>
                     </div>
                 </div>
 
@@ -107,7 +118,7 @@ const PredictionCard = ({ prediction, onClose }) => {
                     style={{ backgroundColor: `${aqiColor}20`, color: aqiColor, border: `1px solid ${aqiColor}40` }}
                 >
                     <div className={`w-2 h-2 rounded-full animate-pulse`} style={{ backgroundColor: aqiColor }}></div>
-                    {prediction.aqi_category}
+                    {t(`aqi.${prediction.aqi_category.toLowerCase().split(' ')[0]}`) || prediction.aqi_category}
                 </div>
 
                 {/* Health Advisory */}
@@ -127,10 +138,10 @@ const PredictionCard = ({ prediction, onClose }) => {
                     <div>
                         <div className="flex items-center gap-1.5 text-[10px] text-primary-600 dark:text-primary-400 uppercase tracking-wider font-bold mb-1">
                             <Wind className="w-3 h-3" />
-                            Satellite Derived
+                            {t('card.satellite_derived')}
                         </div>
                         <div className="text-[10px] text-gray-400 dark:text-gray-500">
-                            Updated just now
+                            {t('card.updated_now')}
                         </div>
                     </div>
 
@@ -140,7 +151,7 @@ const PredictionCard = ({ prediction, onClose }) => {
                             <button
                                 onClick={() => setShowShare(!showShare)}
                                 className={`p-2 rounded-lg border hover:border-primary-500/50 transition-all ${showShare ? 'bg-primary-500/10 text-primary-500 border-primary-500/50' : 'border-gray-200 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}
-                                title="Share"
+                                title={t('card.share')}
                             >
                                 <Share2 className="w-4 h-4" />
                             </button>
@@ -150,17 +161,17 @@ const PredictionCard = ({ prediction, onClose }) => {
                                 <div className="absolute bottom-full right-0 mb-2 w-48 bg-white dark:bg-[#1a2035] border border-gray-200 dark:border-white/10 rounded-xl shadow-xl overflow-hidden animate-in zoom-in-95 duration-200 z-30">
                                     <div className="p-1">
                                         <button onClick={() => handleShare('whatsapp')} className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-green-500/10 hover:text-green-500 rounded-lg transition-colors">
-                                            <MessageCircle className="w-4 h-4" /> WhatsApp
+                                            <MessageCircle className="w-4 h-4" /> {t('share.whatsapp')}
                                         </button>
                                         <button onClick={() => handleShare('twitter')} className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-500/10 hover:text-blue-400 rounded-lg transition-colors">
-                                            <Twitter className="w-4 h-4" /> X (Twitter)
+                                            <Twitter className="w-4 h-4" /> {t('share.twitter')}
                                         </button>
                                         <button onClick={() => handleShare('linkedin')} className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-600/10 hover:text-blue-600 rounded-lg transition-colors">
-                                            <Linkedin className="w-4 h-4" /> LinkedIn
+                                            <Linkedin className="w-4 h-4" /> {t('share.linkedin')}
                                         </button>
                                         <div className="h-px bg-gray-100 dark:bg-white/5 my-1"></div>
                                         <button onClick={() => handleShare('copy')} className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors">
-                                            <Link className="w-4 h-4" /> Copy Link
+                                            <Link className="w-4 h-4" /> {t('share.copy')}
                                         </button>
                                     </div>
                                 </div>
@@ -171,24 +182,23 @@ const PredictionCard = ({ prediction, onClose }) => {
                         <button
                             onClick={() => setShowDetails(!showDetails)}
                             className={`p-2 rounded-lg border hover:border-primary-500/50 transition-all ${showDetails ? 'bg-primary-500/10 text-primary-500 border-primary-500/50' : 'border-gray-200 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}
-                            title="Vivid Details"
+                            title={t('card.details')}
                         >
                             {showDetails ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                         </button>
                     </div>
                 </div>
 
-                {/* Expanded Details View */}
                 {showDetails && (
                     <div className="mt-4 pt-4 border-t border-gray-100 dark:border-white/5 animate-in slide-in-from-top-2 duration-300">
-                        <h4 className="text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-3 tracking-wider">Vivid Details</h4>
+                        <h4 className="text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-3 tracking-wider">{t('card.details')}</h4>
 
                         <div className="grid grid-cols-2 gap-3">
                             {/* Humidity */}
                             <div className="bg-gray-50 dark:bg-white/5 p-3 rounded-xl border border-gray-100 dark:border-white/5">
                                 <div className="flex items-center gap-2 mb-1 text-blue-500">
                                     <Droplets className="w-4 h-4" />
-                                    <span className="text-xs font-bold">Humidity</span>
+                                    <span className="text-xs font-bold">{t('weather.humidity')}</span>
                                 </div>
                                 <div className="text-lg font-bold">{prediction.weather?.humidity || 65}%</div>
                             </div>
@@ -197,7 +207,7 @@ const PredictionCard = ({ prediction, onClose }) => {
                             <div className="bg-gray-50 dark:bg-white/5 p-3 rounded-xl border border-gray-100 dark:border-white/5">
                                 <div className="flex items-center gap-2 mb-1 text-orange-500">
                                     <Thermometer className="w-4 h-4" />
-                                    <span className="text-xs font-bold">Temp</span>
+                                    <span className="text-xs font-bold">{t('weather.temp')}</span>
                                 </div>
                                 <div className="text-lg font-bold">{prediction.weather?.temp || 28}°C</div>
                             </div>
@@ -206,7 +216,7 @@ const PredictionCard = ({ prediction, onClose }) => {
                             <div className="bg-gray-50 dark:bg-white/5 p-3 rounded-xl border border-gray-100 dark:border-white/5">
                                 <div className="flex items-center gap-2 mb-1 text-purple-500">
                                     <Gauge className="w-4 h-4" />
-                                    <span className="text-xs font-bold">Pressure</span>
+                                    <span className="text-xs font-bold">{t('weather.pressure')}</span>
                                 </div>
                                 <div className="text-lg font-bold">{prediction.weather?.pressure || 1012} hPa</div>
                             </div>
@@ -215,16 +225,16 @@ const PredictionCard = ({ prediction, onClose }) => {
                             <div className="bg-gray-50 dark:bg-white/5 p-3 rounded-xl border border-gray-100 dark:border-white/5">
                                 <div className="flex items-center gap-2 mb-1 text-gray-500 dark:text-gray-400">
                                     <Wind className="w-4 h-4" />
-                                    <span className="text-xs font-bold">Wind</span>
+                                    <span className="text-xs font-bold">{t('weather.wind')}</span>
                                 </div>
                                 <div className="text-lg font-bold">{prediction.weather?.wind || 12} km/h</div>
                             </div>
                         </div>
 
                         <div className="mt-3 bg-blue-500/10 border border-blue-500/20 p-3 rounded-xl">
-                            <h5 className="text-xs font-bold text-blue-600 dark:text-blue-400 mb-1">AI Insight</h5>
+                            <h5 className="text-xs font-bold text-blue-600 dark:text-blue-400 mb-1">{t('card.insight_title')}</h5>
                             <p className="text-xs text-blue-800 dark:text-blue-200 leading-relaxed">
-                                High particulate stability observed. Suggests local combustion sources rather than wind-blown dust.
+                                {aiInsight || t('advice.unhealthy')}
                             </p>
                         </div>
                     </div>
@@ -239,7 +249,7 @@ const PredictionCard = ({ prediction, onClose }) => {
                         <div className="bg-green-500 rounded-full p-1">
                             <Check className="w-3 h-3 text-white" />
                         </div>
-                        Link Copied!
+                        {t('share.copied')}
                     </div>
                 </div>
             )}

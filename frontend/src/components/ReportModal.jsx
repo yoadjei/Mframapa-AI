@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useLanguage } from '../context/LanguageContext';
 import { X, Send, MapPin, Smile, Frown, Meh, AlertTriangle } from 'lucide-react';
 
 const ReportModal = ({ onClose }) => {
+    const { t } = useLanguage();
     const [submitting, setSubmitting] = useState(false);
     const [success, setSuccess] = useState(false);
 
@@ -18,32 +20,32 @@ const ReportModal = ({ onClose }) => {
 
     const categories = [
         {
-            label: 'Good',
+            label: t('aqi.good'),
             icon: Smile,
             color: 'text-green-400',
             bg: 'bg-green-400/10 border-green-400/20',
-            clue: "Air feels fresh. No visible haze. Visibility is clear."
+            clue: t('report.clue.good')
         },
         {
-            label: 'Moderate',
+            label: t('aqi.moderate'),
             icon: Meh,
             color: 'text-yellow-400',
             bg: 'bg-yellow-400/10 border-yellow-400/20',
-            clue: "Air is acceptable. Very faint haze might be visible on distant horizons."
+            clue: t('report.clue.moderate')
         },
         {
-            label: 'Unhealthy',
+            label: t('aqi.unhealthy'),
             icon: Frown,
             color: 'text-orange-400',
             bg: 'bg-orange-400/10 border-orange-400/20',
-            clue: "Visible smog/smoke. Slight irritation in throat/eyes or distinct odor."
+            clue: t('report.clue.unhealthy')
         },
         {
-            label: 'Hazardous',
+            label: t('aqi.hazardous'),
             icon: AlertTriangle,
             color: 'text-red-400',
             bg: 'bg-red-400/10 border-red-400/20',
-            clue: "Heavy smoke/dust. Poor visibility. Breathing feels difficult or heavy."
+            clue: t('report.clue.hazardous')
         },
     ];
 
@@ -61,8 +63,8 @@ const ReportModal = ({ onClose }) => {
                 {/* Header */}
                 <div className="p-6 border-b border-gray-200 dark:border-white/5 flex justify-between items-center bg-gray-50 dark:bg-white/5">
                     <div>
-                        <h2 className="text-xl font-display font-bold text-gray-900 dark:text-white">Report Air Quality</h2>
-                        <p className="text-xs text-gray-400">Contribute to the community data layer.</p>
+                        <h2 className="text-xl font-display font-bold text-gray-900 dark:text-white">{t('report.title')}</h2>
+                        <p className="text-xs text-gray-400">{t('report.subtitle')}</p>
                     </div>
                     <button onClick={onClose} className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-white/10 text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
                         <X className="w-5 h-5" />
@@ -74,8 +76,8 @@ const ReportModal = ({ onClose }) => {
                         <div className="w-16 h-16 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center mb-4">
                             <Send className="w-8 h-8" />
                         </div>
-                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Report Sent!</h3>
-                        <p className="text-gray-400">Thank you for contributing to Mframapa AI.</p>
+                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{t('report.success_title')}</h3>
+                        <p className="text-gray-400">{t('report.success_desc')}</p>
                     </div>
                 ) : (
                     <form onSubmit={handleSubmit} className="p-6 space-y-6">
@@ -83,12 +85,12 @@ const ReportModal = ({ onClose }) => {
                         {/* Location Mock */}
                         <div className="bg-gray-50 dark:bg-white/5 p-3 rounded-xl border border-gray-200 dark:border-white/5 flex items-center gap-3 text-sm text-gray-600 dark:text-gray-300">
                             <MapPin className="w-4 h-4 text-primary-400" />
-                            <span>Using inferred location from map center</span>
+                            <span>{t('report.location_mock')}</span>
                         </div>
 
                         {/* Perception Selector */}
                         <div>
-                            <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">How does the air feel?</label>
+                            <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">{t('report.label_feel')}</label>
                             <div className="grid grid-cols-2 gap-3 mb-4">
                                 {categories.map((cat) => (
                                     <button
@@ -119,11 +121,11 @@ const ReportModal = ({ onClose }) => {
 
                         {/* Comment */}
                         <div>
-                            <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Observations (Optional)</label>
+                            <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">{t('report.label_obs')}</label>
                             <textarea
                                 className="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-3 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-primary-500/50 text-sm"
                                 rows="3"
-                                placeholder="e.g. Smell of smoke, visible haze..."
+                                placeholder={t('report.placeholder_obs')}
                             ></textarea>
                         </div>
 
@@ -136,7 +138,7 @@ const ReportModal = ({ onClose }) => {
                                 <span className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin"></span>
                             ) : (
                                 <>
-                                    <span>Submit Report</span>
+                                    <span>{t('report.submit')}</span>
                                     <Send className="w-4 h-4" />
                                 </>
                             )}
