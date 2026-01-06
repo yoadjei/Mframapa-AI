@@ -3,6 +3,11 @@ __pycache__/
 *.py[cod]
 *$py.class
 *.so
+
+# Local history and internal docs
+.history/
+docs/
+MANUAL_DOWNLOADS.md
 .Python
 env/
 build/
