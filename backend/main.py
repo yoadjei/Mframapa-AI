@@ -43,17 +43,47 @@ app.add_middleware(
 )
 
 MODEL_PATH = "backend/models/universal_african_model.json"
+MODEL_GDRIVE_ID = "1bX8XI0ViGqm8FFxXkLNys6FmWxtgL1So"
 model = None
+
+def download_model_from_gdrive():
+    """Download model from Google Drive if not found locally."""
+    import requests
+    
+    # create models directory if needed
+    os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
+    
+    # google drive direct download url
+    url = f"https://drive.google.com/uc?export=download&id={MODEL_GDRIVE_ID}&confirm=t"
+    
+    print(f"Downloading model from Google Drive...")
+    try:
+        response = requests.get(url, stream=True, timeout=300)
+        response.raise_for_status()
+        
+        with open(MODEL_PATH, 'wb') as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                f.write(chunk)
+        
+        print(f"Model downloaded successfully ({os.path.getsize(MODEL_PATH) / 1024 / 1024:.1f} MB)")
+        return True
+    except Exception as e:
+        print(f"Model download failed: {e}")
+        return False
+
+# load model - download from gdrive if not found locally
+if not os.path.exists(MODEL_PATH) or os.path.getsize(MODEL_PATH) < 1000:
+    download_model_from_gdrive()
 
 if os.path.exists(MODEL_PATH):
     try:
         model = xgb.XGBRegressor()
         model.load_model(MODEL_PATH)
-        print("Model loaded")
+        print("Model loaded successfully")
     except Exception as e:
         print(f"Model load failed: {e}")
 else:
-    print("Model not found")
+    print("Model not found and download failed")
 
 
 class LocationResponse(BaseModel):
