@@ -1,24 +1,24 @@
 # Mframapa AI Backend Requirements
-# For Render deployment - requires Python 3.11
+# For Render deployment
 
 # Web Framework
 fastapi==0.115.0
 uvicorn[standard]==0.32.0
 python-dotenv==1.0.1
 
-# Data & ML - pinned for compatibility
-pandas==2.1.4
-numpy==1.26.4
-xgboost==2.0.3
+# Data & ML - use latest versions for Python 3.13 compatibility
+pandas>=2.2.2
+numpy>=1.26.0
+xgboost>=2.0.3
 
 # HTTP Requests
-requests==2.31.0
+requests>=2.31.0
 
 # Validation
-pydantic==2.6.0
+pydantic>=2.6.0
 
 # Geospatial
-geopy==2.4.1
+geopy>=2.4.1
 
 # Google AI
-google-generativeai==0.4.0
+google-generativeai>=0.4.0
