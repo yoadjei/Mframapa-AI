@@ -86,7 +86,7 @@ const SearchBar = ({ onSearch, onLocate, isSearching, initialQuery }) => {
     };
 
     return (
-        <div className="absolute top-24 left-4 right-4 md:left-6 md:right-auto z-40 w-auto md:w-full md:max-w-md animate-in slide-in-from-left duration-700 pointer-events-auto">
+        <div className="absolute top-28 md:top-24 left-4 right-4 md:left-6 md:right-auto z-40 w-auto md:w-full md:max-w-md animate-in slide-in-from-left duration-700 pointer-events-auto">
 
             {/* Glass Card Container */}
             <div className="glass rounded-2xl p-4 space-y-3 bg-white/80 dark:bg-[#0A0F1C]/80 backdrop-blur-xl border border-gray-200 dark:border-white/10 shadow-2xl transition-all focus-within:shadow-[0_0_20px_rgba(0,255,179,0.2)]">
