@@ -5,7 +5,10 @@ import json
 import requests
 from typing import Dict
 
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "YOUR_GEMINI_API_KEY_HERE")
+def get_gemini_api_key():
+    """Get the Gemini API key from environment."""
+    return os.getenv("GEMINI_API_KEY", "")
+
 GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
 
 SUPPORTED_LANGUAGES = {
@@ -24,7 +27,8 @@ _translation_cache: Dict[str, Dict[str, str]] = {}
 
 def _call_gemini(prompt: str) -> str:
     """Call Gemini API."""
-    if GEMINI_API_KEY == "YOUR_GEMINI_API_KEY_HERE" or not GEMINI_API_KEY:
+    api_key = get_gemini_api_key()
+    if not api_key or api_key == "YOUR_GEMINI_API_KEY_HERE":
         raise ValueError("GEMINI_API_KEY not configured")
     
     payload = {
@@ -34,7 +38,7 @@ def _call_gemini(prompt: str) -> str:
     
     try:
         response = requests.post(
-            f"{GEMINI_URL}?key={GEMINI_API_KEY}",
+            f"{GEMINI_URL}?key={api_key}",
             headers={"Content-Type": "application/json"},
             json=payload, timeout=30
         )
@@ -121,7 +125,8 @@ def translate_strings(strings: Dict[str, str], target_language: str) -> Dict[str
 def check_gemini_api() -> bool:
     """Check if Gemini API is configured."""
     try:
-        if GEMINI_API_KEY == "YOUR_GEMINI_API_KEY_HERE":
+        api_key = get_gemini_api_key()
+        if not api_key or api_key == "YOUR_GEMINI_API_KEY_HERE":
             return False
         _call_gemini("Say ok")
         return True
