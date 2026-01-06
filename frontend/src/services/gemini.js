@@ -141,57 +141,105 @@ export const baseStrings = {
     "footer.val": "Val."
 };
 
-// Supported Languages and Countries Map
+// Supported Languages with Flags
 export const SUPPORTED_LANGUAGES = {
-    'ar': 'Arabic',
-    'fr': 'French',
-    'pt': 'Portuguese',
-    'en': 'English',
-    'tn': 'Tswana',
-    'rn': 'Kirundi',
-    'es': 'Spanish',
-    'ti': 'Tigrinya',
-    'ss': 'Swati',
-    'am': 'Amharic',
-    'tw': 'Twi',
-    'sw': 'Swahili',
-    'st': 'Sotho',
-    'mg': 'Malagasy',
-    'ny': 'Chichewa',
-    'ha': 'Hausa',
-    'yo': 'Yoruba',
-    'ig': 'Igbo',
-    'rw': 'Kinyarwanda',
-    'wo': 'Wolof',
-    'so': 'Somali',
-    'zu': 'Zulu',
-    'xh': 'Xhosa',
-    'af': 'Afrikaans',
-    'sn': 'Shona',
-    'nd': 'Ndebele',
-    'ga': 'Ga'
+    'en': { name: 'English', flag: '🇬🇧' },
+    'fr': { name: 'French', flag: '🇫🇷' },
+    'ar': { name: 'Arabic', flag: '🇸🇦' },
+    'pt': { name: 'Portuguese', flag: '🇵🇹' },
+    'es': { name: 'Spanish', flag: '🇪🇸' },
+    'sw': { name: 'Swahili', flag: '🇰🇪' },
+    'am': { name: 'Amharic', flag: '🇪🇹' },
+    'ha': { name: 'Hausa', flag: '🇳🇬' },
+    'yo': { name: 'Yoruba', flag: '🇳🇬' },
+    'ig': { name: 'Igbo', flag: '🇳🇬' },
+    'tw': { name: 'Twi', flag: '🇬🇭' },
+    'zu': { name: 'Zulu', flag: '🇿🇦' },
+    'xh': { name: 'Xhosa', flag: '🇿🇦' },
+    'af': { name: 'Afrikaans', flag: '🇿🇦' },
+    'sn': { name: 'Shona', flag: '🇿🇼' },
+    'rw': { name: 'Kinyarwanda', flag: '🇷🇼' },
+    'mg': { name: 'Malagasy', flag: '🇲🇬' },
+    'so': { name: 'Somali', flag: '🇸🇴' },
+    'ti': { name: 'Tigrinya', flag: '🇪🇷' },
+    'wo': { name: 'Wolof', flag: '🇸🇳' },
+    'st': { name: 'Sotho', flag: '🇱🇸' },
+    'tn': { name: 'Tswana', flag: '🇧🇼' },
+    'ny': { name: 'Chichewa', flag: '🇲🇼' },
+    'rn': { name: 'Kirundi', flag: '🇧🇮' }
 };
 
 const cachedTranslations = {};
+const TRANSLATION_STORAGE_KEY = 'mframapa_translations_v2';
+
+// Load cached translations from localStorage
+const loadCachedTranslations = () => {
+    try {
+        const cached = localStorage.getItem(TRANSLATION_STORAGE_KEY);
+        if (cached) {
+            const parsed = JSON.parse(cached);
+            Object.assign(cachedTranslations, parsed);
+        }
+    } catch (e) {
+        console.warn('Failed to load translation cache', e);
+    }
+};
+
+// Save translations to localStorage
+const saveCachedTranslations = (lang, data) => {
+    try {
+        cachedTranslations[lang] = data;
+        localStorage.setItem(TRANSLATION_STORAGE_KEY, JSON.stringify(cachedTranslations));
+    } catch (e) {
+        console.warn('Failed to save translation cache', e);
+    }
+};
+
+// Initialize cache on load
+loadCachedTranslations();
 
 /**
- * Translates the entire UI Dictionary to the target language using Gemini.
+ * Translates the entire UI Dictionary to the target language.
+ * Priority: 1. LocalStorage cache, 2. Backend API, 3. Direct Gemini
  */
 export const translateUI = async (targetLangCode) => {
     if (targetLangCode === 'en' || !SUPPORTED_LANGUAGES[targetLangCode]) {
         return baseStrings;
     }
 
+    // 1. Check in-memory cache first
     if (cachedTranslations[targetLangCode]) {
+        console.log('Using cached translations for', targetLangCode);
         return cachedTranslations[targetLangCode];
     }
 
+    const languageName = SUPPORTED_LANGUAGES[targetLangCode];
+
+    // 2. Try backend API first
+    try {
+        const response = await fetch('/api/translate-ui', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                strings: baseStrings,
+                target_language: targetLangCode
+            })
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            saveCachedTranslations(targetLangCode, data.translations);
+            return data.translations;
+        }
+    } catch (backendErr) {
+        console.warn('Backend translation unavailable, trying Gemini directly');
+    }
+
+    // 3. Fallback to direct Gemini
     if (!model) {
         console.warn("Gemini API Key missing. Falling back to English.");
         return baseStrings;
     }
-
-    const languageName = SUPPORTED_LANGUAGES[targetLangCode];
 
     const prompt = `
     You are a professional translator for a Weather/Air Quality App.
@@ -207,26 +255,54 @@ export const translateUI = async (targetLangCode) => {
         const result = await model.generateContent(prompt);
         const response = await result.response;
         let text = response.text();
-
-        // Clean up markdown if present
         text = text.replace(/```json/g, '').replace(/```/g, '').trim();
-
         const translations = JSON.parse(text);
-        cachedTranslations[targetLangCode] = translations;
+        saveCachedTranslations(targetLangCode, translations);
         return translations;
     } catch (error) {
         console.error("Translation failed:", error);
-        return baseStrings; // Fallback
+        return baseStrings;
     }
 };
 
 /**
  * Generates specific Air Quality advice in the target language.
+ * Priority: 1. Backend API, 2. Direct Gemini
  */
 export const generateInsight = async (pm25, weather, targetLangCode, locationName) => {
-    if (!model) return "High particulate stability observed. Suggests local combustion sources.";
-
+    const defaultInsight = "High particulate stability observed. Suggests local combustion sources.";
     const languageName = SUPPORTED_LANGUAGES[targetLangCode] || 'English';
+
+    // Determine AQI category
+    let aqiCategory = 'Good';
+    if (pm25 > 150) aqiCategory = 'Unhealthy';
+    else if (pm25 > 55) aqiCategory = 'Unhealthy for Sensitive Groups';
+    else if (pm25 > 35) aqiCategory = 'Moderate';
+    else if (pm25 > 12) aqiCategory = 'Moderate';
+
+    // 1. Try backend API first
+    try {
+        const response = await fetch('/api/generate-insight', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                pm25,
+                aqi_category: aqiCategory,
+                weather: weather || {},
+                language: targetLangCode
+            })
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            return data.insight;
+        }
+    } catch (backendErr) {
+        console.warn('Backend insight unavailable, trying Gemini directly');
+    }
+
+    // 2. Fallback to direct Gemini
+    if (!model) return defaultInsight;
 
     const prompt = `
     Generate a short, helpful, one-sentence insight about the air quality in ${locationName} based on:
@@ -244,6 +320,6 @@ export const generateInsight = async (pm25, weather, targetLangCode, locationNam
         return response.text().trim();
     } catch (error) {
         console.error("Insight generation failed:", error);
-        return "High particulate stability observed.";
+        return defaultInsight;
     }
 };
