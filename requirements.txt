@@ -1,26 +1,21 @@
-# Core
-streamlit==1.50.0
-rich
+# Mframapa AI Backend Requirements
+# For Render deployment
+
+# Web Framework
+fastapi==0.115.0
+uvicorn[standard]==0.32.0
+python-dotenv==1.0.1
 
 # Data & ML
-pandas
-numpy
-scikit-learn
-xgboost
-joblib
+pandas==2.2.0
+numpy==1.26.0
+xgboost==2.0.3
 
-# Visualization
-plotly
-matplotlib
-folium
-streamlit-folium
+# HTTP Requests
+requests==2.31.0
 
-# NASA data and geospatial
-earthaccess
-geopy
-xarray
-requests
+# Validation
+pydantic==2.6.0
 
-# System / misc
-python-dateutil
-pytz
+# Geospatial (for geo.py)
+geopy==2.4.1
