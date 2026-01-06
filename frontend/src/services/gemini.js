@@ -32,6 +32,8 @@ export const baseStrings = {
     "nav.monitoring": "Map",
     "nav.about": "About",
     "nav.report": "Report",
+    "nav.switch_theme": "Switch Theme",
+    "nav.language": "Language",
     "btn.start": "Start Monitoring",
     "btn.reset": "Reset View",
     "search.placeholder": "Search African cities...",
@@ -166,7 +168,8 @@ export const SUPPORTED_LANGUAGES = {
     'st': { name: 'Sotho', flag: '🇱🇸' },
     'tn': { name: 'Tswana', flag: '🇧🇼' },
     'ny': { name: 'Chichewa', flag: '🇲🇼' },
-    'rn': { name: 'Kirundi', flag: '🇧🇮' }
+    'rn': { name: 'Kirundi', flag: '🇧🇮' },
+    'ga': { name: 'Ga', flag: '🇬🇭' }
 };
 
 const cachedTranslations = {};
@@ -213,7 +216,7 @@ export const translateUI = async (targetLangCode) => {
         return cachedTranslations[targetLangCode];
     }
 
-    const languageName = SUPPORTED_LANGUAGES[targetLangCode];
+    const languageName = SUPPORTED_LANGUAGES[targetLangCode]?.name || targetLangCode;
 
     // 2. Try backend API first
     try {
@@ -271,7 +274,7 @@ export const translateUI = async (targetLangCode) => {
  */
 export const generateInsight = async (pm25, weather, targetLangCode, locationName) => {
     const defaultInsight = "High particulate stability observed. Suggests local combustion sources.";
-    const languageName = SUPPORTED_LANGUAGES[targetLangCode] || 'English';
+    const languageName = SUPPORTED_LANGUAGES[targetLangCode]?.name || 'English';
 
     // Determine AQI category
     let aqiCategory = 'Good';

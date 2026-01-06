@@ -96,7 +96,7 @@ const NavBar = ({ setAppMode, appMode, onOpenAbout, onOpenReport, toggleTheme, o
 
             {/* Mobile Full Screen Menu */}
             {mobileMenuOpen && (
-                <div className="fixed inset-0 z-[60] bg-[#0A0F1C]/95 backdrop-blur-xl flex flex-col p-8 animate-in slide-in-from-right duration-300">
+                <div className="fixed inset-0 z-[60] bg-[#0A0F1C]/95 backdrop-blur-xl flex flex-col p-8 animate-in slide-in-from-right duration-300 overflow-y-auto">
                     <div className="flex justify-end mb-12">
                         <button onClick={() => setMobileMenuOpen(false)} className="p-2 rounded-full bg-white/5 text-gray-300">
                             <X className="w-8 h-8" />
@@ -118,7 +118,7 @@ const NavBar = ({ setAppMode, appMode, onOpenAbout, onOpenReport, toggleTheme, o
                                 <Sun className="w-6 h-6 text-yellow-400 hidden dark:block" />
                                 <Moon className="w-6 h-6 text-blue-300 block dark:hidden" />
                             </div>
-                            <span className="text-xl font-medium text-gray-300">Switch Theme</span>
+                            <span className="text-xl font-medium text-gray-300">{t('nav.switch_theme')}</span>
                         </button>
 
                         <div className="h-px bg-white/10 my-4"></div>
@@ -127,16 +127,16 @@ const NavBar = ({ setAppMode, appMode, onOpenAbout, onOpenReport, toggleTheme, o
                         <div>
                             <div className="flex items-center gap-3 mb-4">
                                 <span className="text-2xl">{supportedLanguages[language]?.flag || '🌍'}</span>
-                                <span className="text-xl font-medium text-gray-300">Language</span>
+                                <span className="text-xl font-medium text-gray-300">{t('nav.language')}</span>
                             </div>
-                            <div className="grid grid-cols-4 gap-2 max-h-60 overflow-y-auto">
+                            <div className="grid grid-cols-4 gap-2">
                                 {Object.entries(supportedLanguages).map(([code, langData]) => (
                                     <button
                                         key={code}
                                         onClick={() => { setLanguage(code); }}
                                         className={`flex flex-col items-center px-2 py-3 rounded-lg text-xs font-medium transition-all ${language === code
-                                                ? 'bg-primary-500/20 text-primary-400 border border-primary-500/50'
-                                                : 'bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10'
+                                            ? 'bg-primary-500/20 text-primary-400 border border-primary-500/50'
+                                            : 'bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10'
                                             }`}
                                     >
                                         <span className="text-xl mb-1">{langData.flag}</span>
