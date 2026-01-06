@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useLanguage } from './context/LanguageContext';
 import axios from 'axios';
 import { AlertTriangle } from 'lucide-react';
+import { resolveLocation, getPrediction, generateInsight } from './services/api';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import NavBar from './components/NavBar';
 import HeroSection from './components/HeroSection';
@@ -173,27 +174,22 @@ function App() {
         });
       }
 
-      // 3. Get AI Prediction
-      // const predRes = await axios.get(`/api/predict`, { params: ... });
-      // Mocking for UI demo (Randomized data)
-      const mockPred = {
+      // 3. Get AI Prediction from backend
+      const predData = await getPrediction(
+        locationResult.lat,
+        locationResult.lon,
+        locationResult.name
+      );
+
+      setPrediction({
         location: locationResult,
-        pm25: Math.floor(Math.random() * 60) + 10,
-        aqi_category: "Moderate",
-        factors: { satellite_no2: "Low", satellite_aod: "0.42" },
+        pm25: predData.pm25,
+        aqi_category: predData.aqi_category,
+        factors: predData.factors,
+        weather: predData.weather,
         timestamp: new Date().toISOString()
-      };
-
-      // Update Category/Color based on PM2.5
-      if (mockPred.pm25 <= 12) mockPred.aqi_category = "Good";
-      else if (mockPred.pm25 <= 35) mockPred.aqi_category = "Moderate";
-      else if (mockPred.pm25 <= 55) mockPred.aqi_category = "Unhealthy for Sensitive Groups";
-      else mockPred.aqi_category = "Unhealthy";
-
-      setTimeout(() => {
-        setPrediction(mockPred);
-        setLoading(false);
-      }, 200);
+      });
+      setLoading(false);
 
     } catch (err) {
       console.error(err);
@@ -236,29 +232,17 @@ function App() {
         });
       }
 
-      const mockPred = {
+      // Get real prediction from backend
+      const predData = await getPrediction(city.lat, city.lon, city.name);
+      setPrediction({
         location: newLocation,
-        pm25: Math.floor(Math.random() * 60) + 8,
-        aqi_category: "Moderate",
-        factors: { satellite_no2: "Low", satellite_aod: (Math.random()).toFixed(2) },
-        timestamp: new Date().toISOString(),
-        weather: {
-          humidity: Math.floor(Math.random() * (85 - 45) + 45),
-          temp: Math.floor(Math.random() * (34 - 22) + 22),
-          pressure: Math.floor(Math.random() * (1016 - 1005) + 1005),
-          wind: Math.floor(Math.random() * 18) + 3
-        }
-      };
-
-      if (mockPred.pm25 <= 12) mockPred.aqi_category = "Good";
-      else if (mockPred.pm25 <= 35) mockPred.aqi_category = "Moderate";
-      else if (mockPred.pm25 <= 55) mockPred.aqi_category = "Sensitive";
-      else mockPred.aqi_category = "Unhealthy";
-
-      setTimeout(() => {
-        setPrediction(mockPred);
-        setLoading(false);
-      }, 500);
+        pm25: predData.pm25,
+        aqi_category: predData.aqi_category,
+        factors: predData.factors,
+        weather: predData.weather,
+        timestamp: new Date().toISOString()
+      });
+      setLoading(false);
       return;
     }
 
@@ -310,30 +294,17 @@ function App() {
         });
       }
 
-      // Mock Prediction
-      const mockPred = {
+      // Get real prediction from backend
+      const predData = await getPrediction(lat, lng, locationName);
+      setPrediction({
         location: newLocation,
-        pm25: Math.floor(Math.random() * 60) + 8,
-        aqi_category: "Moderate",
-        factors: { satellite_no2: "Low", satellite_aod: (Math.random()).toFixed(2) },
-        timestamp: new Date().toISOString(),
-        weather: {
-          humidity: Math.floor(Math.random() * (85 - 45) + 45),
-          temp: Math.floor(Math.random() * (34 - 22) + 22),
-          pressure: Math.floor(Math.random() * (1016 - 1005) + 1005),
-          wind: Math.floor(Math.random() * 18) + 3
-        }
-      };
-
-      if (mockPred.pm25 <= 12) mockPred.aqi_category = "Good";
-      else if (mockPred.pm25 <= 35) mockPred.aqi_category = "Moderate";
-      else if (mockPred.pm25 <= 55) mockPred.aqi_category = "Sensitive";
-      else mockPred.aqi_category = "Unhealthy";
-
-      setTimeout(() => {
-        setPrediction(mockPred);
-        setLoading(false);
-      }, 500);
+        pm25: predData.pm25,
+        aqi_category: predData.aqi_category,
+        factors: predData.factors,
+        weather: predData.weather,
+        timestamp: new Date().toISOString()
+      });
+      setLoading(false);
 
     } catch (e) {
       console.warn("Map Click Error:", e);
