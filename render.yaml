@@ -1,18 +1,13 @@
-# Render Blueprint
-# Deploy backend as a web service
-
 services:
   - type: web
     name: mframapa-api
-    runtime: python
-    region: frankfurt  # Closest to Africa
+    env: python
+    region: frankfurt
     plan: free
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn backend.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: GEMINI_API_KEY
-        sync: false  # Set manually in Render dashboard
+        sync: false
       - key: PYTHON_VERSION
-        value: 3.11.0
-    healthCheckPath: /api/health
-    autoDeploy: true
+        value: 3.11.4
