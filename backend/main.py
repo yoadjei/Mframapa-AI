@@ -48,25 +48,29 @@ model = None
 
 def download_model_from_gdrive():
     """Download model from Google Drive if not found locally."""
-    import requests
+    import subprocess
+    import sys
     
     # create models directory if needed
     os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
     
-    # google drive direct download url
-    url = f"https://drive.google.com/uc?export=download&id={MODEL_GDRIVE_ID}&confirm=t"
+    print("Installing gdown for Google Drive download...")
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "gdown", "-q"])
+    
+    import gdown
+    
+    url = f"https://drive.google.com/uc?id={MODEL_GDRIVE_ID}"
     
     print(f"Downloading model from Google Drive...")
     try:
-        response = requests.get(url, stream=True, timeout=300)
-        response.raise_for_status()
+        gdown.download(url, MODEL_PATH, quiet=False)
         
-        with open(MODEL_PATH, 'wb') as f:
-            for chunk in response.iter_content(chunk_size=8192):
-                f.write(chunk)
-        
-        print(f"Model downloaded successfully ({os.path.getsize(MODEL_PATH) / 1024 / 1024:.1f} MB)")
-        return True
+        if os.path.exists(MODEL_PATH) and os.path.getsize(MODEL_PATH) > 1000000:
+            print(f"Model downloaded successfully ({os.path.getsize(MODEL_PATH) / 1024 / 1024:.1f} MB)")
+            return True
+        else:
+            print("Download failed - file too small or missing")
+            return False
     except Exception as e:
         print(f"Model download failed: {e}")
         return False
