@@ -94,6 +94,6 @@
   "footer.active": "Aktief",
   "footer.ground_truth": "Grondwaarheid",
   "footer.reference_nations": "Verwysing Lande",
-  "footer.inference": "Vandag se Afleiding",
+  "footer.inference": "Today's Prediction",
   "footer.val": "Val."
 }

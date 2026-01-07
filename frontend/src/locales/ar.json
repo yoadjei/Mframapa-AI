@@ -94,6 +94,6 @@
   "footer.active": "نشط",
   "footer.ground_truth": "الحقيقة الأرضية",
   "footer.reference_nations": "الدول المرجعية",
-  "footer.inference": "استدلال اليوم",
+  "footer.inference": "Today's Prediction",
   "footer.val": "التحقق"
 }

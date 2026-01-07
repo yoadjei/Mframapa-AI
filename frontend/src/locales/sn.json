@@ -94,6 +94,6 @@
   "footer.active": "Inoshanda",
   "footer.ground_truth": "Chokwadi chePasi",
   "footer.reference_nations": "Nyika dzeReference",
-  "footer.inference": "Inference yeNhasi",
+  "footer.inference": "Today's Prediction",
   "footer.val": "Val."
 }
