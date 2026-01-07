@@ -43,16 +43,25 @@ function App() {
   const [appMode, setAppMode] = useState('landing'); // 'landing' | 'monitoring'
   const [showAbout, setShowAbout] = useState(false);
   const [showReport, setShowReport] = useState(false);
-  const [isDark, setIsDark] = useState(true);
+
+  // detect system theme preference on initial load
+  const [isDark, setIsDark] = useState(() => {
+    // check if user previously set a preference
+    const saved = localStorage.getItem('theme');
+    if (saved) return saved === 'dark';
+    // otherwise use system preference
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
   const mapRef = useRef(null);
 
-  // Sync theme with HTML class
+  // Sync theme with HTML class and save to localStorage
   useEffect(() => {
     if (isDark) {
       document.documentElement.classList.add('dark');
     } else {
       document.documentElement.classList.remove('dark');
     }
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
   }, [isDark]);
 
   const toggleTheme = () => setIsDark(!isDark);
