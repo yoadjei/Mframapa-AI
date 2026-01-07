@@ -94,6 +94,6 @@
   "footer.active": "Actif",
   "footer.ground_truth": "Vérité terrain",
   "footer.reference_nations": "Nations de référence",
-  "footer.inference": "Today's Prediction",
+  "footer.inference": "Pr�diction du jour",
   "footer.val": "Val."
 }
