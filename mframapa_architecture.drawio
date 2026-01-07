@@ -1,0 +1,193 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.2.9 Chrome/140.0.7339.249 Electron/38.7.2 Safari/537.36" version="29.2.9">
+  <diagram name="Mframapa AI Architecture" id="arch1">
+    <mxGraphModel dx="1303" dy="903" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="1">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=32;fontStyle=1;" value="MFRAMAPA AI" vertex="1">
+          <mxGeometry height="50" width="400" x="429" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=16;" value="Pan-African Virtual Air Quality Monitoring System" vertex="1">
+          <mxGeometry height="30" width="500" x="370" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="userbox" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a1a2e;strokeColor=#1a1a2e;shadow=1;" value="" vertex="1">
+          <mxGeometry height="180" width="140" x="40" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="usericon" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=14;fontStyle=1;fontColor=#ffffff;" value="END USERS" vertex="1">
+          <mxGeometry height="30" width="120" x="50" y="190" as="geometry" />
+        </mxCell>
+        <mxCell id="user1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#4CAF50;strokeColor=none;fontColor=#ffffff;fontSize=11;" value="Mobile Users" vertex="1">
+          <mxGeometry height="30" width="110" x="55" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="user2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#2196F3;strokeColor=none;fontColor=#ffffff;fontSize=11;" value="Health Workers" vertex="1">
+          <mxGeometry height="30" width="110" x="55" y="270" as="geometry" />
+        </mxCell>
+        <mxCell id="user3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#9C27B0;strokeColor=none;fontColor=#ffffff;fontSize=11;" value="Policymakers" vertex="1">
+          <mxGeometry height="30" width="110" x="55" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="frontendbox" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7C4DFF;strokeColor=#7C4DFF;shadow=1;" value="" vertex="1">
+          <mxGeometry height="240" width="180" x="240" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="frontendtitle" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=14;fontStyle=1;fontColor=#ffffff;" value="FRONTEND" vertex="1">
+          <mxGeometry height="25" width="100" x="280" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="vercel" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=10;fontColor=#E0E0E0;" value="Vercel CDN" vertex="1">
+          <mxGeometry height="20" width="80" x="290" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="fe1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=none;fontSize=11;fontColor=#333333;" value="React + Vite SPA" vertex="1">
+          <mxGeometry height="35" width="140" x="260" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="fe2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=none;fontSize=11;fontColor=#333333;" value="Interactive Map (Leaflet)" vertex="1">
+          <mxGeometry height="35" width="140" x="260" y="255" as="geometry" />
+        </mxCell>
+        <mxCell id="fe3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=none;fontSize=11;fontColor=#333333;" value="24 African Languages" vertex="1">
+          <mxGeometry height="35" width="140" x="260" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="fe4" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=none;fontSize=11;fontColor=#333333;" value="AQI Dashboard" vertex="1">
+          <mxGeometry height="35" width="140" x="260" y="345" as="geometry" />
+        </mxCell>
+        <mxCell id="backendbox" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#00BCD4;strokeColor=#00BCD4;shadow=1;" value="" vertex="1">
+          <mxGeometry height="280" width="220" x="480" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="backendtitle" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=14;fontStyle=1;fontColor=#ffffff;" value="BACKEND API" vertex="1">
+          <mxGeometry height="25" width="100" x="540" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="render" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=10;fontColor=#E0E0E0;" value="Render Cloud" vertex="1">
+          <mxGeometry height="20" width="90" x="545" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="be1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=none;fontSize=11;fontColor=#333333;fontStyle=1" value="FastAPI Server" vertex="1">
+          <mxGeometry height="35" width="180" x="500" y="190" as="geometry" />
+        </mxCell>
+        <mxCell id="be2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FF5722;strokeColor=none;fontSize=11;fontColor=#ffffff;fontStyle=1" value="XGBoost ML Model" vertex="1">
+          <mxGeometry height="45" width="180" x="500" y="235" as="geometry" />
+        </mxCell>
+        <mxCell id="be3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=none;fontSize=11;fontColor=#333333;" value="Rate Limiter + Cache" vertex="1">
+          <mxGeometry height="30" width="180" x="500" y="290" as="geometry" />
+        </mxCell>
+        <mxCell id="be4" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=none;fontSize=11;fontColor=#333333;" value="SQLite (Crowd Reports)" vertex="1">
+          <mxGeometry height="30" width="180" x="500" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="be5" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=none;fontSize=11;fontColor=#333333;" value="Geocoding Service" vertex="1">
+          <mxGeometry height="30" width="180" x="500" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="apibox" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF9800;strokeColor=#FF9800;shadow=1;" value="" vertex="1">
+          <mxGeometry height="240" width="180" x="760" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="apititle" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=14;fontStyle=1;fontColor=#ffffff;" value="EXTERNAL APIs" vertex="1">
+          <mxGeometry height="25" width="110" x="795" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="api1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=none;fontSize=11;fontColor=#333333;" value="Open-Meteo" vertex="1">
+          <mxGeometry height="35" width="140" x="780" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="api1sub" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=9;fontColor=#333333;" value="Real-time Weather" vertex="1">
+          <mxGeometry height="15" width="120" x="790" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="api2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=none;fontSize=11;fontColor=#333333;" value="Google Gemini" vertex="1">
+          <mxGeometry height="35" width="140" x="780" y="267.5" as="geometry" />
+        </mxCell>
+        <mxCell id="api2sub" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=9;fontColor=#333333;" value="AI Health Insights" vertex="1">
+          <mxGeometry height="15" width="120" x="790" y="288" as="geometry" />
+        </mxCell>
+        <mxCell id="api3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=none;fontSize=11;fontColor=#333333;" value="NASA EOSDIS" vertex="1">
+          <mxGeometry height="35" width="140" x="780" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="api3sub" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=9;fontColor=#333333;" value="Satellite AOT/NO2" vertex="1">
+          <mxGeometry height="15" width="120" x="790" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="databox" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#607D8B;strokeColor=#607D8B;shadow=1;" value="" vertex="1">
+          <mxGeometry height="240" width="180" x="1000" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="datatitle" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=14;fontStyle=1;fontColor=#ffffff;" value="TRAINING DATA" vertex="1">
+          <mxGeometry height="25" width="120" x="1030" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="data1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=none;fontSize=11;fontColor=#333333;" value="OpenAQ Ground Truth" vertex="1">
+          <mxGeometry height="30" width="140" x="1020" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="data2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=none;fontSize=11;fontColor=#333333;" value="NASA Satellite Data" vertex="1">
+          <mxGeometry height="30" width="140" x="1020" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="data3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=none;fontSize=11;fontColor=#333333;" value="Population Density" vertex="1">
+          <mxGeometry height="30" width="140" x="1020" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="data4" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=none;fontSize=11;fontColor=#333333;" value="Weather Features" vertex="1">
+          <mxGeometry height="30" width="140" x="1020" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="datastat" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=9;fontColor=#B0BEC5;" value="2M Samples | 398 Stations | 29 Countries" vertex="1">
+          <mxGeometry height="20" width="160" x="1010" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow1" edge="1" parent="1" style="endArrow=classic;html=1;strokeWidth=3;strokeColor=#333333;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="180" y="270" as="sourcePoint" />
+            <mxPoint x="240" y="270" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow2" edge="1" parent="1" style="endArrow=classic;html=1;strokeWidth=3;strokeColor=#333333;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="420" y="270" as="sourcePoint" />
+            <mxPoint x="480" y="270" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow3" edge="1" parent="1" style="endArrow=classic;html=1;strokeWidth=3;strokeColor=#333333;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="700" y="270" as="sourcePoint" />
+            <mxPoint x="760" y="270" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow4" edge="1" parent="1" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#999999;dashed=1;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="940" y="270" as="sourcePoint" />
+            <mxPoint x="1000" y="270" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="flow1" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#333333;strokeColor=none;fontColor=#ffffff;fontSize=10;fontStyle=1" value="1" vertex="1">
+          <mxGeometry height="25" width="25" x="195" y="255" as="geometry" />
+        </mxCell>
+        <mxCell id="flow2" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#333333;strokeColor=none;fontColor=#ffffff;fontSize=10;fontStyle=1" value="2" vertex="1">
+          <mxGeometry height="25" width="25" x="435" y="255" as="geometry" />
+        </mxCell>
+        <mxCell id="flow3" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#333333;strokeColor=none;fontColor=#ffffff;fontSize=10;fontStyle=1" value="3" vertex="1">
+          <mxGeometry height="25" width="25" x="715" y="255" as="geometry" />
+        </mxCell>
+        <mxCell id="metricsbox" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#4CAF50;strokeWidth=2;" value="" vertex="1">
+          <mxGeometry height="100" width="720" x="220" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="metricstitle" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=14;fontStyle=1;fontColor=#2E7D32;" value="KEY METRICS" vertex="1">
+          <mxGeometry height="25" width="120" x="525" y="460" as="geometry" />
+        </mxCell>
+        <mxCell id="m1" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=11;fontColor=#333333;fontStyle=1" value="Coverage" vertex="1">
+          <mxGeometry height="20" width="80" x="270" y="490" as="geometry" />
+        </mxCell>
+        <mxCell id="m1v" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=18;fontColor=#4CAF50;fontStyle=1" value="54 African Countries" vertex="1">
+          <mxGeometry height="30" width="150" x="250" y="510" as="geometry" />
+        </mxCell>
+        <mxCell id="m2" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=11;fontColor=#333333;fontStyle=1" value="Prediction Accuracy" vertex="1">
+          <mxGeometry height="20" width="120" x="420" y="490" as="geometry" />
+        </mxCell>
+        <mxCell id="m2v" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=24;fontColor=#4CAF50;fontStyle=1" value="75.1%" vertex="1">
+          <mxGeometry height="40" width="90" x="435" y="505" as="geometry" />
+        </mxCell>
+        <mxCell id="m3" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=11;fontColor=#333333;fontStyle=1" value="Languages" vertex="1">
+          <mxGeometry height="20" width="80" x="570" y="490" as="geometry" />
+        </mxCell>
+        <mxCell id="m3v" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=24;fontColor=#4CAF50;fontStyle=1" value="24" vertex="1">
+          <mxGeometry height="40" width="60" x="580" y="505" as="geometry" />
+        </mxCell>
+        <mxCell id="m4" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=11;fontColor=#333333;fontStyle=1" value="Response Time" vertex="1">
+          <mxGeometry height="20" width="100" x="680" y="490" as="geometry" />
+        </mxCell>
+        <mxCell id="m4v" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=18;fontColor=#4CAF50;fontStyle=1" value="&lt;2 seconds" vertex="1">
+          <mxGeometry height="30" width="100" x="680" y="510" as="geometry" />
+        </mxCell>
+        <mxCell id="m5" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=11;fontColor=#333333;fontStyle=1" value="Cost" vertex="1">
+          <mxGeometry height="20" width="80" x="820" y="490" as="geometry" />
+        </mxCell>
+        <mxCell id="m5v" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=18;fontColor=#4CAF50;fontStyle=1" value="FREE" vertex="1">
+          <mxGeometry height="30" width="80" x="820" y="510" as="geometry" />
+        </mxCell>
+        <mxCell id="flowlabel" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=11;fontColor=#666666;fontStyle=2" value="Data Flow: User Request → Frontend → Backend → ML Prediction → AI Insight → Response" vertex="1">
+          <mxGeometry height="20" width="480" x="350" y="420" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
