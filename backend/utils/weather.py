@@ -10,7 +10,7 @@ def get_weather(lat: float, lon: float) -> dict:
     params = {
         "latitude": lat,
         "longitude": lon,
-        "current": ["temperature_2m", "relative_humidity_2m", "surface_pressure", "wind_speed_10"],
+        "current": ["temperature_2m", "relative_humidity_2m", "surface_pressure", "wind_speed_10m"],
         "timezone": "auto"
     }
     
@@ -27,7 +27,7 @@ def get_weather(lat: float, lon: float) -> dict:
             "temperature": current.get("temperature_2m"),
             "humidity": current.get("relative_humidity_2m"),
             "pressure": current.get("surface_pressure"),
-            "wind_speed": current.get("wind_speed_10")
+            "wind_speed": current.get("wind_speed_10m")
         }
         
     except requests.exceptions.Timeout:
