@@ -31,16 +31,19 @@ def get_live_satellite_features(lat: float, lon: float) -> Dict:
 
 
 def get_meteo_features(lat: float, lon: float) -> List[float]:
-    """Get meteorological features from Open-Meteo."""
+    """Get meteorological features from Open-Meteo, expanded to 20 features for model."""
     
     url = "https://api.open-meteo.com/v1/forecast"
     params = {
         "latitude": lat,
         "longitude": lon,
         "current": [
+            "temperature_2m",
             "relative_humidity_2m",
             "surface_pressure",
-            "cloud_cover"
+            "cloud_cover",
+            "wind_speed_10m",
+            "wind_direction_10m"
         ],
         "timezone": "auto"
     }
@@ -51,29 +54,63 @@ def get_meteo_features(lat: float, lon: float) -> List[float]:
             data = resp.json()
             current = data.get("current", {})
             
+            # Extract actual weather data
+            temp = current.get("temperature_2m", 25)
             humidity = current.get("relative_humidity_2m", 50)
             pressure = current.get("surface_pressure", 1013)
             clouds = current.get("cloud_cover", 50)
+            wind_speed = current.get("wind_speed_10m", 5)
+            wind_dir = current.get("wind_direction_10m", 180)
             
-            # Estimate PBLH from pressure (simplified)
+            # Derived features
             pblh = max(500, min(2500, (1013 - pressure) * 50 + 1000))
             
-            # Placeholder values for NO2 and AOD (would come from real satellite data)
-            no2 = 0.5  # Placeholder
-            aod = 0.3  # Placeholder
+            # 20 features matching model training data:
+            # [lat, lon, NO2, AOD, PBLH, humidity, temp, pressure, wind_speed, wind_dir,
+            #  clouds, month, day, hour, is_dry_season, elevation, urban_fraction, 
+            #  population_density, vegetation_index, distance_to_road]
+            import datetime
+            now = datetime.datetime.utcnow()
+            month = now.month
+            day = now.day
+            hour = now.hour
+            is_dry_season = 1 if month in [11, 12, 1, 2, 3] else 0
             
-            return [no2, aod, pblh, humidity]
+            features = [
+                lat,                    # 1. latitude
+                lon,                    # 2. longitude
+                0.5,                    # 3. NO2 (placeholder - would come from Sentinel-5P)
+                0.3,                    # 4. AOD (placeholder - would come from MODIS)
+                pblh,                   # 5. planetary boundary layer height
+                humidity,               # 6. relative humidity
+                temp,                   # 7. temperature
+                pressure,               # 8. surface pressure
+                wind_speed,             # 9. wind speed
+                wind_dir,               # 10. wind direction
+                clouds,                 # 11. cloud cover
+                month,                  # 12. month
+                day,                    # 13. day
+                hour,                   # 14. hour
+                is_dry_season,          # 15. dry season flag
+                100,                    # 16. elevation (placeholder)
+                0.5,                    # 17. urban fraction (placeholder)
+                1000,                   # 18. population density (placeholder)
+                0.3,                    # 19. vegetation index (placeholder)
+                500                     # 20. distance to road (placeholder)
+            ]
+            
+            return features
     except:
         pass
     
-    # Default fallback values
-    return [0.5, 0.3, 1000, 50]
+    # Default fallback with 20 features
+    return [lat, lon, 0.5, 0.3, 1000, 50, 25, 1013, 5, 180, 50, 1, 1, 12, 0, 100, 0.5, 1000, 0.3, 500]
 
 
 def check_satellite_api() -> bool:
     """Check if satellite API is accessible."""
     try:
         features = get_meteo_features(5.6, -0.2)
-        return len(features) == 4
+        return len(features) == 20
     except:
         return False
