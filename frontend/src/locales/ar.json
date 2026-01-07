@@ -1,4 +1,4 @@
-{
+﻿{
   "app.title": "Mframapa AI",
   "app.tagline": "مراقبة جودة الهواء بالذكاء الاصطناعي في الوقت الحقيقي لأفريقيا",
   "hero.headline_part1": "تنفس بوعي.",
@@ -94,6 +94,6 @@
   "footer.active": "نشط",
   "footer.ground_truth": "الحقيقة الأرضية",
   "footer.reference_nations": "الدول المرجعية",
-  "footer.inference": "???? ?????",
+  "footer.inference": "تنبؤ اليوم",
   "footer.val": "التحقق"
 }

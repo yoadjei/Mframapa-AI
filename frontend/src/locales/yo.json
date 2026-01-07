@@ -1,4 +1,4 @@
-{
+﻿{
   "app.title": "Mframapa AI",
   "app.tagline": "Ìṣàyẹ̀wò Àfẹ́fẹ́ pẹ̀lú AI fún Áfíríkà",
   "hero.headline_part1": "Mí Àfẹ́fẹ́ pẹ̀lú Ìmọ̀.",
@@ -94,6 +94,6 @@
   "footer.active": "Ṣiṣẹ́",
   "footer.ground_truth": "Òtítọ́ Ilẹ̀",
   "footer.reference_nations": "Àwọn Orílẹ̀-èdè Ìtọ́kasí",
-  "footer.inference": "�s?t?l? �n�",
+  "footer.inference": "Asotele Oni",
   "footer.val": "Ìfọwọ́sí"
 }
