@@ -1,29 +1,84 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { baseStrings, SUPPORTED_LANGUAGES } from '../services/gemini';
+
+// import all locale files statically
+import en from '../locales/en.json';
+import fr from '../locales/fr.json';
+import ar from '../locales/ar.json';
+import sw from '../locales/sw.json';
+import tw from '../locales/tw.json';
+import pt from '../locales/pt.json';
+import es from '../locales/es.json';
+import am from '../locales/am.json';
+import ha from '../locales/ha.json';
+import yo from '../locales/yo.json';
+import ig from '../locales/ig.json';
+import zu from '../locales/zu.json';
+import xh from '../locales/xh.json';
+import af from '../locales/af.json';
+import sn from '../locales/sn.json';
+import rw from '../locales/rw.json';
+import mg from '../locales/mg.json';
+import so from '../locales/so.json';
+import ti from '../locales/ti.json';
+import wo from '../locales/wo.json';
+import st from '../locales/st.json';
+import tn from '../locales/tn.json';
+import ny from '../locales/ny.json';
+import rn from '../locales/rn.json';
+import ss from '../locales/ss.json';
+import nd from '../locales/nd.json';
+import ga from '../locales/ga.json';
 
 const LanguageContext = createContext();
 
-// pre-cache English strings
-const translationCache = {
-    en: baseStrings
+// supported languages with flags
+export const SUPPORTED_LANGUAGES = {
+    'en': { name: 'English', flag: '🇬🇧' },
+    'fr': { name: 'French', flag: '🇫🇷' },
+    'ar': { name: 'Arabic', flag: '🇸🇦' },
+    'pt': { name: 'Portuguese', flag: '🇵🇹' },
+    'es': { name: 'Spanish', flag: '🇪🇸' },
+    'sw': { name: 'Swahili', flag: '🇰🇪' },
+    'am': { name: 'Amharic', flag: '🇪🇹' },
+    'ha': { name: 'Hausa', flag: '🇳🇬' },
+    'yo': { name: 'Yoruba', flag: '🇳🇬' },
+    'ig': { name: 'Igbo', flag: '🇳🇬' },
+    'tw': { name: 'Twi', flag: '🇬🇭' },
+    'zu': { name: 'Zulu', flag: '🇿🇦' },
+    'xh': { name: 'Xhosa', flag: '🇿🇦' },
+    'af': { name: 'Afrikaans', flag: '🇿🇦' },
+    'sn': { name: 'Shona', flag: '🇿🇼' },
+    'rw': { name: 'Kinyarwanda', flag: '🇷🇼' },
+    'mg': { name: 'Malagasy', flag: '🇲🇬' },
+    'so': { name: 'Somali', flag: '🇸🇴' },
+    'ti': { name: 'Tigrinya', flag: '🇪🇷' },
+    'wo': { name: 'Wolof', flag: '🇸🇳' },
+    'st': { name: 'Sotho', flag: '🇱🇸' },
+    'tn': { name: 'Tswana', flag: '🇧🇼' },
+    'ny': { name: 'Chichewa', flag: '🇲🇼' },
+    'rn': { name: 'Kirundi', flag: '🇧🇮' },
+    'ss': { name: 'Swati', flag: '🇸🇿' },
+    'nd': { name: 'Ndebele', flag: '🇿🇼' },
+    'ga': { name: 'Ga', flag: '🇬🇭' }
+};
+
+// all translations loaded at build time
+const translations = {
+    en, fr, ar, sw, tw, pt, es, am, ha, yo, ig, zu, xh, af,
+    sn, rw, mg, so, ti, wo, st, tn, ny, rn, ss, nd, ga
 };
 
 export const LanguageProvider = ({ children }) => {
     const [language, setLanguageState] = useState(() => {
-        // check localStorage first
         const saved = localStorage.getItem('language');
         if (saved && SUPPORTED_LANGUAGES[saved]) return saved;
         return 'en';
     });
-    const [translations, setTranslations] = useState(translationCache[language] || baseStrings);
-    const [loading, setLoading] = useState(false);
 
-    // on mount, detect browser language if no saved preference
     useEffect(() => {
         const saved = localStorage.getItem('language');
-        if (saved) return; // user already chose a language
+        if (saved) return;
 
-        // check URL parameter first
         const params = new URLSearchParams(window.location.search);
         const urlLang = params.get('lang');
         if (urlLang && SUPPORTED_LANGUAGES[urlLang]) {
@@ -31,73 +86,28 @@ export const LanguageProvider = ({ children }) => {
             return;
         }
 
-        // detect browser language
         const browserLang = navigator.language.split('-')[0].toLowerCase();
         if (SUPPORTED_LANGUAGES[browserLang] && browserLang !== 'en') {
             changeLanguage(browserLang);
         }
     }, []);
 
-    // expose for testing
     useEffect(() => {
         window.setAppLanguage = changeLanguage;
         return () => delete window.setAppLanguage;
     }, []);
 
-    const changeLanguage = async (langCode) => {
+    const changeLanguage = (langCode) => {
         if (langCode === language) return;
-
-        // save to localStorage for persistence
         localStorage.setItem('language', langCode);
         setLanguageState(langCode);
-
-        // if English, use base strings immediately
-        if (langCode === 'en') {
-            setTranslations(baseStrings);
-            return;
-        }
-
-        // check cache first for instant switching
-        if (translationCache[langCode]) {
-            setTranslations(translationCache[langCode]);
-            return;
-        }
-
-        // only show loading if we need to fetch
-        setLoading(true);
-        try {
-            // try backend API first (faster, cached)
-            const response = await fetch('/api/translate-ui', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    strings: baseStrings,
-                    target_language: langCode
-                })
-            });
-
-            if (response.ok) {
-                const translated = await response.json();
-                translationCache[langCode] = translated;
-                setTranslations(translated);
-            } else {
-                // fallback to English if translation fails
-                console.warn('Translation failed, using English');
-                setTranslations(baseStrings);
-            }
-        } catch (error) {
-            console.error('Translation error:', error);
-            setTranslations(baseStrings);
-        } finally {
-            setLoading(false);
-        }
     };
 
     const t = (key) => {
-        return translations[key] || baseStrings[key] || key;
+        const currentTranslations = translations[language] || translations.en;
+        return currentTranslations[key] || translations.en[key] || key;
     };
 
-    // RTL Languages
     const RTL_LANGUAGES = ['ar', 'he', 'fa', 'ur'];
     const isRTL = RTL_LANGUAGES.includes(language);
 
@@ -106,7 +116,7 @@ export const LanguageProvider = ({ children }) => {
             language,
             setLanguage: changeLanguage,
             t,
-            loading,
+            loading: false,
             supportedLanguages: SUPPORTED_LANGUAGES,
             isRTL
         }}>
