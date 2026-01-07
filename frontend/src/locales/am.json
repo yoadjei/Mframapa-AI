@@ -95,5 +95,10 @@
   "footer.ground_truth": "የመሬት እውነት",
   "footer.reference_nations": "የማጣቀሻ ሀገራት",
   "footer.inference": "የዛሬ ትንበያ",
-  "footer.val": "ማረጋገጫ"
+  "footer.val": "ማረጋገጫ",
+  "insight.good": "ጥሩ የአየር ዝውውር ስላለ አየር ንጹህ ነው። ለሁሉም እንቅስቃሴዎች ደህንነቱ የተጠበቀ።",
+  "insight.moderate": "የቅንጣት ክምችት ትንሽ ነው። ሁኔታዎች ለብዙዎች ተቀባይነት አላቸው።",
+  "insight.sensitive": "ከፍ ያለ ቅንጣቶች ምናልባት ከአካባቢ በካይ ምንጮች። ተጋላጭ ወገኖች ጥንቃቄ ማድረግ አለባቸው።",
+  "insight.unhealthy": "ከፍተኛ የቅንጣት መረጋጋት ታይቷል። የአካባቢ ቃጠሎ ምንጮችን ያሳያል።",
+  "insight.hazardous": "አደገኛ የአየር ጥራት። ከተቻለ ከቤት አይውጡ እና አየር ያጣሩ።"
 }

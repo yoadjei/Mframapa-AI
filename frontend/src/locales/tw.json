@@ -95,5 +95,10 @@
   "footer.ground_truth": "Asaase Nokware",
   "footer.reference_nations": "Reference Aman",
   "footer.inference": "Ɛnnɛ Nkɔmhyɛ",
-  "footer.val": "Val."
+  "footer.val": "Val.",
+  "insight.good": "Mframa pa esiane mframa a ɛbɔ yiye nti. Atɔuw mma obiara.",
+  "insight.moderate": "Mfutuma kakra wɔ mframa mu. Ɛyɛ ma nnipa pii.",
+  "insight.sensitive": "Mfutuma dɔɔso kakra, ebia efi mpɔtam hɔ. Ɛsɛ sɛ wɔn a wɔn ho yɛ mmerɛw no hwɛ yiye.",
+  "insight.unhealthy": "Mfutuma agyina hɔ kɛse. Ekyerɛ sɛ gya bi wɔ mpɔtam hɔ.",
+  "insight.hazardous": "Mframa a ɛyɛ hu kɛse. Tena ofie na sɔn mframa no sɛ wobetumi a."
 }

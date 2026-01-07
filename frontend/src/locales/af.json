@@ -95,5 +95,10 @@
   "footer.ground_truth": "Grondwaarheid",
   "footer.reference_nations": "Verwysing Lande",
   "footer.inference": "Vandag se Voorspelling",
-  "footer.val": "Val."
+  "footer.val": "Val.",
+  "insight.good": "Skoon lugtoestande weens goeie windverspreiding. Veilig vir alle aktiwiteite.",
+  "insight.moderate": "Ligte partikelopbou. Toestande is aanvaarbaar vir die meeste mense.",
+  "insight.sensitive": "Verhoogde partikels waarskynlik weens plaaslike emissies. Sensitiewe groepe moet voorsorg tref.",
+  "insight.unhealthy": "Hoë partikelstabiliteit waargeneem. Dui op plaaslike verbrandingsbronne.",
+  "insight.hazardous": "Gevaarlike luggehalte. Bly binne en filtreer lug indien moontlik."
 }

@@ -1,4 +1,4 @@
-﻿{
+{
   "app.title": "Mframapa AI",
   "app.tagline": "Ìṣàyẹ̀wò Àfẹ́fẹ́ pẹ̀lú AI fún Áfíríkà",
   "hero.headline_part1": "Mí Àfẹ́fẹ́ pẹ̀lú Ìmọ̀.",
@@ -95,5 +95,10 @@
   "footer.ground_truth": "Òtítọ́ Ilẹ̀",
   "footer.reference_nations": "Àwọn Orílẹ̀-èdè Ìtọ́kasí",
   "footer.inference": "Asotele Oni",
-  "footer.val": "Ìfọwọ́sí"
+  "footer.val": "Ìfọwọ́sí",
+  "insight.good": "Afẹfẹ mọ nitori pipinka afẹfẹ to dara. Ailewu fun gbogbo awọn iṣẹ.",
+  "insight.moderate": "Ikopjọ ekuru diẹ. Awọn ipo jẹ itẹwọgba fun ọpọlọpọ eniyan.",
+  "insight.sensitive": "Awọn patikulu ti o ga, o ṣee ṣe lati awọn itujade agbegbe. Awọn ẹgbẹ ti o ni imọlara yẹ ki o ṣọra.",
+  "insight.unhealthy": "Iduroṣinṣin patikulu giga. Ṣe imọran awọn orisun ijona agbegbe.",
+  "insight.hazardous": "Didara afẹfẹ lewu. Duro ninu ile ki o ṣe àlẹmọ afẹfẹ ti o ba ṣeeṣe."
 }

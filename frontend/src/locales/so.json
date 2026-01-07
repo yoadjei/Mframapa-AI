@@ -95,5 +95,10 @@
   "footer.ground_truth": "Runta Dhulka",
   "footer.reference_nations": "Dalalka Tixraaca",
   "footer.inference": "Saadaalinta Maanta",
-  "footer.val": "Xaqiijin"
+  "footer.val": "Xaqiijin",
+  "insight.good": "Clean air conditions due to good wind dispersion. Safe for all activities.",
+  "insight.moderate": "Slight particulate buildup. Conditions are acceptable for most people.",
+  "insight.sensitive": "Elevated particles likely from local emissions. Sensitive groups should take precautions.",
+  "insight.unhealthy": "High particulate stability observed. Suggests local combustion sources.",
+  "insight.hazardous": "Dangerous air quality. Stay indoors and use air filtration if possible."
 }

@@ -95,5 +95,10 @@
   "footer.ground_truth": "Ukweli wa Ardhi",
   "footer.reference_nations": "Mataifa ya Rejea",
   "footer.inference": "Utabiri wa Leo",
-  "footer.val": "Uthibitishaji"
+  "footer.val": "Uthibitishaji",
+  "insight.good": "Hali ya hewa safi kutokana na upepo mzuri. Salama kwa shughuli zote.",
+  "insight.moderate": "Mkusanyiko mdogo wa chembe. Hali inakubalika kwa watu wengi.",
+  "insight.sensitive": "Chembe zilizoinuka huenda kutoka kwa uzalishaji wa ndani. Makundi nyeti wachukue tahadhari.",
+  "insight.unhealthy": "Utulivu mkubwa wa chembe umeonekana. Inaashiria vyanzo vya mwako vya ndani.",
+  "insight.hazardous": "Ubora wa hewa ni hatari. Kaa ndani na tumia uchujaji wa hewa ikiwezekana."
 }

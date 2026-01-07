@@ -95,5 +95,10 @@
   "footer.ground_truth": "Inyaniso Yomhlaba",
   "footer.reference_nations": "Amazwe Okuthelekisa",
   "footer.inference": "Isithembiso Sanamhlanje",
-  "footer.val": "Ukuqinisekisa"
+  "footer.val": "Ukuqinisekisa",
+  "insight.good": "Umoyaucocekile ngenxa yokuhamba kakuhle komoya. Kukhuselekile kuyo yonke imisebenzi.",
+  "insight.moderate": "Ukuqokelelana amasuntswana okuncinci. Iimeko zamkelekile kubantu abaninzi.",
+  "insight.sensitive": "Amasuntswana aphakamileyo mhlawumbi aphuma kwiindawo ezikufutshane. Amaqela abuthathaka makalumke.",
+  "insight.unhealthy": "Uzinzo lamasuntswana aphezulu luqatshelwe. Oku kubonisa imithombo yokutshisa yendawo.",
+  "insight.hazardous": "Umgangatho womoya oyingozi. Hlala ngaphakathi kwaye ucoce umoya ukuba kunokwenzeka."
 }

@@ -95,5 +95,10 @@
   "footer.ground_truth": "Iqiniso Lomhlaba",
   "footer.reference_nations": "Amazwe Okubhekisa",
   "footer.inference": "Isibikezelo Sanamuhla",
-  "footer.val": "Ukuqinisekisa"
+  "footer.val": "Ukuqinisekisa",
+  "insight.good": "Umoya uhlanzekile ngenxa yokuhamba kahle komoya. Kuphephile kuyo yonke imisebenzi.",
+  "insight.moderate": "Ukuqoqana kwezinhlayiya okuncane. Izimo zamukelekile kubantu abaningi.",
+  "insight.sensitive": "Izinhlayiya eziphakeme mhlawumbe ezivela entuthwini yendawo. Amaqembu abuthakathaka kufanele aqaphele.",
+  "insight.unhealthy": "Kubonakale ukuzinza okuphezulu kwezinhlayiya. Kusikisela imithombo yokushisa yendawo.",
+  "insight.hazardous": "Izinga lomoya eliyingozi. Hlala endlini uhlunge umoya uma kungenzeka."
 }

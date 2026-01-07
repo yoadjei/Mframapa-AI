@@ -95,5 +95,10 @@
   "footer.ground_truth": "Gaskiyar Ƙasa",
   "footer.reference_nations": "Ƙasashen Tunani",
   "footer.inference": "Hasashen Yau",
-  "footer.val": "Tabbatarwa"
+  "footer.val": "Tabbatarwa",
+  "insight.good": "Iska tana da tsabta saboda iska mai kyau. Lafiya ga dukkan ayyuka.",
+  "insight.moderate": "Tarin barbashi kaɗan. Yanayin yana da kyau ga yawancin mutane.",
+  "insight.sensitive": "Barbashi masu yawa daga hayaki na kusa. Masu rauni su yi taka tsantsan.",
+  "insight.unhealthy": "An lura da yawan barbashi. Yana nuna hanyoyin konewa na gida.",
+  "insight.hazardous": "Ingancin iska yana da haɗari. Zauna a gida kuma tace iska idan zai yiwu."
 }

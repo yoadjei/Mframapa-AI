@@ -95,5 +95,10 @@
   "footer.ground_truth": "Eziokwu Ala",
   "footer.reference_nations": "Mba Ntụaka",
   "footer.inference": "Amụma Taa",
-  "footer.val": "Nkwenye"
+  "footer.val": "Nkwenye",
+  "insight.good": "Ikuku dị ọcha n'ihi na ikuku na-eku nke ọma. Dị mma maka ihe omume niile.",
+  "insight.moderate": "Mpekere ntakịrị. Ọnọdụ dị mma maka ọtụtụ mmadụ.",
+  "insight.sensitive": "Mpekere dị elu, ikekwe site na anwụrụ ọkụ mpaghara. Ndị nwere ahụ ike kwesịrị ịkpachara anya.",
+  "insight.unhealthy": "Ahụrụ nkwụsi ike mpekere dị elu. Na-egosi isi mmalite ọkụ mpaghara.",
+  "insight.hazardous": "Ogo ikuku dị ize ndụ. Nọrọ n'ime ụlọ ma hichaa ikuku ma ọ bụrụ na ọ ga-ekwe omume."
 }

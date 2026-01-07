@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
-import { generateInsight } from '../services/gemini';
+// generateInsight removed
 import { Share2, MapPin, Activity, AlertTriangle, Wind, Info, ExternalLink, Twitter, Linkedin, Link, MessageCircle, X, ChevronDown, ChevronUp, Droplets, Thermometer, Gauge, Check } from 'lucide-react';
 
 const PredictionCard = ({ prediction, onClose }) => {
@@ -8,14 +8,17 @@ const PredictionCard = ({ prediction, onClose }) => {
     const [showShare, setShowShare] = useState(false);
     const [showDetails, setShowDetails] = useState(false);
     const [showCopyToast, setShowCopyToast] = useState(false);
-    const [aiInsight, setAiInsight] = useState('');
+    // Get static localized insight based on AQI
+    const getInsightKey = (category) => {
+        const cat = (category || 'Moderate').toLowerCase();
+        if (cat.includes('good')) return 'insight.good';
+        if (cat.includes('moderate')) return 'insight.moderate';
+        if (cat.includes('sensitive')) return 'insight.sensitive';
+        if (cat.includes('hazardous')) return 'insight.hazardous';
+        return 'insight.unhealthy'; // Default for 'Unhealthy'
+    };
 
-    useEffect(() => {
-        if (prediction) {
-            generateInsight(prediction.pm25, prediction.weather, language, prediction.location.name)
-                .then(setAiInsight);
-        }
-    }, [prediction, language]);
+    const insightKey = getInsightKey(prediction.aqi_category);
 
     if (!prediction) return null;
 
@@ -234,7 +237,7 @@ const PredictionCard = ({ prediction, onClose }) => {
                         <div className="mt-3 bg-blue-500/10 border border-blue-500/20 p-3 rounded-xl">
                             <h5 className="text-xs font-bold text-blue-600 dark:text-blue-400 mb-1">{t('card.insight_title')}</h5>
                             <p className="text-xs text-blue-800 dark:text-blue-200 leading-relaxed">
-                                {aiInsight || t('advice.unhealthy')}
+                                {t(insightKey) || t('advice.unhealthy')}
                             </p>
                         </div>
                     </div>
