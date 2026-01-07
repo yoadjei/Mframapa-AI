@@ -47,7 +47,7 @@ const NavBar = ({ setAppMode, appMode, onOpenAbout, onOpenReport, toggleTheme, o
                                 onClick={() => setLangMenuOpen(!langMenuOpen)}
                                 className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:border-primary-500/50 transition-all text-sm font-medium text-gray-600 dark:text-gray-300"
                             >
-                                <span className="text-lg">{supportedLanguages[language]?.flag || '🌍'}</span>
+                                <span className={`fi fi-${supportedLanguages[language]?.countryCode || 'un'} rounded-sm`}></span>
                                 <span className="uppercase">{language}</span>
                                 <ChevronDown className={`w-4 h-4 transition-transform ${langMenuOpen ? 'rotate-180' : ''}`} />
                             </button>
@@ -60,7 +60,7 @@ const NavBar = ({ setAppMode, appMode, onOpenAbout, onOpenReport, toggleTheme, o
                                             onClick={() => { setLanguage(code); setLangMenuOpen(false); }}
                                             className={`w-full text-left px-4 py-2.5 text-sm hover:bg-gray-100 dark:hover:bg-white/5 transition-colors flex items-center gap-3 ${language === code ? 'bg-primary-500/10 text-primary-500' : 'text-gray-700 dark:text-gray-300'}`}
                                         >
-                                            <span className="text-lg">{langData.flag}</span>
+                                            <span className={`fi fi-${langData.countryCode} rounded-sm`}></span>
                                             <span>{langData.name}</span>
                                             <span className="text-gray-400 text-xs ml-auto uppercase">({code})</span>
                                         </button>
@@ -126,7 +126,7 @@ const NavBar = ({ setAppMode, appMode, onOpenAbout, onOpenReport, toggleTheme, o
                         {/* Language Selector for Mobile - Single scroll with page */}
                         <div className="pb-8">
                             <div className="flex items-center gap-3 mb-4">
-                                <span className="text-2xl">{supportedLanguages[language]?.flag || '🌍'}</span>
+                                <span className={`fi fi-${supportedLanguages[language]?.countryCode || 'un'} text-xl rounded-sm`}></span>
                                 <span className="text-lg font-medium text-gray-600 dark:text-gray-300">{t('nav.language')}</span>
                             </div>
                             <div className="grid grid-cols-4 gap-2">
@@ -139,7 +139,7 @@ const NavBar = ({ setAppMode, appMode, onOpenAbout, onOpenReport, toggleTheme, o
                                             : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-white/10 hover:bg-gray-200 dark:hover:bg-white/10'
                                             }`}
                                     >
-                                        <span className="text-xl mb-1">{langData.flag}</span>
+                                        <span className={`fi fi-${langData.countryCode} text-lg rounded-sm mb-1`}></span>
                                         <span>{code.toUpperCase()}</span>
                                     </button>
                                 ))}

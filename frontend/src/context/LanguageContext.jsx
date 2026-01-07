@@ -31,35 +31,35 @@ import ga from '../locales/ga.json';
 
 const LanguageContext = createContext();
 
-// supported languages with flags
+// supported languages with country codes for flag-icons
 export const SUPPORTED_LANGUAGES = {
-    'en': { name: 'English', flag: '🇬🇧' },
-    'fr': { name: 'French', flag: '🇫🇷' },
-    'ar': { name: 'Arabic', flag: '🇸🇦' },
-    'pt': { name: 'Portuguese', flag: '🇵🇹' },
-    'es': { name: 'Spanish', flag: '🇪🇸' },
-    'sw': { name: 'Swahili', flag: '🇰🇪' },
-    'am': { name: 'Amharic', flag: '🇪🇹' },
-    'ha': { name: 'Hausa', flag: '🇳🇬' },
-    'yo': { name: 'Yoruba', flag: '🇳🇬' },
-    'ig': { name: 'Igbo', flag: '🇳🇬' },
-    'tw': { name: 'Twi', flag: '🇬🇭' },
-    'zu': { name: 'Zulu', flag: '🇿🇦' },
-    'xh': { name: 'Xhosa', flag: '🇿🇦' },
-    'af': { name: 'Afrikaans', flag: '🇿🇦' },
-    'sn': { name: 'Shona', flag: '🇿🇼' },
-    'rw': { name: 'Kinyarwanda', flag: '🇷🇼' },
-    'mg': { name: 'Malagasy', flag: '🇲🇬' },
-    'so': { name: 'Somali', flag: '🇸🇴' },
-    'ti': { name: 'Tigrinya', flag: '🇪🇷' },
-    'wo': { name: 'Wolof', flag: '🇸🇳' },
-    'st': { name: 'Sotho', flag: '🇱🇸' },
-    'tn': { name: 'Tswana', flag: '🇧🇼' },
-    'ny': { name: 'Chichewa', flag: '🇲🇼' },
-    'rn': { name: 'Kirundi', flag: '🇧🇮' },
-    'ss': { name: 'Swati', flag: '🇸🇿' },
-    'nd': { name: 'Ndebele', flag: '🇿🇼' },
-    'ga': { name: 'Ga', flag: '🇬🇭' }
+    'en': { name: 'English', countryCode: 'gb' },
+    'fr': { name: 'French', countryCode: 'fr' },
+    'ar': { name: 'Arabic', countryCode: 'sa' },
+    'pt': { name: 'Portuguese', countryCode: 'pt' },
+    'es': { name: 'Spanish', countryCode: 'es' },
+    'sw': { name: 'Swahili', countryCode: 'ke' },
+    'am': { name: 'Amharic', countryCode: 'et' },
+    'ha': { name: 'Hausa', countryCode: 'ng' },
+    'yo': { name: 'Yoruba', countryCode: 'ng' },
+    'ig': { name: 'Igbo', countryCode: 'ng' },
+    'tw': { name: 'Twi', countryCode: 'gh' },
+    'zu': { name: 'Zulu', countryCode: 'za' },
+    'xh': { name: 'Xhosa', countryCode: 'za' },
+    'af': { name: 'Afrikaans', countryCode: 'za' },
+    'sn': { name: 'Shona', countryCode: 'zw' },
+    'rw': { name: 'Kinyarwanda', countryCode: 'rw' },
+    'mg': { name: 'Malagasy', countryCode: 'mg' },
+    'so': { name: 'Somali', countryCode: 'so' },
+    'ti': { name: 'Tigrinya', countryCode: 'er' },
+    'wo': { name: 'Wolof', countryCode: 'sn' },
+    'st': { name: 'Sotho', countryCode: 'ls' },
+    'tn': { name: 'Tswana', countryCode: 'bw' },
+    'ny': { name: 'Chichewa', countryCode: 'mw' },
+    'rn': { name: 'Kirundi', countryCode: 'bi' },
+    'ss': { name: 'Swati', countryCode: 'sz' },
+    'nd': { name: 'Ndebele', countryCode: 'zw' },
+    'ga': { name: 'Ga', countryCode: 'gh' }
 };
 
 // all translations loaded at build time
