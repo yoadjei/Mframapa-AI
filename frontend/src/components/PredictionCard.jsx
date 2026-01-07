@@ -18,9 +18,9 @@ const PredictionCard = ({ prediction, onClose }) => {
         return 'insight.unhealthy'; // Default for 'Unhealthy'
     };
 
-    const insightKey = getInsightKey(prediction.aqi_category);
-
     if (!prediction) return null;
+
+    const insightKey = getInsightKey(prediction.aqi_category);
 
     // Colors based on spec
     const getAQIColor = (aqi) => {
