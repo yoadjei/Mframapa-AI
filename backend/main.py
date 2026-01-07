@@ -191,21 +191,27 @@ def predict_pollution(request: Request, lat: float, lon: float, name: str = "Unk
         prediction = current_model.predict(X)[0]
         pm25 = float(prediction)
         
+        # Get weather data (now properly fetched)
+        weather = None
         try:
             weather = get_weather(lat, lon)
-        except:
-            weather = None
+        except Exception as e:
+            print(f"Weather fetch failed: {e}")
         
+        # Feature indices for 20-feature format:
+        # [lat, lon, NO2, AOD, PBLH, humidity, temp, pressure, wind_speed, wind_dir,
+        #  clouds, month, day, hour, is_dry_season, elevation, urban_fraction, 
+        #  population_density, vegetation_index, distance_to_road]
         return {
             "pm25": round(pm25, 1),
             "aqi_category": get_aqi_category(pm25),
             "confidence": 0.90,
             "weather": weather,
             "factors": {
-                "satellite_no2": round(features[0], 2),
-                "satellite_aod": round(features[1], 2),
-                "pblh": round(features[2], 0),
-                "humidity": round(features[3], 1)
+                "satellite_no2": round(features[2], 2),   # NO2 is at index 2
+                "satellite_aod": round(features[3], 2),   # AOD is at index 3
+                "pblh": round(features[4], 0),            # PBLH is at index 4
+                "humidity": round(features[5], 1)         # humidity is at index 5
             },
             "location": {"name": name, "lat": lat, "lon": lon}
         }
