@@ -44,17 +44,38 @@ app.add_middleware(
 
 MODEL_PATH = "backend/models/universal_african_model.json"
 model = None
+model_loading = False
 
-# load model
-if os.path.exists(MODEL_PATH):
+def get_model():
+    """Lazy load model on first request to avoid OOM at startup."""
+    global model, model_loading
+    
+    if model is not None:
+        return model
+    
+    if model_loading:
+        return None
+    
+    model_loading = True
+    
+    # Check if model exists
+    if not os.path.exists(MODEL_PATH) or os.path.getsize(MODEL_PATH) < 1000:
+        print(f"Model not found at {MODEL_PATH}")
+        model_loading = False
+        return None
+    
     try:
-        model = xgb.XGBRegressor()
-        model.load_model(MODEL_PATH)
+        print("Loading model (lazy load on first request)...")
+        loaded_model = xgb.XGBRegressor()
+        loaded_model.load_model(MODEL_PATH)
+        model = loaded_model
         print("Model loaded successfully")
+        return model
     except Exception as e:
         print(f"Model load failed: {e}")
-else:
-    print(f"Model not found at {MODEL_PATH}")
+        model_loading = False
+        return None
+
 
 
 class LocationResponse(BaseModel):
@@ -158,15 +179,16 @@ def predict_pollution(request: Request, lat: float, lon: float, name: str = "Unk
     if not allowed:
         raise HTTPException(status_code=429, detail=msg)
     
-    if not model:
-        raise HTTPException(status_code=503, detail="Model not ready")
+    current_model = get_model()
+    if not current_model:
+        raise HTTPException(status_code=503, detail="Model not ready - loading, please retry in a moment")
 
     try:
         sat_data = get_live_satellite_features(lat, lon)
         features = sat_data['features']
         
         X = np.array([features])
-        prediction = model.predict(X)[0]
+        prediction = current_model.predict(X)[0]
         pm25 = float(prediction)
         
         try:
