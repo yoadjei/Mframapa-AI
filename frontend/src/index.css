@@ -109,9 +109,20 @@ body {
   @apply bg-gray-50 dark:bg-[#0A0F1C] text-gray-900 dark:text-white transition-colors duration-300;
 }
 
-/* Custom Scrollbar */
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Prevent horizontal scroll */
+html, body {
+  overflow-x: hidden;
+}
+
+/* Custom Scrollbar - Dark Mode */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -119,6 +130,28 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: #4b5563;
   border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+}
+
+/* Light mode scrollbar */
+.light ::-webkit-scrollbar-thumb,
+:root:not(.dark) ::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+}
+
+.light ::-webkit-scrollbar-thumb:hover,
+:root:not(.dark) ::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Hide scrollbar on mobile for cleaner look */
+@media (max-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
 }
