@@ -43,42 +43,9 @@ app.add_middleware(
 )
 
 MODEL_PATH = "backend/models/universal_african_model.json"
-MODEL_GDRIVE_ID = "1bX8XI0ViGqm8FFxXkLNys6FmWxtgL1So"
 model = None
 
-def download_model_from_gdrive():
-    """Download model from Google Drive if not found locally."""
-    import subprocess
-    import sys
-    
-    # create models directory if needed
-    os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
-    
-    print("Installing gdown for Google Drive download...")
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "gdown", "-q"])
-    
-    import gdown
-    
-    url = f"https://drive.google.com/uc?id={MODEL_GDRIVE_ID}"
-    
-    print(f"Downloading model from Google Drive...")
-    try:
-        gdown.download(url, MODEL_PATH, quiet=False)
-        
-        if os.path.exists(MODEL_PATH) and os.path.getsize(MODEL_PATH) > 1000000:
-            print(f"Model downloaded successfully ({os.path.getsize(MODEL_PATH) / 1024 / 1024:.1f} MB)")
-            return True
-        else:
-            print("Download failed - file too small or missing")
-            return False
-    except Exception as e:
-        print(f"Model download failed: {e}")
-        return False
-
-# load model - download from gdrive if not found locally
-if not os.path.exists(MODEL_PATH) or os.path.getsize(MODEL_PATH) < 1000:
-    download_model_from_gdrive()
-
+# load model
 if os.path.exists(MODEL_PATH):
     try:
         model = xgb.XGBRegressor()
@@ -87,7 +54,7 @@ if os.path.exists(MODEL_PATH):
     except Exception as e:
         print(f"Model load failed: {e}")
 else:
-    print("Model not found and download failed")
+    print(f"Model not found at {MODEL_PATH}")
 
 
 class LocationResponse(BaseModel):
