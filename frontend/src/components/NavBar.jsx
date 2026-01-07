@@ -129,11 +129,11 @@ const NavBar = ({ setAppMode, appMode, onOpenAbout, onOpenReport, toggleTheme, o
                                 <span className="text-2xl">{supportedLanguages[language]?.flag || '🌍'}</span>
                                 <span className="text-xl font-medium text-gray-300">{t('nav.language')}</span>
                             </div>
-                            <div className="grid grid-cols-4 gap-2">
+                            <div className="grid grid-cols-4 gap-2 max-h-48 overflow-y-auto">
                                 {Object.entries(supportedLanguages).map(([code, langData]) => (
                                     <button
                                         key={code}
-                                        onClick={() => { setLanguage(code); }}
+                                        onClick={() => { setLanguage(code); setMobileMenuOpen(false); }}
                                         className={`flex flex-col items-center px-2 py-3 rounded-lg text-xs font-medium transition-all ${language === code
                                             ? 'bg-primary-500/20 text-primary-400 border border-primary-500/50'
                                             : 'bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10'
