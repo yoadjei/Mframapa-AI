@@ -169,7 +169,6 @@ export const SUPPORTED_LANGUAGES = {
     'tn': { name: 'Tswana', flag: '🇧🇼' },
     'ny': { name: 'Chichewa', flag: '🇲🇼' },
     'rn': { name: 'Kirundi', flag: '🇧🇮' },
-    'ga': { name: 'Ga', flag: '🇬🇭' }
 };
 
 const cachedTranslations = {};
