@@ -111,6 +111,12 @@ export const LanguageProvider = ({ children }) => {
     const RTL_LANGUAGES = ['ar', 'he', 'fa', 'ur'];
     const isRTL = RTL_LANGUAGES.includes(language);
 
+    // set dir attribute on html element for RTL languages
+    useEffect(() => {
+        document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
+        document.documentElement.lang = language;
+    }, [language, isRTL]);
+
     return (
         <LanguageContext.Provider value={{
             language,
