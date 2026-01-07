@@ -28,6 +28,7 @@ import rn from '../locales/rn.json';
 import ss from '../locales/ss.json';
 import nd from '../locales/nd.json';
 import ga from '../locales/ga.json';
+import ee from '../locales/ee.json';
 
 const LanguageContext = createContext();
 
@@ -59,13 +60,14 @@ export const SUPPORTED_LANGUAGES = {
     'rn': { name: 'Kirundi', countryCode: 'bi' },
     'ss': { name: 'Swati', countryCode: 'sz' },
     'nd': { name: 'Ndebele', countryCode: 'zw' },
-    'ga': { name: 'Ga', countryCode: 'gh' }
+    'ga': { name: 'Ga', countryCode: 'gh' },
+    'ee': { name: 'Ewe', countryCode: 'gh' }
 };
 
 // all translations loaded at build time
 const translations = {
     en, fr, ar, sw, tw, pt, es, am, ha, yo, ig, zu, xh, af,
-    sn, rw, mg, so, ti, wo, st, tn, ny, rn, ss, nd, ga
+    sn, rw, mg, so, ti, wo, st, tn, ny, rn, ss, nd, ga, ee
 };
 
 export const LanguageProvider = ({ children }) => {
