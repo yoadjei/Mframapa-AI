@@ -1,4 +1,4 @@
-{
+﻿{
     "app.title": "Mframapa AI",
     "app.tagline": "Suivi ya qualité ya mupepe na AI en temps réel pour Afrika",
     "hero.headline_part1": "Pemela na mayele.",
@@ -94,6 +94,6 @@
     "footer.active": "Ezali kosala",
     "footer.ground_truth": "Vérité ya mabele",
     "footer.reference_nations": "Bikolo ya Référence",
-    "footer.inference": "Pr�diction du jour",
+    "footer.inference": "Prediction du jour",
     "footer.val": "Val."
 }

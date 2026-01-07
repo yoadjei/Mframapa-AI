@@ -1,4 +1,4 @@
-{
+﻿{
   "app.title": "Mframapa AI",
   "app.tagline": "Suivi qualité air AI en temps réel pour Afrique",
   "hero.headline_part1": "Respirer Informé.",
@@ -94,6 +94,6 @@
   "footer.active": "Actif",
   "footer.ground_truth": "Vérité Terrain",
   "footer.reference_nations": "Nations Référence",
-  "footer.inference": "Pr�diction du jour",
+  "footer.inference": "Prediction du jour",
   "footer.val": "Val."
 }
