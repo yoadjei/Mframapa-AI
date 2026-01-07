@@ -284,7 +284,8 @@ export const generateInsight = async (pm25, weather, targetLangCode, locationNam
 
     // 1. Try backend API first
     try {
-        const response = await fetch('/api/generate-insight', {
+        const apiBase = import.meta.env.VITE_API_URL || '';
+        const response = await fetch(`${apiBase}/api/generate-insight`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
