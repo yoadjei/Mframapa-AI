@@ -1,4 +1,4 @@
-{
+﻿{
   "app.title": "Mframapa AI",
   "app.tagline": "Surveillance de la qualité de l'air en temps réel pour l'Afrique",
   "hero.headline_part1": "Respirez en toute connaissance.",
@@ -94,6 +94,6 @@
   "footer.active": "Actif",
   "footer.ground_truth": "Vérité terrain",
   "footer.reference_nations": "Nations de référence",
-  "footer.inference": "Pr�diction du jour",
+  "footer.inference": "Prediction du jour",
   "footer.val": "Val."
 }
