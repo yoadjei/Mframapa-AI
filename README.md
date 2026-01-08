@@ -35,4 +35,3 @@ live in production.
 - frontend: vercel
 - ssl: active
 
-built by adjei.
