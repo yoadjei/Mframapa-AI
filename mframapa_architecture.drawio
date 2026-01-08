@@ -1,0 +1,111 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.2.9 Chrome/140.0.7339.249 Electron/38.7.2 Safari/537.36" version="29.2.9">
+  <diagram id="MframapaProfessional" name="Professional Architecture 2026">
+    <mxGraphModel dx="1042" dy="722" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="Layer_Client" parent="1" style="swimlane;fillColor=#e3f2fd;strokeColor=#1e88e5;dashed=1;startSize=30;fontStyle=1;fontColor=#000000;" value="1. Client Side" vertex="1">
+          <mxGeometry height="120" width="200" x="40" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="Browser" parent="Layer_Client" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#1e88e5;shadow=1;fontColor=#000000;" value="User" vertex="1">
+          <mxGeometry height="50" width="160" x="20" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="Layer_Security" parent="1" style="swimlane;fillColor=#ffebee;strokeColor=#e53935;dashed=1;startSize=30;fontStyle=1;fontColor=#000000;" value="2. Security Edge" vertex="1">
+          <mxGeometry height="120" width="180" x="320" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="WAF" parent="Layer_Security" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffcdd2;strokeColor=#e53935;shadow=1;fontStyle=1;fontColor=#000000;" value="AWS WAF / Rate Limiter&#xa;(DDoS Protection)" vertex="1">
+          <mxGeometry height="50" width="140" x="20" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="Layer_Backend" parent="1" style="swimlane;fillColor=#e8f5e9;strokeColor=#43a047;startSize=30;fontStyle=1;fontColor=#000000;" value="3. Mframapa Core API (stateless)" vertex="1">
+          <mxGeometry height="440" width="300" x="580" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="FastAPI" parent="Layer_Backend" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#c8e6c9;strokeColor=#43a047;shadow=1;fontStyle=1;fontColor=#000000;" value="FastAPI Server&#xa;(Read-Only Endpoints)" vertex="1">
+          <mxGeometry height="60" width="240" x="30" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="Services_Group" connectable="0" parent="Layer_Backend" style="group;fontColor=#000000;" value="Data Services" vertex="1">
+          <mxGeometry height="220" width="240" x="30" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="GeoService" parent="Services_Group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcedc8;strokeColor=#8bc34a;fontColor=#000000;" value="Geo Resolution" vertex="1">
+          <mxGeometry height="40" width="220" x="10" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="SatService" parent="Services_Group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcedc8;strokeColor=#8bc34a;fontColor=#000000;" value="Satellite Fetcher" vertex="1">
+          <mxGeometry height="40" width="220" x="10" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="WeatherService" parent="Services_Group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcedc8;strokeColor=#8bc34a;fontColor=#000000;" value="Weather Fetcher" vertex="1">
+          <mxGeometry height="40" width="220" x="10" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="Layer_AI" parent="1" style="swimlane;fillColor=#f3e5f5;strokeColor=#8e24aa;startSize=30;fontStyle=1;fontColor=#000000;" value="4. AI &amp; Inference Engine" vertex="1">
+          <mxGeometry height="240" width="220" x="960" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="XGBoost" parent="Layer_AI" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1bee7;strokeColor=#8e24aa;shadow=1;fontStyle=1;fontColor=#000000;" value="XGBoost Model&#xa;(Memory Optimized)" vertex="1">
+          <mxGeometry height="60" width="160" x="30" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="Gemini" parent="Layer_AI" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1bee7;strokeColor=#8e24aa;shadow=1;fontColor=#000000;" value="Gemini AI&#xa;(Localized Insights)" vertex="1">
+          <mxGeometry height="60" width="160" x="30" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="Layer_External" parent="1" style="swimlane;fillColor=#fff3e0;strokeColor=#fb8c00;startSize=30;fontStyle=1;fontColor=#000000;" value="5. Trusted Data Sources" vertex="1">
+          <mxGeometry height="160" width="220" x="960" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="Sentinel" parent="Layer_External" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe0b2;strokeColor=#fb8c00;fontColor=#000000;" value="ESA Sentinel-5P API" vertex="1">
+          <mxGeometry height="30" width="160" x="30" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="NASA" parent="Layer_External" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe0b2;strokeColor=#fb8c00;fontColor=#000000;" value="NASA Earthdata" vertex="1">
+          <mxGeometry height="30" width="160" x="30" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="Meteo" parent="Layer_External" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe0b2;strokeColor=#fb8c00;fontColor=#000000;" value="Open-Meteo API" vertex="1">
+          <mxGeometry height="30" width="160" x="30" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="Flow1" edge="1" parent="1" source="Browser" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;fontColor=#000000;" target="WAF" value="&lt;font style=&quot;color: rgb(255, 255, 255);&quot;&gt;HTTPS (TLS 1.3)&lt;/font&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Flow2" edge="1" parent="1" source="WAF" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;fontColor=#000000;" target="FastAPI" value="&lt;span&gt;&lt;font style=&quot;color: rgb(255, 255, 255);&quot;&gt;Filtered /api/predict&lt;/font&gt;&lt;/span&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Flow3" edge="1" parent="1" source="FastAPI" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="GeoService" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="600" y="220" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Flow4" edge="1" parent="1" source="FastAPI" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="SatService" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="620" y="290" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Flow5" edge="1" parent="1" source="FastAPI" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="WeatherService" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="640" y="360" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Flow6" edge="1" parent="1" source="FastAPI" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;fontColor=#000000;" target="XGBoost" value="&lt;font style=&quot;color: rgb(255, 255, 255);&quot;&gt;Features&lt;/font&gt;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="850" y="120" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Flow7" edge="1" parent="1" source="FastAPI" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;fontColor=#000000;" target="Gemini" value="&lt;font style=&quot;color: rgb(255, 255, 255);&quot;&gt;Context&lt;/font&gt;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="850" y="220" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ExtFlow1" edge="1" parent="1" source="SatService" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;" target="Sentinel" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ExtFlow2" edge="1" parent="1" source="SatService" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;" target="NASA" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ExtFlow3" edge="1" parent="1" source="WeatherService" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;" target="Meteo" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
