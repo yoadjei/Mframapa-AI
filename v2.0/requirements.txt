@@ -1,0 +1,27 @@
+# ──────────────────────────────────────────────────────────────
+# Mframapa v2.0 — Python Dependencies
+# Install with:  pip install -r requirements.txt
+# ──────────────────────────────────────────────────────────────
+
+# ── HTTP & networking ──────────────────────────────────────────
+requests>=2.31.0
+
+# ── Data I/O ──────────────────────────────────────────────────
+xarray>=2023.1.0
+netCDF4>=1.6.4          # ERA5 netCDF files
+h5py>=3.9.0             # Sentinel-5P HDF5 files
+pyhdf>=0.10.5           # MODIS HDF4 files
+numpy>=1.24.0
+
+# ── Caching ───────────────────────────────────────────────────
+redis>=5.0.0            # Redis client (Upstash compatible)
+
+# ── Environment ───────────────────────────────────────────────
+python-dotenv>=1.0.0
+
+# ── CDS API (ERA5) ────────────────────────────────────────────
+cdsapi>=0.6.1
+
+# ── Testing ───────────────────────────────────────────────────
+pytest>=7.4.0
+pytest-mock>=3.11.0

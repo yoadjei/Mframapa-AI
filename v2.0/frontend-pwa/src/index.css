@@ -1,0 +1,157 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+
+  /* --- Advanced Backgrounds --- */
+  .bg-nebula {
+    background:
+      radial-gradient(circle at 15% 50%, rgba(0, 255, 179, 0.08), transparent 25%),
+      radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.08), transparent 25%),
+      linear-gradient(to bottom, #0A0F1C, #1a1435, #0A0F1C);
+    animation: nebula-pulse 10s ease-in-out infinite alternate;
+  }
+
+  /* --- Glassmorphism Spec --- */
+  .glass {
+    background: rgba(255, 255, 255, 0.7);
+    /* Light Mode Default */
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    color: #0f172a;
+  }
+
+  :is(.dark .glass) {
+    background: rgba(255, 255, 255, 0.05);
+    /* Dark Mode Override */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.36);
+    color: white;
+  }
+
+  .glass-card {
+    background: rgba(255, 255, 255, 0.85);
+    /* Light Mode */
+    backdrop-filter: blur(40px);
+    border-radius: 20px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1);
+    color: #0f172a;
+  }
+
+  :is(.dark .glass-card) {
+    background: rgba(15, 20, 35, 0.95);
+    /* Dark Mode */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(0, 255, 179, 0.1);
+    color: white;
+  }
+
+  .glass-card:hover {
+    transform: translateY(-2px);
+  }
+
+  :is(.dark .glass-card:hover) {
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(0, 255, 179, 0.3);
+  }
+
+  .text-glow {
+    text-shadow: 0 0 40px rgba(0, 255, 179, 0.3);
+    /* Spec: 0.3 opacity */
+  }
+
+  /* --- Animations --- */
+  @keyframes nebula-pulse {
+    0% {
+      background-size: 100% 100%;
+    }
+
+    100% {
+      background-size: 120% 120%;
+    }
+  }
+
+  @keyframes scan {
+    0% {
+      top: -20%;
+      opacity: 0;
+    }
+
+    10% {
+      opacity: 1;
+    }
+
+    90% {
+      opacity: 1;
+    }
+
+    100% {
+      top: 120%;
+      opacity: 0;
+    }
+  }
+
+  .animate-scan {
+    animation: scan 4s linear infinite;
+  }
+
+  .animate-pulse-slow {
+    animation: pulse 6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+}
+
+body {
+  @apply bg-gray-50 dark:bg-[#0A0F1C] text-gray-900 dark:text-white transition-colors duration-300;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Prevent horizontal scroll */
+html, body {
+  overflow-x: hidden;
+}
+
+/* Custom Scrollbar - Dark Mode */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4b5563;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+}
+
+/* Light mode scrollbar */
+.light ::-webkit-scrollbar-thumb,
+:root:not(.dark) ::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+}
+
+.light ::-webkit-scrollbar-thumb:hover,
+:root:not(.dark) ::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Hide scrollbar on mobile for cleaner look */
+@media (max-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+}
