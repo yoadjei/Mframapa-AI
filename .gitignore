@@ -28,7 +28,11 @@ wheels/
 
 # Virtual Environment
 venv/
+.venv/
 .env
+
+# v2.0 — trained model bundles (regenerate via notebooks / ml.training)
+v2.0/ml/exports/
 
 # Jupyter Notebook
 .ipynb_checkpoints
@@ -56,3 +60,4 @@ logs/
 # OS Generated
 .DS_Store
 Thumbs.db
+.claude
