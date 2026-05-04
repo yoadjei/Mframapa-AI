@@ -62,7 +62,7 @@
 
 | Task | Description | Deliverable |
 |------|-------------|-------------|
-| Set up v2.0 branch | Clean branch for new development | Git branch |
+| Set up development branch | Clean branch for new development | Git branch |
 | Create data sources module | `backend/data_sources/` structure | Module scaffold |
 | Implement base classes | Abstract DataSource class | `base.py` |
 | ERA5 connector | Climate reanalysis (PBLH, wind, humidity) | `era5.py` |

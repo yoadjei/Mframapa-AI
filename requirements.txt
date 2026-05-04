@@ -5,12 +5,13 @@
 
 # ── HTTP & networking ──────────────────────────────────────────
 requests>=2.31.0
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0
 
 # ── Data I/O ──────────────────────────────────────────────────
 xarray>=2023.1.0
 netCDF4>=1.6.4          # ERA5 netCDF files
 h5py>=3.9.0             # Sentinel-5P HDF5 files
-pyhdf>=0.10.5           # MODIS HDF4 files
 numpy>=1.24.0
 pandas>=2.0.0
 scikit-learn>=1.3.0
@@ -27,6 +28,10 @@ python-dotenv>=1.0.0
 # ── CDS API (ERA5) ────────────────────────────────────────────
 cdsapi>=0.6.1
 
+# ── Monitoring ────────────────────────────────────────────────
+sentry-sdk[fastapi]>=2.0.0  # error tracking (set SENTRY_DSN env var)
+
 # ── Testing ───────────────────────────────────────────────────
 pytest>=7.4.0
 pytest-mock>=3.11.0
+httpx>=0.27.0               # FastAPI TestClient dependency

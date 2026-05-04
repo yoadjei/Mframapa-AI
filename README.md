@@ -6,7 +6,7 @@
 
 ## Overview
 
-This folder contains the v2.0 development plan for Mframapa:
+This repository contains the Mframapa development plan (version 2 roadmap):
 - 20-week timeline (16 build + 4 testing)
 - $0 monthly infrastructure cost
 - Free app store distribution
@@ -66,6 +66,17 @@ This folder contains the v2.0 development plan for Mframapa:
 1. Read `SPEC.md` for full plan
 2. Use `CHECKLIST.md` to track progress
 3. Refer to other docs as needed
+
+### Backend API (local dev)
+
+The PWA proxies `/api` to FastAPI on port 8000.
+
+```bash
+pip install -r requirements.txt
+uvicorn backend.api.app:app --reload --host 127.0.0.1 --port 8000
+```
+
+In another terminal, run the frontend from `frontend-pwa/` with `npm run dev`. Endpoints include `GET /api/predict` (returns PM2.5 plus uncertainty fields) and `GET /api/resolve-location`.
 
 ---
 

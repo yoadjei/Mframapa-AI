@@ -1,0 +1,79 @@
+{
+  "region_id": "horn_of_africa",
+  "segment": "urban",
+  "n_cities": 8,
+  "cities": [
+    {
+      "name": "Addis Ababa",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 9.032,
+      "lon": 38.7469,
+      "region": "horn_of_africa",
+      "urban": true
+    },
+    {
+      "name": "Mogadishu",
+      "country": "Somalia",
+      "iso3": "SOM",
+      "lat": 2.0469,
+      "lon": 45.3182,
+      "region": "horn_of_africa",
+      "urban": true
+    },
+    {
+      "name": "Asmara",
+      "country": "Eritrea",
+      "iso3": "ERI",
+      "lat": 15.3229,
+      "lon": 38.9251,
+      "region": "horn_of_africa",
+      "urban": true
+    },
+    {
+      "name": "Djibouti City",
+      "country": "Djibouti",
+      "iso3": "DJI",
+      "lat": 11.572,
+      "lon": 43.1456,
+      "region": "horn_of_africa",
+      "urban": true
+    },
+    {
+      "name": "Dire Dawa",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 9.593,
+      "lon": 41.8661,
+      "region": "horn_of_africa",
+      "urban": true
+    },
+    {
+      "name": "Mekelle",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 13.4967,
+      "lon": 39.4767,
+      "region": "horn_of_africa",
+      "urban": true
+    },
+    {
+      "name": "Hawassa",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 7.053,
+      "lon": 38.4627,
+      "region": "horn_of_africa",
+      "urban": true
+    },
+    {
+      "name": "Hargeisa",
+      "country": "Somaliland",
+      "iso3": "SOM",
+      "lat": 9.5597,
+      "lon": 44.065,
+      "region": "horn_of_africa",
+      "urban": true
+    }
+  ]
+}

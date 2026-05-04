@@ -17,6 +17,7 @@ def geojson_path():
 
 
 def test_assign_region_accra(geojson_path):
+    pytest.importorskip("shapely")
     from ml.regions import assign_region
 
     # Accra, Ghana — west_africa in city list
@@ -24,6 +25,7 @@ def test_assign_region_accra(geojson_path):
 
 
 def test_assign_region_addis(geojson_path):
+    pytest.importorskip("shapely")
     from ml.regions import assign_region
 
     assert assign_region(9.0320, 38.7469, geojson_path=geojson_path) == "horn_of_africa"
@@ -51,7 +53,10 @@ def test_urban_rural_from_city():
     reason="ml package",
 )
 def test_train_synthetic_smoke(tmp_path):
-    pytest.importorskip("xgboost")
+    try:
+        import xgboost  # noqa: F401
+    except Exception as e:
+        pytest.skip(f"xgboost not loadable: {e}")
     pytest.importorskip("lightgbm")
 
     from ml.training import synthetic_training_frame, train_regional_bundle

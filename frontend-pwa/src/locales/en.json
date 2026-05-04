@@ -25,6 +25,8 @@
   "card.checking": "Checking air quality in",
   "card.pm25_label": "PM2.5",
   "card.unit": "µg/m³",
+  "card.uncertainty_range": "Likely range",
+  "card.coverage": "coverage",
   "card.satellite_derived": "Satellite Derived",
   "card.updated_now": "Updated just now",
   "card.share": "Share",

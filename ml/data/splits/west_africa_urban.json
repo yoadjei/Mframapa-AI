@@ -1,0 +1,367 @@
+{
+  "region_id": "west_africa",
+  "segment": "urban",
+  "n_cities": 40,
+  "cities": [
+    {
+      "name": "Lagos",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 6.5244,
+      "lon": 3.3792,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Accra",
+      "country": "Ghana",
+      "iso3": "GHA",
+      "lat": 5.6037,
+      "lon": -0.187,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Abidjan",
+      "country": "C\u00f4te d'Ivoire",
+      "iso3": "CIV",
+      "lat": 5.36,
+      "lon": -4.0083,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Dakar",
+      "country": "Senegal",
+      "iso3": "SEN",
+      "lat": 14.6928,
+      "lon": -17.4467,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Kano",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 12.0022,
+      "lon": 8.592,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Ibadan",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 7.3775,
+      "lon": 3.947,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Kumasi",
+      "country": "Ghana",
+      "iso3": "GHA",
+      "lat": 6.6885,
+      "lon": -1.6244,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Conakry",
+      "country": "Guinea",
+      "iso3": "GIN",
+      "lat": 9.6412,
+      "lon": -13.5784,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Bamako",
+      "country": "Mali",
+      "iso3": "MLI",
+      "lat": 12.6392,
+      "lon": -8.0029,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Ouagadougou",
+      "country": "Burkina Faso",
+      "iso3": "BFA",
+      "lat": 12.3647,
+      "lon": -1.5353,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Niamey",
+      "country": "Niger",
+      "iso3": "NER",
+      "lat": 13.5137,
+      "lon": 2.1098,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Abuja",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 9.0765,
+      "lon": 7.3986,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Freetown",
+      "country": "Sierra Leone",
+      "iso3": "SLE",
+      "lat": 8.4657,
+      "lon": -13.2317,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Monrovia",
+      "country": "Liberia",
+      "iso3": "LBR",
+      "lat": 6.3005,
+      "lon": -10.7969,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Lom\u00e9",
+      "country": "Togo",
+      "iso3": "TGO",
+      "lat": 6.1375,
+      "lon": 1.2123,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Cotonou",
+      "country": "Benin",
+      "iso3": "BEN",
+      "lat": 6.3703,
+      "lon": 2.3912,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Nouakchott",
+      "country": "Mauritania",
+      "iso3": "MRT",
+      "lat": 18.0735,
+      "lon": -15.9582,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Bissau",
+      "country": "Guinea-Bissau",
+      "iso3": "GNB",
+      "lat": 11.8636,
+      "lon": -15.5977,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Praia",
+      "country": "Cape Verde",
+      "iso3": "CPV",
+      "lat": 14.9315,
+      "lon": -23.5136,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Enugu",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 6.4584,
+      "lon": 7.5464,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Port Harcourt",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 4.8156,
+      "lon": 7.0498,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Benin City",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 6.335,
+      "lon": 5.627,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Kaduna",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 10.5222,
+      "lon": 7.4383,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Maiduguri",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 11.8333,
+      "lon": 13.15,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Zaria",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 11.0851,
+      "lon": 7.7199,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Aba",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 5.1066,
+      "lon": 7.3666,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Jos",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 9.8965,
+      "lon": 8.8583,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Onitsha",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 6.1667,
+      "lon": 6.7833,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Warri",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 5.5167,
+      "lon": 5.75,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Tamale",
+      "country": "Ghana",
+      "iso3": "GHA",
+      "lat": 9.4008,
+      "lon": -0.8393,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Sekondi-Takoradi",
+      "country": "Ghana",
+      "iso3": "GHA",
+      "lat": 4.9016,
+      "lon": -1.7544,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Tema",
+      "country": "Ghana",
+      "iso3": "GHA",
+      "lat": 5.6698,
+      "lon": -0.0166,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Bouak\u00e9",
+      "country": "C\u00f4te d'Ivoire",
+      "iso3": "CIV",
+      "lat": 7.6833,
+      "lon": -5.0333,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Bobo-Dioulasso",
+      "country": "Burkina Faso",
+      "iso3": "BFA",
+      "lat": 11.1771,
+      "lon": -4.2979,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Parakou",
+      "country": "Benin",
+      "iso3": "BEN",
+      "lat": 9.3372,
+      "lon": 2.62,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Sokoto",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 13.0059,
+      "lon": 5.2476,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Uyo",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 5.0333,
+      "lon": 7.9333,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Calabar",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 4.9517,
+      "lon": 8.322,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Abeokuta",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 7.1557,
+      "lon": 3.3451,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Mushin",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 6.55,
+      "lon": 3.35,
+      "region": "west_africa",
+      "urban": true
+    }
+  ]
+}

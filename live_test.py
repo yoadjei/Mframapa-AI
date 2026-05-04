@@ -5,7 +5,7 @@ Run this on your LOCAL machine (not in the sandbox) where real API
 credentials are available via .env and outbound internet is reachable.
 
 Usage:
-    cd v2.0
+    cd <repository-root>
     pip install -r requirements.txt
     python live_test.py
 

@@ -1,0 +1,277 @@
+{
+  "region_id": "central_africa",
+  "segment": "rural",
+  "n_cities": 30,
+  "cities": [
+    {
+      "name": "Bunia",
+      "country": "DR Congo",
+      "iso3": "COD",
+      "lat": 1.56,
+      "lon": 30.24,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Matadi",
+      "country": "DR Congo",
+      "iso3": "COD",
+      "lat": -5.8236,
+      "lon": 13.4597,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Mbandaka",
+      "country": "DR Congo",
+      "iso3": "COD",
+      "lat": 0.0478,
+      "lon": 18.2564,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Kolwezi",
+      "country": "DR Congo",
+      "iso3": "COD",
+      "lat": -10.7167,
+      "lon": 25.4667,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Likasi",
+      "country": "DR Congo",
+      "iso3": "COD",
+      "lat": -10.9804,
+      "lon": 26.7322,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Kalemie",
+      "country": "DR Congo",
+      "iso3": "COD",
+      "lat": -5.9333,
+      "lon": 29.1833,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Benguela",
+      "country": "Angola",
+      "iso3": "AGO",
+      "lat": -12.5763,
+      "lon": 13.4055,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Lobito",
+      "country": "Angola",
+      "iso3": "AGO",
+      "lat": -12.35,
+      "lon": 13.55,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Malanje",
+      "country": "Angola",
+      "iso3": "AGO",
+      "lat": -9.5333,
+      "lon": 16.35,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Cabinda",
+      "country": "Angola",
+      "iso3": "AGO",
+      "lat": -5.55,
+      "lon": 12.2,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Bafoussam",
+      "country": "Cameroon",
+      "iso3": "CMR",
+      "lat": 5.4736,
+      "lon": 10.4175,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Bamenda",
+      "country": "Cameroon",
+      "iso3": "CMR",
+      "lat": 5.9597,
+      "lon": 10.146,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Garoua",
+      "country": "Cameroon",
+      "iso3": "CMR",
+      "lat": 9.3015,
+      "lon": 13.3953,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Maroua",
+      "country": "Cameroon",
+      "iso3": "CMR",
+      "lat": 10.5955,
+      "lon": 14.3153,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Ngaound\u00e9r\u00e9",
+      "country": "Cameroon",
+      "iso3": "CMR",
+      "lat": 7.3167,
+      "lon": 13.5833,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Bertoua",
+      "country": "Cameroon",
+      "iso3": "CMR",
+      "lat": 4.5761,
+      "lon": 13.6847,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Port-Gentil",
+      "country": "Gabon",
+      "iso3": "GAB",
+      "lat": -0.7193,
+      "lon": 8.7815,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Franceville",
+      "country": "Gabon",
+      "iso3": "GAB",
+      "lat": -1.6333,
+      "lon": 13.5833,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Moundou",
+      "country": "Chad",
+      "iso3": "TCD",
+      "lat": 8.5667,
+      "lon": 16.0833,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Sarh",
+      "country": "Chad",
+      "iso3": "TCD",
+      "lat": 9.15,
+      "lon": 18.3833,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Ab\u00e9ch\u00e9",
+      "country": "Chad",
+      "iso3": "TCD",
+      "lat": 13.8279,
+      "lon": 20.8325,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Bangassou",
+      "country": "Central African Republic",
+      "iso3": "CAF",
+      "lat": 4.736,
+      "lon": 22.819,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Berb\u00e9rati",
+      "country": "Central African Republic",
+      "iso3": "CAF",
+      "lat": 4.2611,
+      "lon": 15.7875,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Bambari",
+      "country": "Central African Republic",
+      "iso3": "CAF",
+      "lat": 5.7619,
+      "lon": 20.6722,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Bouar",
+      "country": "Central African Republic",
+      "iso3": "CAF",
+      "lat": 5.9367,
+      "lon": 15.5994,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Tshikapa",
+      "country": "DR Congo",
+      "iso3": "COD",
+      "lat": -6.4167,
+      "lon": 20.8,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Dolisie",
+      "country": "Republic of Congo",
+      "iso3": "COG",
+      "lat": -4.1992,
+      "lon": 12.6772,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Nola",
+      "country": "Central African Republic",
+      "iso3": "CAF",
+      "lat": 3.5264,
+      "lon": 16.0594,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Kelo",
+      "country": "Chad",
+      "iso3": "TCD",
+      "lat": 9.3167,
+      "lon": 15.8,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Oyem",
+      "country": "Gabon",
+      "iso3": "GAB",
+      "lat": 1.6174,
+      "lon": 11.5793,
+      "region": "central_africa",
+      "urban": false
+    }
+  ]
+}

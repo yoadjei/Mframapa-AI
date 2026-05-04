@@ -31,8 +31,9 @@ venv/
 .venv/
 .env
 
-# v2.0 — trained model bundles (regenerate via notebooks / ml.training)
-v2.0/ml/exports/
+# Trained regional model bundles (regenerate via notebooks / ml.training)
+ml/exports/
+ml/data/model_registry.json
 
 # Jupyter Notebook
 .ipynb_checkpoints

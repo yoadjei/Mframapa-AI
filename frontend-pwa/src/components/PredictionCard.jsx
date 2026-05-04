@@ -115,6 +115,19 @@ const PredictionCard = ({ prediction, onClose }) => {
                     </div>
                 </div>
 
+                {prediction.uncertainty?.pm25_lower != null &&
+                    prediction.uncertainty?.pm25_upper != null && (
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-4 -mt-2">
+                        {t('card.uncertainty_range')}:{' '}
+                        {Math.round(prediction.uncertainty.pm25_lower)} –{' '}
+                        {Math.round(prediction.uncertainty.pm25_upper)} {t('card.unit')}
+                        <span className="block text-[10px] mt-1 opacity-70">
+                            ~{Math.round((prediction.uncertainty.coverage || 0.9) * 100)}% {t('card.coverage')}{' '}
+                            ({prediction.uncertainty.method || '—'})
+                        </span>
+                    </p>
+                )}
+
                 {/* Badge */}
                 <div
                     className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide mb-6 shadow-sm"

@@ -1,0 +1,556 @@
+{
+  "region_id": "east_africa",
+  "segment": "rural",
+  "n_cities": 61,
+  "cities": [
+    {
+      "name": "Nakuru",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -0.3031,
+      "lon": 36.08,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Eldoret",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": 0.52,
+      "lon": 35.2699,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Meru",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": 0.0468,
+      "lon": 37.649,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Thika",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -1.0332,
+      "lon": 37.0693,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Malindi",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -3.2138,
+      "lon": 40.1169,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Kitale",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": 1.0154,
+      "lon": 35.0062,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Garissa",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -0.4532,
+      "lon": 39.6461,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Tanga",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -5.0668,
+      "lon": 39.099,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Morogoro",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -6.82,
+      "lon": 37.66,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Mbeya",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -8.9,
+      "lon": 33.45,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Tabora",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -5.0168,
+      "lon": 32.8,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Iringa",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -7.7673,
+      "lon": 35.6934,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Kigoma",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -4.8769,
+      "lon": 29.6258,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Moshi",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -3.35,
+      "lon": 37.3333,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Shinyanga",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -3.66,
+      "lon": 33.42,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Singida",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -4.8167,
+      "lon": 34.75,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Mbarara",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": -0.6167,
+      "lon": 30.65,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Jinja",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": 0.4478,
+      "lon": 33.2026,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Mbale",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": 1.0799,
+      "lon": 34.1754,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Lira",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": 2.2499,
+      "lon": 32.8999,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Masaka",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": -0.3367,
+      "lon": 31.75,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Arua",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": 3.021,
+      "lon": 30.91,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Fort Portal",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": 0.6592,
+      "lon": 30.2738,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Kabale",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": -1.25,
+      "lon": 29.9833,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Soroti",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": 1.7135,
+      "lon": 33.611,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Gitarama",
+      "country": "Rwanda",
+      "iso3": "RWA",
+      "lat": -2.0746,
+      "lon": 29.7564,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Butare",
+      "country": "Rwanda",
+      "iso3": "RWA",
+      "lat": -2.6,
+      "lon": 29.7333,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Gisenyi",
+      "country": "Rwanda",
+      "iso3": "RWA",
+      "lat": -1.6979,
+      "lon": 29.2566,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Gitega",
+      "country": "Burundi",
+      "iso3": "BDI",
+      "lat": -3.4272,
+      "lon": 29.925,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Ngozi",
+      "country": "Burundi",
+      "iso3": "BDI",
+      "lat": -2.9072,
+      "lon": 29.8299,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Muyinga",
+      "country": "Burundi",
+      "iso3": "BDI",
+      "lat": -2.85,
+      "lon": 30.3333,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Narok",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -1.0833,
+      "lon": 35.8667,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Kericho",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -0.3667,
+      "lon": 35.2833,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Machakos",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -1.5167,
+      "lon": 37.2667,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Nyeri",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -0.4169,
+      "lon": 36.9511,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Kakamega",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": 0.2827,
+      "lon": 34.7519,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Bungoma",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": 0.5635,
+      "lon": 34.5606,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Embu",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -0.5333,
+      "lon": 37.45,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Homa Bay",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -0.5167,
+      "lon": 34.45,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Isiolo",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": 0.35,
+      "lon": 37.5833,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Mandera",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": 3.9366,
+      "lon": 41.867,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Wajir",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": 1.7471,
+      "lon": 40.0573,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Marsabit",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": 2.3333,
+      "lon": 37.9667,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Kilifi",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -3.6305,
+      "lon": 39.8499,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Lamu",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -2.2692,
+      "lon": 40.902,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Musoma",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -1.4997,
+      "lon": 33.8008,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Bukoba",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -1.3344,
+      "lon": 31.8196,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Lindi",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -9.9972,
+      "lon": 39.715,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Mtwara",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -10.2667,
+      "lon": 40.1833,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Songea",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -10.6833,
+      "lon": 35.65,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Njombe",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -9.3333,
+      "lon": 34.7667,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Bagamoyo",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -6.4398,
+      "lon": 38.9066,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Masindi",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": 1.6742,
+      "lon": 31.715,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Hoima",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": 1.4345,
+      "lon": 31.3568,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Tororo",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": 0.6927,
+      "lon": 34.181,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Entebbe",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": 0.0512,
+      "lon": 32.4637,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Rukungiri",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": -0.8406,
+      "lon": 29.9424,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Iganga",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": 0.6092,
+      "lon": 33.4681,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Busia",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": 0.4608,
+      "lon": 34.095,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Nanyuki",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": 0.018,
+      "lon": 37.072,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Kiambu",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -1.1719,
+      "lon": 36.8356,
+      "region": "east_africa",
+      "urban": false
+    }
+  ]
+}

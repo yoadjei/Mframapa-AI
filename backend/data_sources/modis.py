@@ -119,7 +119,10 @@ class MODISDataSource(DataSource):
             from pyhdf.SD import SD, SDC
             import numpy as np
         except ImportError:
-            logger.warning("MODIS: pyhdf not installed. Run: pip install pyhdf")
+            logger.warning(
+                "MODIS: pyhdf not installed (HDF4 reader). "
+                "See requirements-modis.txt — install HDF4 C libs, then pip install -r requirements-modis.txt"
+            )
             return {"aerosol_optical_depth": None}
 
         try:

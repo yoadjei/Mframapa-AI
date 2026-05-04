@@ -12,6 +12,9 @@ import DataPanel from './components/DataPanel';
 import AboutModal from './components/AboutModal';
 import ReportModal from './components/ReportModal';
 import SearchBar from './components/SearchBar';
+import OfflineIndicator from './components/OfflineIndicator';
+import InstallPrompt from './components/InstallPrompt';
+import IOSInstallModal from './components/IOSInstallModal';
 
 const AFRICAN_COUNTRY_CODES = [
   'dz', 'ao', 'bj', 'bw', 'bf', 'bi', 'cm', 'cv', 'cf', 'td', 'km', 'cg', 'cd', 'ci',
@@ -199,11 +202,20 @@ function App() {
         else if (mockPm25 > 35) cat = 'Unhealthy for Sensitive Groups';
         else if (mockPm25 > 12) cat = 'Moderate';
 
+        const hw = Math.max(5, mockPm25 * 0.22);
         predData = {
           pm25: mockPm25,
           aqi_category: cat,
           factors: {},
-          weather: { temp: 28, humidity: 65, wind: 12, pressure: 1012 }
+          weather: { temp: 28, humidity: 65, wind: 12, pressure: 1012 },
+          uncertainty: {
+            pm25_lower: Math.max(0, mockPm25 - hw),
+            pm25_upper: mockPm25 + hw,
+            half_width: hw,
+            coverage: 0.9,
+            method: 'offline_mock',
+          },
+          model: null,
         };
       }
 
@@ -213,6 +225,8 @@ function App() {
         aqi_category: predData.aqi_category,
         factors: predData.factors,
         weather: predData.weather,
+        uncertainty: predData.uncertainty,
+        model: predData.model,
         timestamp: new Date().toISOString()
       });
       setLoading(false);
@@ -270,11 +284,20 @@ function App() {
         else if (mockPm25 > 35) cat = 'Unhealthy for Sensitive Groups';
         else if (mockPm25 > 12) cat = 'Moderate';
 
+        const hw = Math.max(5, mockPm25 * 0.22);
         predData = {
           pm25: mockPm25,
           aqi_category: cat,
           factors: {},
-          weather: { temp: 28, humidity: 65, wind: 12, pressure: 1012 }
+          weather: { temp: 28, humidity: 65, wind: 12, pressure: 1012 },
+          uncertainty: {
+            pm25_lower: Math.max(0, mockPm25 - hw),
+            pm25_upper: mockPm25 + hw,
+            half_width: hw,
+            coverage: 0.9,
+            method: 'offline_mock',
+          },
+          model: null,
         };
       }
       setPrediction({
@@ -283,6 +306,8 @@ function App() {
         aqi_category: predData.aqi_category,
         factors: predData.factors,
         weather: predData.weather,
+        uncertainty: predData.uncertainty,
+        model: predData.model,
         timestamp: new Date().toISOString()
       });
       setLoading(false);
@@ -349,11 +374,20 @@ function App() {
         else if (mockPm25 > 35) cat = 'Unhealthy for Sensitive Groups';
         else if (mockPm25 > 12) cat = 'Moderate';
 
+        const hw = Math.max(5, mockPm25 * 0.22);
         predData = {
           pm25: mockPm25,
           aqi_category: cat,
           factors: {},
-          weather: { temp: 28, humidity: 65, wind: 12, pressure: 1012 }
+          weather: { temp: 28, humidity: 65, wind: 12, pressure: 1012 },
+          uncertainty: {
+            pm25_lower: Math.max(0, mockPm25 - hw),
+            pm25_upper: mockPm25 + hw,
+            half_width: hw,
+            coverage: 0.9,
+            method: 'offline_mock',
+          },
+          model: null,
         };
       }
       setPrediction({
@@ -362,6 +396,8 @@ function App() {
         aqi_category: predData.aqi_category,
         factors: predData.factors,
         weather: predData.weather,
+        uncertainty: predData.uncertainty,
+        model: predData.model,
         timestamp: new Date().toISOString()
       });
       setLoading(false);
@@ -457,6 +493,11 @@ function App() {
           </div>
         </div>
       )}
+
+      {/* PWA Utilities */}
+      <OfflineIndicator />
+      <InstallPrompt />
+      <IOSInstallModal />
 
     </div>
   );

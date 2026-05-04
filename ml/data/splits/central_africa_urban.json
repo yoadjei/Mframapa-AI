@@ -1,0 +1,169 @@
+{
+  "region_id": "central_africa",
+  "segment": "urban",
+  "n_cities": 18,
+  "cities": [
+    {
+      "name": "Kinshasa",
+      "country": "DR Congo",
+      "iso3": "COD",
+      "lat": -4.3217,
+      "lon": 15.3222,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Luanda",
+      "country": "Angola",
+      "iso3": "AGO",
+      "lat": -8.8383,
+      "lon": 13.2344,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Yaound\u00e9",
+      "country": "Cameroon",
+      "iso3": "CMR",
+      "lat": 3.8667,
+      "lon": 11.5167,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Douala",
+      "country": "Cameroon",
+      "iso3": "CMR",
+      "lat": 4.05,
+      "lon": 9.7,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Brazzaville",
+      "country": "Republic of Congo",
+      "iso3": "COG",
+      "lat": -4.2694,
+      "lon": 15.2716,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Bangui",
+      "country": "Central African Republic",
+      "iso3": "CAF",
+      "lat": 4.3612,
+      "lon": 18.555,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "N'Djamena",
+      "country": "Chad",
+      "iso3": "TCD",
+      "lat": 12.1048,
+      "lon": 15.0445,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Libreville",
+      "country": "Gabon",
+      "iso3": "GAB",
+      "lat": 0.3901,
+      "lon": 9.4544,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Malabo",
+      "country": "Equatorial Guinea",
+      "iso3": "GNQ",
+      "lat": 3.75,
+      "lon": 8.7833,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Lubumbashi",
+      "country": "DR Congo",
+      "iso3": "COD",
+      "lat": -11.6609,
+      "lon": 27.4794,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Mbuji-Mayi",
+      "country": "DR Congo",
+      "iso3": "COD",
+      "lat": -6.15,
+      "lon": 23.6,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Kananga",
+      "country": "DR Congo",
+      "iso3": "COD",
+      "lat": -5.8959,
+      "lon": 22.4159,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Kisangani",
+      "country": "DR Congo",
+      "iso3": "COD",
+      "lat": 0.5167,
+      "lon": 25.19,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Bukavu",
+      "country": "DR Congo",
+      "iso3": "COD",
+      "lat": -2.5083,
+      "lon": 28.8608,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Goma",
+      "country": "DR Congo",
+      "iso3": "COD",
+      "lat": -1.6794,
+      "lon": 29.2228,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Huambo",
+      "country": "Angola",
+      "iso3": "AGO",
+      "lat": -12.7761,
+      "lon": 15.7393,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Pointe-Noire",
+      "country": "Republic of Congo",
+      "iso3": "COG",
+      "lat": -4.7692,
+      "lon": 11.866,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Bata",
+      "country": "Equatorial Guinea",
+      "iso3": "GNQ",
+      "lat": 1.8639,
+      "lon": 9.769,
+      "region": "central_africa",
+      "urban": true
+    }
+  ]
+}

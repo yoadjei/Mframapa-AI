@@ -1,0 +1,49 @@
+# Monthly retrain hook + manual dispatch.
+# Trains synthetic bundles by default so CI always has a green path.
+# For production: replace the last step with your labelled dataset + secrets.
+
+name: Retrain regional models
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 6 1 * *" # 06:00 UTC on the 1st of each month
+
+jobs:
+  retrain:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Refresh region GeoJSON & city splits
+        run: |
+          python -m ml.scripts.generate_region_geojson
+          python -m ml.scripts.build_training_splits
+
+      - name: Smoke-train one regional bundle (synthetic)
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import sys
+          sys.path.insert(0, ".")
+          from ml.training import synthetic_training_frame, train_regional_bundle
+          from ml.model_selection import regional_export_dir
+          df = synthetic_training_frame(n_rows=400, seed=0)
+          out = regional_export_dir("west_africa", "urban")
+          train_regional_bundle(df, "west_africa", "urban", out, update_registry=True)
+          print("Exported to", out)
+          PY
+
+      - name: Run tests
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: pytest backend/tests -q
