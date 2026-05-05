@@ -56,3 +56,6 @@ logs/
 # OS Generated
 .DS_Store
 Thumbs.db
+ml/exports/
+ml/data/model_registry.json
+node_modules/ 
