@@ -1,10 +1,9 @@
-# Mframapa AI v2.0 - Development Specification
+# Mframapa AI v2.0 — Development Specification
 
-**Timeline**: 20 weeks (5 months)  
-**Build Phase**: Weeks 1-16  
-**Testing & Cleanup**: Weeks 17-20  
-**Budget**: $30-40 total  
-**Conference**: Denmark
+**Timeline**: **16 weeks (4 months)** — production v2.0 scope  
+**Scope contract**: See **`EXECUTION_PLAN_4MONTHS.md`** for drop/priority rules (full functioning product, not a throwaway demo).  
+**Budget**: ≤ **USD 30** cash out-of-pocket; compute via free tiers + GitHub Student Pack credits  
+**Milestone**: Denmark / Young Entrepreneurs Track + live production release
 
 ---
 
@@ -12,19 +11,22 @@
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────┐
-│                           20-WEEK TIMELINE                                 │
+│                      16-WEEK PRODUCTION TIMELINE                           │
 ├────────────────────────────────────────────────────────────────────────────┤
 │                                                                            │
-│  PHASE 1          PHASE 2       PHASE 3      PHASE 4       PHASE 5        │
-│  Data Infra       ML Models     PWA          Mobile App    Testing        │
-│  ───────────      ─────────     ───────      ──────────    ───────        │
-│  Weeks 1-5        Weeks 6-9     Weeks 10-12  Weeks 13-16   Weeks 17-20    │
-│  (5 weeks)        (4 weeks)     (3 weeks)    (4 weeks)     (4 weeks)      │
+│  PHASE 1           PHASE 2        PHASE 3         PHASE 4                 │
+│  Data & resilience Features & ML API & PWA        Mobile & launch         │
+│  ─────────────     ──────────     ─────────        ─────────────            │
+│  Weeks 1–4         Weeks 5–8      Weeks 9–12       Weeks 13–16             │
 │                                                                            │
-│  ████████████     ████████      ██████       ████████      ████████       │
+│  Ingestion +       Train +        Versioned API +  Android + stores +      │
+│  orchestration +   uncertainty +  offline PWA +    observability + freeze │
+│  cache + API meta  ensemble       batch + retrain                        │
 │                                                                            │
 └────────────────────────────────────────────────────────────────────────────┘
 ```
+
+Testing, performance, and monitoring are **woven into every phase**; Weeks **15–16** concentrate integration/load smoke tests, alerting, docs, and release freeze (no separate “Phase 5 weeks 17–20”).
 
 ---
 
@@ -32,10 +34,11 @@
 
 | Category | Amount | Notes |
 |----------|--------|-------|
-| Infrastructure | $0/mo | Free tiers only |
-| Domain | $10-15 | If renewal needed |
-| Google Play | $25 | Optional, one-time |
-| **Total** | **$30-40** | |
+| Infrastructure | $0/mo target | Free tiers + student credits |
+| Domain / misc | $0–15 | Only if unavoidable |
+| Google Play | $25 | Optional; consumes most of $30 envelope |
+| Contingency | remainder | Quotas / surprises |
+| **Total cash** | **≤ $30** | Paid EO APIs out of scope |
 
 ---
 
@@ -46,340 +49,286 @@
 | PWA | $0 | Primary |
 | Samsung Galaxy Store | $0 | High |
 | Huawei AppGallery | $0 | High |
-| Direct APK | $0 | High |
+| Direct APK / GitHub Releases | $0 | High (**minimum two** install paths by Week 16) |
 | Amazon Appstore | $0 | Medium |
 | F-Droid | $0 | Medium |
-| Google Play | $25 | If funded |
-| Apple App Store | $99/yr | Skip |
+| Google Play | $25 | If budget allows |
+| Apple App Store | $99/yr | Out of scope for v2.0 cash budget |
 
 ---
 
-## Phase 1: Data Infrastructure (Weeks 1-5)
+## Phase 1: Data Infrastructure & Resilience (Weeks 1–4)
 
 ### Week 1: Foundation
 
-**Focus**: Project setup and first data connector
+**Focus**: Deploy baseline, secrets hygiene, first reanalysis path, structured logging
 
 | Task | Description | Deliverable |
 |------|-------------|-------------|
-| Set up development branch | Clean branch for new development | Git branch |
-| Create data sources module | `backend/data_sources/` structure | Module scaffold |
-| Implement base classes | Abstract DataSource class | `base.py` |
-| ERA5 connector | Climate reanalysis (PBLH, wind, humidity) | `era5.py` |
-| Unit tests for ERA5 | Verify data fetching works | Test file |
+| v2.0 branch / CI baseline | Clean branching; GitHub Actions smoke tests on PR | CI passing |
+| `backend/data_sources/` scaffold | Abstract `DataSource`, shared errors, timeouts | `base.py`, package layout |
+| ERA5 connector | PBLH, wind (u/v), temperature, humidity (+ precip when stable) | `era5.py` |
+| Copernicus CDS | Account + quota awareness documented | Runbook note |
+| Unit tests | ERA5 fetch + parsing | Tests |
+| Logging | Structured logs for ingestion jobs | Observability baseline |
 
-**End of Week 1**: ERA5 connector working, base architecture in place
+**End of Week 1**: ERA5 end-to-end for one bbox; architecture in place
 
 ---
 
-### Week 2: Satellite Data
+### Week 2: Primary Satellite & Fallback Weather
 
-**Focus**: Primary satellite data source
+**Focus**: Sentinel-5P + operational weather fallback interface
 
 | Task | Description | Deliverable |
 |------|-------------|-------------|
-| Sentinel-5P connector | NO2, AOD, SO2, CO from TROPOMI | `sentinel5p.py` |
-| Refactor Open-Meteo | Update existing code to new interface | `open_meteo.py` |
-| API error handling | Timeouts, retries, error codes | Error handling |
-| Unit tests | Test all connectors | Test files |
-| Documentation | API usage docs | README |
+| Sentinel-5P connector | NO₂, aerosol index / UVAI (and gases per pipeline capability) | `sentinel5p.py` |
+| Open-Meteo refactor | Align to `DataSource` pattern | `open_meteo.py` |
+| Retries / backoff | Exponential backoff, circuit breaker hooks | Shared client utils |
+| Unit tests | Connectors | Tests |
+| Docs | Rate limits, quotas | README / data dictionary |
 
-**End of Week 2**: Two satellite sources working independently
+**End of Week 2**: S5P + Open-Meteo live independently
 
 ---
 
-### Week 3: Multi-Source & Fallback
+### Week 3: Multi-Source EO & Orchestration
 
-**Focus**: Redundancy and fallback logic
+**Focus**: Redundant AOD + orchestrator + reliability + failure simulation
 
 | Task | Description | Deliverable |
 |------|-------------|-------------|
-| MODIS AOD connector | Alternative AOD source | `modis.py` |
-| Data orchestrator | Coordinates multiple sources | `orchestrator.py` |
-| Fallback hierarchy | satellite → reanalysis → cache → default | Config |
-| Reliability scoring | Track source success rates | Scoring logic |
-| Integration tests | Test fallback behavior | Test files |
+| MODIS AOD connector | Terra/Aqua strategy per NASA Earthdata rules | `modis.py` |
+| VIIRS AOD connector | Second independent AOD family | `viirs.py` |
+| Orchestrator | Coordinates providers; fallback ladder | `orchestrator.py` |
+| Fallback config | satellite → reanalysis → cache → conservative prior | YAML/config |
+| Reliability scoring | Persist success/latency/freshness per source | DB or SQLite table |
+| Integration tests | Simulate provider failure / stale data | Tests |
 
-**End of Week 3**: System can fall back when sources fail
+**End of Week 3**: System survives loss of at least one EO provider in tests
 
 ---
 
-### Week 4: Caching Layer
+### Week 4: Caching, Historical Materialisation & API Transparency
 
-**Focus**: Performance and offline capability
+**Focus**: Performance, offline batches, **prediction response metadata**
 
 | Task | Description | Deliverable |
 |------|-------------|-------------|
-| Upstash Redis setup | Free tier Redis cache | Redis connection |
-| Cache strategy | What to cache, TTL settings | Cache config |
-| Pre-compute city data | Cache AQI for 500 cities | Batch job |
-| Local SQLite backup | Fallback when Redis unavailable | SQLite layer |
-| Cache invalidation | When to refresh cached data | Invalidation logic |
+| Redis (Upstash) + disk fallback | SQLite/local fallback if Redis unavailable | Cache layer |
+| Cache keys / TTL | Documented invalidation | Config |
+| Pre-materialise Top-N cities | Batch job for historical/feature snapshots | Worker/cron |
+| API fields | `sources_used[]`, `freshness`, `degraded`, provenance stub | API/schema update |
+| OpenAPI | Contract starts reflecting stable prediction shape | `openapi.yaml` or FastAPI export |
 
-**End of Week 4**: API responses cached, faster performance
+**End of Week 4**: Faster cold paths; API honestly describes what fed the result
 
 ---
 
-### Week 5: Feature Enrichment
+## Phase 2: Features & ML (Weeks 5–8)
 
-**Focus**: Additional data sources for model features
+### Week 5: Feature Pipeline & Calibration Joins
+
+**Focus**: Full proxy stack + labels — no placeholders in training path
 
 | Task | Description | Deliverable |
 |------|-------------|-------------|
-| WorldPop integration | Population density data | Population layer |
-| SRTM elevation | Terrain data | Elevation layer |
-| Feature pipeline | Combine all features for model | Pipeline code |
-| Data validation | Verify all features present | Validation tests |
-| Documentation | Data dictionary update | Docs |
+| WorldPop / GPW | Population density layer | Population features |
+| SRTM | Elevation | Terrain features |
+| NDVI | Single consistent composite (e.g. MODIS) | Vegetation features |
+| VIIRS night lights | Monthly composite acceptable initially | Activity proxy |
+| OSM road density | Zonal aggregates (hex/grid/admin) | Traffic proxy |
+| OpenAQ + AirQo | Station joins where accessible | Calibration table |
+| Unified feature pipeline | Deterministic join to grid/cities | Pipeline module |
+| Validation tests | Feature completeness checks | Tests |
 
-**End of Week 5**: All model features available from real sources
+**End of Week 5**: Reproducible feature matrix for training/inference
 
 ---
 
-## Phase 2: ML Enhancement (Weeks 6-9)
+### Week 6: Temporal & Baseline Modelling
 
-### Week 6: Regional Data & West Africa
-
-**Focus**: Data segmentation and first regional model
+**Focus**: Missing satellite days + climatology + light smoothing
 
 | Task | Description | Deliverable |
 |------|-------------|-------------|
-| Define regions | 6 African regions with boundaries | Region config |
-| Data segmentation | Split training data by region | Data splits |
-| Urban/rural classifier | Classify locations | Classifier |
-| West Africa model | Train first regional model | Model file |
-| Validation | Test against holdout data | Metrics |
+| Temporal gap fill | Nearest-good-day / short window rules | Documented policy |
+| Climatology baseline | Rolling normals from ERA5 / composites | Features |
+| Spatiotemporal smoothing | Sparse-cell smoothing (kernel/statistical — keep tractable) | Module |
+| Train/eval splits | Region × time grouped splits | Scripts |
+| Separate train artifacts | Versioned training snapshots distinct from live API pulls | Storage layout |
 
-**End of Week 6**: West Africa model trained (R² target: 0.80)
+**End of Week 6**: Training rows resilient to gaps; methodology documented
 
 ---
 
-### Week 7: More Regional Models
+### Week 7: Regional Models & Ensemble
 
-**Focus**: Train remaining region models
+**Focus**: All regions + GBDT ensemble + registry
 
 | Task | Description | Deliverable |
 |------|-------------|-------------|
-| East Africa model | Kenya, Tanzania, Uganda, etc. | Model file |
-| North Africa model | Egypt, Morocco, Tunisia, etc. | Model file |
-| Central Africa model | DRC, Cameroon, Congo, etc. | Model file |
-| Model comparison | Compare regional vs continental | Analysis |
+| Region boundaries | 6 regions GeoJSON + urban/rural classifier | Config |
+| Train regional models | Target **12** artifacts (6 × urban/rural); **continental fallback** if labels force reduction | Model files |
+| Ensemble | XGBoost + LightGBM combination | Ensemble inference |
+| Selection logic | Region + UR → model id | Router |
+| Export | Serialised models + metadata | Registry dir / DB |
+| Evaluation | Notebooks or scripts → **CI-exported metrics artefact** where feasible | Metrics |
 
-**End of Week 7**: 4 regional models trained
+**End of Week 7**: Registered ensemble serves inference path in staging
 
 ---
 
-### Week 8: Final Models & Ensemble
+### Week 8: Uncertainty, Anomalies & Production ML Docs
 
-**Focus**: Complete model suite
+**Focus**: Intervals/flags + drift hooks + model cards
 
 | Task | Description | Deliverable |
 |------|-------------|-------------|
-| Southern Africa model | South Africa, Zimbabwe, etc. | Model file |
-| Horn of Africa model | Somalia, Ethiopia, Eritrea | Model file |
-| Ensemble setup | Combine XGBoost + LightGBM | Ensemble code |
-| Model selection logic | Pick model based on location | Selection logic |
-| Export models | JSON/ONNX for production | Model files |
+| Uncertainty | Conformal intervals or bootstrap — **must** surface in API | Inference patch |
+| Anomaly flags | Residual / z-score hybrid acceptable | Response fields |
+| Feature importance logging | Batch job post-training | Logs artefact |
+| Validation suite | Holdouts + sanity checks | Tests |
+| Model cards | Limitations, regions, label density | `docs/` |
+| Inference integration | Production path returns uncertainty + anomaly | Wire-up |
 
-**End of Week 8**: All 12 models (6 regions × 2 urban/rural) ready
+**End of Week 8**: ML meets **`EXECUTION_PLAN_4MONTHS.md`** §8 ML bullets
 
 ---
 
-### Week 9: Uncertainty & Automation
+## Phase 3: Versioned API & PWA (Weeks 9–12)
 
-**Focus**: Production readiness
+### Week 9: Public API Hardening
+
+**Focus**: Versioned routes, keys, limits, exports
 
 | Task | Description | Deliverable |
 |------|-------------|-------------|
-| Uncertainty estimation | Conformal prediction intervals | Uncertainty code |
-| Validation suite | Comprehensive model testing | Test suite |
-| Retraining pipeline | Automated monthly retraining | GitHub Actions |
-| Model versioning | Track model versions | Version system |
-| Documentation | Model card, performance docs | Docs |
+| `/v1/` routes | Stable URLs | Router layout |
+| API keys | Public vs institutional tiers (**limits**, billing manual OK) | Key storage / hashing |
+| Rate limiting | Abuse protection per key/IP | Middleware |
+| Usage persistence | Per-key request counts for dashboard | Store |
+| CSV + GeoJSON export | Documented export endpoints or query params | Handlers |
+| OpenAPI sync | Published spec matches implementation | Docs |
 
-**End of Week 9**: Models production-ready with uncertainty bands
+**End of Week 9**: Partners can integrate without informal JSON drift
 
 ---
 
-## Phase 3: PWA Enhancement (Weeks 10-12)
+### Week 10: Batch & Integration Testing
 
-### Week 10: PWA Foundation
-
-**Focus**: Make web app installable
+**Focus**: Heavy queries + automated API/integration coverage
 
 | Task | Description | Deliverable |
 |------|-------------|-------------|
-| manifest.json | PWA manifest file | Manifest |
-| App icons | All required sizes | Icon set |
-| Meta tags | iOS-specific tags | HTML updates |
-| Splash screens | Loading screens | Images |
-| Test installation | Verify "Add to Home Screen" | QA |
+| Batch endpoint | Async job + poll **or** strict capped sync — **pick one**, document | API |
+| API integration tests | Critical paths in CI | Test suite |
+| End-to-end data test | Ingest → features → inference smoke | Pipeline test |
+| Payload compression | gzip/brotli where applicable | Server config |
 
-**End of Week 10**: Web app installable on Android and iOS
+**End of Week 10**: Batch contract stable; CI guards regressions
 
 ---
 
-### Week 11: Offline Mode
+### Week 11: Retraining, Drift & Deploy Discipline
 
-**Focus**: Full offline functionality
+**Focus**: Automation + operational safety
 
 | Task | Description | Deliverable |
 |------|-------------|-------------|
-| Service worker | Caching and offline logic | sw.js |
-| Cache strategy | Which assets to cache | Cache config |
-| Offline UI | "You're offline" states | UI components |
-| Pre-cache cities | 500 cities available offline | City data |
-| Sync strategy | Update when back online | Sync logic |
+| Scheduled retrain | GitHub Actions or worker cron | Pipeline |
+| Drift heuristic | Feature stats / residual MAE creep alerts | Monitor stub |
+| Deployment | Scripted deploy + **documented rollback** | Runbook |
+| Synthetic failure drill | Staged upstream outage rehearsal | Recorded outcome |
 
-**End of Week 11**: App works fully offline
+**End of Week 11**: Operators can refresh models without heroics
 
 ---
 
-### Week 12: PWA Polish
+### Week 12: PWA Production UX
 
-**Focus**: User experience refinement
+**Focus**: Installable, offline, low-bandwidth, accessibility
 
 | Task | Description | Deliverable |
 |------|-------------|-------------|
-| Install prompt | Custom install banner | Component |
-| iOS instructions | "Add to Home Screen" guide | UI/UX |
-| Performance audit | Lighthouse optimization | Improvements |
-| Compression | Smaller assets, gzip | Optimization |
-| PWA testing | Cross-browser, cross-device | QA report |
+| manifest.json + icons + splash | Full set | Assets |
+| Service worker | Asset + API cache policies; offline UX | `sw.js` |
+| Pre-cache city packs | Align with backend Top-N materialisation | Config |
+| Manual city picker | No GPS required | UI |
+| Lazy map / lite mode | Reduce bandwidth | Map tuning |
+| Compression | Assets + API consumer hints | Build |
+| Accessibility | Contrast, scalable type, symbolic AQI | Audit fixes |
+| Lighthouse | Target strong PWA score | Report |
 
-**End of Week 12**: PWA fully optimized and tested
+**End of Week 12**: PWA matches production Definition of Done (client side)
 
 ---
 
-## Phase 4: Mobile App (Weeks 13-16)
+## Phase 4: Mobile, Distribution & Observability (Weeks 13–16)
 
-### Week 13: App Foundation
+### Week 13: Android Client
 
-**Focus**: Expo project setup
+**Focus**: Same API contract as web
 
 | Task | Description | Deliverable |
 |------|-------------|-------------|
-| Expo initialization | Create React Native project | Project |
-| Navigation setup | Tab and stack navigation | Navigation |
-| Home screen | Main AQI display | Screen |
-| Theme system | Dark/light mode | Theme |
-| Basic styling | Core UI components | Components |
+| Expo / RN project | TypeScript, navigation, theme | App scaffold |
+| Home / map / search | Core flows | Screens |
+| API client | Versioned base URL + error handling | Service layer |
+| MMKV / offline | Last-known AQI + pinned cities | Storage |
+| Settings | Language, preferences | Screen |
 
-**End of Week 13**: Basic app structure with Home screen
+**End of Week 13**: Signed debug/release path shows live API data
 
 ---
 
-### Week 14: Core Features
+### Week 14: Distribution Minimum Two Paths
 
-**Focus**: Main functionality
+**Focus**: Real installs — not “submitted someday”
 
 | Task | Description | Deliverable |
 |------|-------------|-------------|
-| Map screen | Location selection | Screen |
-| City search | Manual city picker | Component |
-| API integration | Connect to backend | Services |
-| Offline storage | MMKV for local data | Storage |
-| Settings screen | Language, preferences | Screen |
+| Release signing | Keystore secured | Signing |
+| Optimised APK / AAB | Target **< 15 MB** APK equivalent | Artefact |
+| Samsung Galaxy Store | Submit | Tracker updated |
+| **Plus one of**: Huawei OR Amazon OR **GitHub Releases direct APK** | Minimum **two** total paths | Live or submitted |
+| Download page | SHA-256, install instructions | Web |
 
-**End of Week 14**: Core app functionality complete
+**End of Week 14**: ≥2 distribution channels in flight or live
 
 ---
 
-### Week 15: Build & First Store
+### Week 15: Observability, Privacy-Preserving Analytics & Load Smoke
 
-**Focus**: Production build and Samsung submission
+**Focus**: Production ops
 
 | Task | Description | Deliverable |
 |------|-------------|-------------|
-| APK signing | Generate keystore, sign APK | Signed APK |
-| App optimization | Reduce APK size (<15MB) | Optimized APK |
-| Store assets | Screenshots, descriptions | Assets |
-| Samsung account | Create developer account | Account |
-| Samsung submission | Submit to Galaxy Store | Submission |
+| Sentry | Backend + frontend/mobile | DSN wired |
+| Uptime monitors | Health + critical routes | UptimeRobot or equiv |
+| Aggregated analytics | Adoption / cohorts / geo buckets — **no raw GPS retention** | Umami/PostHog/etc. |
+| Load smoke script | Concurrent burst representative of launch | Results doc |
+| Cache tuning | Hit rates, TTL adjustments | Notes |
+| Mobile perf | Battery/memory sanity pass | Fixes |
 
-**End of Week 15**: APK built, Samsung review in progress
+**End of Week 15**: On-call lite playbook exists
 
 ---
 
-### Week 16: Additional Stores
+### Week 16: Release Freeze & Documentation
 
-**Focus**: Expand distribution
-
-| Task | Description | Deliverable |
-|------|-------------|-------------|
-| Huawei AppGallery | Submit to Huawei | Submission |
-| Amazon Appstore | Submit to Amazon | Submission |
-| Direct download | APK download page | Web page |
-| F-Droid prep | Open source metadata | Submission |
-| Store tracking | Monitor review status | Tracking |
-
-**End of Week 16**: App submitted to all free stores
-
----
-
-## Phase 5: Testing & Cleanup (Weeks 17-20)
-
-### Week 17: Integration Testing
-
-**Focus**: End-to-end testing
+**Focus**: Shipped v2.0 + operator clarity
 
 | Task | Description | Deliverable |
 |------|-------------|-------------|
-| API testing | Test all endpoints | Test suite |
-| Data flow testing | Verify data pipeline | Tests |
-| Mobile testing | Test on real devices | QA report |
-| PWA testing | Cross-browser testing | QA report |
-| Bug fixes | Fix discovered issues | Fixes |
+| Bug sweep | Critical/zero-day fixes only | Stable tag |
+| Operator runbooks | Provider down, quota exhaustion, rollback | `docs/` |
+| API consumer docs | Auth, limits, exports, uncertainty semantics | Published |
+| User-facing docs | Privacy alignment with actual retention | Site/docs |
+| Launch checklist | Sign-off list | CHECKLIST |
+| Pitch / metrics | Deck refreshed from analytics snapshots | Materials |
 
-**End of Week 17**: All critical bugs identified and fixed
-
----
-
-### Week 18: Performance
-
-**Focus**: Optimization and load handling
-
-| Task | Description | Deliverable |
-|------|-------------|-------------|
-| Load testing | Simulate concurrent users | Test results |
-| API optimization | Reduce latency | Improvements |
-| Cache tuning | Optimize hit rates | Tuning |
-| Mobile performance | Battery, memory usage | Optimization |
-| Database optimization | Query performance | Improvements |
-
-**End of Week 18**: System handles expected load
-
----
-
-### Week 19: Monitoring & Analytics
-
-**Focus**: Production observability
-
-| Task | Description | Deliverable |
-|------|-------------|-------------|
-| UptimeRobot setup | Uptime monitoring | Monitors |
-| Error tracking | Sentry free tier | Error tracking |
-| Analytics | Umami or similar | Analytics |
-| Dashboards | Key metrics visible | Dashboard |
-| Alerting | Notify on issues | Alerts |
-
-**End of Week 19**: Full monitoring in place
-
----
-
-### Week 20: Final Polish
-
-**Focus**: Conference readiness
-
-| Task | Description | Deliverable |
-|------|-------------|-------------|
-| Documentation | User guides, API docs | Docs |
-| Demo preparation | Stable demo environment | Demo |
-| Pitch materials | Update with metrics | Materials |
-| Final QA | Complete walkthrough | QA report |
-| Launch checklist | Verify everything ready | Checklist |
-
-**End of Week 20**: Ready for Denmark conference
+**End of Week 16**: **v2.0 production freeze** — conference-ready **and** maintainable
 
 ---
 
@@ -389,46 +338,46 @@
 
 | Metric | Target |
 |--------|--------|
-| Model R² | ≥ 0.80 per region |
-| API uptime | > 99% |
-| API latency (p95) | < 500ms |
-| Offline cities | 500 |
-| APK size | < 15MB |
-| PWA Lighthouse | > 90 |
+| EO independence | ≥3 independent families feeding fusion (e.g. S5P + MODIS AOD + VIIRS AOD; ERA5 separate layer) |
+| Fallback | Proven in tests + staged drill |
+| Model quality | Best-effort per region; **continental fallback** documented where sparse |
+| API latency (p95) | < 500 ms cached hot paths where applicable |
+| API | Versioned + keys + rate limits + uncertainty/degraded flags |
+| Offline cities | Top-N pre-materialised + client packs (500 remains aspirational) |
+| APK size | < 15 MB |
+| PWA Lighthouse | Strong PWA score (≥ 90 ideal) |
 
 ### Distribution
 
 | Platform | Target |
 |----------|--------|
-| PWA | Live and installable |
-| Samsung Galaxy Store | Approved |
-| Huawei AppGallery | Approved |
-| Direct APK | Available |
+| PWA | Installable |
+| Android | **≥2** of: Samsung / Huawei / Amazon / direct APK |
 
-### User Metrics (by conference)
+### Privacy & security
 
 | Metric | Target |
 |--------|--------|
-| PWA installs | 50+ |
-| APK downloads | 200+ |
-| Countries reached | 5+ |
-| Daily active users | 20+ |
+| Transport | TLS everywhere |
+| Location | Bucketed / minimised; policy matches implementation |
+| Keys | Hashed at rest; institutional tier isolated |
 
 ---
 
 ## Free Infrastructure Stack
 
-| Service | Purpose | Free Tier |
-|---------|---------|-----------|
-| AWS EC2 | Backend | 750 hrs/mo (12 mo) |
-| Vercel | Frontend | 100GB bandwidth |
-| Upstash | Redis cache | 10K commands/day |
-| Cloudflare | CDN | Unlimited |
-| UptimeRobot | Monitoring | 50 monitors |
-| GitHub Actions | CI/CD | 2000 min/mo |
-| Colab | ML training | Free GPU |
+| Service | Purpose | Notes |
+|---------|---------|-------|
+| AWS EC2 / Azure / DO (student) | Backend | Pick **one** primary cloud |
+| Vercel / similar | Frontend | As today |
+| Upstash | Redis | Rate limit + cache |
+| Cloudflare | CDN + DNS + SSL | As `docs/INFRASTRUCTURE.md` |
+| GitHub Actions | CI/CD + scheduled jobs | |
+| Colab / cloud notebook | Training bursts | |
+| Sentry (student tier) | Errors | |
+| UptimeRobot | Uptime | |
 
 ---
 
-*Version 2.0 Specification*  
-*20-week timeline with proper pacing*
+*Mframapa AI v2.0 Specification — **16-week production timeline***  
+*Aligned with **`EXECUTION_PLAN_4MONTHS.md`***

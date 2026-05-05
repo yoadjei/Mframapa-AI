@@ -18,7 +18,12 @@ from typing import Dict, Any, Optional
 from .era5        import ERA5DataSource
 from .sentinel5p  import Sentinel5PDataSource
 from .modis       import MODISDataSource
+from .viirs       import VIIRSDataSource
 from .open_meteo  import OpenMeteoDataSource
+from .ndvi        import NDVIDataSource
+from .night_lights import NightLightsDataSource
+from .osm_roads   import OSMRoadsDataSource
+from .openaq      import OpenAQDataSource
 
 logger = logging.getLogger(__name__)
 
@@ -62,6 +67,7 @@ _FALLBACK_PLAN: Dict[str, list] = {
     # ── Aerosols ──────────────────────────────────────────────────────────
     "aerosol_optical_depth": [
         ("Sentinel-5P",  "aerosol_optical_depth"),
+        ("VIIRS-MAIAC",  "aerosol_optical_depth"),
         ("MODIS-MAIAC",  "aerosol_optical_depth"),
         ("OpenMeteo",    "aerosol_optical_depth"),
     ],
@@ -72,9 +78,26 @@ _FALLBACK_PLAN: Dict[str, list] = {
     "pm25_surface": [
         ("OpenMeteo", "pm25_surface"),
     ],
+    # ── Land proxies ──────────────────────────────────────────────────────
+    "ndvi": [
+        ("NDVI-Composite", "ndvi"),
+    ],
+    "night_lights": [
+        ("VIIRS-NightLights", "night_lights"),
+    ],
+    "road_density": [
+        ("OSM-Roads", "road_density"),
+    ],
+    # ── Ground Truth Calibration ──────────────────────────────────────────
+    "openaq_pm25": [
+        ("OpenAQ", "openaq_pm25"),
+    ],
+    "openaq_pm10": [
+        ("OpenAQ", "openaq_pm10"),
+    ],
 }
 
-_SOURCE_NAMES = ["ERA5", "Sentinel-5P", "MODIS-MAIAC", "OpenMeteo"]
+_SOURCE_NAMES = ["ERA5", "Sentinel-5P", "VIIRS-MAIAC", "MODIS-MAIAC", "OpenMeteo", "NDVI-Composite", "VIIRS-NightLights", "OSM-Roads", "OpenAQ"]
 
 
 class DataOrchestrator:
@@ -90,8 +113,13 @@ class DataOrchestrator:
         self._sources = {
             "ERA5":       ERA5DataSource(),
             "Sentinel-5P": Sentinel5PDataSource(),
+            "VIIRS-MAIAC": VIIRSDataSource(),
             "MODIS-MAIAC": MODISDataSource(),
             "OpenMeteo":  OpenMeteoDataSource(),
+            "NDVI-Composite": NDVIDataSource(),
+            "VIIRS-NightLights": NightLightsDataSource(),
+            "OSM-Roads": OSMRoadsDataSource(),
+            "OpenAQ": OpenAQDataSource(),
         }
         # Reliability counters: {source_name: {"success": int, "failure": int}}
         self._counters = {

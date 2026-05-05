@@ -1,9 +1,12 @@
 # PWA Enhancement Structure
 
-**Current**: React + Vite (already exists)  
-**Enhancement**: Full PWA with offline support
+**Current**: React + Vite (already exists in parent repo when wired).  
+**Enhancement**: Full **production PWA** — installable, offline, low-bandwidth (`SPEC.md` **Phase 3**, emphasis **Week 12**).
+
+**Related**: HTTP client should target **`/v1`** API; surface **last updated**, **offline/cached** state, and any **degraded / uncertainty** fields the backend returns (`EXECUTION_PLAN_4MONTHS.md`).
 
 ---
+
 
 ## Files to Add
 

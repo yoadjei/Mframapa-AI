@@ -13,7 +13,8 @@ const api = axios.create({
     baseURL: API_BASE,
     timeout: 30000,
     headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'X-API-Key': 'mframapa-internal-dev-key'
     }
 });
 
@@ -59,7 +60,7 @@ const setTranslationCache = (lang, translations) => {
  */
 export const resolveLocation = async (city) => {
     try {
-        const response = await api.get('/api/resolve-location', {
+        const response = await api.get('/api/v1/resolve-location', {
             params: { city }
         });
         return response.data;
@@ -83,7 +84,7 @@ export const getPrediction = async (lat, lon, name = 'Unknown') => {
     }
 
     try {
-        const response = await api.get('/api/predict', {
+        const response = await api.get('/api/v1/predict', {
             params: { lat, lon, name }
         });
 
@@ -104,7 +105,7 @@ export const getPrediction = async (lat, lon, name = 'Unknown') => {
  */
 export const generateInsight = async (pm25, aqiCategory, weather, language = 'en') => {
     try {
-        const response = await api.post('/api/generate-insight', {
+        const response = await api.post('/api/v1/generate-insight', {
             pm25,
             aqi_category: aqiCategory,
             weather,
@@ -138,7 +139,7 @@ export const translateUI = async (strings, targetLanguage) => {
     }
 
     try {
-        const response = await api.post('/api/translate-ui', {
+        const response = await api.post('/api/v1/translate-ui', {
             strings,
             target_language: targetLanguage
         });
@@ -158,7 +159,7 @@ export const translateUI = async (strings, targetLanguage) => {
  */
 export const submitReport = async (lat, lon, perceivedQuality, comment = null) => {
     try {
-        const response = await api.post('/api/report', {
+        const response = await api.post('/api/v1/report', {
             lat,
             lon,
             perceived_quality: perceivedQuality,
@@ -175,7 +176,7 @@ export const submitReport = async (lat, lon, perceivedQuality, comment = null) =
  */
 export const checkHealth = async () => {
     try {
-        const response = await api.get('/api/health');
+        const response = await api.get('/api/v1/health');
         return response.data;
     } catch (error) {
         return {
@@ -193,7 +194,7 @@ export const checkHealth = async () => {
  */
 export const getSupportedLanguages = async () => {
     try {
-        const response = await api.get('/api/languages');
+        const response = await api.get('/api/v1/languages');
         return response.data.languages;
     } catch {
         // Fallback languages

@@ -20,20 +20,22 @@ MOCK_OM = {
     "no2_surface": 12.0, "so2_surface": 3.0, "co_surface": 150.0,
     "aerosol_optical_depth": 0.22, "pm10_surface": 20.0, "pm25_surface": 12.0,
 }
+MOCK_VIIRS = {"aerosol_optical_depth": 0.29}
 MOCK_MODIS = {"aerosol_optical_depth": 0.28}
 
 
-def _make_orchestrator(era5_ok=True, s5p_ok=True, modis_ok=True, om_ok=True,
-                        era5_data=None, s5p_data=None, modis_data=None, om_data=None):
+def _make_orchestrator(era5_ok=True, s5p_ok=True, viirs_ok=True, modis_ok=True, om_ok=True,
+                        era5_data=None, s5p_data=None, viirs_data=None, modis_data=None, om_data=None):
     """Return an orchestrator with all sources mocked."""
     era5_data  = era5_data  or MOCK_ERA5
     s5p_data   = s5p_data   or MOCK_S5P
+    viirs_data = viirs_data or MOCK_VIIRS
     modis_data = modis_data or MOCK_MODIS
     om_data    = om_data    or MOCK_OM
 
     orch = DataOrchestrator.__new__(DataOrchestrator)
     orch._counters = {n: {"success": 0, "failure": 0}
-                      for n in ["ERA5", "Sentinel-5P", "MODIS-MAIAC", "OpenMeteo"]}
+                      for n in ["ERA5", "Sentinel-5P", "VIIRS-MAIAC", "MODIS-MAIAC", "OpenMeteo", "NDVI-Composite", "VIIRS-NightLights", "OSM-Roads", "OpenAQ"]}
 
     def _mock_src(available, data=None, fail=False):
         m = MagicMock()
@@ -47,8 +49,13 @@ def _make_orchestrator(era5_ok=True, s5p_ok=True, modis_ok=True, om_ok=True,
     orch._sources = {
         "ERA5":        _mock_src(era5_ok,  era5_data,  not era5_ok),
         "Sentinel-5P": _mock_src(s5p_ok,   s5p_data,   not s5p_ok),
+        "VIIRS-MAIAC": _mock_src(viirs_ok, viirs_data, not viirs_ok),
         "MODIS-MAIAC": _mock_src(modis_ok, modis_data, not modis_ok),
         "OpenMeteo":   _mock_src(om_ok,    om_data,    not om_ok),
+        "NDVI-Composite": _mock_src(True, {"ndvi": 0.45}, False),
+        "VIIRS-NightLights": _mock_src(True, {"night_lights": 12.5}, False),
+        "OSM-Roads": _mock_src(True, {"road_density": 0.05}, False),
+        "OpenAQ": _mock_src(True, {"openaq_pm25": 12.0, "openaq_pm10": 18.0}, False),
     }
     return orch
 
@@ -76,11 +83,11 @@ class TestDataOrchestrator:
         result = orch.get_features(**ACCRA)
         assert result["no2_tropospheric_column"] == pytest.approx(MOCK_OM["no2_surface"])
 
-    def test_falls_back_to_modis_for_aod_when_sentinel_fails(self):
+    def test_falls_back_to_viirs_for_aod_when_sentinel_fails(self):
         s5p_no_aod = {**MOCK_S5P, "aerosol_optical_depth": None}
         orch = _make_orchestrator(s5p_data=s5p_no_aod)
         result = orch.get_features(**ACCRA)
-        assert result["aerosol_optical_depth"] == pytest.approx(MOCK_MODIS["aerosol_optical_depth"])
+        assert result["aerosol_optical_depth"] == pytest.approx(MOCK_VIIRS["aerosol_optical_depth"])
 
     def test_openmeteo_fallback_for_temperature_when_era5_fails(self):
         orch = _make_orchestrator(era5_ok=False)
@@ -108,7 +115,7 @@ class TestDataOrchestrator:
         assert orch._sources["ERA5"].fetch_data.call_count == 1
 
     def test_all_none_when_all_sources_fail(self):
-        orch = _make_orchestrator(era5_ok=False, s5p_ok=False,
+        orch = _make_orchestrator(era5_ok=False, s5p_ok=False, viirs_ok=False,
                                    modis_ok=False, om_ok=False)
         result = orch.get_features(**ACCRA)
         assert result["pblh"] is None

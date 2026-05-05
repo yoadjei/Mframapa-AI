@@ -219,9 +219,12 @@ export const translateUI = async (targetLangCode) => {
 
     // 2. Try backend API first
     try {
-        const response = await fetch('/api/translate-ui', {
+        const response = await fetch('/api/v1/translate-ui', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'X-API-Key': 'mframapa-internal-dev-key'
+            },
             body: JSON.stringify({
                 strings: baseStrings,
                 target_language: targetLangCode
@@ -285,9 +288,12 @@ export const generateInsight = async (pm25, weather, targetLangCode, locationNam
     // 1. Try backend API first
     try {
         const apiBase = import.meta.env.VITE_API_URL || '';
-        const response = await fetch(`${apiBase}/api/generate-insight`, {
+        const response = await fetch(`${apiBase}/api/v1/generate-insight`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'X-API-Key': 'mframapa-internal-dev-key'
+            },
             body: JSON.stringify({
                 pm25,
                 aqi_category: aqiCategory,

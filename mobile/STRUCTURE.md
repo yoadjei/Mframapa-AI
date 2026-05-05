@@ -1,8 +1,9 @@
 # Mobile App Structure
 
 **Framework**: React Native (Expo)  
-**Build**: Local APK (free)  
-**Distribution**: Samsung, Huawei, Amazon, Direct APK (all free)
+**Build**: Local release APK (free tier / local toolchain)  
+**Distribution**: ≥**two** channels by **`SPEC.md` Week 14** — Samsung + (Huawei **or** Amazon **or** GitHub Releases APK).  
+**API**: Backend **`/v1`** base URL, same contract as PWA; honour **rate limits** and **API keys** for institutional builds.
 
 ---
 
@@ -33,7 +34,7 @@ mobile/
 │   │   └── OfflineBanner.tsx   # Offline indicator
 │   │
 │   ├── services/
-│   │   ├── api.ts              # Backend API calls
+│   │   ├── api.ts              # Backend /v1 API calls + errors
 │   │   ├── storage.ts          # MMKV local storage
 │   │   └── location.ts         # GPS handling
 │   │

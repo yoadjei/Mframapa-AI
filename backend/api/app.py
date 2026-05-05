@@ -76,7 +76,9 @@ def get_feature_pipeline() -> FeaturePipeline:
     return FeaturePipeline()
 
 
-app = FastAPI(title="Mframapa API", version="2.0.0")
+from backend.api.v1.router import router as v1_router
+
+app = FastAPI(title="Mframapa API", version="2.0.0", description="Mframapa AI v2.0 Versioned API with rate limiting and API keys.")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -85,146 +87,22 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(v1_router, prefix="/api/v1", tags=["v1"])
 
+# Legacy support - keeping the old root paths but returning a hint to use v1.
 @app.get("/api/health")
-def health() -> Dict[str, str]:
-    return {"status": "ok"}
-
+def old_health() -> Dict[str, str]:
+    return {"status": "ok", "message": "Please upgrade to /api/v1/health"}
 
 @app.get("/api/resolve-location")
-def resolve_location(
-    city: str = Query(..., min_length=1, description="City name (partial match, Africa dataset)"),
-) -> Dict[str, Any]:
-    q = city.strip().lower()
-    if not q:
-        raise HTTPException(400, "city is required")
-    best: Optional[Dict[str, Any]] = None
-    for c in _cities():
-        name = str(c.get("name", "")).lower()
-        country = str(c.get("country", "")).lower()
-        if q in name or q in f"{name}, {country}".lower() or name.startswith(q):
-            best = c
-            break
-    if best is None:
-        for c in _cities():
-            if q in str(c.get("country", "")).lower():
-                best = c
-                break
-    if best is None:
-        raise HTTPException(404, "City not found in African coverage dataset")
-    return {
-        "lat": float(best["lat"]),
-        "lon": float(best["lon"]),
-        "name": f"{best['name']}, {best['country']}",
-        "is_africa": True,
-    }
-
+def old_resolve_location(city: str = Query(...)) -> Dict[str, Any]:
+    raise HTTPException(status_code=410, detail="Endpoint deprecated. Use /api/v1/resolve-location with an API key.")
 
 @app.get("/api/predict")
-def predict(
-    lat: float = Query(..., ge=-90, le=90),
-    lon: float = Query(..., ge=-180, le=180),
-    name: str = Query("Unknown"),
-    day: Optional[str] = Query(
-        None,
-        description="ISO date YYYY-MM-DD (default: today)",
-    ),
-    pipeline: FeaturePipeline = Depends(get_feature_pipeline),
-) -> Dict[str, Any]:
-    d = day or dt_date.today().isoformat()
-
-    feats = pipeline.get_features(lat, lon, d)
-    pm25_raw = feats.get("pm25_surface")
-    if pm25_raw is None:
-        pm25 = 25.0
-        logger.warning("pm25_surface missing for (%s,%s); using fallback", lat, lon)
-    else:
-        pm25 = float(pm25_raw)
-
-    cat = aqi_category_from_pm25(pm25)
-    pop = feats.get("population_density")
-    region_id = assign_region(lat, lon) or "west_africa"
-    segment = classify_from_population_density(pop if isinstance(pop, (int, float)) else None)
-    half = _load_manifest_half_width(region_id, segment) or _default_conformal_half_width(pm25)
-    lower = max(0.0, pm25 - half)
-    upper = pm25 + half
-
-    temp = feats.get("temperature_2m")
-    rh = feats.get("relative_humidity")
-    u = feats.get("u_component_of_wind_10m") or 0.0
-    v = feats.get("v_component_of_wind_10m") or 0.0
-    wind_speed = (float(u) ** 2 + float(v) ** 2) ** 0.5
-
-    factors = {
-        k: feats.get(k)
-        for k in (
-            "no2_tropospheric_column",
-            "aerosol_optical_depth",
-            "pm10_surface",
-            "population_density",
-            "elevation",
-        )
-        if feats.get(k) is not None
-    }
-
-    manifest_hw = _load_manifest_half_width(region_id, segment)
-    uncertainty_method = (
-        "split_conformal_manifest" if manifest_hw is not None else "heuristic_relative"
-    )
-
-    return {
-        "pm25": round(pm25, 2),
-        "aqi_category": cat,
-        "factors": factors,
-        "weather": {
-            "temp": float(temp) if temp is not None else None,
-            "humidity": float(rh) if rh is not None else None,
-            "wind": round(wind_speed, 2),
-            "pressure": None,
-        },
-        "uncertainty": {
-            "pm25_lower": round(lower, 2),
-            "pm25_upper": round(upper, 2),
-            "half_width": round(half, 2),
-            "coverage": 0.9,
-            "method": uncertainty_method,
-        },
-        "model": {
-            "region_id": region_id,
-            "segment": segment,
-            "version": "2.0.0",
-            "source": "feature_pipeline_pm25_surface",
-        },
-    }
-
-
-class InsightBody(BaseModel):
-    pm25: float = Field(..., ge=0)
-    aqi_category: str = ""
-    weather: Dict[str, Any] = Field(default_factory=dict)
-    language: str = "en"
-
-
-_STUB_INSIGHTS_EN = {
-    "good": "Satellite-based estimate suggests favorable dispersion today.",
-    "moderate": "Particulate levels are slightly elevated; sensitive people may notice.",
-    "sensitive": "Elevated PM2.5 — children and older adults should limit strenuous outdoor time.",
-    "unhealthy": "Poor air quality likely from stagnant conditions or local emissions.",
-    "hazardous": "Very high particulate levels — reduce outdoor exposure.",
-}
-
+def old_predict() -> Dict[str, Any]:
+    raise HTTPException(status_code=410, detail="Endpoint deprecated. Use /api/v1/predict with an API key.")
 
 @app.post("/api/generate-insight")
-def generate_insight(body: InsightBody) -> Dict[str, str]:
-    cat = (body.aqi_category or aqi_category_from_pm25(body.pm25)).lower()
-    key = "good"
-    if "hazardous" in cat:
-        key = "hazardous"
-    elif "unhealthy" in cat and "sensitive" not in cat:
-        key = "unhealthy"
-    elif "sensitive" in cat:
-        key = "sensitive"
-    elif "moderate" in cat:
-        key = "moderate"
-    text = _STUB_INSIGHTS_EN[key]
-    return {"insight": text}
+def old_generate_insight() -> Dict[str, str]:
+    raise HTTPException(status_code=410, detail="Endpoint deprecated. Use /api/v1/generate-insight with an API key.")
+

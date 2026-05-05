@@ -8,6 +8,7 @@ const client = axios.create({
   timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
+    'X-API-Key': 'mframapa-internal-dev-key',
   },
 });
 
@@ -16,7 +17,7 @@ export async function getPrediction(
   lon: number,
   name: string
 ): Promise<PredictionResult> {
-  const { data } = await client.get('/api/predict', {
+  const { data } = await client.get('/api/v1/predict', {
     params: { lat, lon, name },
   });
 
@@ -41,13 +42,13 @@ export async function getPrediction(
 export async function resolveLocation(
   city: string
 ): Promise<{ lat: number; lon: number; name: string; is_africa: boolean }> {
-  const { data } = await client.get('/api/resolve-location', {
+  const { data } = await client.get('/api/v1/resolve-location', {
     params: { city },
   });
   return data;
 }
 
 export async function checkHealth(): Promise<{ status: string }> {
-  const { data } = await client.get('/api/health');
+  const { data } = await client.get('/api/v1/health');
   return data;
 }

@@ -5,22 +5,24 @@ from unittest.mock import MagicMock
 import pytest
 from fastapi.testclient import TestClient
 
-from backend.api.app import app, get_feature_pipeline
+from backend.api.app import app
+from backend.api.v1.router import get_feature_pipeline
 
 
 @pytest.fixture
 def client():
-    return TestClient(app)
+    # Provide the default API Key for tests to pass
+    return TestClient(app, headers={"X-API-Key": "mframapa-internal-dev-key"})
 
 
 def test_health(client):
-    r = client.get("/api/health")
+    r = client.get("/api/v1/health")
     assert r.status_code == 200
     assert r.json()["status"] == "ok"
 
 
 def test_resolve_location_found(client):
-    r = client.get("/api/resolve-location", params={"city": "Lagos"})
+    r = client.get("/api/v1/resolve-location", params={"city": "Lagos"})
     assert r.status_code == 200
     data = r.json()
     assert "lat" in data and "lon" in data
@@ -28,7 +30,7 @@ def test_resolve_location_found(client):
 
 
 def test_resolve_location_missing(client):
-    r = client.get("/api/resolve-location", params={"city": "NonexistentCityXyz123"})
+    r = client.get("/api/v1/resolve-location", params={"city": "NonexistentCityXyz123"})
     assert r.status_code == 404
 
 
@@ -50,7 +52,7 @@ def test_predict_returns_uncertainty(client):
     app.dependency_overrides[get_feature_pipeline] = lambda: mock_pipeline
     try:
         r = client.get(
-            "/api/predict",
+            "/api/v1/predict",
             params={"lat": 5.6, "lon": -0.19, "name": "Accra", "day": "2024-06-01"},
         )
         assert r.status_code == 200, r.text
@@ -67,7 +69,7 @@ def test_predict_returns_uncertainty(client):
 
 def test_generate_insight(client):
     r = client.post(
-        "/api/generate-insight",
+        "/api/v1/generate-insight",
         json={"pm25": 80, "aqi_category": "Unhealthy", "weather": {}, "language": "en"},
     )
     assert r.status_code == 200
@@ -75,17 +77,17 @@ def test_generate_insight(client):
 
 
 def test_predict_out_of_range_lat(client):
-    r = client.get("/api/predict", params={"lat": 99.0, "lon": 0.0})
+    r = client.get("/api/v1/predict", params={"lat": 99.0, "lon": 0.0})
     assert r.status_code == 422
 
 
 def test_predict_out_of_range_lon(client):
-    r = client.get("/api/predict", params={"lat": 0.0, "lon": 200.0})
+    r = client.get("/api/v1/predict", params={"lat": 0.0, "lon": 200.0})
     assert r.status_code == 422
 
 
 def test_predict_missing_params(client):
-    r = client.get("/api/predict", params={"lon": 0.0})
+    r = client.get("/api/v1/predict", params={"lon": 0.0})
     assert r.status_code == 422
 
 
@@ -94,7 +96,7 @@ def test_predict_aqi_category_matches_pm25(client):
     mock_pipeline.get_features.return_value = {"pm25_surface": 8.0}
     app.dependency_overrides[get_feature_pipeline] = lambda: mock_pipeline
     try:
-        r = client.get("/api/predict", params={"lat": 5.6, "lon": -0.19})
+        r = client.get("/api/v1/predict", params={"lat": 5.6, "lon": -0.19})
         assert r.status_code == 200
         assert r.json()["aqi_category"] == "Good"
     finally:
@@ -106,7 +108,7 @@ def test_predict_fallback_when_pm25_missing(client):
     mock_pipeline.get_features.return_value = {}
     app.dependency_overrides[get_feature_pipeline] = lambda: mock_pipeline
     try:
-        r = client.get("/api/predict", params={"lat": 5.6, "lon": -0.19})
+        r = client.get("/api/v1/predict", params={"lat": 5.6, "lon": -0.19})
         assert r.status_code == 200
         assert r.json()["pm25"] == 25.0
     finally:
@@ -114,13 +116,13 @@ def test_predict_fallback_when_pm25_missing(client):
 
 
 def test_resolve_location_empty_query(client):
-    r = client.get("/api/resolve-location", params={"city": ""})
+    r = client.get("/api/v1/resolve-location", params={"city": ""})
     assert r.status_code == 422
 
 
 def test_generate_insight_hazardous(client):
     r = client.post(
-        "/api/generate-insight",
+        "/api/v1/generate-insight",
         json={"pm25": 200.0, "aqi_category": "Hazardous", "weather": {}, "language": "en"},
     )
     assert r.status_code == 200
@@ -129,5 +131,5 @@ def test_generate_insight_hazardous(client):
 
 
 def test_generate_insight_negative_pm25(client):
-    r = client.post("/api/generate-insight", json={"pm25": -1.0})
+    r = client.post("/api/v1/generate-insight", json={"pm25": -1.0})
     assert r.status_code == 422
