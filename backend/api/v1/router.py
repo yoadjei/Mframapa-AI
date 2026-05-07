@@ -2,7 +2,7 @@ import io
 import csv
 import json
 from datetime import date as dt_date
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 from fastapi import APIRouter, Depends, Query, HTTPException, Response
 from pydantic import BaseModel, Field
@@ -58,6 +58,77 @@ router = APIRouter(dependencies=[Depends(verify_and_rate_limit)])
 def health() -> Dict[str, str]:
     return {"status": "ok", "version": "v1"}
 
+
+def _build_prediction(
+    lat: float,
+    lon: float,
+    name: str,
+    day: str,
+    pipeline: FeaturePipeline,
+) -> Dict[str, Any]:
+    feats = pipeline.get_features(lat, lon, day)
+    pm25_raw = feats.get("pm25_surface")
+    if pm25_raw is None:
+        pm25 = 25.0
+        logger.warning("pm25_surface missing for (%s,%s); using fallback", lat, lon)
+    else:
+        pm25 = float(pm25_raw)
+
+    cat = aqi_category_from_pm25(pm25)
+    pop = feats.get("population_density")
+    region_id = assign_region(lat, lon) or "west_africa"
+    segment = classify_from_population_density(pop if isinstance(pop, (int, float)) else None)
+    half = _load_manifest_half_width(region_id, segment) or _default_conformal_half_width(pm25)
+    lower = max(0.0, pm25 - half)
+    upper = pm25 + half
+
+    temp = feats.get("temperature_2m")
+    rh = feats.get("relative_humidity")
+    u = feats.get("u_component_of_wind_10m") or 0.0
+    v = feats.get("v_component_of_wind_10m") or 0.0
+    wind_speed = (float(u) ** 2 + float(v) ** 2) ** 0.5
+
+    factors = {
+        k: feats.get(k)
+        for k in (
+            "no2_tropospheric_column",
+            "aerosol_optical_depth",
+            "pm10_surface",
+            "population_density",
+            "elevation",
+        )
+        if feats.get(k) is not None
+    }
+
+    manifest_hw = _load_manifest_half_width(region_id, segment)
+    uncertainty_method = "split_conformal_manifest" if manifest_hw is not None else "heuristic_relative"
+
+    return {
+        "pm25": round(pm25, 2),
+        "aqi_category": cat,
+        "factors": factors,
+        "weather": {
+            "temp": float(temp) if temp is not None else None,
+            "humidity": float(rh) if rh is not None else None,
+            "wind": round(wind_speed, 2),
+            "pressure": None,
+        },
+        "uncertainty": {
+            "pm25_lower": round(lower, 2),
+            "pm25_upper": round(upper, 2),
+            "half_width": round(half, 2),
+            "coverage": 0.9,
+            "method": uncertainty_method,
+        },
+        "location": {"name": name, "lat": lat, "lon": lon},
+        "model": {
+            "region_id": region_id,
+            "segment": segment,
+            "version": "2.0.0",
+            "source": "feature_pipeline_pm25_surface",
+        },
+    }
+
 @router.get("/resolve-location")
 def resolve_location(
     city: str = Query(..., min_length=1, description="City name (partial match, Africa dataset)"),
@@ -97,57 +168,7 @@ def predict(
 ) -> Any:
     d = day or dt_date.today().isoformat()
 
-    feats = pipeline.get_features(lat, lon, d)
-    pm25_raw = feats.get("pm25_surface")
-    if pm25_raw is None:
-        pm25 = 25.0
-        logger.warning("pm25_surface missing for (%s,%s); using fallback", lat, lon)
-    else:
-        pm25 = float(pm25_raw)
-
-    cat = aqi_category_from_pm25(pm25)
-    pop = feats.get("population_density")
-    region_id = assign_region(lat, lon) or "west_africa"
-    segment = classify_from_population_density(pop if isinstance(pop, (int, float)) else None)
-    half = _load_manifest_half_width(region_id, segment) or _default_conformal_half_width(pm25)
-    lower = max(0.0, pm25 - half)
-    upper = pm25 + half
-
-    temp = feats.get("temperature_2m")
-    rh = feats.get("relative_humidity")
-    u = feats.get("u_component_of_wind_10m") or 0.0
-    v = feats.get("v_component_of_wind_10m") or 0.0
-    wind_speed = (float(u) ** 2 + float(v) ** 2) ** 0.5
-
-    factors = {
-        k: feats.get(k)
-        for k in ("no2_tropospheric_column", "aerosol_optical_depth", "pm10_surface", "population_density", "elevation")
-        if feats.get(k) is not None
-    }
-
-    manifest_hw = _load_manifest_half_width(region_id, segment)
-    uncertainty_method = "split_conformal_manifest" if manifest_hw is not None else "heuristic_relative"
-
-    result = {
-        "pm25": round(pm25, 2),
-        "aqi_category": cat,
-        "factors": factors,
-        "weather": {
-            "temp": float(temp) if temp is not None else None,
-            "humidity": float(rh) if rh is not None else None,
-            "wind": round(wind_speed, 2),
-            "pressure": None,
-        },
-        "uncertainty": {
-            "pm25_lower": round(lower, 2),
-            "pm25_upper": round(upper, 2),
-            "half_width": round(half, 2),
-            "coverage": 0.9,
-            "method": uncertainty_method,
-        },
-        "location": {"name": name, "lat": lat, "lon": lon},
-        "model": {"region_id": region_id, "segment": segment, "version": "2.0.0", "source": "feature_pipeline_pm25_surface"},
-    }
+    result = _build_prediction(lat=lat, lon=lon, name=name, day=d, pipeline=pipeline)
 
     if format == "csv":
         output = io.StringIO()
@@ -175,6 +196,51 @@ def predict(
         return Response(content=json.dumps(geojson), media_type="application/geo+json")
 
     return result
+
+
+class BatchLocation(BaseModel):
+    lat: float = Field(..., ge=-90, le=90)
+    lon: float = Field(..., ge=-180, le=180)
+    name: str = Field(default="Unknown")
+
+
+class BatchPredictRequest(BaseModel):
+    locations: List[BatchLocation] = Field(..., min_length=1, max_length=20)
+    day: Optional[str] = Field(default=None)
+
+
+@router.post("/batch-predict")
+def batch_predict(
+    body: BatchPredictRequest,
+    pipeline: FeaturePipeline = Depends(get_feature_pipeline),
+) -> Dict[str, Any]:
+    day = body.day or dt_date.today().isoformat()
+    results: List[Dict[str, Any]] = []
+    errors: List[Dict[str, Any]] = []
+
+    for idx, item in enumerate(body.locations):
+        try:
+            results.append(
+                _build_prediction(
+                    lat=item.lat,
+                    lon=item.lon,
+                    name=item.name,
+                    day=day,
+                    pipeline=pipeline,
+                )
+            )
+        except Exception as exc:
+            logger.exception("Batch prediction failed at index %s", idx)
+            errors.append({"index": idx, "name": item.name, "detail": str(exc)})
+
+    return {
+        "day": day,
+        "count": len(body.locations),
+        "success_count": len(results),
+        "error_count": len(errors),
+        "results": results,
+        "errors": errors,
+    }
 
 class InsightBody(BaseModel):
     pm25: float = Field(..., ge=0)

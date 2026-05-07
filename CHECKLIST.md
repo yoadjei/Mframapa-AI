@@ -173,10 +173,10 @@
 
 | Task | Status | Notes |
 |------|--------|-------|
-| Batch query API (async+poll **or** capped sync) | ⬜ | Document choice |
-| API integration tests in CI | ⬜ | |
-| End-to-end ingest → predict smoke test | ⬜ | |
-| Response compression (gzip/brotli) | ⬜ | |
+| Batch query API (async+poll **or** capped sync) | ✅ | Implemented capped sync at `/api/v1/batch-predict` (max 20 locations) |
+| API integration tests in CI | ✅ | Added `.github/workflows/ci.yml` running `backend/tests/test_api.py` |
+| End-to-end ingest → predict smoke test | ✅ | Added `test_ingest_to_predict_smoke` route-level pipeline smoke test |
+| Response compression (gzip/brotli) | ✅ | GZip middleware enabled; compression test added |
 
 **Week 10 Definition of Done**:
 - [ ] Batch + CI guard critical paths
