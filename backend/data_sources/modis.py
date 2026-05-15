@@ -84,7 +84,7 @@ class MODISDataSource(DataSource):
         # Prefer LAADS DAAC download link
         for link in entries[0].get("links", []):
             href = link.get("href", "")
-            if "ladsweb" in href and href.endswith(".hdf"):
+            if href.endswith(".hdf") and ("ladsweb" in href or "lpdaac" in href):
                 return href
         return None
 
@@ -102,7 +102,7 @@ class MODISDataSource(DataSource):
                 for chunk in r.iter_content(chunk_size=8192):
                     f.write(chunk)
 
-            return self._extract_aod(tmp_path, lat, lon)
+            return self._extract_aod(tmp_path, lat, lon, url)
 
         except requests.RequestException as e:
             logger.warning("MODIS: HDF download failed — %s", e)
@@ -114,10 +114,12 @@ class MODISDataSource(DataSource):
                 pass
 
     @staticmethod
-    def _extract_aod(hdf_path: str, lat: float, lon: float) -> Dict[str, Any]:
+    def _extract_aod(hdf_path: str, lat: float, lon: float, url: str = "") -> Dict[str, Any]:
         try:
             from pyhdf.SD import SD, SDC
             import numpy as np
+            import math
+            import re
         except ImportError:
             logger.warning(
                 "MODIS: pyhdf not installed (HDF4 reader). "
@@ -126,30 +128,49 @@ class MODISDataSource(DataSource):
             return {"aerosol_optical_depth": None}
 
         try:
-            hdf    = SD(hdf_path, SDC.READ)
-            ds     = hdf.select("Optical_Depth_055")
-            data   = ds[:].astype(float)
-            attrs  = ds.attributes()
+            # MCD19A2 is sinusoidal-projected — no Latitude/Longitude datasets.
+            # Parse tile (h, v) from the source URL (temp filename has no tile info).
+            m = re.search(r'\.h(\d+)v(\d+)\.', url) or re.search(r'\.h(\d+)v(\d+)\.', hdf_path)
+            if not m:
+                return {"aerosol_optical_depth": None}
+            h, v = int(m.group(1)), int(m.group(2))
 
-            # Get geolocation
-            lat_ds = hdf.select("Latitude")
-            lon_ds = hdf.select("Longitude")
-            lats   = lat_ds[:].astype(float)
-            lons   = lon_ds[:].astype(float)
+            R      = 6371007.181            # MODIS Earth radius (m)
+            TILE_W = 2 * math.pi * R / 36
+            TILE_H = math.pi * R / 18
+            PX     = TILE_W / 1200
 
-            # Mask fill values
-            data[data == _FILL_VAL] = np.nan
+            lat_r  = math.radians(lat)
+            x      = math.radians(lon) * R * math.cos(lat_r)
+            y      = math.radians(lat) * R
+            x_ul   = h * TILE_W - 18 * TILE_W   # 36 tiles total → origin at h=18
+            y_ul   = (9 - v) * TILE_H            # 18 tiles total → origin at v=9
 
-            # Find nearest valid pixel
-            dist = (lats - lat) ** 2 + (lons - lon) ** 2
-            dist[np.isnan(data)] = np.inf
-            idx  = np.unravel_index(dist.argmin(), dist.shape)
+            col = int((x - x_ul) / PX)
+            row = int((y_ul - y) / PX)
 
-            aod = data[idx]
-            if np.isnan(aod):
+            if not (0 <= row < 1200 and 0 <= col < 1200):
+                logger.warning("MODIS: target pixel (%d, %d) outside tile h%02dv%02d", row, col, h, v)
                 return {"aerosol_optical_depth": None}
 
-            return {"aerosol_optical_depth": round(float(aod) * _SCALE, 4)}
+            hdf   = SD(hdf_path, SDC.READ)
+            ds    = hdf.select("Optical_Depth_055")
+            # Shape is (n_obs, 1200, 1200) — multiple daily overpasses
+            # Try exact pixel first, then expand to 50-pixel window (~50 km)
+            full  = ds[:].astype(float)
+            hdf.end()
+
+            full[full == _FILL_VAL] = np.nan
+
+            for radius in (0, 10, 25, 50):
+                r0, r1 = max(0, row - radius), min(1200, row + radius + 1)
+                c0, c1 = max(0, col - radius), min(1200, col + radius + 1)
+                window = full[:, r0:r1, c0:c1]
+                valid  = window[~np.isnan(window) & (window >= 0)]
+                if len(valid) > 0:
+                    return {"aerosol_optical_depth": round(float(np.median(valid)) * _SCALE, 4)}
+
+            return {"aerosol_optical_depth": None}
 
         except Exception as e:
             logger.warning("MODIS: HDF extraction failed — %s", e)

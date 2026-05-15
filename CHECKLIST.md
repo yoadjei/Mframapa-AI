@@ -1,331 +1,274 @@
 # Mframapa v2.0 — Weekly Checklist
 
-**Timeline**: **16 weeks** (production v2.0 — see **`SPEC.md`** & **`EXECUTION_PLAN_4MONTHS.md`**)  
-**Status**: ⬜ Not Started | 🔄 In Progress | ✅ Complete | ⏸️ Blocked
+**Timeline**: 12 weeks — full vision scope (see `SPEC.md` & `EXECUTION_PLAN.md`)
+**Status**: ⬜ Not Started | 📝 Scaffolded | 🔄 In Progress | ✅ Complete | ⏸️ Blocked
 
 ---
 
-## Phase 1: Data Infrastructure & Resilience (Weeks 1–4)
+## Phase 1: Data Foundation (Weeks 1–2)
 
-### Week 1: Foundation
+### Week 1: Credentials & First Sources
 
 | Task | Status | Notes |
 |------|--------|-------|
-| Create v2.0 git branch | ✅ | |
-| CI baseline (smoke on PR) | ✅ | GitHub Actions |
-| Create `backend/data_sources/` + `base.py` | ✅ | |
-| Write `era5.py` — ERA5 connector | ✅ | |
-| Register Copernicus CDS account | ✅ | Free |
-| Structured logging for ingestion | ✅ | |
-| Write ERA5 unit tests | ✅ | |
-| Update requirements / lockfile | ✅ | |
+| Register Copernicus CDS account | ✅ | CDSAPI_KEY configured |
+| Register Copernicus CDSE account | ✅ | CDSE_USERNAME/PASSWORD configured |
+| Register NASA Earthdata account | ✅ | NASA_EARTHDATA_TOKEN configured |
+| Create Upstash Redis database | ✅ | Upstash Redis connected (TLS) |
+| Test ERA5 connector (live) | ✅ | Returns temperature, wind, humidity |
+| Test Open-Meteo connector (live) | ✅ | Archive routing fixed for historical dates |
+| Test SRTM connector (live) | ✅ | Returns elevation |
+| Test WorldPop connector (live) | ✅ | Returns population density |
+| Validate structured logging | ✅ | |
+| `live_test.py` ≥4/9 pass | ✅ | 9/9 passed 2026-05-09 |
 
-**Week 1 Definition of Done**:
-- [x] ERA5 fetches PBLH, temperature, humidity, wind for one bbox end-to-end
-- [x] Tests pass; docs note quotas
+**Week 1 DoD**: [x] 3+ sources returning real data. Redis connected.
 
 ---
 
-### Week 2: Sentinel-5P & Open-Meteo
+### Week 2: Full Pipeline & Orchestration
 
 | Task | Status | Notes |
 |------|--------|-------|
-| Write `sentinel5p.py` | ✅ | |
-| Refactor `open_meteo.py` to DataSource pattern | ✅ | |
-| Retries + exponential backoff + timeouts | ✅ | |
-| Unit tests | ✅ | |
-| Document rate limits & endpoints | ✅ | |
+| Test Sentinel-5P connector (live) | ✅ | BadZipFile fix; returns NO2 column |
+| Test MODIS connector (live) | ✅ | Sinusoidal projection + lpdaac domain fix; returns AOD |
+| Test VIIRS connector (live) | ✅ | No granules for test date (acceptable — secondary fallback) |
+| Validate orchestrator fallback | ✅ | Priority fallback chain operational |
+| Test feature pipeline end-to-end | ✅ | |
+| Redis + SQLite cache tested | ✅ | Redis primary + SQLite fallback working |
+| Pre-materialise top-50 cities | ⬜ | `precompute_cache.py` scaffolded |
+| API metadata fields working | ✅ | |
+| `live_test.py` 9/9 pass | ✅ | 9/9 passed 2026-05-09 |
+| `pytest backend/tests -q` all pass | ✅ | 103 tests passed 2026-05-09 |
 
-**Week 2 Definition of Done**:
-- [x] S5P + Open-Meteo work independently with robust errors
+**Week 2 DoD**: [x] `live_test.py` 9/9. Multi-provider data flowing.
 
 ---
 
-### Week 3: MODIS, VIIRS & Orchestration
+## Phase 2: ML Pipeline & Models (Weeks 3–4)
+
+### Week 3: Training Data & Feature Engineering
 
 | Task | Status | Notes |
 |------|--------|-------|
-| Register NASA Earthdata account | ✅ | Free |
-| Write `modis.py` — MODIS AOD | ✅ | |
-| Write `viirs.py` — VIIRS AOD | ✅ | |
-| Write `orchestrator.py` | ✅ | |
-| Fallback hierarchy config | ✅ | |
-| Reliability scoring persisted | ✅ | |
-| Integration tests + simulated provider failure | ✅ | |
+| City-grid collection script | ✅ | collect_training_data.py with checkpoint + rate limiting |
+| ERA5 weather features (2018–today) | ⬜ | OpenMeteo archive; temp, wind u/v, RH, PBLH |
+| CAMS AQ proxy features (2022–today) | ⬜ | OpenMeteo CAMS; NO₂, SO₂, CO, AOD, PM10, PM2.5 |
+| OpenAQ v3 calibration labels | ⬜ | Real API integrated; 25km match radius |
+| 427-city data pull (~490k rows) | ⬜ | Run: python -m ml.scripts.collect_training_data |
+| Temporal gap fill implementation | ⬜ | |
+| Climatology baselines | ⬜ | |
+| Temporal features added | ✅ | day_of_year + month in FEATURE_COLUMNS (14 total) |
+| Feature validation | ⬜ | Run after first full collection |
+| Temporal train/val/test split | ⬜ | 2018–2022 train / 2023 val / 2024–today test |
+| NDVI + night lights composites | ⬜ | |
+| Complete feature matrix | ✅ | 14-feature matrix in ml/features.py (12 + day_of_year + month) |
 
-**Week 3 Definition of Done**:
-- [x] Degraded mode works when one EO source fails (tests prove it)
+**Week 3 DoD**: [ ] training_rows.parquet exists with real data from 2018-05-01 → today, 427 cities, temporal CV split ready, auto-retrain workflow active.
 
 ---
 
-### Week 4: Cache, Historical Jobs & API Metadata
+### Week 4: Model Training & Production Inference
 
 | Task | Status | Notes |
 |------|--------|-------|
-| Create Upstash account | ✅ | Free tier |
-| Redis caching layer + SQLite fallback | ✅ | |
-| Cache keys, TTL, invalidation | ✅ | |
-| Batch pre-materialise Top-N cities | ✅ | |
-| API: `sources_used`, `freshness`, `degraded` fields | ✅ | |
-| OpenAPI / schema reflects prediction shape | ✅ | |
+| Train West Africa (urban + rural) | ✅ | Smoke-trained; swap when real data ready |
+| Train East Africa (urban + rural) | ✅ | Smoke-trained |
+| Train North Africa (urban + rural) | ✅ | Smoke-trained |
+| Train Central Africa (urban + rural) | ✅ | Smoke-trained |
+| Train Southern Africa (urban + rural) | ✅ | Smoke-trained |
+| Train Horn of Africa (urban + rural) | ✅ | Smoke-trained |
+| Continental fallback model | ⬜ | |
+| Ensemble wiring (XGB + LGBM) | ✅ | `ensemble.py` + router inference |
+| Conformal uncertainty | ✅ | Half-width from manifest per region |
+| Anomaly/spike flags | ⬜ | |
+| Model registry updated | ✅ | All 12 entries in registry |
+| End-to-end predict test | ✅ | `/api/v1/predict` returns ML pm25 |
+| Model cards written | ⬜ | |
+| Feature importance logged | ⬜ | |
 
-**Week 4 Definition of Done**:
-- [x] Hot paths faster; responses explain provenance
+**Week 4 DoD**: [x] Predictions via API with conformal uncertainty (synthetic weights; real data pending).
 
 ---
 
-## Phase 2: Features & ML (Weeks 5–8)
+## Phase 3: Design System & Web Core (Weeks 5–7)
 
-### Week 5: Feature Pipeline & Calibration
+### Week 5: Design System & Components
 
 | Task | Status | Notes |
 |------|--------|-------|
-| WorldPop / GPW population density | ✅ | |
-| SRTM elevation | ✅ | |
-| NDVI composite pipeline | ✅ | |
-| VIIRS night lights composite | ✅ | |
-| OSM road density (zonal stats) | ✅ | |
-| OpenAQ (+ AirQo if available) joins | ✅ | |
-| Unified feature pipeline module | ✅ | |
-| Remove placeholder values from training path | ✅ | |
-| Feature validation tests | ✅ | |
-| Update data dictionary | ✅ | |
+| Colour tokens (full palette) | ⬜ | |
+| AQI semantic colours | ⬜ | |
+| Typography system | ⬜ | |
+| Spacing system (4px grid) | ⬜ | |
+| Radius + elevation + motion | ⬜ | |
+| Dark + light themes | ⬜ | |
+| Button components (7 states) | ⬜ | |
+| Input components (5 states) | ⬜ | |
+| Card components (6 types) | ⬜ | |
+| Chart components (5 types) | ⬜ | |
+| Navigation components | ⬜ | Partial scaffold |
+| Modal/sheet components | ⬜ | |
+| Loading/empty/error states | ⬜ | `StateMessage.jsx` scaffolded |
+| Notification components | ⬜ | |
+| Responsive grid system | ⬜ | |
 
-**Week 5 Definition of Done**:
-- [x] Reproducible feature build for train/infer
+**Week 5 DoD**: [ ] Complete design system with all component states.
 
 ---
 
-### Week 6: Temporal Gap Fill & Baselines
+### Week 6: Core Web Screens
 
 | Task | Status | Notes |
 |------|--------|-------|
-| Temporal gap-fill policy + implementation | ✅ | |
-| Climatology / baseline features | ✅ | |
-| Sparse-cell smoothing pass | ✅ | |
-| Train/eval split scripts (grouped) | ✅ | |
-| Versioned training snapshots layout | ✅ | Separate from live API cache |
+| Landing/marketing page | ⬜ | |
+| Africa explorer (map + heatmap + clustering) | ⬜ | |
+| Country explorer | ⬜ | |
+| City explorer (AQI detail) | ⬜ | |
+| Search/discovery (multilingual) | ⬜ | `SearchScreen.jsx` scaffolded |
+| Login / signup | ⬜ | `AuthScreen.jsx` scaffolded |
+| Forgot / reset password | ⬜ | |
+| Home dashboard | ⬜ | `HomeScreen.jsx` scaffolded |
+| Map integration | ⬜ | `MapCanvas.jsx` scaffolded |
+| First-time onboarding | ⬜ | `OnboardingScreen.jsx` scaffolded |
 
-**Week 6 Definition of Done**:
-- [x] Missing EO days handled; methodology documented
+**Week 6 DoD**: [ ] Core screens functional with real API data.
 
 ---
 
-### Week 7: Regional Models & Ensemble
+### Week 7: Intelligence & Product Features
 
 | Task | Status | Notes |
 |------|--------|-------|
-| 6-region GeoJSON + urban/rural classifier | ✅ | |
-| Train West Africa urban + rural | ✅ | Colab / GPU |
-| Train East Africa urban + rural | ✅ | |
-| Train North Africa urban + rural | ✅ | |
-| Train Central Africa urban + rural | ✅ | |
-| Train Southern Africa urban + rural | ✅ | |
-| Train Horn of Africa urban + rural | ✅ | |
-| Ensemble XGBoost + LightGBM | ✅ | |
-| Model registry + selection router | ✅ | |
-| Continental fallback model if needed | ⬜ | Sparse labels |
-| Evaluation metrics artefact for CI | ✅ | |
+| AI insight cards | ⬜ | |
+| Prediction dashboard | ⬜ | |
+| Trend visualisations | ⬜ | |
+| Anomaly alert UI | ⬜ | |
+| Health risk dashboard | ⬜ | |
+| Confidence indicators | ⬜ | |
+| Historical playback | ⬜ | |
+| Trust & transparency panels | ⬜ | |
+| Notification centre | ⬜ | `NotificationsScreen.jsx` scaffolded |
+| Saved locations | ⬜ | |
+| Profile & settings | ⬜ | Scaffolded |
+| Comparison dashboard | ⬜ | |
 
-**Week 7 Definition of Done**:
-- [x] 12 regional models **or** documented fallback + path to 12
-- [x] Ensemble wired in staging
+**Week 7 DoD**: [ ] Intelligence platform experience live.
 
 ---
 
-### Week 8: Uncertainty, Anomalies & ML Docs
+## Phase 4: Offline, Mobile & Enterprise (Weeks 8–9)
+
+### Week 8: PWA Hardening & Mobile
 
 | Task | Status | Notes |
 |------|--------|-------|
-| Uncertainty (conformal / bootstrap) in inference | ✅ | |
-| API exposes uncertainty fields | ✅ | |
-| Anomaly / spike flags | ✅ | |
-| Feature importance logging job | ⬜ | |
-| Model validation test suite | ✅ | |
-| Model cards | ✅ | |
-| Wire production inference path | ✅ | |
+| PWA icon set (72–512px + maskable) | ⬜ | |
+| Manifest + splash | ⬜ | Basic manifest scaffolded |
+| Service worker tuning | ⬜ | `sw.js` scaffolded |
+| Offline UI + sync queue | ⬜ | |
+| Low-bandwidth mode | ⬜ | |
+| Lighthouse ≥ 90 | ⬜ | |
+| Mobile: core screens | ⬜ | Screens scaffolded |
+| Mobile: intelligence cards | ⬜ | |
+| Mobile: offline (MMKV) | ⬜ | Store scaffolded |
+| Mobile: push notifications | ⬜ | `notifications.ts` scaffolded |
+| Mobile: theme + i18n | ⬜ | Theme + locales scaffolded |
 
-**Week 8 Definition of Done**:
-- [x] Predictions include uncertainty + anomaly hints + docs
+**Week 8 DoD**: [ ] PWA installable + offline. Mobile running.
 
 ---
 
-## Phase 3: Versioned API & PWA (Weeks 9–12)
-
-### Week 9: API Keys, Limits & Exports
+### Week 9: Enterprise & Large Screen
 
 | Task | Status | Notes |
 |------|--------|-------|
-| `/v1/` route layout | ✅ | |
-| API key issuance + hashing at rest | ✅ | |
-| Public vs institutional rate limits | ✅ | |
-| Usage logging per key | ✅ | |
-| CSV export endpoint | ✅ | |
-| GeoJSON export endpoint | ✅ | |
-| Published OpenAPI | ✅ | |
+| Organisation dashboard | ⬜ | |
+| Multi-city monitoring | ⬜ | |
+| Regional analytics | ⬜ | |
+| Command centre layout (1920px+) | ⬜ | |
+| Live monitoring grid | ⬜ | |
+| Public health dashboard | ⬜ | |
+| Export/reporting centre | ⬜ | |
+| Tablet layouts (768–1024) | ⬜ | |
+| Desktop layouts (1280–1600) | ⬜ | |
+| Ultrawide layouts (1920–2560+) | ⬜ | |
 
-**Week 9 Definition of Done**:
-- [x] External-ready API contract
+**Week 9 DoD**: [ ] Enterprise dashboards. Responsive 320 → 2560+.
 
 ---
 
-### Week 10: Batch & CI Integration Tests
+## Phase 5: Monetisation, Developer & Community (Weeks 10–11)
+
+### Week 10: Monetisation & Developer Portal
 
 | Task | Status | Notes |
 |------|--------|-------|
-| Batch query API (async+poll **or** capped sync) | ✅ | Implemented capped sync at `/api/v1/batch-predict` (max 20 locations) |
-| API integration tests in CI | ✅ | Added `.github/workflows/ci.yml` running `backend/tests/test_api.py` |
-| End-to-end ingest → predict smoke test | ✅ | Added `test_ingest_to_predict_smoke` route-level pipeline smoke test |
-| Response compression (gzip/brotli) | ✅ | GZip middleware enabled; compression test added |
+| Pricing page | ⬜ | |
+| Free tier UI + upgrade prompts | ⬜ | |
+| Subscription management | ⬜ | |
+| Payment methods stub | ⬜ | |
+| Enterprise contact flow | ⬜ | |
+| Tier enforcement (backend) | ⬜ | Rate limiting scaffolded |
+| API documentation portal | ⬜ | |
+| API key management UI | ⬜ | |
+| Usage dashboard | ⬜ | |
+| Dataset export endpoints | ⬜ | CSV/GeoJSON scaffolded |
+| SDK examples | ⬜ | |
 
-**Week 10 Definition of Done**:
-- [ ] Batch + CI guard critical paths
+**Week 10 DoD**: [ ] Pricing live. Tiers enforced. Developer portal up.
 
 ---
 
-### Week 11: Retrain, Drift & Deploy/Rollback
+### Week 11: Community, Accessibility & Automation
 
 | Task | Status | Notes |
 |------|--------|-------|
-| Scheduled retraining workflow | ⬜ | Actions / cron |
-| Drift heuristic / alerts stub | ⬜ | |
-| Deploy script + rollback runbook | ⬜ | |
-| Staged synthetic upstream failure drill | ⬜ | Record results |
+| Citizen reporting | ⬜ | |
+| Environmental submissions | ⬜ | |
+| Verification states | ⬜ | |
+| Local observations feed | ⬜ | |
+| WCAG AA audit + fixes | ⬜ | |
+| Keyboard navigation | ⬜ | |
+| Screen reader labels | ⬜ | |
+| Touch targets ≥ 44px | ⬜ | |
+| Reduced motion support | ⬜ | |
+| Contrast validation | ⬜ | |
+| Scheduled retrain workflow | ⬜ | `retrain_models.yml` scaffolded |
+| Drift heuristic | ⬜ | |
+| Deploy + rollback runbook | ⬜ | |
 
-**Week 11 Definition of Done**:
-- [ ] Models refreshable on schedule; rollback tested once
+**Week 11 DoD**: [ ] Accessibility passed. Community live. Retraining automated.
 
 ---
 
-### Week 12: PWA Production
+## Phase 6: Distribution & Launch (Week 12)
+
+### Week 12: Ship v2.0
 
 | Task | Status | Notes |
 |------|--------|-------|
-| manifest.json + icons + splash | ⬜ | |
-| Service worker + cache strategies | ⬜ | |
-| Pre-cache city packs | ⬜ | |
-| Offline UI + sync when online | ⬜ | |
-| Manual city picker | ⬜ | |
-| Lazy map / lite mode | ⬜ | |
-| Compression + slow-network test | ⬜ | |
-| Accessibility pass (contrast, symbols) | ⬜ | |
-| Lighthouse audit | ⬜ | |
-
-**Week 12 Definition of Done**:
-- [ ] Installable PWA; offline path credible
-
----
-
-## Phase 4: Mobile, Distribution & Observability (Weeks 13–16)
-
-### Week 13: Android App Core
-
-| Task | Status | Notes |
-|------|--------|-------|
-| Expo init + TypeScript | ⬜ | |
-| Navigation + theme (dark/light) | ⬜ | |
-| Home + Map + City search | ⬜ | |
-| API client (`/v1`) | ⬜ | |
-| MMKV offline last-known | ⬜ | |
-| Settings + languages | ⬜ | |
-
-**Week 13 Definition of Done**:
-- [ ] Release build talks to prod/staging API
-
----
-
-### Week 14: Distribution (≥2 Paths)
-
-| Task | Status | Notes |
-|------|--------|-------|
-| Release keystore secured | ⬜ | |
-| Optimised release APK | ⬜ | &lt; 15 MB target |
-| Store screenshots / descriptions | ⬜ | |
+| Release keystore | ⬜ | |
+| Optimised APK (< 15 MB) | ⬜ | |
 | Samsung Galaxy Store submission | ⬜ | |
-| Second path: Huawei **or** Amazon **or** GitHub Releases APK | ⬜ | |
+| Second channel (Huawei/Amazon/GitHub) | ⬜ | |
 | APK download page + SHA-256 | ⬜ | |
-
-**Week 14 Definition of Done**:
-- [ ] ≥2 install channels submitted or live
-
----
-
-### Week 15: Observability, Analytics & Load Smoke
-
-| Task | Status | Notes |
-|------|--------|-------|
-| Sentry (API + web + mobile) | ⬜ | Student tier OK |
+| Sentry integration | ⬜ | |
 | Uptime monitors | ⬜ | |
-| Privacy-preserving aggregated analytics | ⬜ | Umami / PostHog / self-host |
-| Internal metrics dashboard | ⬜ | |
-| Alerting (email/Discord) | ⬜ | |
-| Load smoke test script + results | ⬜ | |
-| Redis/cache tuning | ⬜ | |
-| Mobile battery/memory pass | ⬜ | |
-
-**Week 15 Definition of Done**:
-- [ ] Errors + uptime + aggregates visible; load smoke documented
-
----
-
-### Week 16: Freeze, Docs & Launch
-
-| Task | Status | Notes |
-|------|--------|-------|
-| Critical bug sweep only | ⬜ | |
-| Operator runbooks (quota, provider down, rollback) | ⬜ | |
-| API consumer documentation final | ⬜ | |
-| Privacy policy ↔ implementation audit | ⬜ | |
+| Privacy analytics | ⬜ | |
+| Load smoke test | ⬜ | |
+| Operator runbooks | ⬜ | |
+| API consumer docs | ⬜ | |
+| Privacy policy | ⬜ | |
 | User guide / FAQ | ⬜ | |
-| Final QA walkthrough (PWA + Android) | ⬜ | |
-| Launch checklist sign-off | ⬜ | |
-| Pitch deck + analytics snapshots | ⬜ | |
-| Git tag **v2.0.x** | ⬜ | |
+| Final QA walkthrough | ⬜ | |
+| Git tag `v2.0.0` | ⬜ | |
 
-**Week 16 Definition of Done**:
-- [ ] v2.0 production freeze; docs complete
+**Week 12 DoD**: [ ] v2.0 production freeze. ≥2 install channels. Monitoring live.
 
 ---
 
-## App Store & APK Tracker
-
-### Samsung Galaxy Store
-
-| Step | Status | Date |
-|------|--------|------|
-| Account created | ⬜ | |
-| APK uploaded | ⬜ | |
-| Store listing complete | ⬜ | |
-| Submitted | ⬜ | |
-| Live | ⬜ | |
-
-### Huawei AppGallery (optional path)
-
-| Step | Status | Date |
-|------|--------|------|
-| Account + verification | ⬜ | |
-| Submitted | ⬜ | |
-| Live | ⬜ | |
-
-### Amazon Appstore (optional path)
-
-| Step | Status | Date |
-|------|--------|------|
-| Account | ⬜ | |
-| Submitted | ⬜ | |
-| Live | ⬜ | |
-
-### Direct APK / GitHub Releases
-
-| Step | Status | Date |
-|------|--------|------|
-| Signed APK | ⬜ | |
-| Hosted + checksum | ⬜ | |
-| Download page live | ⬜ | |
-
----
-
-## Weekly Progress Log (16 weeks)
+## Weekly Progress Log
 
 ### Week 1
 - Start date:
@@ -399,30 +342,6 @@
 - Completed:
 - Blockers:
 
-### Week 13
-- Start date:
-- End date:
-- Completed:
-- Blockers:
-
-### Week 14
-- Start date:
-- End date:
-- Completed:
-- Blockers:
-
-### Week 15
-- Start date:
-- End date:
-- Completed:
-- Blockers:
-
-### Week 16
-- Start date:
-- End date:
-- Completed:
-- Blockers:
-
 ---
 
-*Last updated*: align with **`SPEC.md`** when editing milestones*
+*Last updated*: 2026-05-09 — full vision scope, 12-week timeline

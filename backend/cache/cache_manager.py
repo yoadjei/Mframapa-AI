@@ -13,7 +13,7 @@ TTL strategy:
 """
 
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Dict, Any, Optional
 
 from .redis_cache  import RedisCache
@@ -36,7 +36,7 @@ def _ttl_for_date(date: str) -> int:
     """Return appropriate TTL based on how old the date is."""
     try:
         d = datetime.strptime(date, "%Y-%m-%d").date()
-        age_days = (datetime.utcnow().date() - d).days
+        age_days = (datetime.now(timezone.utc).date() - d).days
         return _TTL_HISTORICAL_SECONDS if age_days > 2 else _TTL_RECENT_SECONDS
     except ValueError:
         return _TTL_RECENT_SECONDS

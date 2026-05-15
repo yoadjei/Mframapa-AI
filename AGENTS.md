@@ -1,6 +1,6 @@
 # AGENTS.md
 
-This file provides guidance to Codex (Codex.ai/code) when working with code in this repository.
+This file provides guidance to AI coding agents when working with code in this repository.
 
 ## What This Repo Is
 
@@ -14,13 +14,27 @@ The **ML layer** (`ml/`) trains 12 regional models (6 African regions × urban/r
 
 ---
 
+## Project Status
+
+All code below is **scaffolded but not yet tested against live data sources or trained with real data**.
+
+| Phase | Weeks | Status |
+|-------|-------|--------|
+| 1 — Data infrastructure & resilience | 1–4 | 📝 Code scaffolded; not tested against live APIs |
+| 2 — Features & ML | 5–8 | 📝 Code scaffolded; no models trained |
+| 3 — Versioned API & PWA | 9–12 | 📝 Code scaffolded; not tested |
+| 4 — Mobile, distribution & observability | 13–16 | 📝 Mobile scaffolded; distribution not started |
+
+---
+
 ## Commands
 
 ### Backend (Python)
 
 ```bash
 # Activate venv (already present at ./venv)
-source venv/bin/activate
+source venv/bin/activate          # macOS/Linux
+.\venv\Scripts\Activate.ps1       # Windows PowerShell
 
 # Run API server (proxied by Vite in dev)
 uvicorn backend.api.app:app --reload --host 127.0.0.1 --port 8000
@@ -33,6 +47,9 @@ pytest backend/tests/test_api.py -q
 
 # Run a single test by name
 pytest backend/tests/test_api.py::test_predict_returns_uncertainty -q
+
+# Live end-to-end test (requires .env credentials + internet)
+python live_test.py
 ```
 
 ### Frontend PWA
@@ -109,7 +126,7 @@ GET /api/predict?lat=&lon=&name=
 
 ### PWA service worker
 
-Vite + `vite-plugin-pwa` (autoUpdate). Workbox config in `frontend-pwa/vite.config.js`:
+Custom service worker at `frontend-pwa/public/sw.js` with Vite PWA plugin config in `frontend-pwa/vite.config.js`:
 - CacheFirst for fonts, static assets
 - NetworkFirst for `/api/*` (10 s timeout, 6 h stale fallback, 50 entry cap)
 
@@ -123,14 +140,22 @@ Single Zustand store at `mobile/src/store/useStore.ts`, persisted to MMKV (`mfra
 
 | Path | Purpose |
 |------|---------|
-| `backend/api/app.py` | All API routes (`/api/health`, `/api/predict`, `/api/resolve-location`, `/api/generate-insight`) |
+| `backend/api/app.py` | API entry point, mounts `/api/v1` router |
+| `backend/api/v1/router.py` | All versioned routes (`/api/v1/predict`, `/api/v1/batch-predict`, exports) |
+| `backend/api/aqi.py` | AQI category calculation |
+| `backend/api/security.py` | API key validation, rate limiting |
 | `backend/pipeline/feature_pipeline.py` | Assembles ~20 features from orchestrator + static sources |
 | `backend/data_sources/orchestrator.py` | Multi-source fallback logic + reliability scoring |
+| `backend/cache/cache_manager.py` | Redis + SQLite fallback cache |
+| `backend/jobs/precompute_cache.py` | Batch pre-materialisation for top-N cities |
 | `ml/features.py` | `FEATURE_COLUMNS` and `TARGET_COLUMN` — canonical feature list |
 | `ml/training.py` | `train_regional_bundle()` + `synthetic_training_frame()` for CI |
 | `ml/regions.py` | `assign_region(lat, lon)` — Shapely point-in-polygon against `ml/data/african_regions.geojson` |
 | `ml/uncertainty.py` | Conformal prediction interval utilities |
+| `ml/urban_rural.py` | Population-density-based urban/rural classifier |
+| `frontend-pwa/src/app/App.jsx` | PWA root component (routing, auth, screens) |
 | `frontend-pwa/src/services/api.js` | Axios client hitting `/api/*` |
+| `frontend-pwa/src/state/appState.jsx` | Global app state (context + reducer) |
 | `mobile/src/services/api.ts` | Axios client — same API contract, reads `EXPO_PUBLIC_API_URL` |
 | `mobile/src/store/useStore.ts` | Zustand + MMKV persistent store |
 | `mobile/src/theme/index.ts` | `getColors(isDark)`, `getAQIColor(category)`, spacing/fontSize constants |
@@ -153,4 +178,4 @@ For the mobile app: `EXPO_PUBLIC_API_URL` (defaults to `https://mframapa.ai`).
 
 ## Planning Documents
 
-The docs are authoritative in this order: `EXECUTION_PLAN_4MONTHS.md` (scope contract) → `SPEC.md` (week-by-week tasks) → `CHECKLIST.md` (tracking). When scope questions arise, defer to `EXECUTION_PLAN_4MONTHS.md` §3 (drop list) and §3.5 (explicitly not dropped).
+The docs are authoritative in this order: `EXECUTION_PLAN.md` (scope contract) → `SPEC.md` (week-by-week tasks) → `CHECKLIST.md` (tracking). When scope questions arise, defer to `EXECUTION_PLAN.md` §3 (product systems) and §7 (risk register / cut order).

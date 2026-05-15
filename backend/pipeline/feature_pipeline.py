@@ -14,14 +14,19 @@ Static demographic                →  WorldPopDataSource
 
 Static terrain                    →  SRTMDataSource
     elevation  (metres, SRTM 90m via OpenTopoData)
+
+Temporal (derived)                →  date string
+    day_of_year  (1–366), month  (1–12)
 """
 
 import logging
+from datetime import date as _date
 from typing import Dict, Any
 
 from backend.data_sources.orchestrator import DataOrchestrator
 from backend.data_sources.worldpop import WorldPopDataSource
 from backend.data_sources.srtm import SRTMDataSource
+from backend.data_sources.ndvi import NDVIDataSource
 
 logger = logging.getLogger(__name__)
 
@@ -31,6 +36,8 @@ _REQUIRED_FEATURES = {
     "u_component_of_wind_10m", "v_component_of_wind_10m",
     "no2_tropospheric_column", "aerosol_optical_depth",
     "population_density", "elevation",
+    "day_of_year", "month",
+    "ndvi",
 }
 
 
@@ -45,6 +52,7 @@ class FeaturePipeline:
         self.orchestrator = DataOrchestrator()
         self.worldpop     = WorldPopDataSource()
         self.srtm         = SRTMDataSource()
+        self.ndvi         = NDVIDataSource()
 
     def get_features(self, lat: float, lon: float, date: str) -> Dict[str, Any]:
         """
@@ -72,7 +80,25 @@ class FeaturePipeline:
             logger.warning("FeaturePipeline: SRTM failed — %s", e)
             terrain_features = {"elevation": None}
 
-        all_features = {**dynamic_features, **pop_features, **terrain_features}
+        # 4. Vegetation: NDVI from MODIS MOD13A3 via ORNL DAAC
+        try:
+            ndvi_features = self.ndvi.fetch_data(lat, lon, date)
+        except Exception as e:
+            logger.warning("FeaturePipeline: NDVI failed -- %s", e)
+            ndvi_features = {"ndvi": None}
+
+        # 5. Temporal: derived directly from date string — no external call needed
+        try:
+            d = _date.fromisoformat(date)
+            temporal_features: Dict[str, Any] = {
+                "day_of_year": float(d.timetuple().tm_yday),
+                "month": float(d.month),
+            }
+        except Exception as e:
+            logger.warning("FeaturePipeline: temporal features failed — %s", e)
+            temporal_features = {"day_of_year": None, "month": None}
+
+        all_features = {**dynamic_features, **pop_features, **terrain_features, **ndvi_features, **temporal_features}
         self._validate_features(all_features)
         return all_features
 

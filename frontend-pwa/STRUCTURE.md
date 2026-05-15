@@ -1,74 +1,128 @@
-# PWA Enhancement Structure
+# Frontend PWA — Architecture & Structure
 
-**Current**: React + Vite (already exists in parent repo when wired).  
-**Enhancement**: Full **production PWA** — installable, offline, low-bandwidth (`SPEC.md` **Phase 3**, emphasis **Week 12**).
-
-**Related**: HTTP client should target **`/v1`** API; surface **last updated**, **offline/cached** state, and any **degraded / uncertainty** fields the backend returns (`EXECUTION_PLAN_4MONTHS.md`).
+**Stack**: React 18 + Vite + Tailwind CSS
+**API**: Proxies `/api` → `localhost:8000` in dev (see `vite.config.js`)
+**PWA**: Custom service worker + manifest.json for installability and offline support
 
 ---
 
-
-## Files to Add
+## Directory Layout
 
 ```
-frontend/
+frontend-pwa/
+├── index.html                      # App shell + PWA meta tags
+├── vite.config.js                  # Vite config + PWA plugin + API proxy
+├── tailwind.config.js              # Tailwind theme tokens
+├── package.json
+│
 ├── public/
-│   ├── manifest.json           # PWA manifest
-│   ├── sw.js                   # Service worker
-│   ├── apple-touch-icon.png    # iOS icon
-│   └── icons/
-│       ├── icon-72.png
-│       ├── icon-96.png
-│       ├── icon-128.png
-│       ├── icon-144.png
-│       ├── icon-152.png
-│       ├── icon-192.png
-│       ├── icon-384.png
-│       ├── icon-512.png
-│       └── maskable-icon.png
+│   ├── manifest.json               # PWA manifest
+│   ├── sw.js                       # Service worker (cache strategies)
+│   ├── favicon.svg
+│   ├── icons/
+│   │   └── mframapa logo.png       # App icon
+│   └── city-packs/
+│       └── top-cities.v1.json      # Pre-cached city data (~27 KB)
 │
-├── src/
-│   ├── sw-register.ts          # Service worker registration
-│   └── components/
-│       └── InstallPrompt.tsx   # Install banner
-│
-└── index.html                  # Add PWA meta tags
+└── src/
+    ├── main.jsx                    # Entry point — renders App, registers SW
+    ├── index.css                   # Global styles + Tailwind base
+    │
+    ├── app/
+    │   └── App.jsx                 # Root component (routing, auth, screen dispatch)
+    │
+    ├── features/                   # Feature-based screen modules
+    │   ├── home/
+    │   │   └── HomeScreen.jsx      # Dashboard / main AQI display
+    │   ├── core/
+    │   │   ├── CoreFeatureScreen.jsx # Detailed AQI + map view
+    │   │   └── MapCanvas.jsx       # Map rendering component
+    │   ├── search/
+    │   │   └── SearchScreen.jsx    # City search + discovery
+    │   ├── auth/
+    │   │   └── AuthScreen.jsx      # Login / signup
+    │   ├── onboarding/
+    │   │   └── OnboardingScreen.jsx # First-time user flow
+    │   ├── activity/
+    │   │   └── ActivityScreen.jsx  # Activity feed / history
+    │   ├── notifications/
+    │   │   └── NotificationsScreen.jsx
+    │   ├── profile/
+    │   │   └── ProfileScreen.jsx
+    │   └── settings/
+    │       └── SettingsScreen.jsx
+    │
+    ├── components/                 # Shared UI components
+    │   ├── feedback/
+    │   │   ├── NetworkBanner.jsx   # Online/offline status banner
+    │   │   └── StateMessage.jsx    # Empty/error/loading states
+    │   ├── layout/
+    │   │   └── MobileShell.jsx     # App shell (header + bottom nav + content)
+    │   └── navigation/
+    │       └── BottomNav.jsx       # Bottom tab navigation
+    │
+    ├── services/                   # API + data services
+    │   ├── api.js                  # Axios client (legacy, direct /api calls)
+    │   ├── httpClient.js           # Configured Axios instance
+    │   ├── authService.js          # Authentication service
+    │   ├── predictionService.js    # AQI prediction API calls
+    │   └── cityPackService.js      # Offline city pack loading
+    │
+    ├── state/
+    │   └── appState.jsx            # Global state (React context + useReducer)
+    │
+    ├── hooks/
+    │   ├── useCityPack.js          # Load/cache city pack data
+    │   ├── useInstallPrompt.js     # PWA install prompt handling
+    │   └── useOnlineStatus.js      # Online/offline detection
+    │
+    ├── data/
+    │   └── africanCities.js        # 500+ African cities with coordinates (~20 KB)
+    │
+    ├── locales/                    # 28 translation files
+    │   ├── en.json                 # English (baseline)
+    │   ├── fr.json                 # French
+    │   ├── sw.json                 # Swahili
+    │   ├── ha.json                 # Hausa
+    │   ├── yo.json                 # Yoruba
+    │   ├── am.json                 # Amharic
+    │   ├── ar.json                 # Arabic
+    │   ├── tw.json                 # Twi
+    │   └── ... (20 more languages)
+    │
+    └── pwa/
+        └── registerServiceWorker.js # SW registration on app load
 ```
 
 ---
 
-## manifest.json
+## App Architecture
 
-```json
-{
-  "name": "Mframapa - Air Quality for Africa",
-  "short_name": "Mframapa",
-  "description": "Real-time air quality for 1.4 billion Africans",
-  "start_url": "/",
-  "display": "standalone",
-  "background_color": "#0f172a",
-  "theme_color": "#10b981",
-  "orientation": "portrait-primary",
-  "icons": [
-    {
-      "src": "/icons/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "/icons/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    },
-    {
-      "src": "/icons/maskable-icon.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
-    }
-  ]
-}
+### Screen Routing
+
+`App.jsx` uses a simple screen dispatch pattern (no React Router):
+
 ```
+onboardingComplete=false  →  OnboardingScreen
+session.authenticated=false  →  AuthScreen
+authenticated=true  →  MobileShell + ActiveScreen (from ui.activeScreen state)
+```
+
+Active screens: `home`, `core`, `activity`, `search`, `notifications`, `profile`, `settings`
+
+### State Management
+
+Single `AppStateProvider` using React context + `useReducer`:
+- `onboardingComplete` — persisted to localStorage
+- `session` — auth state
+- `ui.activeScreen` — current screen key
+
+### Service Layer
+
+- `httpClient.js` — configured Axios instance with base URL
+- `predictionService.js` — `getPrediction(lat, lon, name, day)` → backend `/api/v1/predict`
+- `cityPackService.js` — loads `top-cities.v1.json` for offline city search
+- `authService.js` — login/register/session management
 
 ---
 
@@ -81,62 +135,39 @@ frontend/
 
 ### Network First (API)
 - `/api/*` endpoints
-- Fall back to cached response if offline
+- 10 second timeout, falls back to cached response
+- 6 hour stale cache, 50 entry cap
 
 ### Pre-cache (On Install)
-- 500 cities data
+- City pack data (`top-cities.v1.json`)
 - All translation JSON files
 - Core app shell
-
----
-
-## index.html Additions
-
-```html
-<!-- PWA -->
-<link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#10b981">
-
-<!-- iOS -->
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Mframapa">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
-```
-
----
-
-## InstallPrompt Component
-
-Shows install prompt when:
-1. User has visited 2+ times
-2. User hasn't dismissed before
-3. Browser supports installation
-
-For iOS:
-- Shows manual instructions
-- "Tap Share → Add to Home Screen"
 
 ---
 
 ## Offline Indicators
 
 ### When Offline
-- Banner: "You're offline - showing cached data"
+- `NetworkBanner` shows "You're offline — showing cached data"
 - Last updated timestamp visible
-- Refresh button disabled with tooltip
+- Refresh operations disabled
 
 ### When Back Online
-- Banner: "Back online - refreshing..."
-- Auto-refresh data
+- Banner updates to "Back online — refreshing..."
+- Auto-refresh active data
 - Banner dismisses after sync
 
 ---
 
-## Testing Checklist
+## Development
 
-- [ ] Install works on Android Chrome
-- [ ] Install works on iOS Safari
-- [ ] App works fully offline
-- [ ] Service worker updates correctly
-- [ ] Lighthouse PWA score > 90
+```bash
+cd frontend-pwa
+npm install
+npm run dev          # Vite dev server (proxies /api → localhost:8000)
+npm run build        # Production build
+npm run lint         # ESLint
+npm run preview      # Preview production build
+```
+
+**Proxy config** (in `vite.config.js`): All `/api` requests are forwarded to `http://127.0.0.1:8000` during development.

@@ -1,23 +1,18 @@
 """
 WorldPop population density connector.
 
-Uses the WorldPop REST API (free, no auth required) to fetch
+Uses the WorldPop v2 REST API (free, no auth required) to fetch
 estimated population density (people/km²) for a given point.
 
-API docs: https://www.worldpop.org/sdi/introapi
-Dataset:  wpgp — Unconstrained global mosaic, 2020, 100m resolution
+API:  https://api.worldpop.org/v2/
+Data: WorldPop R2025A 2020 100m resolution mosaic
 
 How it works:
-    1. Build a small bounding-box GeoJSON around the point (±0.01°, ~1 km).
-    2. POST to the WorldPop stats service requesting the mean pixel value.
-    3. If the async job is still running, poll until complete (max 60 s).
-
-Fallback:
-    If the WorldPop API is unreachable, the orchestrator skips this source.
-    The ML pipeline uses 0.0 as a safe default rather than crashing.
+    1. POST a small bbox GeoJSON to /v2/population (async task).
+    2. Poll /v2/tasks/{task_id}/result until status is not pending.
+    3. Extract population_density from the result.
 """
 
-import json
 import logging
 import time
 from typing import Dict, Any, List, Optional
@@ -25,21 +20,17 @@ from typing import Dict, Any, List, Optional
 import requests
 
 from .base import DataSource
-from backend.utils.retry import with_retry
 
 logger = logging.getLogger(__name__)
 
-_STATS_URL   = "https://api.worldpop.org/v1/services/stats"
-_TIMEOUT     = 30   # seconds per HTTP call
-_POLL_MAX    = 10   # maximum poll attempts for async tasks
-_POLL_SLEEP  = 5    # seconds between polls
+_BASE         = "https://api.worldpop.org/v2"
+_TIMEOUT      = 30
+_POLL_MAX     = 12
+_POLL_SLEEP   = 3
 
 
 class WorldPopDataSource(DataSource):
-    """
-    WorldPop REST API connector — no credentials required.
-    Returns population density (people per km²) for any lat/lon.
-    """
+    """WorldPop v2 REST API connector — no credentials required."""
 
     @property
     def source_name(self) -> str:
@@ -51,97 +42,61 @@ class WorldPopDataSource(DataSource):
 
     @property
     def is_available(self) -> bool:
-        return True   # always attempt — no credentials needed
+        return True
 
     def fetch_data(self, lat: float, lon: float, date: str) -> Dict[str, Any]:
-        """
-        Fetch WorldPop population density for the given point.
-        date is accepted but ignored (WorldPop mosaic is for year 2020).
-        """
         self._validate_inputs(lat, lon)
-        density = self._query_worldpop(lat, lon)
+        density = self._query(lat, lon)
         return {"population_density": density}
 
-    # ------------------------------------------------------------------ #
-
-    @with_retry(max_attempts=3, backoff_factor=2, timeout=_TIMEOUT)
-    def _query_worldpop(self, lat: float, lon: float) -> Optional[float]:
-        """
-        Query WorldPop stats API with a 0.02° bounding box around the point.
-        Handles both synchronous and asynchronous API responses.
-        """
+    def _query(self, lat: float, lon: float) -> Optional[float]:
         delta = 0.01
-        geojson = {
-            "type": "Polygon",
-            "coordinates": [[
-                [lon - delta, lat - delta],
-                [lon + delta, lat - delta],
-                [lon + delta, lat + delta],
-                [lon - delta, lat + delta],
-                [lon - delta, lat - delta],
-            ]]
+        payload = {
+            "year": 2020,
+            "geojson": {
+                "type": "Polygon",
+                "coordinates": [[
+                    [lon - delta, lat - delta],
+                    [lon + delta, lat - delta],
+                    [lon + delta, lat + delta],
+                    [lon - delta, lat + delta],
+                    [lon - delta, lat - delta],
+                ]],
+            },
         }
-
-        params = {
-            "dataset":    "wpgp",
-            "version":    "2020",
-            "geojson":    json.dumps(geojson),
-            "stat":       "mean",
-            "runasync":   "false",
-        }
-
         try:
-            resp = requests.get(_STATS_URL, params=params, timeout=_TIMEOUT)
+            resp = requests.post(f"{_BASE}/population", json=payload, timeout=_TIMEOUT)
             resp.raise_for_status()
-            data = resp.json()
         except requests.RequestException as e:
-            raise ConnectionError(f"WorldPop: API request failed — {e}") from e
+            raise ConnectionError(f"WorldPop: submit failed — {e}") from e
 
-        # Synchronous response
-        if data.get("status") == "finished":
-            return self._extract_mean(data)
+        task_id = resp.json().get("task_id")
+        if not task_id:
+            logger.warning("WorldPop: no task_id in response: %s", resp.json())
+            return None
 
-        # Asynchronous response — poll the taskid URL
-        taskid_url = data.get("data", {}).get("taskid")
-        if taskid_url:
-            return self._poll_async(taskid_url)
+        return self._poll(task_id)
 
-        logger.warning("WorldPop: unexpected response format: %s", data)
-        return None
-
-    def _poll_async(self, taskid_url: str) -> Optional[float]:
-        """Poll a WorldPop async task URL until it finishes."""
+    def _poll(self, task_id: str) -> Optional[float]:
+        url = f"{_BASE}/tasks/{task_id}/result"
         for attempt in range(_POLL_MAX):
             time.sleep(_POLL_SLEEP)
             try:
-                resp = requests.get(taskid_url, timeout=_TIMEOUT)
+                resp = requests.get(url, timeout=_TIMEOUT)
+                if resp.status_code == 404:
+                    logger.debug("WorldPop: task not ready yet (attempt %d)", attempt + 1)
+                    continue
                 resp.raise_for_status()
                 data = resp.json()
             except requests.RequestException as e:
                 logger.warning("WorldPop: poll error — %s", e)
                 continue
 
-            if data.get("status") == "finished":
-                return self._extract_mean(data)
+            density = data.get("population_density")
+            if density is not None:
+                return round(float(density), 2)
 
-            logger.debug(
-                "WorldPop: task still running (attempt %d/%d)", attempt + 1, _POLL_MAX
-            )
-
-        logger.warning("WorldPop: async task did not finish within %d polls", _POLL_MAX)
-        return None
-
-    @staticmethod
-    def _extract_mean(data: dict) -> Optional[float]:
-        """Pull the mean population density value from an API response."""
-        try:
-            stats = data["data"]["statistic"]
-            for item in stats:
-                if item.get("statistic") == "mean":
-                    value = float(item["value"])
-                    return round(value, 2)
-        except (KeyError, TypeError, ValueError) as e:
-            logger.warning("WorldPop: could not parse response: %s | %s", data, e)
+        logger.warning("WorldPop: task did not complete within %d polls", _POLL_MAX)
         return None
 
     @staticmethod

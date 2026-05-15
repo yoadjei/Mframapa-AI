@@ -1,383 +1,329 @@
-# Mframapa AI v2.0 — Development Specification
+# Mframapa v2.0 — Development Specification
 
-**Timeline**: **16 weeks (4 months)** — production v2.0 scope  
-**Scope contract**: See **`EXECUTION_PLAN_4MONTHS.md`** for drop/priority rules (full functioning product, not a throwaway demo).  
-**Budget**: ≤ **USD 30** cash out-of-pocket; compute via free tiers + GitHub Student Pack credits  
-**Milestone**: Denmark / Young Entrepreneurs Track + live production release
-
----
-
-## Timeline Overview
-
-```
-┌────────────────────────────────────────────────────────────────────────────┐
-│                      16-WEEK PRODUCTION TIMELINE                           │
-├────────────────────────────────────────────────────────────────────────────┤
-│                                                                            │
-│  PHASE 1           PHASE 2        PHASE 3         PHASE 4                 │
-│  Data & resilience Features & ML API & PWA        Mobile & launch         │
-│  ─────────────     ──────────     ─────────        ─────────────            │
-│  Weeks 1–4         Weeks 5–8      Weeks 9–12       Weeks 13–16             │
-│                                                                            │
-│  Ingestion +       Train +        Versioned API +  Android + stores +      │
-│  orchestration +   uncertainty +  offline PWA +    observability + freeze │
-│  cache + API meta  ensemble       batch + retrain                        │
-│                                                                            │
-└────────────────────────────────────────────────────────────────────────────┘
-```
-
-Testing, performance, and monitoring are **woven into every phase**; Weeks **15–16** concentrate integration/load smoke tests, alerting, docs, and release freeze (no separate “Phase 5 weeks 17–20”).
+**Timeline**: 12 weeks (3 months) — full vision scope
+**Scope contract**: See **`EXECUTION_PLAN.md`** for priorities and cut order
+**Budget**: ≤ USD 30 cash; compute via free tiers + student credits
 
 ---
 
-## Budget
+## Phase 1: Data Foundation (Weeks 1–2)
 
-| Category | Amount | Notes |
-|----------|--------|-------|
-| Infrastructure | $0/mo target | Free tiers + student credits |
-| Domain / misc | $0–15 | Only if unavoidable |
-| Google Play | $25 | Optional; consumes most of $30 envelope |
-| Contingency | remainder | Quotas / surprises |
-| **Total cash** | **≤ $30** | Paid EO APIs out of scope |
+### Week 1: Credentials, First Sources & Infrastructure
 
----
-
-## Distribution Strategy
-
-| Platform | Fee | Priority |
-|----------|-----|----------|
-| PWA | $0 | Primary |
-| Samsung Galaxy Store | $0 | High |
-| Huawei AppGallery | $0 | High |
-| Direct APK / GitHub Releases | $0 | High (**minimum two** install paths by Week 16) |
-| Amazon Appstore | $0 | Medium |
-| F-Droid | $0 | Medium |
-| Google Play | $25 | If budget allows |
-| Apple App Store | $99/yr | Out of scope for v2.0 cash budget |
-
----
-
-## Phase 1: Data Infrastructure & Resilience (Weeks 1–4)
-
-### Week 1: Foundation
-
-**Focus**: Deploy baseline, secrets hygiene, first reanalysis path, structured logging
+**Focus**: Get real data flowing from at least 3 sources
 
 | Task | Description | Deliverable |
 |------|-------------|-------------|
-| v2.0 branch / CI baseline | Clean branching; GitHub Actions smoke tests on PR | CI passing |
-| `backend/data_sources/` scaffold | Abstract `DataSource`, shared errors, timeouts | `base.py`, package layout |
-| ERA5 connector | PBLH, wind (u/v), temperature, humidity (+ precip when stable) | `era5.py` |
-| Copernicus CDS | Account + quota awareness documented | Runbook note |
-| Unit tests | ERA5 fetch + parsing | Tests |
-| Logging | Structured logs for ingestion jobs | Observability baseline |
+| Register Copernicus CDS | Account + API key for ERA5 | Credentials in `.env` |
+| Register Copernicus CDSE | Account for Sentinel-5P TROPOMI | Credentials in `.env` |
+| Register NASA Earthdata | Account + bearer token for MODIS | Credentials in `.env` |
+| Create Upstash Redis | Free tier Redis database | `REDIS_URL` in `.env` |
+| Test ERA5 connector | Run `era5.py` against live CDS API | Successful data fetch for Accra |
+| Test Open-Meteo connector | Run `open_meteo.py` (no auth needed) | Weather + AQ data returned |
+| Test SRTM connector | Run `srtm.py` (no auth needed) | Elevation data returned |
+| Test WorldPop connector | Run `worldpop.py` (no auth needed) | Population density returned |
+| Validate structured logging | Confirm log output for all ingestion | Logs visible |
+| Run `live_test.py` | At least auth-free tests pass | ≥4/9 tests passing |
 
-**End of Week 1**: ERA5 end-to-end for one bbox; architecture in place
-
----
-
-### Week 2: Primary Satellite & Fallback Weather
-
-**Focus**: Sentinel-5P + operational weather fallback interface
-
-| Task | Description | Deliverable |
-|------|-------------|-------------|
-| Sentinel-5P connector | NO₂, aerosol index / UVAI (and gases per pipeline capability) | `sentinel5p.py` |
-| Open-Meteo refactor | Align to `DataSource` pattern | `open_meteo.py` |
-| Retries / backoff | Exponential backoff, circuit breaker hooks | Shared client utils |
-| Unit tests | Connectors | Tests |
-| Docs | Rate limits, quotas | README / data dictionary |
-
-**End of Week 2**: S5P + Open-Meteo live independently
+**End of Week 1**: 3+ data sources returning real data. Redis connected.
 
 ---
 
-### Week 3: Multi-Source EO & Orchestration
+### Week 2: Full Pipeline & Orchestration
 
-**Focus**: Redundant AOD + orchestrator + reliability + failure simulation
+**Focus**: All data sources operational. Orchestrator + cache tested.
 
 | Task | Description | Deliverable |
 |------|-------------|-------------|
-| MODIS AOD connector | Terra/Aqua strategy per NASA Earthdata rules | `modis.py` |
-| VIIRS AOD connector | Second independent AOD family | `viirs.py` |
-| Orchestrator | Coordinates providers; fallback ladder | `orchestrator.py` |
-| Fallback config | satellite → reanalysis → cache → conservative prior | YAML/config |
-| Reliability scoring | Persist success/latency/freshness per source | DB or SQLite table |
-| Integration tests | Simulate provider failure / stale data | Tests |
+| Test Sentinel-5P connector | Run against CDSE with real credentials | NO₂ + aerosol data |
+| Test MODIS connector | Run against NASA Earthdata | AOD data |
+| Test VIIRS connector | Run against NASA/NOAA | AOD data |
+| Validate orchestrator | Test fallback chain with real + simulated failures | Degraded mode works |
+| Test feature pipeline | Full `FeaturePipeline.get_features()` with real data | All ~20 features populated |
+| Redis + SQLite cache | Test set/get/invalidate with real data | Cache round-trip works |
+| Pre-materialise cities | Run `precompute_cache.py` for top-50 cities | Cached features available |
+| API metadata | Confirm `sources_used`, `freshness`, `degraded` in responses | API returns provenance |
+| Run full `live_test.py` | All 9 tests pass | 9/9 green |
+| Unit test suite | Run `pytest backend/tests -q` | All tests pass |
 
-**End of Week 3**: System survives loss of at least one EO provider in tests
+**End of Week 2**: `live_test.py` 9/9 pass. API serves real (cached) data.
 
 ---
 
-### Week 4: Caching, Historical Materialisation & API Transparency
+## Phase 2: ML Pipeline & Models (Weeks 3–4)
 
-**Focus**: Performance, offline batches, **prediction response metadata**
+### Week 3: Training Data & Feature Engineering
+
+**Focus**: Collect real data (2018-05-01 → today, 427 cities, Option C), build training datasets
 
 | Task | Description | Deliverable |
 |------|-------------|-------------|
-| Redis (Upstash) + disk fallback | SQLite/local fallback if Redis unavailable | Cache layer |
-| Cache keys / TTL | Documented invalidation | Config |
-| Pre-materialise Top-N cities | Batch job for historical/feature snapshots | Worker/cron |
-| API fields | `sources_used[]`, `freshness`, `degraded`, provenance stub | API/schema update |
-| OpenAPI | Contract starts reflecting stable prediction shape | `openapi.yaml` or FastAPI export |
+| City-grid collection (whole Africa) | 427 cities × weekly 2018–2023 + daily 2024–today via collect_training_data.py | training_rows.parquet |
+| ERA5 weather features | Temperature, wind (u/v), RH, PBLH from OpenMeteo archive | Weather features |
+| CAMS AQ proxy features | NO₂, SO₂, CO, AOD, PM10, PM2.5 from OpenMeteo CAMS (2022 onwards) | AQ features |
+| OpenAQ v3 calibration labels | Real PM2.5 ground truth; 25km match radius; ~200 Africa stations | Real labels |
+| Temporal features | day_of_year (1–366) + month (1–12) added to FEATURE_COLUMNS | 14-feature schema |
+| Checkpoint-safe collection | Per-city JSON checkpoint; parquet written per city; full resume on failure | Resilient pipeline |
+| Rate-limited API calls | Per-API token bucket; respects free-tier limits | No bans |
+| Temporal train/val/test split | Temporal CV: train 2018–2022 / val 2023 / test 2024–today | Split manifests |
+| Feature validation | Completeness, distributions, outliers; ~490k rows | Validated dataset |
+| Population + elevation | WorldPop + SRTM static features joined | Complete feature matrix |
+| Auto-retrain pipeline | Weekly GitHub Actions: collect last 90 days → retrain → commit | Automated pipeline |
 
-**End of Week 4**: Faster cold paths; API honestly describes what fed the result
+**End of Week 3**: Real training dataset: 2018-05-01 → today, 427 cities, ~490k rows, temporal train/val/test splits, automated weekly refresh.
 
 ---
 
-## Phase 2: Features & ML (Weeks 5–8)
+### Week 4: Model Training & Production Inference
 
-### Week 5: Feature Pipeline & Calibration Joins
-
-**Focus**: Full proxy stack + labels — no placeholders in training path
+**Focus**: Train all models. Wire production path.
 
 | Task | Description | Deliverable |
 |------|-------------|-------------|
-| WorldPop / GPW | Population density layer | Population features |
-| SRTM | Elevation | Terrain features |
-| NDVI | Single consistent composite (e.g. MODIS) | Vegetation features |
-| VIIRS night lights | Monthly composite acceptable initially | Activity proxy |
-| OSM road density | Zonal aggregates (hex/grid/admin) | Traffic proxy |
-| OpenAQ + AirQo | Station joins where accessible | Calibration table |
-| Unified feature pipeline | Deterministic join to grid/cities | Pipeline module |
-| Validation tests | Feature completeness checks | Tests |
+| Train West Africa (urban + rural) | XGBoost + LightGBM | 2 model bundles |
+| Train East Africa (urban + rural) | XGBoost + LightGBM | 2 model bundles |
+| Train North Africa (urban + rural) | XGBoost + LightGBM | 2 model bundles |
+| Train Central Africa (urban + rural) | XGBoost + LightGBM | 2 model bundles |
+| Train Southern Africa (urban + rural) | XGBoost + LightGBM | 2 model bundles |
+| Train Horn of Africa (urban + rural) | XGBoost + LightGBM | 2 model bundles |
+| Continental fallback | If any region has sparse labels | Fallback model |
+| Ensemble wiring | XGBoost + LightGBM combination | Ensemble inference |
+| Conformal uncertainty | Calibrated prediction intervals | Uncertainty in API |
+| Anomaly/spike flags | Residual / z-score detection | Anomaly fields |
+| Model registry | All 12 models registered with versions | `model_registry.json` |
+| End-to-end test | `GET /api/v1/predict` returns real prediction | Working inference |
+| Model cards | Document limitations, regions, label density | Model documentation |
+| Feature importance | Log top features per model | Importance artifacts |
 
-**End of Week 5**: Reproducible feature matrix for training/inference
+**End of Week 4**: Real predictions. `GET /api/v1/predict?lat=5.6&lon=-0.19` → real PM2.5 + uncertainty.
 
 ---
 
-### Week 6: Temporal & Baseline Modelling
+## Phase 3: Design System & Web Core (Weeks 5–7)
 
-**Focus**: Missing satellite days + climatology + light smoothing
+### Week 5: Design System & Component Library
+
+**Focus**: Complete foundation for all UI
 
 | Task | Description | Deliverable |
 |------|-------------|-------------|
-| Temporal gap fill | Nearest-good-day / short window rules | Documented policy |
-| Climatology baseline | Rolling normals from ERA5 / composites | Features |
-| Spatiotemporal smoothing | Sparse-cell smoothing (kernel/statistical — keep tractable) | Module |
-| Train/eval splits | Region × time grouped splits | Scripts |
-| Separate train artifacts | Versioned training snapshots distinct from live API pulls | Storage layout |
+| Colour tokens | bg, surface (3 levels), text (3 levels), border, divider, brand (3), semantic (4) | CSS custom properties |
+| AQI semantic colours | good/moderate/sensitive/unhealthy/severe/hazardous | AQI palette |
+| Typography system | Display, H1–H6, Body L/M, Caption, Label, Numeric, Monospace | Font scale |
+| Spacing system | 4px base, 8px layout, responsive scale | Spacing tokens |
+| Radius system | sm/md/lg/xl/pill | Border radius tokens |
+| Elevation system | card/overlay/modal/sticky shadows | Shadow tokens |
+| Motion system | Durations, easing, reduced-motion fallback | Animation tokens |
+| Dark theme | Full dark palette | Theme toggle |
+| Light theme | Full light palette | Default theme |
+| Button components | primary/secondary/tertiary/destructive/icon/FAB × 7 states | Button system |
+| Input components | text/password/email/search/select/autocomplete/textarea/date/range × 5 states | Input system |
+| Card components | summary/AQI/analytics/insight/activity/expandable | Card system |
+| Chart components | line/bar/heatmap/comparison/trend + live metrics | Chart library |
+| Navigation | top nav, side nav, bottom nav, command palette, breadcrumbs | Nav components |
+| Modal/sheet | modal, side sheet, bottom sheet, fullscreen modal | Overlay components |
+| Loading states | skeleton loaders, spinners, progress bars, streaming placeholders | Loading system |
+| Empty/error states | empty, loading, offline, server error, permission denied, no results | State components |
+| Notification components | toast, inline alert, banner, push preview, emergency alert | Alert system |
+| Responsive grid | Mobile single-col, tablet adaptive, desktop multi-panel, ultrawide dashboard | Grid system |
 
-**End of Week 6**: Training rows resilient to gaps; methodology documented
+**End of Week 5**: Complete design system. All components built with all states.
 
 ---
 
-### Week 7: Regional Models & Ensemble
+### Week 6: Core Web Screens
 
-**Focus**: All regions + GBDT ensemble + registry
+**Focus**: Explorer, search, auth — the main product surface
 
 | Task | Description | Deliverable |
 |------|-------------|-------------|
-| Region boundaries | 6 regions GeoJSON + urban/rural classifier | Config |
-| Train regional models | Target **12** artifacts (6 × urban/rural); **continental fallback** if labels force reduction | Model files |
-| Ensemble | XGBoost + LightGBM combination | Ensemble inference |
-| Selection logic | Region + UR → model id | Router |
-| Export | Serialised models + metadata | Registry dir / DB |
-| Evaluation | Notebooks or scripts → **CI-exported metrics artefact** where feasible | Metrics |
+| Landing page | Marketing + feature overview + CTA | Public page |
+| Africa explorer | Interactive map with heatmap layer, clustering, smart filtering | Explorer screen |
+| Country explorer | Country-level AQI overview, city list, regional stats | Country screen |
+| City explorer | Detailed AQI dashboard: current, trends, weather, health, sources | City detail screen |
+| Search/discovery | Multilingual city search, recent, popular, offline-capable | Search screen |
+| Login | Email/password + validation | Auth screen |
+| Signup | Registration + onboarding flow | Auth screen |
+| Forgot/reset password | Email flow | Auth screen |
+| Home dashboard | Saved cities overview, quick AQI, recent activity | Dashboard |
+| Map integration | Interactive map with location picker, tap-to-explore | Map component |
 
-**End of Week 7**: Registered ensemble serves inference path in staging
+**End of Week 6**: Core product screens functional with real API data.
 
 ---
 
-### Week 8: Uncertainty, Anomalies & Production ML Docs
+### Week 7: Intelligence, Health & Product Features
 
-**Focus**: Intervals/flags + drift hooks + model cards
+**Focus**: What makes this an intelligence platform, not just a data viewer
 
 | Task | Description | Deliverable |
 |------|-------------|-------------|
-| Uncertainty | Conformal intervals or bootstrap — **must** surface in API | Inference patch |
-| Anomaly flags | Residual / z-score hybrid acceptable | Response fields |
-| Feature importance logging | Batch job post-training | Logs artefact |
-| Validation suite | Holdouts + sanity checks | Tests |
-| Model cards | Limitations, regions, label density | `docs/` |
-| Inference integration | Production path returns uncertainty + anomaly | Wire-up |
+| AI insight cards | ML-generated contextual insights per city | Insight component |
+| Prediction dashboard | Forecast view with confidence bands | Prediction screen |
+| Trend visualisations | Historical AQI with line/bar/comparison charts | Trend charts |
+| Anomaly alert UI | Visual alert when predictions detect anomalies | Alert component |
+| Health risk dashboard | Asthma risk, dust alerts, heat stress, vulnerable population | Health screen |
+| Confidence indicators | Visual confidence scoring on all predictions | Overlay component |
+| Historical playback | Time-slider for past AQI data | Playback component |
+| Trust & transparency | Data source panel, timestamps, methodology page, model explanation cards, disclaimers | Trust components |
+| Notification centre | Notification list, alert settings, category filtering | Notification screen |
+| Saved locations | Add/remove/reorder saved cities | Saved screen |
+| Profile & settings | Account, privacy, language, theme, notification prefs | Settings screens |
+| Comparison dashboard | Compare AQI across multiple cities | Comparison screen |
 
-**End of Week 8**: ML meets **`EXECUTION_PLAN_4MONTHS.md`** §8 ML bullets
+**End of Week 7**: Intelligence platform experience. Insights, health context, trends, transparency.
 
 ---
 
-## Phase 3: Versioned API & PWA (Weeks 9–12)
+## Phase 4: Offline, Mobile & Enterprise (Weeks 8–9)
 
-### Week 9: Public API Hardening
+### Week 8: PWA Hardening & Mobile App
 
-**Focus**: Versioned routes, keys, limits, exports
+**Focus**: Offline-capable PWA. Mobile with full feature parity.
 
 | Task | Description | Deliverable |
 |------|-------------|-------------|
-| `/v1/` routes | Stable URLs | Router layout |
-| API keys | Public vs institutional tiers (**limits**, billing manual OK) | Key storage / hashing |
-| Rate limiting | Abuse protection per key/IP | Middleware |
-| Usage persistence | Per-key request counts for dashboard | Store |
-| CSV + GeoJSON export | Documented export endpoints or query params | Handlers |
-| OpenAPI sync | Published spec matches implementation | Docs |
+| PWA icon set | 72, 96, 128, 144, 152, 192, 384, 512, maskable | Icon assets |
+| Manifest + splash | Full PWA manifest, splash screens | PWA config |
+| Service worker | CacheFirst static, NetworkFirst API, pre-cache city packs | `sw.js` tuned |
+| Offline UI | Cache management, sync queue, reconnect state indicator | Offline system |
+| Low-bandwidth mode | Compressed map, reduced data, lazy loading | Performance mode |
+| Lighthouse audit | Target ≥ 90 PWA score | Audit report |
+| Mobile: core screens | Home, map, search, city detail, alerts, settings | Mobile screens |
+| Mobile: intelligence | AI insight cards, prediction alerts, health context | Mobile intelligence |
+| Mobile: offline | MMKV persistence, sync-when-online, offline banner | Mobile offline |
+| Mobile: push | Notification infrastructure | Push system |
+| Mobile: theme/i18n | Dark/light themes, language switching | Mobile polish |
 
-**End of Week 9**: Partners can integrate without informal JSON drift
+**End of Week 8**: PWA installable + offline. Mobile running with real data.
 
 ---
 
-### Week 10: Batch & Integration Testing
+### Week 9: Enterprise, Large Screen & Responsive
 
-**Focus**: Heavy queries + automated API/integration coverage
+**Focus**: Dashboards for organisations and operations centres
 
 | Task | Description | Deliverable |
 |------|-------------|-------------|
-| Batch endpoint | Async job + poll **or** strict capped sync — **pick one**, document | API |
-| API integration tests | Critical paths in CI | Test suite |
-| End-to-end data test | Ingest → features → inference smoke | Pipeline test |
-| Payload compression | gzip/brotli where applicable | Server config |
+| Organisation dashboard | Multi-user org account overview | Enterprise screen |
+| Multi-city monitoring | Simultaneous monitoring of N cities | Monitoring dashboard |
+| Regional analytics | Aggregate stats by region/country | Analytics screen |
+| Command centre layout | Dense analytics, split panels, live metrics (1920px+) | Large screen layout |
+| Live monitoring grid | Multi-city grid with auto-refresh | Wallboard layout |
+| Public health dashboard | Admin view for health agencies | Health admin screen |
+| Export/reporting centre | CSV, GeoJSON, PDF generation | Export screen |
+| Tablet layouts | Adaptive layouts for 768–1024px | Tablet responsive |
+| Desktop layouts | Multi-panel layouts for 1280–1600px | Desktop responsive |
+| Ultrawide layouts | Dashboard layouts for 1920–2560px+ | Ultrawide responsive |
 
-**End of Week 10**: Batch contract stable; CI guards regressions
+**End of Week 9**: Enterprise dashboards functional. Responsive from 320 to 2560+.
 
 ---
 
-### Week 11: Retraining, Drift & Deploy Discipline
+## Phase 5: Monetisation, Developer & Community (Weeks 10–11)
 
-**Focus**: Automation + operational safety
+### Week 10: Monetisation & Developer Portal
+
+**Focus**: Revenue model technically enforced. API ready for external developers.
 
 | Task | Description | Deliverable |
 |------|-------------|-------------|
-| Scheduled retrain | GitHub Actions or worker cron | Pipeline |
-| Drift heuristic | Feature stats / residual MAE creep alerts | Monitor stub |
-| Deployment | Scripted deploy + **documented rollback** | Runbook |
-| Synthetic failure drill | Staged upstream outage rehearsal | Recorded outcome |
+| Pricing page | Free / Pro / Enterprise comparison | Marketing page |
+| Free tier UI | Feature limits visible, upgrade prompts | Tier enforcement |
+| Subscription management | Plan selection, billing info, invoices | Subscription UI |
+| Payment methods | Stripe/similar integration stub | Payment screen |
+| Enterprise contact flow | Sales inquiry form | Contact flow |
+| Tier enforcement | Backend rate limits + feature gates per tier | API middleware |
+| API documentation | Interactive docs portal | Developer page |
+| API key management | Create/revoke keys, usage stats | Key management UI |
+| Usage dashboard | Request counts, rate limit status | Usage screen |
+| Dataset exports | Bulk download endpoints | Export API |
+| SDK examples | Python + JavaScript snippets | Documentation |
 
-**End of Week 11**: Operators can refresh models without heroics
+**End of Week 10**: Pricing live. Tiers enforced. Developer portal functional.
 
 ---
 
-### Week 12: PWA Production UX
+### Week 11: Community, Accessibility & Automation
 
-**Focus**: Installable, offline, low-bandwidth, accessibility
+**Focus**: Community features. Accessibility compliance. Operational automation.
 
 | Task | Description | Deliverable |
 |------|-------------|-------------|
-| manifest.json + icons + splash | Full set | Assets |
-| Service worker | Asset + API cache policies; offline UX | `sw.js` |
-| Pre-cache city packs | Align with backend Top-N materialisation | Config |
-| Manual city picker | No GPS required | UI |
-| Lazy map / lite mode | Reduce bandwidth | Map tuning |
-| Compression | Assets + API consumer hints | Build |
-| Accessibility | Contrast, scalable type, symbolic AQI | Audit fixes |
-| Lighthouse | Target strong PWA score | Report |
+| Citizen reporting | Submit environmental observations | Report form |
+| Environmental submissions | Photo/text submissions with location | Submission flow |
+| Verification states | Pending/verified/rejected badges | Moderation UI |
+| Local observations feed | Community-sourced data display | Feed component |
+| WCAG AA audit | Full accessibility review | Audit report |
+| Keyboard navigation | Tab order, focus management | Navigation fixes |
+| Screen reader labels | ARIA labels, roles, live regions | Accessibility fixes |
+| Touch targets | Minimum 44px on all interactive elements | Size fixes |
+| Reduced motion | `prefers-reduced-motion` support | Motion alternatives |
+| Contrast validation | All text meets AA contrast ratios | Colour fixes |
+| Scheduled retrain | GitHub Actions cron for model refresh | Retrain workflow |
+| Drift heuristic | Feature stats / residual MAE monitoring | Drift detection |
+| Deploy + rollback | Scripted deploy with documented rollback | Runbook |
 
-**End of Week 12**: PWA matches production Definition of Done (client side)
+**End of Week 11**: Community live. Accessibility passed. Retraining automated.
 
 ---
 
-## Phase 4: Mobile, Distribution & Observability (Weeks 13–16)
+## Phase 6: Distribution & Launch (Week 12)
 
-### Week 13: Android Client
+### Week 12: Ship v2.0
 
-**Focus**: Same API contract as web
+**Focus**: App stores, observability, documentation, freeze
 
 | Task | Description | Deliverable |
 |------|-------------|-------------|
-| Expo / RN project | TypeScript, navigation, theme | App scaffold |
-| Home / map / search | Core flows | Screens |
-| API client | Versioned base URL + error handling | Service layer |
-| MMKV / offline | Last-known AQI + pinned cities | Storage |
-| Settings | Language, preferences | Screen |
+| Release keystore | Secured signing key | Keystore |
+| Optimised APK | Target < 15 MB | APK artifact |
+| Samsung Galaxy Store | Submit listing + APK | Submission |
+| Second channel | Huawei / Amazon / GitHub Releases | ≥2 channels |
+| APK download page | Direct download + SHA-256 | Web page |
+| Sentry | Backend + web + mobile error tracking | DSN wired |
+| Uptime monitors | Health + critical route checks | Monitoring |
+| Privacy analytics | Aggregate-only analytics (Umami/PostHog) | Analytics |
+| Load smoke test | Concurrent burst test + results | Test report |
+| Operator runbooks | Provider down, quota exhaustion, rollback | Documentation |
+| API consumer docs | Auth, limits, exports, uncertainty semantics | Documentation |
+| Privacy policy | Aligned with actual data retention | Legal doc |
+| User guide / FAQ | End-user documentation | Help docs |
+| Final QA | Full walkthrough PWA + Android | QA pass |
+| Git tag | `v2.0.0` | Release |
 
-**End of Week 13**: Signed debug/release path shows live API data
+**End of Week 12**: **v2.0 production freeze**. Conference-ready and maintainable.
 
 ---
 
-### Week 14: Distribution Minimum Two Paths
+## Error Pages & Edge Cases (Built Throughout)
 
-**Focus**: Real installs — not “submitted someday”
-
-| Task | Description | Deliverable |
-|------|-------------|-------------|
-| Release signing | Keystore secured | Signing |
-| Optimised APK / AAB | Target **< 15 MB** APK equivalent | Artefact |
-| Samsung Galaxy Store | Submit | Tracker updated |
-| **Plus one of**: Huawei OR Amazon OR **GitHub Releases direct APK** | Minimum **two** total paths | Live or submitted |
-| Download page | SHA-256, install instructions | Web |
-
-**End of Week 14**: ≥2 distribution channels in flight or live
-
----
-
-### Week 15: Observability, Privacy-Preserving Analytics & Load Smoke
-
-**Focus**: Production ops
-
-| Task | Description | Deliverable |
-|------|-------------|-------------|
-| Sentry | Backend + frontend/mobile | DSN wired |
-| Uptime monitors | Health + critical routes | UptimeRobot or equiv |
-| Aggregated analytics | Adoption / cohorts / geo buckets — **no raw GPS retention** | Umami/PostHog/etc. |
-| Load smoke script | Concurrent burst representative of launch | Results doc |
-| Cache tuning | Hit rates, TTL adjustments | Notes |
-| Mobile perf | Battery/memory sanity pass | Fixes |
-
-**End of Week 15**: On-call lite playbook exists
-
----
-
-### Week 16: Release Freeze & Documentation
-
-**Focus**: Shipped v2.0 + operator clarity
-
-| Task | Description | Deliverable |
-|------|-------------|-------------|
-| Bug sweep | Critical/zero-day fixes only | Stable tag |
-| Operator runbooks | Provider down, quota exhaustion, rollback | `docs/` |
-| API consumer docs | Auth, limits, exports, uncertainty semantics | Published |
-| User-facing docs | Privacy alignment with actual retention | Site/docs |
-| Launch checklist | Sign-off list | CHECKLIST |
-| Pitch / metrics | Deck refreshed from analytics snapshots | Materials |
-
-**End of Week 16**: **v2.0 production freeze** — conference-ready **and** maintainable
+- 404 Not Found
+- Maintenance mode
+- Network failure
+- Timeout
+- API unavailable
+- Session expired
+- Permission denied
 
 ---
 
 ## Success Criteria
 
-### Technical
-
 | Metric | Target |
 |--------|--------|
-| EO independence | ≥3 independent families feeding fusion (e.g. S5P + MODIS AOD + VIIRS AOD; ERA5 separate layer) |
-| Fallback | Proven in tests + staged drill |
-| Model quality | Best-effort per region; **continental fallback** documented where sparse |
-| API latency (p95) | < 500 ms cached hot paths where applicable |
-| API | Versioned + keys + rate limits + uncertainty/degraded flags |
-| Offline cities | Top-N pre-materialised + client packs (500 remains aspirational) |
+| EO independence | ≥3 families feeding fusion |
+| Model quality | 12 regional models with documented metrics |
+| API latency (p95) | < 500 ms cached |
+| PWA Lighthouse | ≥ 90 |
 | APK size | < 15 MB |
-| PWA Lighthouse | Strong PWA score (≥ 90 ideal) |
-
-### Distribution
-
-| Platform | Target |
-|----------|--------|
-| PWA | Installable |
-| Android | **≥2** of: Samsung / Huawei / Amazon / direct APK |
-
-### Privacy & security
-
-| Metric | Target |
-|--------|--------|
-| Transport | TLS everywhere |
-| Location | Bucketed / minimised; policy matches implementation |
-| Keys | Hashed at rest; institutional tier isolated |
+| Offline cities | Top-50+ pre-materialised |
+| Responsive | 320px → 2560px+ |
+| Accessibility | WCAG AA |
+| Distribution | ≥2 Android channels |
+| Uptime | Monitored with alerts |
 
 ---
 
-## Free Infrastructure Stack
-
-| Service | Purpose | Notes |
-|---------|---------|-------|
-| AWS EC2 / Azure / DO (student) | Backend | Pick **one** primary cloud |
-| Vercel / similar | Frontend | As today |
-| Upstash | Redis | Rate limit + cache |
-| Cloudflare | CDN + DNS + SSL | As `docs/INFRASTRUCTURE.md` |
-| GitHub Actions | CI/CD + scheduled jobs | |
-| Colab / cloud notebook | Training bursts | |
-| Sentry (student tier) | Errors | |
-| UptimeRobot | Uptime | |
-
----
-
-*Mframapa AI v2.0 Specification — **16-week production timeline***  
-*Aligned with **`EXECUTION_PLAN_4MONTHS.md`***
+*Mframapa v2.0 Specification — 12-week full vision timeline*
+*Aligned with `EXECUTION_PLAN.md`*

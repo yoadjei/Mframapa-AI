@@ -2,14 +2,18 @@ import io
 import csv
 import json
 from datetime import date as dt_date
+from functools import lru_cache
 from typing import Any, Dict, List, Optional
 
+import numpy as np
 from fastapi import APIRouter, Depends, Query, HTTPException, Response
 from pydantic import BaseModel, Field
 
 from backend.api.aqi import aqi_category_from_pm25
 from backend.api.security import verify_and_rate_limit
 from backend.pipeline.feature_pipeline import FeaturePipeline
+from ml.ensemble import ensemble_mean
+from ml.features import FEATURE_COLUMNS
 from ml.model_selection import regional_export_dir
 from ml.paths import repository_root
 from ml.regions import assign_region
@@ -21,21 +25,76 @@ logger = logging.getLogger(__name__)
 REPO_ROOT = repository_root()
 CITIES_PATH = REPO_ROOT / "backend" / "data" / "african_cities.json"
 
+
+@lru_cache(maxsize=12)
+def _load_bundle(region_id: str, segment: str):
+    """Load and cache XGBoost + LightGBM models for a region/segment pair."""
+    export_dir = regional_export_dir(region_id, segment)
+    xgb_path = export_dir / "xgboost.json"
+    lgb_path = export_dir / "lightgbm.txt"
+
+    xgb_model = lgb_model = None
+    try:
+        import xgboost as xgb
+        m = xgb.Booster()
+        m.load_model(str(xgb_path))
+        xgb_model = m
+    except Exception as e:
+        logger.warning("Failed to load XGBoost model for %s/%s: %s", region_id, segment, e)
+    try:
+        import lightgbm as lgb
+        lgb_model = lgb.Booster(model_file=str(lgb_path))
+    except Exception as e:
+        logger.warning("Failed to load LightGBM model for %s/%s: %s", region_id, segment, e)
+
+    return xgb_model, lgb_model
+
+
+def _run_ml_inference(feats: Dict[str, Any], region_id: str, segment: str) -> Optional[float]:
+    """Build feature vector and run ensemble inference. Returns pm25 or None."""
+    xgb_model, lgb_model = _load_bundle(region_id, segment)
+    if xgb_model is None and lgb_model is None:
+        return None
+
+    X = np.array(
+        [[float(feats.get(col) or 0.0) for col in FEATURE_COLUMNS]],
+        dtype=np.float32,
+    )
+
+    preds = []
+    if xgb_model is not None:
+        try:
+            import xgboost as xgb
+            dm = xgb.DMatrix(X, feature_names=list(FEATURE_COLUMNS))
+            preds.append(xgb_model.predict(dm))
+        except Exception as e:
+            logger.warning("XGBoost inference failed: %s", e)
+    if lgb_model is not None:
+        try:
+            preds.append(lgb_model.predict(X))
+        except Exception as e:
+            logger.warning("LightGBM inference failed: %s", e)
+
+    if not preds:
+        return None
+    if len(preds) == 1:
+        return float(np.clip(preds[0][0], 0.0, 500.0))
+    return float(np.clip(ensemble_mean(preds[0], preds[1])[0], 0.0, 500.0))
+
+
 def _default_conformal_half_width(pm25: float) -> float:
     v = max(float(pm25), 1.0)
     return max(5.0, v * 0.22)
 
-def _load_manifest_half_width(region_id: str, segment: str) -> Optional[float]:
+def _load_manifest(region_id: str, segment: str) -> Dict[str, Any]:
     manifest = regional_export_dir(region_id, segment) / "manifest.json"
     if not manifest.is_file():
-        return None
+        return {}
     try:
-        data = json.loads(manifest.read_text(encoding="utf-8"))
-        u = data.get("uncertainty") or {}
-        w = u.get("conformal_half_width")
-        return float(w) if w is not None else None
-    except (json.JSONDecodeError, TypeError, ValueError):
-        return None
+        return json.loads(manifest.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return {}
+
 
 def _cities() -> list:
     with CITIES_PATH.open(encoding="utf-8") as f:
@@ -67,18 +126,30 @@ def _build_prediction(
     pipeline: FeaturePipeline,
 ) -> Dict[str, Any]:
     feats = pipeline.get_features(lat, lon, day)
-    pm25_raw = feats.get("pm25_surface")
-    if pm25_raw is None:
-        pm25 = 25.0
-        logger.warning("pm25_surface missing for (%s,%s); using fallback", lat, lon)
+    pop = feats.get("population_density")
+    assigned_region = assign_region(lat, lon)
+    region_id = assigned_region or "continental"
+    segment = classify_from_population_density(pop if isinstance(pop, (int, float)) else None)
+    # Continental fallback uses a single "all" bundle (no urban/rural split)
+    infer_segment = segment if assigned_region else "all"
+
+    # Run XGBoost + LightGBM ensemble inference
+    pm25_ml = _run_ml_inference(feats, region_id, infer_segment)
+    if pm25_ml is not None:
+        pm25 = pm25_ml
+        source = "xgb_lgb_ensemble"
     else:
-        pm25 = float(pm25_raw)
+        # Fallback: use OpenMeteo PM2.5 surface value
+        pm25_raw = feats.get("pm25_surface")
+        pm25 = float(pm25_raw) if pm25_raw is not None else 25.0
+        source = "feature_pipeline_pm25_surface"
+        if pm25_raw is None:
+            logger.warning("ML inference unavailable and pm25_surface missing for (%s,%s); using fallback", lat, lon)
 
     cat = aqi_category_from_pm25(pm25)
-    pop = feats.get("population_density")
-    region_id = assign_region(lat, lon) or "west_africa"
-    segment = classify_from_population_density(pop if isinstance(pop, (int, float)) else None)
-    half = _load_manifest_half_width(region_id, segment) or _default_conformal_half_width(pm25)
+    manifest = _load_manifest(region_id, segment)
+    manifest_hw = (manifest.get("uncertainty") or {}).get("conformal_half_width")
+    half = float(manifest_hw) if manifest_hw is not None else _default_conformal_half_width(pm25)
     lower = max(0.0, pm25 - half)
     upper = pm25 + half
 
@@ -100,7 +171,6 @@ def _build_prediction(
         if feats.get(k) is not None
     }
 
-    manifest_hw = _load_manifest_half_width(region_id, segment)
     uncertainty_method = "split_conformal_manifest" if manifest_hw is not None else "heuristic_relative"
 
     return {
@@ -125,7 +195,7 @@ def _build_prediction(
             "region_id": region_id,
             "segment": segment,
             "version": "2.0.0",
-            "source": "feature_pipeline_pm25_surface",
+            "source": source,
         },
     }
 

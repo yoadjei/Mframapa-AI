@@ -140,8 +140,13 @@ class Sentinel5PDataSource(DataSource):
                 return {f: None for f in self.provided_features}
 
             import zipfile
-            with zipfile.ZipFile(zip_path, "r") as zf:
-                zf.extractall(tmpdir)
+            nc_path = os.path.join(tmpdir, "product.nc")
+            try:
+                with zipfile.ZipFile(zip_path, "r") as zf:
+                    zf.extractall(tmpdir)
+            except zipfile.BadZipFile:
+                # CDSE zipper returns the NetCDF directly (not wrapped in zip)
+                os.rename(zip_path, nc_path)
 
             nc_files = [
                 os.path.join(root, fn)

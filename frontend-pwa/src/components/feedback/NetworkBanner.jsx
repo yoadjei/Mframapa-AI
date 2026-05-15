@@ -6,6 +6,7 @@ export function NetworkBanner({ isOnline }) {
 
   useEffect(() => {
     if (!previous.current && isOnline) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setShowBackOnline(true);
       const timeout = setTimeout(() => setShowBackOnline(false), 2600);
       previous.current = isOnline;

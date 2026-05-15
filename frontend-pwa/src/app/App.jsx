@@ -13,7 +13,10 @@ import { SearchScreen } from "../features/search/SearchScreen.jsx";
 import { ProfileScreen } from "../features/profile/ProfileScreen.jsx";
 import { SettingsScreen } from "../features/settings/SettingsScreen.jsx";
 import { NotificationsScreen } from "../features/notifications/NotificationsScreen.jsx";
+import { PreviewGallery } from "../features/preview/PreviewGallery.jsx";
 import { preloadCityPack } from "../services/cityPackService.js";
+
+const IS_PREVIEW = new URLSearchParams(window.location.search).has("preview");
 
 const SCREEN_COMPONENTS = {
   home: HomeScreen,
@@ -31,6 +34,8 @@ export function App() {
   } = useAppState();
   const isOnline = useOnlineStatus();
   const { canInstall, promptInstall } = useInstallPrompt();
+
+  if (IS_PREVIEW) return <PreviewGallery isOnline={isOnline} />;
   const ActiveScreen = useMemo(
     () => SCREEN_COMPONENTS[ui.activeScreen] ?? HomeScreen,
     [ui.activeScreen]

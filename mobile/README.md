@@ -1,70 +1,138 @@
 # Mframapa Mobile App
 
-**Status**: Scaffold ready; implementation targets **`SPEC.md` Weeks 13–14**.  
-**Framework**: React Native (Expo)  
-**Distribution**: Free channels — see **`../docs/STORES.md`** (minimum **two** paths by Week 14).
+**Framework**: React Native (Expo) + TypeScript
+**Distribution**: Free channels — Samsung Galaxy Store, Huawei AppGallery, Amazon Appstore, direct APK
+**API**: Backend `/api/v1/` — same contract as PWA
+**Status**: Scaffold implemented with 5 screens, 9 components, navigation, persistent store, i18n
+
+---
 
 ## Directory Structure
 
 ```
 mobile/
-├── README.md           # This file
-├── SCAFFOLD.md         # Detailed scaffold documentation
-├── src/
-│   ├── screens/        # App screens (Home, Map, Settings, etc.)
-│   ├── components/     # Reusable UI components
-│   ├── services/       # API, offline, notifications
-│   ├── stores/         # State management (Zustand)
-│   └── i18n/           # 35+ language translations
-└── assets/
-    ├── icons/          # App icons, AQI indicators
-    └── fonts/          # (using system fonts to reduce size)
+├── App.tsx                 # Root component (wraps AppNavigator)
+├── app.json                # Expo configuration
+├── package.json
+├── tsconfig.json
+├── babel.config.js
+├── metro.config.js
+├── eas.json                # EAS Build config
+│
+└── src/
+    ├── screens/
+    │   ├── HomeScreen.tsx       # Main AQI display
+    │   ├── MapScreen.tsx        # Interactive map + location picker
+    │   ├── SearchScreen.tsx     # City search (offline-capable)
+    │   ├── AlertsScreen.tsx     # Push notification history
+    │   └── SettingsScreen.tsx   # Language, theme, notifications
+    │
+    ├── components/
+    │   ├── AQICard.tsx          # Main air quality card
+    │   ├── AQIGauge.tsx         # Visual gauge/meter
+    │   ├── AQIColorBar.tsx      # Color indicator bar
+    │   ├── HealthAdvice.tsx     # Localised health guidance
+    │   ├── WeatherStrip.tsx     # Compact weather display
+    │   ├── CityPicker.tsx       # Offline-capable city selector
+    │   ├── LanguagePicker.tsx   # Language selector
+    │   ├── OfflineBanner.tsx    # "Using cached data" indicator
+    │   └── LoadingSpinner.tsx   # Loading state
+    │
+    ├── services/
+    │   ├── api.ts               # Backend /v1 API client (Axios)
+    │   ├── offline.ts           # Offline data management
+    │   ├── notifications.ts     # Push notification handling
+    │   ├── location.ts          # GPS + manual location
+    │   └── analytics.ts         # Aggregate-only analytics
+    │
+    ├── store/
+    │   └── useStore.ts          # Zustand + MMKV persistent store
+    │
+    ├── navigation/
+    │   └── AppNavigator.tsx     # Bottom tab navigation (React Navigation)
+    │
+    ├── theme/
+    │   └── index.ts             # Colors, spacing, typography, AQI colors
+    │
+    ├── hooks/
+    │   ├── useAQI.ts            # Fetch AQI with caching
+    │   ├── useOffline.ts        # Offline state detection
+    │   ├── useLanguage.ts       # Language switching
+    │   ├── useLocation.ts       # Location handling
+    │   └── useTranslation.ts    # Translation hook
+    │
+    ├── i18n/
+    │   └── index.ts             # i18n configuration
+    │
+    ├── locales/
+    │   ├── en.ts                # English
+    │   └── fr.ts                # French
+    │
+    ├── data/
+    │   └── africanCities.ts     # 500+ African cities with coordinates (~45 KB)
+    │
+    └── utils/
+        ├── aqi.ts               # AQI category calculations + colors
+        ├── formatters.ts        # Number/date formatting
+        └── constants.ts         # App-wide constants
 ```
 
-## Quick Start (When Ready to Build)
+---
+
+## Development
 
 ```bash
-# Install Expo CLI
-npm install -g expo-cli
-
-# Initialize project
-npx create-expo-app@latest mframapa-app --template blank-typescript
-
-# Install dependencies
-npm install zustand react-native-mmkv @react-navigation/native
-
-# Start development
-npx expo start
+cd mobile
+npm install
+npx expo start                           # Dev server
+npx expo start --android                 # Dev on Android
+npx expo run:android --variant release   # Local release APK build (free)
 ```
 
-## Build Commands
+---
 
-```bash
-# Local APK build (FREE - no EAS account needed)
-npx expo run:android --variant release
+## Store (Zustand + MMKV)
 
-# Or use EAS for cloud builds (has free tier)
-eas build --platform android --profile preview
-```
+Single store at `src/store/useStore.ts`, persisted to MMKV (`mframapa-persist`):
+
+| Slice | Data |
+|-------|------|
+| `theme` | `isDark` toggle |
+| `language` | Current locale key |
+| `lastPrediction` | Most recent AQI result |
+| `predictionHistory` | Last 20 results (deduplicated by lat/lon ±0.01°) |
+| `offlineCities` | Pre-cached city data for offline use |
+
+---
 
 ## Target Specifications
 
 | Spec | Target |
 |------|--------|
-| APK Size | < 15 MB |
 | Min Android | API 21 (Android 5.0) |
-| Offline | Full functionality |
-| Languages | 35+ African languages |
-| Battery | Minimal background usage |
+| APK size | < 15 MB |
+| Startup time | < 3 seconds |
+| Offline | Full functionality with cached data |
+| Languages | English, French (extensible) |
 
-## Distribution Channels
+---
 
-All FREE:
-- PWA (primary for iOS users)
-- Samsung Galaxy Store
-- Huawei AppGallery  
-- Amazon Appstore
-- Direct APK download
-- F-Droid (open source)
+## Build & Distribution
 
-See **`../docs/STORES.md`** for submission steps and the 16-week timeline.
+### Local APK (Free)
+
+```bash
+npx expo run:android --variant release
+```
+
+### Distribution Channels (All Free)
+
+| Channel | Cost | Status |
+|---------|------|--------|
+| Direct APK download | $0 | Pending |
+| Samsung Galaxy Store | $0 | Pending |
+| Huawei AppGallery | $0 | Pending |
+| Amazon Appstore | $0 | Pending |
+| GitHub Releases | $0 | CI workflow ready (`.github/workflows/android-release.yml` planned) |
+
+See `EXECUTION_PLAN.md` for distribution timeline (Week 12).

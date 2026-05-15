@@ -19,9 +19,11 @@ from backend.utils.retry import with_retry
 logger = logging.getLogger(__name__)
 
 _WEATHER_URL    = "https://api.open-meteo.com/v1/forecast"
+_WEATHER_ARCHIVE = "https://archive-api.open-meteo.com/v1/archive"
 _AQ_URL         = "https://air-quality-api.open-meteo.com/v1/air-quality"
 _TIMEOUT        = 30
 _MIDDAY_INDEX   = 12
+_FORECAST_DAYS  = 92  # forecast API supports up to ~92 days of history
 
 
 class OpenMeteoDataSource(DataSource):
@@ -64,6 +66,9 @@ class OpenMeteoDataSource(DataSource):
     @with_retry(max_attempts=3, backoff_factor=2, timeout=_TIMEOUT)
     def _fetch_weather(self, lat: float, lon: float, date: str) -> Dict[str, Any]:
         import math
+        from datetime import date as _date, timedelta
+        cutoff = (_date.today() - timedelta(days=_FORECAST_DAYS)).isoformat()
+        url = _WEATHER_ARCHIVE if date < cutoff else _WEATHER_URL
         params = {
             "latitude":   lat,
             "longitude":  lon,
@@ -73,7 +78,7 @@ class OpenMeteoDataSource(DataSource):
             "timezone":   "UTC",
         }
         try:
-            r = requests.get(_WEATHER_URL, params=params, timeout=_TIMEOUT)
+            r = requests.get(url, params=params, timeout=_TIMEOUT)
             r.raise_for_status()
             data = r.json()
         except requests.RequestException as e:

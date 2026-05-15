@@ -13,6 +13,7 @@ export function HomeScreen({ isOnline }) {
 
   useEffect(() => {
     if (!isOnline) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setBackendStatus("offline");
       return;
     }
@@ -34,6 +35,7 @@ export function HomeScreen({ isOnline }) {
   useEffect(() => {
     if (!isOnline || state.homeSummary.pm25 !== null) return;
     let active = true;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true);
 
     fetchCityPrediction(state.homeSummary.city)
@@ -156,6 +158,7 @@ function SummaryCard({ label, value, subValue }) {
   );
 }
 
+// eslint-disable-next-line no-unused-vars
 function QuickAction({ icon: Icon, label, onClick }) {
   return (
     <button

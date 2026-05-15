@@ -30,10 +30,10 @@ _AQ_RESP = {
 def _mock_get(url, **kwargs):
     mock = MagicMock()
     mock.raise_for_status = MagicMock()
-    if "open-meteo.com/v1/forecast" in url:
-        mock.json.return_value = _WEATHER_RESP
-    else:
+    if "air-quality-api" in url:
         mock.json.return_value = _AQ_RESP
+    else:
+        mock.json.return_value = _WEATHER_RESP
     return mock
 
 

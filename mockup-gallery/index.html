@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mframapa — Mockup Gallery (40 Screens)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #06080d;
+      --surface: #0d1117;
+      --surface-2: #161b22;
+      --border: #21262d;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --emerald: #34d399;
+      --emerald-dim: rgba(52, 211, 153, 0.12);
+      --radius: 16px;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ─── Header ─── */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(6, 8, 13, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+    }
+    .header-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .brand {
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+    }
+    .brand span { color: var(--emerald); }
+    .badge {
+      display: inline-block;
+      background: var(--emerald-dim);
+      color: var(--emerald);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 99px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    /* ─── Nav Tabs ─── */
+    .nav-tabs {
+      display: flex;
+      gap: 4px;
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 4px;
+      overflow-x: auto;
+    }
+    .nav-tab {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      border: none;
+      background: none;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .nav-tab:hover { color: var(--text); background: var(--surface-2); }
+    .nav-tab.active { color: var(--bg); background: var(--emerald); }
+
+    /* ─── Main ─── */
+    .main {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 32px 24px 80px;
+    }
+
+    /* ─── Sections ─── */
+    .section {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+    .section.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-title {
+      font-size: 28px;
+      font-weight: 900;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+    .section-subtitle {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-bottom: 32px;
+    }
+
+    /* ─── Mockup Cards ─── */
+    .mockup-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+    .mockup-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .mockup-card:hover { border-color: var(--emerald); }
+
+    .mockup-label {
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .mockup-label h3 {
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .mockup-label .screens {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .mockup-label .device-tag {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: var(--surface-2);
+      color: var(--text-muted);
+    }
+
+    .mockup-image-wrap {
+      padding: 12px;
+      background: var(--surface-2);
+      cursor: zoom-in;
+    }
+    .mockup-image-wrap img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      display: block;
+    }
+
+    /* ─── Lightbox ─── */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      background: rgba(0,0,0,0.92);
+      backdrop-filter: blur(12px);
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+      cursor: zoom-out;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img {
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 12px;
+      object-fit: contain;
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 20px;
+      right: 24px;
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: white;
+      font-size: 24px;
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ─── Coverage Table ─── */
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    th {
+      text-align: left;
+      padding: 12px 16px;
+      background: var(--surface-2);
+      font-weight: 700;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    td {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--surface); }
+    .check { color: var(--emerald); }
+    .pending { color: #f59e0b; }
+    .dash { color: var(--text-muted); }
+    .pro { color: #a78bfa; font-size: 11px; font-weight: 600; }
+    .ent { color: #60a5fa; font-size: 11px; font-weight: 600; }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 640px) {
+      .header-inner { flex-direction: column; align-items: stretch; }
+      .section-title { font-size: 22px; }
+      .main { padding: 20px 16px 60px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="brand"><span>mframapa</span> mockups</div>
+        <span class="badge">40 screens</span>
+      </div>
+      <nav class="nav-tabs" id="nav">
+        <button class="nav-tab active" data-tab="ios">iOS 26</button>
+        <button class="nav-tab" data-tab="desktop">Desktop</button>
+        <button class="nav-tab" data-tab="android">Android</button>
+        <button class="nav-tab" data-tab="coverage">Coverage</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main">
+
+    <!-- iOS Section -->
+    <div class="section active" id="ios">
+      <h2 class="section-title">iOS 26 — Liquid Glass</h2>
+      <p class="section-subtitle">All 40 screens designed for iPhone with iOS 26 liquid glass design language</p>
+      <div class="mockup-grid" id="ios-grid"></div>
+    </div>
+
+    <!-- Desktop Section -->
+    <div class="section" id="desktop">
+      <h2 class="section-title">Desktop / PC — 1920×1080</h2>
+      <p class="section-subtitle">Glassmorphism multi-panel layouts for desktop web app</p>
+      <div class="mockup-grid" id="desktop-grid"></div>
+    </div>
+
+    <!-- Android Section -->
+    <div class="section" id="android">
+      <h2 class="section-title">Android — Material You (M3)</h2>
+      <p class="section-subtitle">Material Design 3 with dynamic emerald colour seed</p>
+      <div class="mockup-grid" id="android-grid"></div>
+    </div>
+
+    <!-- Coverage Section -->
+    <div class="section" id="coverage">
+      <h2 class="section-title">Screen Coverage</h2>
+      <p class="section-subtitle">All 40 screens mapped across device types. ⭐ Pro · 🏢 Enterprise</p>
+      <div class="table-wrap" id="coverage-table"></div>
+    </div>
+
+  </main>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+    <img id="lightbox-img" src="" alt="Enlarged mockup" />
+  </div>
+
+  <script>
+    // ── Image data ──
+    const IMAGES_DIR = './images/';
+
+    const iosMockups = [
+      { title: 'Flow A: Entry — Onboarding, Login, Home', screens: 'Screens 1–4', file: 'ios_flow_a_entry_1778499850571.png' },
+      { title: 'Flow B: Core — Map, City Detail, Search', screens: 'Screens 5–7', file: 'ios_flow_b_core_1778499865922.png' },
+      { title: 'Flow C: Intelligence — AI Insights, Predictions, Health', screens: 'Screens 11–12, 15', file: 'ios_flow_c_intelligence_1778499878406.png' },
+      { title: 'Flow D: User — Notifications, Profile, Settings', screens: 'Screens 9, 19–20', file: 'ios_flow_d_user_1778499912162.png' },
+      { title: 'Extra — Saved Locations, Activity, Pricing', screens: 'Screens 8, 21, 28', file: 'ios_flow_eg_extra_1778499925755.png' },
+      { title: 'Discovery — Landing, Country Explorer, Heatmap', screens: 'Screens 22–24', file: 'ios_flow_f_discovery_1778500026676.png' },
+      { title: 'Advanced — Playback, Comparison, Anomaly', screens: 'Screens 14, 16–17', file: 'ios_flow_g_advanced_1778500044363.png' },
+      { title: 'Community — Community Hub, Trust, Export', screens: 'Screens 18, 27, 33', file: 'ios_community_trust_1778500094722.png' },
+      { title: 'Language Selector, Delete Account, About/Legal', screens: 'Screens 30–32', file: 'ios_new_screens_1778501569008.png' },
+      { title: 'Share Sheet, Offline Picker, Error Pages', screens: 'Screens 10, 34–35', file: 'ios_system_screens_1778501610447.png' },
+      { title: 'Paywall / Free Trial, Subscription Management', screens: 'Screens 36–37', file: 'ios_paywall_trial_1778545971002.png' },
+      { title: 'Permissions & Data Disclosure, Force Update', screens: 'Screens 38–39', file: 'ios_permissions_force_1778545983063.png' },
+      { title: 'Feedback / Report Issue', screens: 'Screen 40', file: 'ios_feedback_1778545994901.png' },
+    ];
+
+    const desktopMockups = [
+      { title: 'Home Dashboard + Map Explorer', screens: 'Screens 4–5', file: 'desktop_dashboard_1778499939055.png' },
+      { title: 'City Detail + Intelligence View', screens: 'Screens 6, 11–12, 15', file: 'desktop_intelligence_1778499981361.png' },
+      { title: 'Enterprise Command Centre', screens: 'Screens 25–26', file: 'desktop_enterprise_1778499968312.png' },
+      { title: 'Landing Page + Developer Portal', screens: 'Screens 22, 29', file: 'desktop_landing_dev_1778500059234.png' },
+    ];
+
+    const androidMockups = [
+      { title: 'Core — Home, Map, City Detail', screens: 'Screens 4–6', file: 'android_core_screens_1778499994376.png' },
+      { title: 'Extra — Notifications, Settings, Health Risk', screens: 'Screens 9, 15, 20', file: 'android_extra_screens_1778500106553.png' },
+    ];
+
+    const coverageData = [
+      [1, 'Splash', '✅', '—', '—', ''],
+      [2, 'Onboarding', '✅', '—', '—', ''],
+      [3, 'Auth', '✅', '—', '—', ''],
+      [4, 'Home Dashboard', '✅', '✅', '✅', ''],
+      [5, 'Map Explorer', '✅', '✅', '✅', ''],
+      [6, 'City Detail', '✅', '✅', '✅', ''],
+      [7, 'Search', '✅', '—', '—', ''],
+      [8, 'Saved Locations', '✅', '—', '—', ''],
+      [9, 'Notifications', '✅', '—', '✅', ''],
+      [10, 'Share Sheet', '✅', '—', '—', ''],
+      [11, 'AI Insights', '✅', '✅', '—', ''],
+      [12, 'Predictions', '✅', '✅', '—', 'pro'],
+      [13, 'Trends', '—', '✅', '—', 'pro'],
+      [14, 'Anomaly Alerts', '✅', '—', '—', ''],
+      [15, 'Health Risk', '✅', '✅', '✅', 'pro'],
+      [16, 'Historical Playback', '✅', '—', '—', 'pro'],
+      [17, 'Comparison', '✅', '—', '—', 'pro'],
+      [18, 'Trust & Transparency', '✅', '—', '—', ''],
+      [19, 'Profile', '✅', '—', '—', ''],
+      [20, 'Settings', '✅', '—', '✅', ''],
+      [21, 'Activity Feed', '✅', '—', '—', ''],
+      [22, 'Landing Page', '✅', '✅', '—', ''],
+      [23, 'Country Explorer', '✅', '—', '—', ''],
+      [24, 'Africa Heatmap', '✅', '—', '—', ''],
+      [25, 'Org Dashboard', '—', '✅', '—', 'ent'],
+      [26, 'Command Centre', '—', '✅', '—', 'ent'],
+      [27, 'Export Centre', '✅', '—', '—', 'pro'],
+      [28, 'Pricing', '✅', '—', '—', ''],
+      [29, 'Developer Portal', '—', '✅', '—', 'ent'],
+      [30, 'Language Selector', '✅', '—', '—', ''],
+      [31, 'Delete Account', '✅', '—', '—', ''],
+      [32, 'About / Legal', '✅', '—', '—', ''],
+      [33, 'Community Hub', '✅', '—', '—', ''],
+      [34, 'Offline City Picker', '✅', '—', '—', ''],
+      [35, 'Error Pages', '✅', '—', '—', ''],
+      [36, 'Paywall / Free Trial', '✅', '—', '—', ''],
+      [37, 'Subscription Mgmt', '✅', '—', '—', ''],
+      [38, 'Permissions', '✅', '—', '—', ''],
+      [39, 'Force Update', '✅', '—', '—', ''],
+      [40, 'Feedback', '✅', '—', '—', ''],
+    ];
+
+    // ── Render functions ──
+    function renderMockups(container, mockups, device) {
+      const grid = document.getElementById(container);
+      grid.innerHTML = mockups.map(m => `
+        <div class="mockup-card">
+          <div class="mockup-label">
+            <div>
+              <h3>${m.title}</h3>
+              <span class="screens">${m.screens}</span>
+            </div>
+            <span class="device-tag">${device}</span>
+          </div>
+          <div class="mockup-image-wrap" onclick="openLightbox('${IMAGES_DIR + m.file}')">
+            <img src="${IMAGES_DIR + m.file}" alt="${m.title}" loading="lazy" />
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderCoverage() {
+      const wrap = document.getElementById('coverage-table');
+      const rows = coverageData.map(([num, name, ios, desk, android, tier]) => {
+        const tierBadge = tier === 'pro' ? ' <span class="pro">⭐ PRO</span>' :
+                          tier === 'ent' ? ' <span class="ent">🏢 ENT</span>' : '';
+        const fmt = (v) => v === '✅' ? `<span class="check">✅</span>` :
+                           v === '⏳' ? `<span class="pending">⏳</span>` :
+                           `<span class="dash">—</span>`;
+        return `<tr>
+          <td>${num}</td>
+          <td>${name}${tierBadge}</td>
+          <td>${fmt(ios)}</td>
+          <td>${fmt(desk)}</td>
+          <td>${fmt(android)}</td>
+        </tr>`;
+      }).join('');
+      wrap.innerHTML = `<table>
+        <thead><tr><th>#</th><th>Screen</th><th>iOS 26</th><th>Desktop</th><th>Android</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+    }
+
+    // ── Tab navigation ──
+    document.getElementById('nav').addEventListener('click', (e) => {
+      if (!e.target.classList.contains('nav-tab')) return;
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      e.target.classList.add('active');
+      document.getElementById(e.target.dataset.tab).classList.add('active');
+    });
+
+    // ── Lightbox ──
+    function openLightbox(src) {
+      document.getElementById('lightbox-img').src = src;
+      document.getElementById('lightbox').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
+
+    // ── Init ──
+    renderMockups('ios-grid', iosMockups, 'iOS 26');
+    renderMockups('desktop-grid', desktopMockups, 'Desktop');
+    renderMockups('android-grid', androidMockups, 'Android');
+    renderCoverage();
+  </script>
+</body>
+</html>
