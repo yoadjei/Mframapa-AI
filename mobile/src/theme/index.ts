@@ -9,7 +9,6 @@ export const AQI_COLORS = {
 export type AQICategory = keyof typeof AQI_COLORS;
 
 export function getAQIColor(category: string): string {
-  const key = category.toLowerCase().replace(/\s+/g, '_') as AQICategory;
   const map: Record<string, string> = {
     good: AQI_COLORS.good,
     moderate: AQI_COLORS.moderate,
@@ -22,30 +21,48 @@ export function getAQIColor(category: string): string {
   return map[category.toLowerCase()] ?? AQI_COLORS.moderate;
 }
 
+export const HERO_GRADIENT: readonly [string, string, string] = [
+  '#23C28A',
+  '#168966',
+  '#12354E',
+];
+
 const darkColors = {
-  background: '#0f172a',
-  card: '#1e293b',
-  text: '#ffffff',
-  subtext: '#94a3b8',
-  accent: '#10B981',
-  border: '#334155',
-  tabBar: '#0f172a',
-  inputBackground: '#1e293b',
+  background: '#0B1018',
+  card: '#161D28',
+  surface: '#202938',
+  text: '#F7FAFC',
+  subtext: '#94A3B8',
+  accent: '#23C28A',
+  accentDim: '#143F34',
+  border: '#253243',
+  tabBar: '#0F151F',
+  inputBackground: '#171E29',
   danger: '#EF4444',
-  warning: '#FBBF24',
+  warning: '#F4C34D',
+  accentStrong: '#169A6D',
+  surfaceAlt: '#111827',
+  successTint: '#123A30',
+  overlay: 'rgba(11, 16, 24, 0.7)',
 };
 
 const lightColors = {
-  background: '#ffffff',
-  card: '#f1f5f9',
-  text: '#0f172a',
-  subtext: '#64748b',
-  accent: '#10B981',
-  border: '#e2e8f0',
-  tabBar: '#ffffff',
-  inputBackground: '#f8fafc',
+  background: '#F4FAF7',
+  card: '#FFFFFF',
+  surface: '#ECF5F1',
+  text: '#111827',
+  subtext: '#6B7280',
+  accent: '#1BAA78',
+  accentDim: '#DBF5EA',
+  border: '#D8E6DF',
+  tabBar: '#FFFFFF',
+  inputBackground: '#FFFFFF',
   danger: '#EF4444',
-  warning: '#FBBF24',
+  warning: '#F4C34D',
+  accentStrong: '#0F8C63',
+  surfaceAlt: '#F8FCFA',
+  successTint: '#E7F8F0',
+  overlay: 'rgba(17, 24, 39, 0.12)',
 };
 
 export const spacing = {
@@ -58,9 +75,10 @@ export const spacing = {
 } as const;
 
 export const borderRadius = {
-  sm: 6,
-  md: 12,
-  lg: 20,
+  sm: 8,
+  md: 14,
+  lg: 22,
+  xl: 30,
   full: 9999,
 } as const;
 
@@ -72,6 +90,7 @@ export const fontSize = {
   xl: 22,
   xxl: 28,
   xxxl: 36,
+  hero: 62,
 } as const;
 
 export function getColors(isDark: boolean) {

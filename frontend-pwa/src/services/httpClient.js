@@ -3,11 +3,14 @@ import { SESSION_KEY } from "../state/appState.jsx";
 
 const baseURL = import.meta.env.VITE_API_URL || "";
 
+const apiKey = import.meta.env.VITE_API_KEY || "mframapa-internal-dev-key";
+
 export const httpClient = axios.create({
   baseURL,
   timeout: 20000,
   headers: {
     "Content-Type": "application/json",
+    "X-API-Key": apiKey,
   },
 });
 

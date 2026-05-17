@@ -1,7 +1,10 @@
 import { lazy, Suspense, useMemo, useState } from "react";
 import { Crosshair, Loader2, Search, X } from "lucide-react";
 import { useAppState } from "../../state/appState.jsx";
+import { useTranslation } from "../../hooks/useTranslation.js";
 import { fetchCityPrediction } from "../../services/predictionService.js";
+import { translateError } from "../../utils/translateError.js";
+import { aqiCategoryKey } from "../../utils/i18nHelpers.js";
 import { StateMessage } from "../../components/feedback/StateMessage.jsx";
 import { useCityPack } from "../../hooks/useCityPack.js";
 
@@ -38,12 +41,23 @@ function nearestCity(lat, lon, cities) {
   return best;
 }
 
-function getAQITone(pm25) {
-  if (pm25 <= 12) return { label: "Good", className: "text-emerald-600 bg-emerald-100" };
-  if (pm25 <= 35) return { label: "Moderate", className: "text-yellow-700 bg-yellow-100" };
-  if (pm25 <= 55) return { label: "Sensitive", className: "text-orange-700 bg-orange-100" };
-  if (pm25 <= 150) return { label: "Unhealthy", className: "text-red-700 bg-red-100" };
-  return { label: "Hazardous", className: "text-purple-700 bg-purple-100" };
+function getAQITone(pm25, t) {
+  let key = "aqi.hazardous";
+  if (pm25 <= 12) key = "aqi.good";
+  else if (pm25 <= 35) key = "aqi.moderate";
+  else if (pm25 <= 55) key = "aqi.sensitive";
+  else if (pm25 <= 150) key = "aqi.unhealthy";
+  const className =
+    key === "aqi.good"
+      ? "text-emerald-600 bg-emerald-100"
+      : key === "aqi.moderate"
+        ? "text-yellow-700 bg-yellow-100"
+        : key === "aqi.sensitive"
+          ? "text-orange-700 bg-orange-100"
+          : key === "aqi.unhealthy"
+            ? "text-red-700 bg-red-100"
+            : "text-purple-700 bg-purple-100";
+  return { label: t(key), className };
 }
 
 export function CoreFeatureScreen({ isOnline }) {
@@ -51,6 +65,8 @@ export function CoreFeatureScreen({ isOnline }) {
     state: { ui, homeSummary, preferences },
     dispatch,
   } = useAppState();
+  const { t } = useTranslation();
+  const language = preferences.language ?? "en";
 
   const [viewState, setViewState] = useState(INITIAL_VIEW);
   const [query, setQuery] = useState(ui.selectedCity?.name ?? homeSummary.city ?? "");
@@ -90,7 +106,10 @@ export function CoreFeatureScreen({ isOnline }) {
       payload: {
         id: crypto.randomUUID(),
         type: "prediction",
-        message: `Checked ${prediction.city.name}: ${prediction.pm25} ug/m3`,
+        message: t("pwa.activity.checked", {
+          city: prediction.city.name,
+          pm25: Math.round(prediction.pm25),
+        }),
         createdAt: prediction.timestamp,
       },
     });
@@ -99,8 +118,11 @@ export function CoreFeatureScreen({ isOnline }) {
         type: "ADD_NOTIFICATION",
         payload: {
           id: crypto.randomUUID(),
-          title: `New reading for ${prediction.city.name}`,
-          message: `PM2.5 is ${Math.round(prediction.pm25)} ug/m3 (${prediction.category}).`,
+          title: t("pwa.notification.reading_title", { city: prediction.city.name }),
+          message: t("pwa.notification.reading_message", {
+            pm25: Math.round(prediction.pm25),
+            category: t(aqiCategoryKey(prediction.category)),
+          }),
           read: false,
           createdAt: prediction.timestamp,
         },
@@ -112,7 +134,7 @@ export function CoreFeatureScreen({ isOnline }) {
     setError("");
     setLoading(true);
     try {
-      const prediction = await fetchCityPrediction(cityName);
+      const prediction = await fetchCityPrediction(cityName, language);
       setResult(prediction);
       setQuery(prediction.city.name);
       setViewState((current) => ({
@@ -124,7 +146,7 @@ export function CoreFeatureScreen({ isOnline }) {
       }));
       syncPredictionToState(prediction);
     } catch (requestError) {
-      setError(requestError.message);
+      setError(translateError(t, requestError.message));
     } finally {
       setLoading(false);
     }
@@ -133,7 +155,7 @@ export function CoreFeatureScreen({ isOnline }) {
   const runCheckByCoords = async (lat, lon) => {
     const candidate = nearestCity(lat, lon, cities);
     if (!candidate) {
-      setError("No cached city pack available yet");
+      setError(t("pwa.core.no_city_pack"));
       return;
     }
     await runCheckByCity(candidate.name);
@@ -151,7 +173,7 @@ export function CoreFeatureScreen({ isOnline }) {
         const { latitude, longitude } = position.coords;
         runCheckByCoords(latitude, longitude);
       },
-      () => setError("Unable to access your location")
+      () => setError(t("pwa.core.location_error"))
     );
   };
 
@@ -159,13 +181,13 @@ export function CoreFeatureScreen({ isOnline }) {
     return (
       <StateMessage
         tone="error"
-        title="Map is not configured"
-        message="Set VITE_MAPBOX_TOKEN to enable map rendering."
+        title={t("pwa.core.map_missing")}
+        message={t("pwa.core.map_token")}
       />
     );
   }
 
-  const tone = result ? getAQITone(result.pm25) : null;
+  const tone = result ? getAQITone(result.pm25, t) : null;
 
   return (
     <section className="space-y-4">
@@ -185,7 +207,7 @@ export function CoreFeatureScreen({ isOnline }) {
                 onChange={(event) => setQuery(event.target.value)}
                 onFocus={() => setSearchFocused(true)}
                 onBlur={() => setTimeout(() => setSearchFocused(false), 140)}
-                placeholder="Search African cities..."
+                placeholder={t("search.placeholder")}
                 className="h-10 flex-1 bg-transparent text-sm text-white outline-none placeholder:text-slate-400"
               />
               {loading ? <Loader2 size={16} className="animate-spin text-emerald-300" /> : null}
@@ -243,9 +265,12 @@ export function CoreFeatureScreen({ isOnline }) {
 
         <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-slate-950/95 to-transparent p-4 md:p-6">
           <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
-            <StatusCard title="Satellite feed" value={isOnline ? "Active" : "Offline"} />
-            <StatusCard title="Ground truth" value="29 reference nations" />
-            <StatusCard title="Today's prediction" value="1,257 checks" />
+            <StatusCard
+              title={t("pwa.core.status_satellite")}
+              value={isOnline ? t("pwa.core.status_active") : t("pwa.core.status_offline")}
+            />
+            <StatusCard title={t("pwa.core.status_ground")} value={t("pwa.core.status_ground_value")} />
+            <StatusCard title={t("pwa.core.status_prediction")} value={t("pwa.core.status_prediction_value")} />
           </div>
         </div>
 
@@ -254,7 +279,9 @@ export function CoreFeatureScreen({ isOnline }) {
             <div className="flex items-start justify-between gap-4">
               <div>
                 <h3 className="text-3xl font-black">{Math.round(result.pm25)}</h3>
-                <p className="text-sm text-slate-500 dark:text-slate-300">PM2.5 ug/m3</p>
+                <p className="text-sm text-slate-500 dark:text-slate-300">
+                  {t("card.pm25_label")} {t("card.unit")}
+                </p>
               </div>
               <span className={`rounded-full px-3 py-1 text-xs font-bold ${tone?.className || ""}`}>
                 {tone?.label || result.category}
@@ -264,27 +291,30 @@ export function CoreFeatureScreen({ isOnline }) {
             <p className="text-xs text-slate-500">
               {result.city.lat.toFixed(4)}, {result.city.lon.toFixed(4)}
             </p>
-            <p className="mt-4 rounded-xl bg-slate-100 px-3 py-3 text-sm dark:bg-slate-800">
-              {result.category === "Good"
-                ? "Air quality is good for most people."
-                : "Sensitive groups should reduce prolonged outdoor exposure."}
-            </p>
+            {result.insight ? (
+              <div className="mt-4 rounded-xl bg-slate-100 px-3 py-3 text-sm dark:bg-slate-800">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+                  {t("pwa.core.insight_title")}
+                </p>
+                <p className="mt-1">{result.insight}</p>
+              </div>
+            ) : null}
             <p className="mt-3 text-xs text-slate-500">
-              Updated {new Date(result.timestamp).toLocaleString()}
+              {t("pwa.core.updated", { time: new Date(result.timestamp).toLocaleString() })}
             </p>
             {result.degraded ? (
               <p className="mt-2 rounded-lg bg-amber-100 px-2 py-1 text-xs font-semibold text-amber-800">
-                Degraded data mode
+                {t("pwa.core.degraded")}
               </p>
             ) : null}
           </aside>
         ) : (
           <div className="absolute right-6 top-28 z-20 hidden max-w-sm rounded-2xl border border-white/20 bg-slate-900/75 p-5 text-white backdrop-blur md:block">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-emerald-300">Start here</p>
-            <h3 className="mt-2 text-xl font-bold">Search a city or tap the map</h3>
-            <p className="mt-2 text-sm text-slate-200">
-              We will return PM2.5 status and update your dashboard summary.
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-emerald-300">
+              {t("pwa.core.start_badge")}
             </p>
+            <h3 className="mt-2 text-xl font-bold">{t("pwa.core.start_title")}</h3>
+            <p className="mt-2 text-sm text-slate-200">{t("pwa.core.start_body")}</p>
           </div>
         )}
       </div>
@@ -292,14 +322,16 @@ export function CoreFeatureScreen({ isOnline }) {
       {!isOnline ? (
         <StateMessage
           tone="warning"
-          title="Offline mode"
-          message="Map interactions are limited while offline. Reconnect to fetch fresh city readings."
+          title={t("pwa.core.offline_title")}
+          message={t("pwa.core.offline_message")}
         />
       ) : null}
       {cityPackLoading ? (
-        <StateMessage title="Preparing offline city pack" message="Syncing top city list for search and offline use." />
+        <StateMessage title={t("pwa.core.city_pack_title")} message={t("pwa.core.city_pack_message")} />
       ) : null}
-      {error ? <StateMessage tone="error" title="Prediction failed" message={error} /> : null}
+      {error ? (
+        <StateMessage tone="error" title={t("pwa.core.prediction_failed")} message={error} />
+      ) : null}
     </section>
   );
 }

@@ -1,39 +1,32 @@
 import { useState } from "react";
 import { useAppState } from "../../state/appState.jsx";
+import { useTranslation } from "../../hooks/useTranslation.js";
 
-const steps = [
-  {
-    title: "Check air quality quickly",
-    body: "Search any supported African city and get PM2.5 status in seconds.",
-  },
-  {
-    title: "Stay informed offline",
-    body: "The app keeps your recent checks for low-connectivity situations.",
-  },
-  {
-    title: "Control your privacy",
-    body: "You can use manual city selection and avoid constant location tracking.",
-  },
+const STEP_KEYS = [
+  { title: "pwa.onboarding.step1_title", body: "pwa.onboarding.step1_body" },
+  { title: "pwa.onboarding.step2_title", body: "pwa.onboarding.step2_body" },
+  { title: "pwa.onboarding.step3_title", body: "pwa.onboarding.step3_body" },
 ];
 
 export function OnboardingScreen({ canInstall, onInstall }) {
   const [step, setStep] = useState(0);
   const { dispatch } = useAppState();
+  const { t } = useTranslation();
 
-  const current = steps[step];
-  const isLast = step === steps.length - 1;
+  const current = STEP_KEYS[step];
+  const isLast = step === STEP_KEYS.length - 1;
 
   return (
     <div className="min-h-screen bg-slate-950 px-5 py-16 text-slate-100">
       <div className="mx-auto max-w-md">
         <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-400">
-          Mframapa
+          {t("pwa.onboarding.badge")}
         </p>
-        <h1 className="mt-8 text-3xl font-bold">{current.title}</h1>
-        <p className="mt-4 text-base text-slate-300">{current.body}</p>
+        <h1 className="mt-8 text-3xl font-bold">{t(current.title)}</h1>
+        <p className="mt-4 text-base text-slate-300">{t(current.body)}</p>
 
         <div className="mt-8 flex gap-2">
-          {steps.map((_, index) => (
+          {STEP_KEYS.map((_, index) => (
             <span
               key={index}
               className={`h-2 rounded-full transition-all ${
@@ -50,7 +43,7 @@ export function OnboardingScreen({ canInstall, onInstall }) {
               className="w-full rounded-xl bg-emerald-400 px-4 py-3 text-sm font-semibold text-emerald-950"
               onClick={() => dispatch({ type: "COMPLETE_ONBOARDING" })}
             >
-              Continue to sign in
+              {t("pwa.onboarding.continue")}
             </button>
           ) : (
             <button
@@ -58,7 +51,7 @@ export function OnboardingScreen({ canInstall, onInstall }) {
               className="w-full rounded-xl bg-emerald-400 px-4 py-3 text-sm font-semibold text-emerald-950"
               onClick={() => setStep((value) => value + 1)}
             >
-              Next
+              {t("pwa.onboarding.next")}
             </button>
           )}
 
@@ -68,7 +61,7 @@ export function OnboardingScreen({ canInstall, onInstall }) {
               className="w-full rounded-xl border border-slate-600 px-4 py-3 text-sm font-medium"
               onClick={onInstall}
             >
-              Install app
+              {t("pwa.onboarding.install")}
             </button>
           ) : null}
         </div>

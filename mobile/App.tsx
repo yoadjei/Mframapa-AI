@@ -4,19 +4,22 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { useStore } from './src/store/useStore';
 import { AppNavigator } from './src/navigation/AppNavigator';
-import { AFRICAN_CITIES } from './src/data/africanCities';
 import { getColors } from './src/theme';
+import { useTheme } from './src/hooks/useTheme';
+import { getAfricanCities } from './src/services/cities';
+import { saveCities } from './src/services/offline';
 
 export default function App() {
-  const isDark = useStore((s) => s.isDark);
+  const { isDark } = useTheme();
   const offlineCities = useStore((s) => s.offlineCities);
   const setOfflineCities = useStore((s) => s.setOfflineCities);
   const colors = getColors(isDark);
 
-  // Seed offline cities if not yet loaded
   useEffect(() => {
-    if (offlineCities.length === 0) {
-      setOfflineCities(AFRICAN_CITIES);
+    if (offlineCities.length < 500) {
+      const cities = getAfricanCities();
+      setOfflineCities(cities);
+      saveCities(cities).catch(() => undefined);
     }
   }, []);
 

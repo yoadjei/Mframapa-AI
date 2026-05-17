@@ -1,48 +1,51 @@
-import * as Notifications from 'expo-notifications';
-import { Platform } from 'react-native';
-
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
-  }),
-});
-
-export async function requestPermissions(): Promise<boolean> {
-  if (Platform.OS === 'android') {
-    await Notifications.setNotificationChannelAsync('aqi-alerts', {
-      name: 'AQI Alerts',
-      importance: Notifications.AndroidImportance.DEFAULT,
-    });
-  }
-  const { status } = await Notifications.requestPermissionsAsync();
-  return status === 'granted';
+let Notifications: typeof import('expo-notifications') | null = null;
+try {
+  Notifications = require('expo-notifications');
+  Notifications!.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldShowBanner: true,
+      shouldShowList: true,
+      shouldPlaySound: false,
+      shouldSetBadge: false,
+    }),
+  });
+} catch {
+  // expo-notifications unavailable in this environment (e.g. Expo Go SDK 53+)
 }
 
-export async function scheduleAQIAlert(
-  title: string,
-  body: string,
-  triggerSeconds = 0
-): Promise<string> {
-  return Notifications.scheduleNotificationAsync({
-    content: { title, body, data: { type: 'aqi-alert' } },
-    trigger: triggerSeconds > 0 ? { seconds: triggerSeconds } : null,
-  });
+export async function requestPermissions(): Promise<boolean> {
+  try {
+    if (!Notifications) return false;
+    const { Platform } = require('react-native');
+    if (Platform.OS === 'android') {
+      await Notifications.setNotificationChannelAsync('aqi-alerts', {
+        name: 'AQI Alerts',
+        importance: Notifications.AndroidImportance.DEFAULT,
+      });
+    }
+    const { status } = await Notifications.requestPermissionsAsync();
+    return status === 'granted';
+  } catch {
+    return false;
+  }
 }
 
 export async function cancelAllNotifications(): Promise<void> {
-  await Notifications.cancelAllScheduledNotificationsAsync();
+  try {
+    await Notifications?.cancelAllScheduledNotificationsAsync();
+  } catch {
+    // no-op
+  }
 }
 
 export function addNotificationListener(
-  handler: (notification: Notifications.Notification) => void
-): Notifications.Subscription {
-  return Notifications.addNotificationReceivedListener(handler);
-}
-
-export function removeNotificationListener(
-  subscription: Notifications.Subscription
-): void {
-  subscription.remove();
+  handler: (notification: any) => void
+): { remove: () => void } {
+  try {
+    if (!Notifications) return { remove: () => {} };
+    return Notifications.addNotificationReceivedListener(handler);
+  } catch {
+    return { remove: () => {} };
+  }
 }

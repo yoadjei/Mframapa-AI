@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "../../hooks/useTranslation.js";
 
 export function NetworkBanner({ isOnline }) {
+  const { t } = useTranslation();
   const previous = useRef(isOnline);
   const [showBackOnline, setShowBackOnline] = useState(false);
 
@@ -25,9 +27,7 @@ export function NetworkBanner({ isOnline }) {
         isRecovery ? "bg-emerald-500 text-emerald-950" : "bg-amber-500 text-amber-950"
       }`}
     >
-      {isRecovery
-        ? "Back online: refreshing with latest data"
-        : "Offline mode: showing cached data when available"}
+      {isRecovery ? t("pwa.network.online") : t("pwa.network.offline")}
     </div>
   );
 }

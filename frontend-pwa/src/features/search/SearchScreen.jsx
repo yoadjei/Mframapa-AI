@@ -1,11 +1,13 @@
 import { useMemo, useState } from "react";
 import { useAppState } from "../../state/appState.jsx";
+import { useTranslation } from "../../hooks/useTranslation.js";
 import { StateMessage } from "../../components/feedback/StateMessage.jsx";
 import { useCityPack } from "../../hooks/useCityPack.js";
 import { useOnlineStatus } from "../../hooks/useOnlineStatus.js";
 
 export function SearchScreen() {
   const [query, setQuery] = useState("");
+  const { t } = useTranslation();
   const {
     state: { savedCities },
     dispatch,
@@ -32,18 +34,20 @@ export function SearchScreen() {
   return (
     <section className="space-y-4">
       <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-        <label className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Search</label>
+        <label className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+          {t("pwa.search.label")}
+        </label>
         <input
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="City or country"
+          placeholder={t("search.placeholder")}
           className="mt-2 w-full rounded-xl border border-slate-300 px-3 py-2 outline-none ring-emerald-300 focus:ring dark:border-slate-700 dark:bg-slate-950"
         />
       </div>
 
       {savedCities.length ? (
         <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-          <h2 className="text-sm font-semibold">Saved cities</h2>
+          <h2 className="text-sm font-semibold">{t("pwa.search.saved")}</h2>
           <ul className="mt-2 flex flex-wrap gap-2">
             {savedCities.map((city) => (
               <li key={`${city.name}-${city.country}`}>
@@ -60,8 +64,8 @@ export function SearchScreen() {
         </div>
       ) : (
         <StateMessage
-          title="No saved cities yet"
-          message="Search and run a check to add quick-access cities."
+          title={t("pwa.search.no_saved_title")}
+          message={t("pwa.search.no_saved_message")}
         />
       )}
 
@@ -82,7 +86,10 @@ export function SearchScreen() {
             ))}
           </ul>
         ) : (
-          <StateMessage title="No matches" message="Try another city name or country keyword." />
+          <StateMessage
+            title={t("pwa.search.no_matches_title")}
+            message={t("pwa.search.no_matches_message")}
+          />
         )}
       </div>
     </section>

@@ -1,16 +1,18 @@
 import { useAppState } from "../../state/appState.jsx";
 import { StateMessage } from "../../components/feedback/StateMessage.jsx";
+import { useTranslation } from "../../hooks/useTranslation.js";
 
 export function ActivityScreen() {
   const {
     state: { activity },
   } = useAppState();
+  const { t } = useTranslation();
 
   if (!activity.length) {
     return (
       <StateMessage
-        title="No activity yet"
-        message="Your recent checks and account actions will appear here."
+        title={t("pwa.activity.empty_title")}
+        message={t("pwa.activity.empty_message")}
       />
     );
   }

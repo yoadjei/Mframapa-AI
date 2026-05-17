@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useAppState } from "../../state/appState.jsx";
 import { StateMessage } from "../../components/feedback/StateMessage.jsx";
 import { login, signup } from "../../services/authService.js";
+import { useTranslation } from "../../hooks/useTranslation.js";
+import { translateError } from "../../utils/translateError.js";
 
 export function AuthScreen({ isOnline }) {
   const [mode, setMode] = useState("login");
@@ -13,6 +15,7 @@ export function AuthScreen({ isOnline }) {
     state: { preferences },
     dispatch,
   } = useAppState();
+  const { t } = useTranslation();
 
   const onChange = (event) => {
     const { name, value } = event.target;
@@ -25,7 +28,7 @@ export function AuthScreen({ isOnline }) {
     setSuccess("");
 
     if (mode === "reset") {
-      setSuccess("If the account exists, a reset link has been sent.");
+      setSuccess(t("pwa.auth.reset_sent"));
       return;
     }
 
@@ -47,7 +50,7 @@ export function AuthScreen({ isOnline }) {
         payload: {
           id: crypto.randomUUID(),
           type: "auth",
-          message: mode === "login" ? "Signed in successfully" : "Account created",
+          message: mode === "login" ? t("pwa.auth.signed_in_activity") : t("pwa.auth.account_created_activity"),
           createdAt: new Date().toISOString(),
         },
       });
@@ -56,37 +59,39 @@ export function AuthScreen({ isOnline }) {
           type: "ADD_NOTIFICATION",
           payload: {
             id: crypto.randomUUID(),
-            title: mode === "login" ? "Signed in" : "Account created",
+            title: mode === "login" ? t("pwa.auth.signed_in_title") : t("pwa.auth.account_created_title"),
             message:
-              mode === "login"
-                ? "Your session is active on this device."
-                : "Welcome to Mframapa. You can start checking city conditions.",
+              mode === "login" ? t("pwa.auth.session_active") : t("pwa.auth.welcome_notification"),
             read: false,
             createdAt: new Date().toISOString(),
           },
         });
       }
     } catch (submitError) {
-      setError(submitError.message);
+      setError(translateError(t, submitError.message));
     } finally {
       setSubmitting(false);
     }
   };
 
+  const tabLabel = (value) => {
+    if (value === "reset") return t("pwa.auth.tab_reset");
+    if (value === "signup") return t("pwa.auth.tab_signup");
+    return t("pwa.auth.tab_login");
+  };
+
   return (
     <div className="min-h-screen bg-slate-100 px-5 py-16 dark:bg-slate-950">
       <div className="mx-auto max-w-md rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Welcome back</h1>
-        <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-          Sign in to sync your city tracking and alerts.
-        </p>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">{t("pwa.auth.welcome")}</h1>
+        <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">{t("pwa.auth.subtitle")}</p>
 
         {!isOnline ? (
           <div className="mt-4">
             <StateMessage
               tone="warning"
-              title="Internet required for authentication"
-              message="Reconnect to continue with sign in."
+              title={t("pwa.auth.offline_title")}
+              message={t("pwa.auth.offline_message")}
             />
           </div>
         ) : null}
@@ -97,13 +102,13 @@ export function AuthScreen({ isOnline }) {
               key={value}
               type="button"
               onClick={() => setMode(value)}
-              className={`rounded-lg px-3 py-2 text-sm font-semibold capitalize ${
+              className={`rounded-lg px-3 py-2 text-sm font-semibold ${
                 mode === value
                   ? "bg-white text-slate-900 shadow dark:bg-slate-950 dark:text-slate-100"
                   : "text-slate-500"
               }`}
             >
-              {value === "reset" ? "reset" : value}
+              {tabLabel(value)}
             </button>
           ))}
         </div>
@@ -112,7 +117,7 @@ export function AuthScreen({ isOnline }) {
           {mode === "signup" ? (
             <label className="block">
               <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">
-                Full name
+                {t("pwa.auth.full_name")}
               </span>
               <input
                 className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm outline-none ring-emerald-300 focus:ring dark:border-slate-700 dark:bg-slate-950"
@@ -126,7 +131,7 @@ export function AuthScreen({ isOnline }) {
 
           <label className="block">
             <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">
-              Email
+              {t("pwa.auth.email")}
             </span>
             <input
               className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm outline-none ring-emerald-300 focus:ring dark:border-slate-700 dark:bg-slate-950"
@@ -141,7 +146,7 @@ export function AuthScreen({ isOnline }) {
           {mode !== "reset" ? (
             <label className="block">
               <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">
-                Password
+                {t("pwa.auth.password")}
               </span>
               <input
                 className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm outline-none ring-emerald-300 focus:ring dark:border-slate-700 dark:bg-slate-950"
@@ -155,8 +160,10 @@ export function AuthScreen({ isOnline }) {
             </label>
           ) : null}
 
-          {error ? <StateMessage tone="error" title="Authentication failed" message={error} /> : null}
-          {success ? <StateMessage title="Request received" message={success} /> : null}
+          {error ? (
+            <StateMessage tone="error" title={t("pwa.auth.error_title")} message={error} />
+          ) : null}
+          {success ? <StateMessage title={t("pwa.auth.success_title")} message={success} /> : null}
 
           <button
             type="submit"
@@ -164,12 +171,12 @@ export function AuthScreen({ isOnline }) {
             className="w-full rounded-xl bg-emerald-500 px-4 py-3 text-sm font-semibold text-emerald-950 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {submitting
-              ? "Please wait..."
+              ? t("pwa.auth.wait")
               : mode === "login"
-              ? "Sign in"
-              : mode === "signup"
-              ? "Create account"
-              : "Send reset link"}
+                ? t("pwa.auth.sign_in")
+                : mode === "signup"
+                  ? t("pwa.auth.create_account")
+                  : t("pwa.auth.send_reset")}
           </button>
         </form>
       </div>

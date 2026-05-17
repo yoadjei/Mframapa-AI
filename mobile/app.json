@@ -2,17 +2,18 @@
   "expo": {
     "name": "Mframapa",
     "slug": "mframapa",
+    "scheme": "mframapa",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
-    "splash": { "image": "./assets/splash.png", "resizeMode": "contain", "backgroundColor": "#0f172a" },
+    "splash": { "image": "./assets/splash.png", "resizeMode": "contain", "backgroundColor": "#06080d" },
     "android": {
-      "adaptiveIcon": { "foregroundImage": "./assets/adaptive-icon.png", "backgroundColor": "#0f172a" },
+      "adaptiveIcon": { "foregroundImage": "./assets/adaptive-icon.png", "backgroundColor": "#06080d" },
       "package": "ai.mframapa.app",
       "minSdkVersion": 21,
       "permissions": ["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION"]
     },
-    "plugins": ["expo-router", "expo-location"]
+    "plugins": ["expo-location"]
   }
 }

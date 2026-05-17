@@ -1,0 +1,202 @@
+"""
+Gemini API client for translations and localized air-quality insights.
+
+Requires GEMINI_API_KEY (https://aistudio.google.com/apikey).
+Optional: GEMINI_MODEL (default gemini-2.0-flash).
+"""
+
+from __future__ import annotations
+
+import hashlib
+import json
+import logging
+import os
+import re
+from typing import Any, Dict, Optional
+
+import requests
+
+logger = logging.getLogger(__name__)
+
+_GEMINI_BASE = "https://generativelanguage.googleapis.com/v1beta/models"
+_DEFAULT_MODEL = "gemini-2.0-flash"
+_TIMEOUT_SECONDS = 30
+
+# In-process cache: translation bundles are stable for a given source hash + language.
+_translation_cache: Dict[str, Dict[str, str]] = {}
+_CACHE_MAX = 64
+
+_LANGUAGE_NAMES: Dict[str, str] = {
+    "af": "Afrikaans",
+    "am": "Amharic",
+    "ar": "Arabic",
+    "ee": "Ewe",
+    "en": "English",
+    "es": "Spanish",
+    "fr": "French",
+    "ga": "Ga",
+    "ha": "Hausa",
+    "ig": "Igbo",
+    "mg": "Malagasy",
+    "nd": "Northern Ndebele",
+    "ny": "Chichewa",
+    "pt": "Portuguese",
+    "rn": "Kirundi",
+    "rw": "Kinyarwanda",
+    "sn": "Shona",
+    "so": "Somali",
+    "ss": "Swati",
+    "st": "Sesotho",
+    "sw": "Swahili",
+    "ti": "Tigrinya",
+    "tn": "Setswana",
+    "tw": "Twi",
+    "wo": "Wolof",
+    "xh": "Xhosa",
+    "yo": "Yoruba",
+    "zu": "Zulu",
+}
+
+
+def is_available() -> bool:
+    return bool(os.getenv("GEMINI_API_KEY", "").strip())
+
+
+def language_display_name(code: str, override: Optional[str] = None) -> str:
+    if override and override.strip():
+        return override.strip()
+    return _LANGUAGE_NAMES.get(code.lower(), code)
+
+
+def _model() -> str:
+    return os.getenv("GEMINI_MODEL", _DEFAULT_MODEL).strip() or _DEFAULT_MODEL
+
+
+def _api_key() -> str:
+    key = os.getenv("GEMINI_API_KEY", "").strip()
+    if not key:
+        raise RuntimeError("GEMINI_API_KEY is not configured")
+    return key
+
+
+def _generate_content(prompt: str, *, temperature: float = 0.2) -> str:
+    url = f"{_GEMINI_BASE}/{_model()}:generateContent"
+    payload = {
+        "contents": [{"parts": [{"text": prompt}]}],
+        "generationConfig": {"temperature": temperature},
+    }
+    resp = requests.post(
+        url,
+        params={"key": _api_key()},
+        json=payload,
+        timeout=_TIMEOUT_SECONDS,
+    )
+    resp.raise_for_status()
+    data = resp.json()
+    candidates = data.get("candidates") or []
+    if not candidates:
+        raise RuntimeError("Gemini returned no candidates")
+    parts = (candidates[0].get("content") or {}).get("parts") or []
+    text = "".join(p.get("text", "") for p in parts).strip()
+    if not text:
+        raise RuntimeError("Gemini returned empty text")
+    return text
+
+
+def _parse_json_object(raw: str) -> Dict[str, Any]:
+    cleaned = raw.strip()
+    fence = re.match(r"^```(?:json)?\s*([\s\S]*?)\s*```$", cleaned, re.IGNORECASE)
+    if fence:
+        cleaned = fence.group(1).strip()
+    return json.loads(cleaned)
+
+
+def _cache_key(strings: Dict[str, str], target_language: str) -> str:
+    payload = json.dumps(strings, sort_keys=True, ensure_ascii=False)
+    digest = hashlib.sha256(payload.encode("utf-8")).hexdigest()[:16]
+    return f"{target_language.lower()}:{digest}"
+
+
+def _trim_cache() -> None:
+    if len(_translation_cache) <= _CACHE_MAX:
+        return
+    for key in list(_translation_cache.keys())[: len(_translation_cache) - _CACHE_MAX]:
+        _translation_cache.pop(key, None)
+
+
+def translate_strings(
+    strings: Dict[str, str],
+    *,
+    target_language: str,
+    source_language: str = "en",
+    target_language_name: Optional[str] = None,
+) -> Dict[str, str]:
+    """Translate a key→string map via Gemini. Returns the same keys."""
+    if not strings:
+        return {}
+    if target_language.lower() == source_language.lower():
+        return dict(strings)
+
+    cache_key = _cache_key(strings, target_language)
+    if cache_key in _translation_cache:
+        return dict(_translation_cache[cache_key])
+
+    target_name = language_display_name(target_language, target_language_name)
+    source_name = language_display_name(source_language)
+
+    prompt = f"""Translate the following UI strings for a mobile air-quality app serving African users.
+Source language: {source_name} ({source_language})
+Target language: {target_name} ({target_language})
+
+Rules:
+- Return ONLY valid JSON: an object with the exact same keys as the input.
+- Preserve placeholders like {{{{name}}}} unchanged.
+- Keep product name "Mframapa" untranslated.
+- Use natural, concise phrasing suitable for mobile UI.
+- Do not add or remove keys.
+
+Input JSON:
+{json.dumps(strings, ensure_ascii=False, indent=2)}
+"""
+
+    raw = _generate_content(prompt, temperature=0.1)
+    parsed = _parse_json_object(raw)
+    if not isinstance(parsed, dict):
+        raise RuntimeError("Gemini translation response was not a JSON object")
+
+    out: Dict[str, str] = {}
+    for key, value in strings.items():
+        translated = parsed.get(key)
+        out[key] = str(translated) if translated is not None else value
+
+    _translation_cache[cache_key] = out
+    _trim_cache()
+    return out
+
+
+def generate_air_quality_insight(
+    *,
+    pm25: float,
+    aqi_category: str,
+    weather: Dict[str, Any],
+    language: str = "en",
+    language_name: Optional[str] = None,
+) -> str:
+    """One-sentence localized insight for the current reading."""
+    lang_name = language_display_name(language, language_name)
+    weather_bits = []
+    for k in ("temp", "humidity", "wind"):
+        if k in weather and weather[k] is not None:
+            weather_bits.append(f"{k}={weather[k]}")
+    weather_summary = ", ".join(weather_bits) if weather_bits else "unknown"
+
+    prompt = f"""Write exactly one short sentence (maximum 28 words) of practical air-quality advice for a user in Africa.
+
+Language: {lang_name} (ISO code {language})
+PM2.5: {pm25:.1f} µg/m³
+AQI category: {aqi_category}
+Weather: {weather_summary}
+
+Be calm, specific, and actionable. Do not mention satellites, AI, or models. Output only the sentence in {lang_name}."""
+
+    return _generate_content(prompt, temperature=0.4)

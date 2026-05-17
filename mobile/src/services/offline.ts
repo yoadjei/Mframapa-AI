@@ -1,16 +1,18 @@
-import { MMKV } from 'react-native-mmkv';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { City } from '../store/useStore';
 import { CACHE_TTL_MS, LAST_SYNC_KEY } from '../utils/constants';
 
-const storage = new MMKV({ id: 'mframapa-offline' });
+const KEY_CITIES = 'offline:cities';
+const KEY_LAST_SYNC = `offline:${LAST_SYNC_KEY}`;
+const OFFLINE_PREFIX = 'offline:';
 
-export function saveCities(cities: City[]): void {
-  storage.set('cities', JSON.stringify(cities));
-  storage.set(LAST_SYNC_KEY, Date.now().toString());
+export async function saveCities(cities: City[]): Promise<void> {
+  await AsyncStorage.setItem(KEY_CITIES, JSON.stringify(cities));
+  await AsyncStorage.setItem(KEY_LAST_SYNC, Date.now().toString());
 }
 
-export function loadCities(): City[] {
-  const raw = storage.getString('cities');
+export async function loadCities(): Promise<City[]> {
+  const raw = await AsyncStorage.getItem(KEY_CITIES);
   if (!raw) return [];
   try {
     return JSON.parse(raw) as City[];
@@ -19,32 +21,38 @@ export function loadCities(): City[] {
   }
 }
 
-export function isCacheStale(): boolean {
-  const ts = storage.getString(LAST_SYNC_KEY);
+export async function isCacheStale(): Promise<boolean> {
+  const ts = await AsyncStorage.getItem(KEY_LAST_SYNC);
   if (!ts) return true;
   return Date.now() - parseInt(ts, 10) > CACHE_TTL_MS;
 }
 
-export function getLastSyncTime(): Date | null {
-  const ts = storage.getString(LAST_SYNC_KEY);
+export async function getLastSyncTime(): Promise<Date | null> {
+  const ts = await AsyncStorage.getItem(KEY_LAST_SYNC);
   return ts ? new Date(parseInt(ts, 10)) : null;
 }
 
-export function clearOfflineData(): void {
-  storage.clearAll();
+export async function clearOfflineData(): Promise<void> {
+  const allKeys = await AsyncStorage.getAllKeys();
+  await Promise.all(
+    allKeys.filter((k) => k.startsWith(OFFLINE_PREFIX)).map((k) => AsyncStorage.removeItem(k))
+  );
 }
 
-export function savePredictionForCity(
+export async function savePredictionForCity(
   cityKey: string,
   prediction: Record<string, unknown>
-): void {
-  storage.set(`pred:${cityKey}`, JSON.stringify({ ...prediction, cachedAt: Date.now() }));
+): Promise<void> {
+  await AsyncStorage.setItem(
+    `${OFFLINE_PREFIX}pred:${cityKey}`,
+    JSON.stringify({ ...prediction, cachedAt: Date.now() })
+  );
 }
 
-export function loadPredictionForCity(
+export async function loadPredictionForCity(
   cityKey: string
-): (Record<string, unknown> & { cachedAt: number }) | null {
-  const raw = storage.getString(`pred:${cityKey}`);
+): Promise<(Record<string, unknown> & { cachedAt: number }) | null> {
+  const raw = await AsyncStorage.getItem(`${OFFLINE_PREFIX}pred:${cityKey}`);
   if (!raw) return null;
   try {
     return JSON.parse(raw);

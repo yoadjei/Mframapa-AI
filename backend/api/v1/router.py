@@ -11,6 +11,7 @@ from pydantic import BaseModel, Field
 
 from backend.api.aqi import aqi_category_from_pm25
 from backend.api.security import verify_and_rate_limit
+from backend.services import gemini_client
 from backend.pipeline.feature_pipeline import FeaturePipeline
 from ml.ensemble import ensemble_mean
 from ml.features import FEATURE_COLUMNS
@@ -317,18 +318,76 @@ class InsightBody(BaseModel):
     aqi_category: str = ""
     weather: Dict[str, Any] = Field(default_factory=dict)
     language: str = "en"
+    language_name: str = ""
+
+class TranslateBody(BaseModel):
+    strings: Dict[str, str] = Field(..., min_length=1)
+    target_language: str = Field(..., min_length=2, max_length=8)
+    source_language: str = "en"
+    target_language_name: str = ""
+
+@router.post("/translate")
+def translate_ui_strings(body: TranslateBody) -> Dict[str, Any]:
+    """Translate UI string bundles via Gemini (cached server-side when configured)."""
+    if body.target_language.lower() == body.source_language.lower():
+        return {"translations": body.strings, "fallback": False, "provider": "none"}
+
+    if not gemini_client.is_available():
+        return {"translations": body.strings, "fallback": True, "provider": "none"}
+
+    try:
+        translations = gemini_client.translate_strings(
+            body.strings,
+            target_language=body.target_language,
+            source_language=body.source_language,
+            target_language_name=body.target_language_name or None,
+        )
+    except Exception as exc:
+        logger.warning("Gemini translate failed: %s", exc)
+        raise HTTPException(status_code=502, detail="Translation service unavailable") from exc
+
+    return {"translations": translations, "fallback": False, "provider": "gemini"}
+
+
+def _insight_category_key(aqi_category: str, pm25: float) -> str:
+    cat = (aqi_category or aqi_category_from_pm25(pm25)).lower()
+    if "hazardous" in cat:
+        return "hazardous"
+    if "unhealthy" in cat and "sensitive" not in cat:
+        return "unhealthy"
+    if "sensitive" in cat:
+        return "sensitive"
+    if "moderate" in cat:
+        return "moderate"
+    return "good"
+
 
 @router.post("/generate-insight")
 def generate_insight(body: InsightBody) -> Dict[str, str]:
-    cat = (body.aqi_category or aqi_category_from_pm25(body.pm25)).lower()
-    key = "good"
-    if "hazardous" in cat:
-        key = "hazardous"
-    elif "unhealthy" in cat and "sensitive" not in cat:
-        key = "unhealthy"
-    elif "sensitive" in cat:
-        key = "sensitive"
-    elif "moderate" in cat:
-        key = "moderate"
-    text = _STUB_INSIGHTS_EN[key]
-    return {"insight": text}
+    cat = body.aqi_category or aqi_category_from_pm25(body.pm25)
+    key = _insight_category_key(cat, body.pm25)
+
+    if gemini_client.is_available():
+        try:
+            text = gemini_client.generate_air_quality_insight(
+                pm25=body.pm25,
+                aqi_category=cat,
+                weather=body.weather,
+                language=body.language,
+                language_name=body.language_name or None,
+            )
+            return {"insight": text}
+        except Exception as exc:
+            logger.warning("Gemini insight failed, using stub: %s", exc)
+            if body.language.lower() not in ("en", ""):
+                try:
+                    translated = gemini_client.translate_strings(
+                        {key: _STUB_INSIGHTS_EN[key]},
+                        target_language=body.language,
+                        target_language_name=body.language_name or None,
+                    )
+                    return {"insight": translated[key]}
+                except Exception:
+                    pass
+
+    return {"insight": _STUB_INSIGHTS_EN[key]}

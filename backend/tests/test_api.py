@@ -139,6 +139,60 @@ def test_generate_insight_negative_pm25(client):
     assert r.status_code == 422
 
 
+def test_translate_without_gemini_returns_fallback(client):
+    r = client.post(
+        "/api/v1/translate",
+        json={
+            "strings": {"home.title": "Mframapa", "aqi.good": "Good"},
+            "target_language": "fr",
+        },
+    )
+    assert r.status_code == 200
+    data = r.json()
+    assert data["fallback"] is True
+    assert data["translations"]["home.title"] == "Mframapa"
+
+
+def test_translate_same_language(client):
+    r = client.post(
+        "/api/v1/translate",
+        json={"strings": {"aqi.good": "Good"}, "target_language": "en"},
+    )
+    assert r.status_code == 200
+    assert r.json()["translations"]["aqi.good"] == "Good"
+    assert r.json()["fallback"] is False
+
+
+@patch("backend.api.v1.router.gemini_client.translate_strings")
+def test_translate_with_gemini(mock_translate, client):
+    mock_translate.return_value = {"aqi.good": "Bon"}
+    with patch("backend.api.v1.router.gemini_client.is_available", return_value=True):
+        r = client.post(
+            "/api/v1/translate",
+            json={"strings": {"aqi.good": "Good"}, "target_language": "fr"},
+        )
+    assert r.status_code == 200
+    assert r.json()["translations"]["aqi.good"] == "Bon"
+    assert r.json()["provider"] == "gemini"
+
+
+@patch("backend.api.v1.router.gemini_client.generate_air_quality_insight")
+def test_generate_insight_gemini(mock_insight, client):
+    mock_insight.return_value = "Qualité de l'air dégradée aujourd'hui."
+    with patch("backend.api.v1.router.gemini_client.is_available", return_value=True):
+        r = client.post(
+            "/api/v1/generate-insight",
+            json={
+                "pm25": 80,
+                "aqi_category": "Unhealthy",
+                "weather": {},
+                "language": "fr",
+            },
+        )
+    assert r.status_code == 200
+    assert "air" in r.json()["insight"].lower()
+
+
 def test_batch_predict_success(client):
     mock_pipeline = MagicMock()
     mock_pipeline.get_features.return_value = {

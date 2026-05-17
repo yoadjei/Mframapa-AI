@@ -1,15 +1,17 @@
 import { Bell, Home, Search, Settings, Wind } from "lucide-react";
 import { useAppState } from "../../state/appState.jsx";
+import { useTranslation } from "../../hooks/useTranslation.js";
 
 const items = [
-  { key: "home", label: "Home", icon: Home },
-  { key: "core", label: "Check", icon: Wind },
-  { key: "search", label: "Search", icon: Search },
-  { key: "notifications", label: "Alerts", icon: Bell },
-  { key: "settings", label: "Settings", icon: Settings },
+  { key: "home", labelKey: "pwa.nav.home", icon: Home },
+  { key: "core", labelKey: "pwa.nav.check", icon: Wind },
+  { key: "search", labelKey: "pwa.nav.search", icon: Search },
+  { key: "notifications", labelKey: "pwa.nav.alerts", icon: Bell },
+  { key: "settings", labelKey: "pwa.nav.settings", icon: Settings },
 ];
 
 export function BottomNav() {
+  const { t } = useTranslation();
   const {
     state: {
       ui: { activeScreen },
@@ -35,7 +37,7 @@ export function BottomNav() {
                 onClick={() => dispatch({ type: "SET_ACTIVE_SCREEN", payload: item.key })}
               >
                 <Icon size={18} />
-                <span>{item.label}</span>
+                <span>{t(item.labelKey)}</span>
                 {item.key === "notifications" && unread > 0 ? (
                   <span className="rounded-full bg-emerald-500 px-1.5 text-[10px] font-bold text-emerald-950">
                     {unread > 9 ? "9+" : unread}

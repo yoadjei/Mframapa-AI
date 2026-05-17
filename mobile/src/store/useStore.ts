@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { persist, createJSONStorage, StateStorage } from 'zustand/middleware';
-import { MMKV } from 'react-native-mmkv';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export interface PredictionResult {
   pm25: number;
@@ -21,6 +21,7 @@ export interface PredictionResult {
   };
   factors?: string[];
   model?: string;
+  insight?: string;
 }
 
 export interface City {
@@ -31,24 +32,11 @@ export interface City {
   urban: boolean;
 }
 
-const mmkv = new MMKV({ id: 'mframapa-store' });
-
-const mmkvStorage: StateStorage = {
-  getItem: (key: string) => {
-    const value = mmkv.getString(key);
-    return value ?? null;
-  },
-  setItem: (key: string, value: string) => {
-    mmkv.set(key, value);
-  },
-  removeItem: (key: string) => {
-    mmkv.delete(key);
-  },
-};
+export type ThemeMode = 'light' | 'dark' | 'system';
 
 interface AppState {
-  isDark: boolean;
-  toggleTheme: () => void;
+  themeMode: ThemeMode;
+  setThemeMode: (mode: ThemeMode) => void;
 
   language: string;
   setLanguage: (lang: string) => void;
@@ -57,6 +45,7 @@ interface AppState {
   setPrediction: (p: PredictionResult) => void;
 
   predictionHistory: PredictionResult[];
+  clearHistory: () => void;
 
   offlineCities: City[];
   setOfflineCities: (cities: City[]) => void;
@@ -65,8 +54,8 @@ interface AppState {
 export const useStore = create<AppState>()(
   persist(
     (set) => ({
-      isDark: true,
-      toggleTheme: () => set((state) => ({ isDark: !state.isDark })),
+      themeMode: 'system',
+      setThemeMode: (mode: ThemeMode) => set({ themeMode: mode }),
 
       language: 'en',
       setLanguage: (lang: string) => set({ language: lang }),
@@ -88,15 +77,40 @@ export const useStore = create<AppState>()(
         })),
 
       predictionHistory: [],
+      clearHistory: () => set({ predictionHistory: [] }),
 
       offlineCities: [],
       setOfflineCities: (cities: City[]) => set({ offlineCities: cities }),
     }),
     {
       name: 'mframapa-persist',
-      storage: createJSONStorage(() => mmkvStorage),
+      version: 2,
+      storage: createJSONStorage(() => AsyncStorage),
+      migrate: (persistedState, version) => {
+        const state = (persistedState ?? {}) as Partial<AppState> & {
+          isDark?: boolean;
+          themeMode?: ThemeMode;
+        };
+
+        if ((version ?? 0) < 2 && state.themeMode == null) {
+          return {
+            ...state,
+            themeMode:
+              typeof state.isDark === 'boolean'
+                ? state.isDark
+                  ? 'dark'
+                  : 'light'
+                : 'system',
+          };
+        }
+
+        return {
+          ...state,
+          themeMode: state.themeMode ?? 'system',
+        };
+      },
       partialize: (state) => ({
-        isDark: state.isDark,
+        themeMode: state.themeMode,
         language: state.language,
         lastPrediction: state.lastPrediction,
         predictionHistory: state.predictionHistory,

@@ -17,6 +17,7 @@ const initialState = {
   },
   preferences: {
     theme: "system",
+    language: "en",
     notificationsEnabled: true,
     privacyMode: "balanced",
     liteMode: false,

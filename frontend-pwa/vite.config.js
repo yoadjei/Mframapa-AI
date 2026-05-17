@@ -8,14 +8,14 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'icons/apple-touch-icon.png', 'city-packs/top-cities.v1.json'],
+      includeAssets: ['favicon.svg', 'icons/mframapa logo.png', 'city-packs/top-cities.v1.json'],
       manifest: {
         id: '/',
         name: 'Mframapa Air Quality',
         short_name: 'Mframapa',
         description: 'Mobile-first air quality checks across African cities.',
-        theme_color: '#0f172a',
-        background_color: '#0f172a',
+        theme_color: '#06080d',
+        background_color: '#06080d',
         start_url: '/',
         scope: '/',
         display: 'standalone',
@@ -23,13 +23,7 @@ export default defineConfig({
         categories: ['health', 'weather', 'utilities'],
         icons: [
           {
-            src: 'icons/icon-192x192.png',
-            sizes: '192x192',
-            type: 'image/png',
-            purpose: 'any'
-          },
-          {
-            src: 'icons/icon-512x512.png',
+            src: 'icons/mframapa logo.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any maskable'

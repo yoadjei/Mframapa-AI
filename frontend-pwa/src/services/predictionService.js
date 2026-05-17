@@ -1,5 +1,6 @@
 import { africanCities } from "../data/africanCities.js";
-import { getPrediction } from "./api.js";
+import { languageName } from "../i18n/languages.js";
+import { getPrediction, generateInsight } from "./api.js";
 import { getCachedCities } from "./cityPackService.js";
 
 export function findCity(query) {
@@ -15,11 +16,25 @@ export function findCity(query) {
   );
 }
 
-export async function fetchCityPrediction(cityName) {
+export async function fetchCityPrediction(cityName, language = "en") {
   const city = findCity(cityName);
-  if (!city) throw new Error("City not found in supported African cities");
+  if (!city) throw new Error("error.city_not_found");
 
   const response = await getPrediction(city.lat, city.lon, city.name);
+
+  let insight;
+  try {
+    insight = await generateInsight({
+      pm25: response.pm25,
+      aqi_category: response.aqi_category,
+      weather: response.weather ?? {},
+      language,
+      language_name: languageName(language),
+    });
+  } catch {
+    insight = undefined;
+  }
+
   return {
     city,
     pm25: response.pm25,
@@ -28,5 +43,6 @@ export async function fetchCityPrediction(cityName) {
     timestamp: response.timestamp || new Date().toISOString(),
     weather: response.weather ?? null,
     sourceSummary: response.sources_used ?? [],
+    insight,
   };
 }

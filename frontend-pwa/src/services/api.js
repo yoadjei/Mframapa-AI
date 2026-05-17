@@ -60,3 +60,26 @@ export async function checkHealth() {
 export function clearPredictionCache() {
   predictionCache.clear();
 }
+
+export async function translateUiStrings(strings, targetLanguage, targetLanguageName = "") {
+  const response = await httpClient.post("/api/v1/translate", {
+    strings,
+    target_language: targetLanguage,
+    target_language_name: targetLanguageName,
+  });
+  return {
+    translations: response.data.translations,
+    fallback: Boolean(response.data.fallback),
+  };
+}
+
+export async function generateInsight({ pm25, aqi_category, weather = {}, language = "en", language_name = "" }) {
+  const response = await httpClient.post("/api/v1/generate-insight", {
+    pm25,
+    aqi_category,
+    weather,
+    language,
+    language_name,
+  });
+  return response.data.insight;
+}

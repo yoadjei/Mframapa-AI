@@ -1,252 +1,419 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
   TouchableOpacity,
   ScrollView,
   Switch,
+  StyleSheet,
 } from 'react-native';
-import { useStore } from '../store/useStore';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
+import { MframapaLogo } from '../components/MframapaLogo';
+import { InfoModal } from '../components/InfoModal';
+import { ThemeMode, useStore } from '../store/useStore';
 import { getColors, spacing, borderRadius, fontSize } from '../theme';
+import { useTheme } from '../hooks/useTheme';
 import { useTranslation } from '../hooks/useTranslation';
+const LANGUAGE_GROUPS = [
+  {
+    regionKey: 'settings.region.international',
+    items: [
+      { code: 'en', label: 'English' },
+      { code: 'fr', label: 'Français' },
+      { code: 'pt', label: 'Português' },
+      { code: 'es', label: 'Español' },
+      { code: 'ar', label: 'العربية' },
+    ],
+  },
+  {
+    regionKey: 'settings.region.west_africa',
+    items: [
+      { code: 'ha', label: 'Hausa' },
+      { code: 'yo', label: 'Yoruba' },
+      { code: 'ig', label: 'Igbo' },
+      { code: 'tw', label: 'Twi' },
+      { code: 'wo', label: 'Wolof' },
+      { code: 'ga', label: 'Ga' },
+    ],
+  },
+  {
+    regionKey: 'settings.region.east_africa',
+    items: [
+      { code: 'sw', label: 'Swahili' },
+      { code: 'am', label: 'አማርኛ' },
+      { code: 'ti', label: 'ትግርኛ' },
+      { code: 'so', label: 'Somali' },
+      { code: 'rw', label: 'Kinyarwanda' },
+      { code: 'rn', label: 'Kirundi' },
+    ],
+  },
+  {
+    regionKey: 'settings.region.central_southern',
+    items: [
+      { code: 'zu', label: 'Zulu' },
+      { code: 'xh', label: 'Xhosa' },
+      { code: 'af', label: 'Afrikaans' },
+      { code: 'sn', label: 'Shona' },
+      { code: 'nd', label: 'Ndebele' },
+      { code: 'st', label: 'Sesotho' },
+      { code: 'tn', label: 'Tswana' },
+      { code: 'ss', label: 'Swati' },
+      { code: 'ny', label: 'Chichewa' },
+      { code: 'mg', label: 'Malagasy' },
+    ],
+  },
+] as const;
 
-const LANGUAGES = [
-  { code: 'en', label: 'English', native: 'English' },
-  { code: 'fr', label: 'French', native: 'Français' },
-];
+const ABOUT_LINKS = [
+  { id: 'privacy', labelKey: 'settings.about.privacy' },
+  { id: 'terms', labelKey: 'settings.about.terms' },
+  { id: 'licenses', labelKey: 'settings.about.licenses' },
+  { id: 'contact', labelKey: 'settings.about.contact' },
+  { id: 'credits', labelKey: 'settings.about.credits' },
+] as const;
 
 export function SettingsScreen() {
-  const isDark = useStore((s) => s.isDark);
-  const toggleTheme = useStore((s) => s.toggleTheme);
-  const language = useStore((s) => s.language);
-  const setLanguage = useStore((s) => s.setLanguage);
+  const { isDark, themeMode, setThemeMode, systemTheme } = useTheme();
   const colors = getColors(isDark);
+  const insets = useSafeAreaInsets();
   const { t } = useTranslation();
 
+  const [alertsEnabled, setAlertsEnabled] = useState(true);
+  const [privacyMode, setPrivacyMode] = useState(false);
+  const [liteMode, setLiteMode] = useState(false);
+  const [legalId, setLegalId] = useState<string | null>(null);
+
+  const legalTitle = legalId ? t(`legal.${legalId}.title`) : '';
+  const legalBody = legalId ? t(`legal.${legalId}.body`) : '';
+
   return (
-    <ScrollView
-      style={{ flex: 1, backgroundColor: colors.background }}
-      contentContainerStyle={{ paddingBottom: spacing.xxl }}
-      showsVerticalScrollIndicator={false}
-    >
-      {/* Header */}
-      <View
-        style={{
-          paddingTop: spacing.xl,
-          paddingHorizontal: spacing.md,
-          paddingBottom: spacing.md,
-        }}
+    <>
+      <ScrollView
+        style={[styles.root, { backgroundColor: colors.background }]}
+        contentContainerStyle={{ paddingBottom: insets.bottom + 120 }}
+        showsVerticalScrollIndicator={false}
       >
-        <Text
-          style={{
-            color: colors.text,
-            fontSize: fontSize.xl,
-            fontWeight: '700',
-          }}
-        >
-          {t('settings.title')}
-        </Text>
-      </View>
+        <View style={{ height: insets.top }} />
 
-      {/* Theme Section */}
-      <SectionHeader title={t('settings.theme')} colors={colors} />
-      <View
-        style={{
-          backgroundColor: colors.card,
-          borderRadius: borderRadius.lg,
-          marginHorizontal: spacing.md,
-          marginBottom: spacing.md,
-          borderWidth: 1,
-          borderColor: colors.border,
-          overflow: 'hidden',
-        }}
-      >
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            paddingHorizontal: spacing.md,
-            paddingVertical: spacing.md,
-          }}
-        >
-          <Text style={{ fontSize: fontSize.lg, marginRight: spacing.md }}>
-            {isDark ? '🌙' : '☀️'}
-          </Text>
-          <Text
-            style={{
-              flex: 1,
-              color: colors.text,
-              fontSize: fontSize.md,
-              fontWeight: '500',
-            }}
-          >
-            {isDark ? t('settings.dark') : t('settings.light')} Mode
-          </Text>
-          <Switch
-            value={isDark}
-            onValueChange={toggleTheme}
-            trackColor={{ false: colors.border, true: colors.accent + '66' }}
-            thumbColor={isDark ? colors.accent : colors.subtext}
-          />
+        <View style={styles.header}>
+          <Text style={[styles.title, { color: colors.text }]}>{t('settings.title').toUpperCase()}</Text>
         </View>
-      </View>
 
-      {/* Language Section */}
-      <SectionHeader title={t('settings.language')} colors={colors} />
-      <View
-        style={{
-          backgroundColor: colors.card,
-          borderRadius: borderRadius.lg,
-          marginHorizontal: spacing.md,
-          marginBottom: spacing.md,
-          borderWidth: 1,
-          borderColor: colors.border,
-          overflow: 'hidden',
-        }}
-      >
-        {LANGUAGES.map((lang, index) => (
-          <TouchableOpacity
-            key={lang.code}
-            onPress={() => setLanguage(lang.code)}
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              paddingHorizontal: spacing.md,
-              paddingVertical: spacing.md,
-              borderBottomWidth: index < LANGUAGES.length - 1 ? 1 : 0,
-              borderBottomColor: colors.border,
-              backgroundColor:
-                language === lang.code ? colors.accent + '11' : 'transparent',
-            }}
-          >
-            <Text style={{ fontSize: fontSize.lg, marginRight: spacing.md }}>
-              {lang.code === 'en' ? '🇬🇧' : '🇫🇷'}
-            </Text>
-            <View style={{ flex: 1 }}>
-              <Text
-                style={{
-                  color: colors.text,
-                  fontSize: fontSize.md,
-                  fontWeight: language === lang.code ? '700' : '500',
-                }}
+        <View style={[styles.sectionCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <Text style={[styles.sectionHeading, { color: colors.accentStrong }]}>{t('settings.appearance')}</Text>
+          <Text style={[styles.rowTitle, { color: colors.text }]}>{t('settings.theme')}</Text>
+          <View style={[styles.segmented, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+            {(['light', 'dark', 'system'] as ThemeMode[]).map((mode) => (
+              <TouchableOpacity
+                key={mode}
+                onPress={() => setThemeMode(mode)}
+                style={[
+                  styles.segment,
+                  themeMode === mode && { backgroundColor: colors.accentStrong },
+                ]}
               >
-                {lang.native}
-              </Text>
-              <Text style={{ color: colors.subtext, fontSize: fontSize.xs }}>
-                {lang.label}
-              </Text>
-            </View>
-            {language === lang.code && (
-              <Text style={{ color: colors.accent, fontSize: fontSize.lg }}>✓</Text>
-            )}
-          </TouchableOpacity>
-        ))}
-      </View>
-
-      {/* About Section */}
-      <SectionHeader title={t('settings.about')} colors={colors} />
-      <View
-        style={{
-          backgroundColor: colors.card,
-          borderRadius: borderRadius.lg,
-          marginHorizontal: spacing.md,
-          padding: spacing.lg,
-          borderWidth: 1,
-          borderColor: colors.border,
-        }}
-      >
-        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: spacing.md }}>
-          <Text style={{ fontSize: 32, marginRight: spacing.md }}>🌍</Text>
-          <View>
-            <Text
-              style={{
-                color: colors.accent,
-                fontSize: fontSize.lg,
-                fontWeight: '800',
-              }}
-            >
-              Mframapa
-            </Text>
-            <Text style={{ color: colors.subtext, fontSize: fontSize.xs }}>
-              Version 1.0.0
-            </Text>
+                <Text
+                  style={[
+                    styles.segmentText,
+                    { color: themeMode === mode ? '#FFFFFF' : colors.text },
+                  ]}
+                >
+                  {mode === 'system'
+                    ? `${t('settings.system')} (${capitalize(systemTheme)})`
+                    : t(`settings.${mode}`)}
+                </Text>
+              </TouchableOpacity>
+            ))}
           </View>
         </View>
 
-        <Text
-          style={{
-            color: colors.subtext,
-            fontSize: fontSize.sm,
-            lineHeight: 20,
-            marginBottom: spacing.md,
-          }}
-        >
-          Mframapa is an African air quality intelligence platform powered by a
-          universal machine-learning model trained on satellite, meteorological,
-          and ground sensor data across the continent.
-        </Text>
+        <View style={[styles.sectionCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <Text style={[styles.sectionHeading, { color: colors.accentStrong }]}>{t('settings.preferences')}</Text>
+          <PreferenceRow
+            label={t('settings.notifications')}
+            sublabel={t('settings.notifications_sub')}
+            colors={colors}
+            control={
+              <Switch
+                value={alertsEnabled}
+                onValueChange={setAlertsEnabled}
+                trackColor={{ false: colors.border, true: colors.accent + '88' }}
+                thumbColor={alertsEnabled ? colors.accent : colors.subtext}
+              />
+            }
+          />
+          <PreferenceRow
+            label={t('settings.privacy')}
+            sublabel={t('settings.privacy_sub')}
+            colors={colors}
+            control={
+              <Switch
+                value={privacyMode}
+                onValueChange={setPrivacyMode}
+                trackColor={{ false: colors.border, true: colors.accent + '88' }}
+                thumbColor={privacyMode ? colors.accent : colors.subtext}
+              />
+            }
+          />
+          <PreferenceRow
+            label={t('settings.lite')}
+            sublabel={t('settings.lite_sub')}
+            colors={colors}
+            control={
+              <Switch
+                value={liteMode}
+                onValueChange={setLiteMode}
+                trackColor={{ false: colors.border, true: colors.accent + '88' }}
+                thumbColor={liteMode ? colors.accent : colors.subtext}
+              />
+            }
+            last
+          />
+        </View>
 
-        <InfoRow
-          label="API"
-          value={process.env.EXPO_PUBLIC_API_URL ?? 'https://mframapa.ai'}
-          colors={colors}
-        />
-        <InfoRow label="Model" value="Universal African PM2.5" colors={colors} />
-        <InfoRow label="Coverage" value="54 African countries" colors={colors} />
-        <InfoRow label="Resolution" value="~1 km spatial" colors={colors} />
-      </View>
-    </ScrollView>
+        <View style={[styles.sectionCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <Text style={[styles.sectionHeading, { color: colors.accentStrong }]}>{t('settings.language')}</Text>
+          <LanguageSelector colors={colors} />
+        </View>
+
+        <View style={[styles.aboutCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <View style={styles.aboutHeader}>
+            <MframapaLogo size="lg" />
+            <Text style={[styles.versionText, { color: colors.subtext }]}>{t('settings.version')}</Text>
+          </View>
+
+          {ABOUT_LINKS.map((link, index) => (
+            <TouchableOpacity
+              key={link.id}
+              onPress={() => setLegalId(link.id)}
+              style={[
+                styles.aboutRow,
+                index < ABOUT_LINKS.length - 1 && {
+                  borderBottomWidth: 0.5,
+                  borderBottomColor: colors.border,
+                },
+              ]}
+            >
+              <Text style={[styles.aboutLabel, { color: colors.text }]}>{t(link.labelKey)}</Text>
+              <Ionicons name="chevron-forward" size={16} color={colors.subtext} />
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        <Text style={[styles.madeWith, { color: colors.subtext }]}>{t('settings.made_with')}</Text>
+
+        <TouchableOpacity style={[styles.signOutBtn, { borderColor: colors.danger + '33' }]}>
+          <Text style={[styles.signOutText, { color: colors.danger }]}>{t('settings.sign_out')}</Text>
+        </TouchableOpacity>
+      </ScrollView>
+
+      <InfoModal
+        visible={legalId != null}
+        title={legalTitle}
+        body={legalBody}
+        onClose={() => setLegalId(null)}
+      />
+    </>
   );
 }
 
-interface SectionHeaderProps {
-  title: string;
-  colors: ReturnType<typeof getColors>;
-}
-
-function SectionHeader({ title, colors }: SectionHeaderProps) {
-  return (
-    <Text
-      style={{
-        color: colors.subtext,
-        fontSize: fontSize.xs,
-        fontWeight: '600',
-        textTransform: 'uppercase',
-        letterSpacing: 0.8,
-        paddingHorizontal: spacing.md,
-        marginBottom: spacing.xs,
-        marginTop: spacing.xs,
-      }}
-    >
-      {title}
-    </Text>
-  );
-}
-
-interface InfoRowProps {
+function PreferenceRow({
+  label,
+  sublabel,
+  colors,
+  control,
+  last,
+}: {
   label: string;
-  value: string;
+  sublabel: string;
   colors: ReturnType<typeof getColors>;
-}
-
-function InfoRow({ label, value, colors }: InfoRowProps) {
+  control: React.ReactNode;
+  last?: boolean;
+}) {
   return (
     <View
-      style={{
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        paddingVertical: spacing.xs,
-        borderTopWidth: 1,
-        borderTopColor: colors.border,
-      }}
+      style={[
+        styles.preferenceRow,
+        !last && { borderBottomWidth: 0.5, borderBottomColor: colors.border },
+      ]}
     >
-      <Text style={{ color: colors.subtext, fontSize: fontSize.sm }}>{label}</Text>
-      <Text
-        style={{ color: colors.text, fontSize: fontSize.sm, fontWeight: '500', flex: 1, textAlign: 'right' }}
-        numberOfLines={1}
-      >
-        {value}
-      </Text>
+      <View style={{ flex: 1 }}>
+        <Text style={[styles.rowTitle, { color: colors.text }]}>{label}</Text>
+        <Text style={[styles.rowSubtitle, { color: colors.subtext }]}>{sublabel}</Text>
+      </View>
+      {control}
     </View>
   );
 }
+
+function LanguageSelector({ colors }: { colors: ReturnType<typeof getColors> }) {
+  const { t } = useTranslation();
+  const language = useStore((s) => s.language);
+  const setLanguage = useStore((s) => s.setLanguage);
+
+  return (
+    <View>
+      {LANGUAGE_GROUPS.map((group, gi) => (
+        <View key={group.regionKey} style={gi > 0 ? { marginTop: spacing.md } : undefined}>
+          <Text style={[styles.langGroupLabel, { color: colors.subtext }]}>{t(group.regionKey)}</Text>
+          <View style={[styles.langGrid]}>
+            {group.items.map((item) => {
+              const active = language === item.code;
+              return (
+                <TouchableOpacity
+                  key={item.code}
+                  onPress={() => setLanguage(item.code)}
+                  style={[
+                    styles.langChip,
+                    {
+                      backgroundColor: active ? colors.accentStrong : colors.surface,
+                      borderColor: active ? colors.accentStrong : colors.border,
+                    },
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.langChipText,
+                      { color: active ? '#FFFFFF' : colors.text },
+                    ]}
+                    numberOfLines={1}
+                  >
+                    {item.label}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        </View>
+      ))}
+    </View>
+  );
+}
+
+function capitalize(value: string) {
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+const styles = StyleSheet.create({
+  root: { flex: 1 },
+  header: {
+    paddingHorizontal: spacing.md,
+    paddingTop: spacing.sm,
+    paddingBottom: spacing.sm,
+  },
+  title: {
+    fontSize: fontSize.xxl,
+    fontWeight: '800',
+    letterSpacing: 0.8,
+  },
+  sectionCard: {
+    marginHorizontal: spacing.md,
+    marginBottom: spacing.md,
+    borderRadius: 22,
+    borderWidth: 1,
+    padding: spacing.md,
+  },
+  sectionHeading: {
+    fontSize: fontSize.sm,
+    fontWeight: '700',
+    marginBottom: spacing.md,
+  },
+  segmented: {
+    borderRadius: 16,
+    borderWidth: 1,
+    flexDirection: 'row',
+    padding: 3,
+    gap: 4,
+  },
+  segment: {
+    flex: 1,
+    borderRadius: 13,
+    paddingVertical: 10,
+    alignItems: 'center',
+  },
+  segmentText: {
+    fontSize: fontSize.sm,
+    fontWeight: '700',
+  },
+  preferenceRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    gap: spacing.md,
+  },
+  rowTitle: {
+    fontSize: fontSize.md,
+    fontWeight: '600',
+  },
+  rowSubtitle: {
+    fontSize: fontSize.sm,
+    marginTop: 3,
+  },
+  aboutCard: {
+    marginHorizontal: spacing.md,
+    marginTop: spacing.sm,
+    marginBottom: spacing.md,
+    borderRadius: 24,
+    borderWidth: 1,
+    paddingTop: spacing.xl,
+    overflow: 'hidden',
+  },
+  aboutHeader: {
+    alignItems: 'center',
+    marginBottom: spacing.lg,
+    gap: spacing.xs,
+  },
+  versionText: {
+    fontSize: fontSize.sm,
+  },
+  aboutRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: spacing.lg,
+    paddingVertical: 15,
+  },
+  aboutLabel: {
+    flex: 1,
+    fontSize: fontSize.md,
+  },
+  madeWith: {
+    textAlign: 'center',
+    fontSize: fontSize.sm,
+    marginTop: spacing.md,
+    marginBottom: spacing.sm,
+  },
+  signOutBtn: {
+    marginHorizontal: spacing.md,
+    borderRadius: borderRadius.full,
+    borderWidth: 1,
+    paddingVertical: 14,
+    alignItems: 'center',
+  },
+  signOutText: {
+    fontSize: fontSize.md,
+    fontWeight: '700',
+  },
+  langGroupLabel: {
+    fontSize: fontSize.xs,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 0.8,
+    marginBottom: spacing.sm,
+  },
+  langGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.sm,
+  },
+  langChip: {
+    borderRadius: 20,
+    borderWidth: 1,
+    paddingVertical: 7,
+    paddingHorizontal: 14,
+  },
+  langChipText: {
+    fontSize: fontSize.sm,
+    fontWeight: '600',
+  },
+});

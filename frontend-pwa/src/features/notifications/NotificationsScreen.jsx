@@ -1,18 +1,20 @@
 import { Bell } from "lucide-react";
 import { useAppState } from "../../state/appState.jsx";
 import { StateMessage } from "../../components/feedback/StateMessage.jsx";
+import { useTranslation } from "../../hooks/useTranslation.js";
 
 export function NotificationsScreen() {
   const {
     state: { notifications },
     dispatch,
   } = useAppState();
+  const { t } = useTranslation();
 
   if (!notifications.length) {
     return (
       <StateMessage
-        title="No notifications yet"
-        message="System updates and important alerts will appear here."
+        title={t("pwa.notifications.empty_title")}
+        message={t("pwa.notifications.empty_message")}
       />
     );
   }
