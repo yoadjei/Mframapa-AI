@@ -12,7 +12,7 @@ import json
 import logging
 import os
 import re
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 import requests
 
@@ -30,7 +30,6 @@ _LANGUAGE_NAMES: Dict[str, str] = {
     "af": "Afrikaans",
     "am": "Amharic",
     "ar": "Arabic",
-    "ee": "Ewe",
     "en": "English",
     "es": "Spanish",
     "fr": "French",
@@ -38,7 +37,7 @@ _LANGUAGE_NAMES: Dict[str, str] = {
     "ha": "Hausa",
     "ig": "Igbo",
     "mg": "Malagasy",
-    "nd": "Northern Ndebele",
+    "nd": "Ndebele",
     "ny": "Chichewa",
     "pt": "Portuguese",
     "rn": "Kirundi",
@@ -46,10 +45,10 @@ _LANGUAGE_NAMES: Dict[str, str] = {
     "sn": "Shona",
     "so": "Somali",
     "ss": "Swati",
-    "st": "Sesotho",
+    "st": "Sotho",
     "sw": "Swahili",
     "ti": "Tigrinya",
-    "tn": "Setswana",
+    "tn": "Tswana",
     "tw": "Twi",
     "wo": "Wolof",
     "xh": "Xhosa",
@@ -124,23 +123,40 @@ def _trim_cache() -> None:
         _translation_cache.pop(key, None)
 
 
-def translate_strings(
+_CHUNK_MAX_KEYS = 35
+_CHUNK_MAX_CHARS = 10_000
+
+
+def _chunk_strings(strings: Dict[str, str]) -> List[Dict[str, str]]:
+    """Split large catalogs so Gemini responses stay within token limits."""
+    chunks: List[Dict[str, str]] = []
+    current: Dict[str, str] = {}
+    current_chars = 0
+
+    for key, value in strings.items():
+        entry_chars = len(key) + len(str(value)) + 8
+        if current and (
+            len(current) >= _CHUNK_MAX_KEYS
+            or current_chars + entry_chars > _CHUNK_MAX_CHARS
+        ):
+            chunks.append(current)
+            current = {}
+            current_chars = 0
+        current[key] = value
+        current_chars += entry_chars
+
+    if current:
+        chunks.append(current)
+    return chunks
+
+
+def _translate_chunk(
     strings: Dict[str, str],
     *,
     target_language: str,
-    source_language: str = "en",
-    target_language_name: Optional[str] = None,
+    source_language: str,
+    target_language_name: Optional[str],
 ) -> Dict[str, str]:
-    """Translate a key→string map via Gemini. Returns the same keys."""
-    if not strings:
-        return {}
-    if target_language.lower() == source_language.lower():
-        return dict(strings)
-
-    cache_key = _cache_key(strings, target_language)
-    if cache_key in _translation_cache:
-        return dict(_translation_cache[cache_key])
-
     target_name = language_display_name(target_language, target_language_name)
     source_name = language_display_name(source_language)
 
@@ -168,6 +184,37 @@ Input JSON:
     for key, value in strings.items():
         translated = parsed.get(key)
         out[key] = str(translated) if translated is not None else value
+    return out
+
+
+def translate_strings(
+    strings: Dict[str, str],
+    *,
+    target_language: str,
+    source_language: str = "en",
+    target_language_name: Optional[str] = None,
+) -> Dict[str, str]:
+    """Translate a key→string map via Gemini. Returns the same keys."""
+    if not strings:
+        return {}
+    if target_language.lower() == source_language.lower():
+        return dict(strings)
+
+    cache_key = _cache_key(strings, target_language)
+    if cache_key in _translation_cache:
+        return dict(_translation_cache[cache_key])
+
+    chunks = _chunk_strings(strings)
+    out: Dict[str, str] = {}
+    for chunk in chunks:
+        out.update(
+            _translate_chunk(
+                chunk,
+                target_language=target_language,
+                source_language=source_language,
+                target_language_name=target_language_name,
+            )
+        )
 
     _translation_cache[cache_key] = out
     _trim_cache()
