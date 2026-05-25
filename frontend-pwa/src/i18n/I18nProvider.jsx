@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import { EN_STRINGS } from "../locales/enBundle.js";
 import { useAppState } from "../state/appState.jsx";
 import { SUPPORTED_LANGUAGES } from "./languages.js";
-import { ensureLocale } from "./translationService.js";
+import { clearLocaleMemory, ensureLocale } from "./translationService.js";
 
 const I18nContext = createContext(null);
 
@@ -48,9 +48,12 @@ export function I18nProvider({ children }) {
 
   const setLanguage = useCallback(
     (code) => {
+      if (code !== language) {
+        clearLocaleMemory(code);
+      }
       dispatch({ type: "UPDATE_PREFERENCES", payload: { language: code } });
     },
-    [dispatch]
+    [dispatch, language]
   );
 
   const t = useCallback(

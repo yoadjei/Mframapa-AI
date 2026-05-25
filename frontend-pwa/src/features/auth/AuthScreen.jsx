@@ -4,6 +4,7 @@ import { StateMessage } from "../../components/feedback/StateMessage.jsx";
 import { login, signup } from "../../services/authService.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { translateError } from "../../utils/translateError.js";
+import { MframapaLogo } from "../../components/brand/MframapaLogo.jsx";
 
 export function AuthScreen({ isOnline }) {
   const [mode, setMode] = useState("login");
@@ -83,6 +84,9 @@ export function AuthScreen({ isOnline }) {
   return (
     <div className="min-h-screen bg-slate-100 px-5 py-16 dark:bg-slate-950">
       <div className="mx-auto max-w-md rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <div className="flex justify-center mb-6">
+          <MframapaLogo size="lg" />
+        </div>
         <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">{t("pwa.auth.welcome")}</h1>
         <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">{t("pwa.auth.subtitle")}</p>
 

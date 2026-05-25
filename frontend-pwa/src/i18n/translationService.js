@@ -1,8 +1,9 @@
 import { EN_STRINGS } from "../locales/enBundle.js";
 import { translateUiStrings } from "../services/api.js";
 import { languageName } from "./languages.js";
+import { mergeLocaleStrings } from "./mergeLocale.js";
 
-const CACHE_PREFIX = "mframapa:pwa:locale:v2:";
+const CACHE_PREFIX = "mframapa:pwa:locale:v3:";
 const memory = { en: EN_STRINGS };
 
 const localeModules = import.meta.glob("../locales/*.json");
@@ -18,7 +19,7 @@ export function getCachedStrings(lang) {
   return memory[lang] ?? EN_STRINGS;
 }
 
-/** Gemini translates the full catalog; bundled JSON overrides where present. */
+/** Load full UI catalog: Gemini when configured, bundled JSON as curated overrides. */
 export async function ensureLocale(lang) {
   if (lang === "en") return EN_STRINGS;
   if (memory[lang]) return memory[lang];
@@ -41,15 +42,30 @@ export async function ensureLocale(lang) {
   }
 
   const { translations, fallback } = await translateUiStrings(EN_STRINGS, lang, languageName(lang));
-  const merged = fallback ? { ...EN_STRINGS, ...bundled } : { ...translations, ...bundled };
+  const merged = fallback
+    ? mergeLocaleStrings(EN_STRINGS, bundled)
+    : mergeLocaleStrings(EN_STRINGS, translations, bundled);
 
   memory[lang] = merged;
-  if (!fallback) {
-    try {
-      localStorage.setItem(`${CACHE_PREFIX}${lang}`, JSON.stringify(merged));
-    } catch {
-      // quota exceeded
-    }
+  try {
+    localStorage.setItem(`${CACHE_PREFIX}${lang}`, JSON.stringify(merged));
+  } catch {
+    // quota exceeded
   }
   return merged;
+}
+
+export function clearLocaleMemory(lang) {
+  if (lang) {
+    delete memory[lang];
+    try {
+      localStorage.removeItem(`${CACHE_PREFIX}${lang}`);
+    } catch {
+      // ignore
+    }
+    return;
+  }
+  for (const key of Object.keys(memory)) {
+    if (key !== "en") delete memory[key];
+  }
 }

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAppState } from "../../state/appState.jsx";
 import { useTranslation } from "../../hooks/useTranslation.js";
+import { MframapaLogo } from "../../components/brand/MframapaLogo.jsx";
 
 const STEP_KEYS = [
   { title: "pwa.onboarding.step1_title", body: "pwa.onboarding.step1_body" },
@@ -19,6 +20,9 @@ export function OnboardingScreen({ canInstall, onInstall }) {
   return (
     <div className="min-h-screen bg-slate-950 px-5 py-16 text-slate-100">
       <div className="mx-auto max-w-md">
+        <div className="flex justify-center mb-8">
+          <MframapaLogo size="lg" />
+        </div>
         <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-400">
           {t("pwa.onboarding.badge")}
         </p>

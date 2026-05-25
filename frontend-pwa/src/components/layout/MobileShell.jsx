@@ -2,6 +2,7 @@ import { Download, Moon, Sun, User } from "lucide-react";
 import { BottomNav } from "../navigation/BottomNav.jsx";
 import { useAppState } from "../../state/appState.jsx";
 import { useTranslation } from "../../hooks/useTranslation.js";
+import { MframapaLogo } from "../brand/MframapaLogo.jsx";
 
 export function MobileShell({ children, canInstall, onInstall }) {
   const {
@@ -27,9 +28,10 @@ export function MobileShell({ children, canInstall, onInstall }) {
     <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
       <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/90 px-4 py-3 backdrop-blur dark:border-slate-800 dark:bg-slate-950/90">
         <div className="mx-auto flex max-w-7xl items-center justify-between">
-          <div>
-            <p className="text-sm font-semibold tracking-tight text-emerald-600">{t("pwa.home.badge")}</p>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+          <div className="flex items-center gap-3">
+            <MframapaLogo size="sm" />
+            <span className="h-5 w-px bg-slate-200 dark:bg-slate-800" />
+            <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-none">
               {session.user?.email ?? t("pwa.shell.signed_in")}
             </p>
           </div>

@@ -8,9 +8,7 @@ import { aqiCategoryKey } from "../../utils/i18nHelpers.js";
 import { StateMessage } from "../../components/feedback/StateMessage.jsx";
 import { useCityPack } from "../../hooks/useCityPack.js";
 
-const MAPBOX_TOKEN =
-  import.meta.env.VITE_MAPBOX_TOKEN ||
-  "pk.eyJ1IjoieW9hZGplaSIsImEiOiJjbWprcjI4b3QyNHBpM2Nxem4xM2VwNWF4In0.z6NbrlGRmQdT-vlYk5bjMw";
+const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN ?? "";
 const MapCanvas = lazy(() => import("./MapCanvas.jsx").then((module) => ({ default: module.MapCanvas })));
 
 const INITIAL_VIEW = {
@@ -171,6 +169,14 @@ export function CoreFeatureScreen({ isOnline }) {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
+        setViewState((prev) => ({
+          ...prev,
+          latitude,
+          longitude,
+          zoom: 15,
+          pitch: 50,
+          transitionDuration: 1400,
+        }));
         runCheckByCoords(latitude, longitude);
       },
       () => setError(t("pwa.core.location_error"))
