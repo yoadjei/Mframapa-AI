@@ -1,8 +1,12 @@
 import axios from 'axios';
 import { PredictionResult } from '../store/useStore';
-import { SUPPORTED_LANGUAGES } from '../utils/constants';
+import { API_BASE_URL, languageName } from '../utils/constants';
 
-const BASE_URL = process.env.EXPO_PUBLIC_API_URL ?? 'https://mframapa.ai';
+const BASE_URL = API_BASE_URL;
+
+if (__DEV__) {
+  console.log('[Mframapa] API base URL:', BASE_URL);
+}
 
 const client = axios.create({
   baseURL: BASE_URL,
@@ -61,8 +65,7 @@ export async function getPrediction(
     params: { lat, lon, name },
   });
 
-  const languageName =
-    SUPPORTED_LANGUAGES.find((l) => l.code === language)?.name ?? language;
+  const targetLanguageName = languageName(language);
 
   let insight: string | undefined;
   try {
@@ -71,7 +74,7 @@ export async function getPrediction(
       aqi_category: data.aqi_category,
       weather: data.weather,
       language,
-      language_name: languageName,
+      language_name: targetLanguageName,
     });
   } catch {
     insight = undefined;
@@ -103,7 +106,7 @@ export async function translateUiStrings(
     strings,
     target_language: targetLanguage,
     target_language_name: targetLanguageName ?? '',
-  });
+  }, { timeout: 90000 });
   return {
     translations: data.translations,
     fallback: data.fallback ?? false,

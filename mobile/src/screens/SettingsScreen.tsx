@@ -1,419 +1,188 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  Switch,
-  StyleSheet,
+  View, Text, StyleSheet, ScrollView, Switch, TouchableOpacity, Platform,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import { MframapaLogo } from '../components/MframapaLogo';
-import { InfoModal } from '../components/InfoModal';
-import { ThemeMode, useStore } from '../store/useStore';
-import { getColors, spacing, borderRadius, fontSize } from '../theme';
+import { SegmentedControl } from '../components/ui/SegmentedControl';
+import { getColors, Colors } from '../theme';
 import { useTheme } from '../hooks/useTheme';
+import { useStore } from '../store/useStore';
 import { useTranslation } from '../hooks/useTranslation';
-const LANGUAGE_GROUPS = [
-  {
-    regionKey: 'settings.region.international',
-    items: [
-      { code: 'en', label: 'English' },
-      { code: 'fr', label: 'Français' },
-      { code: 'pt', label: 'Português' },
-      { code: 'es', label: 'Español' },
-      { code: 'ar', label: 'العربية' },
-    ],
-  },
-  {
-    regionKey: 'settings.region.west_africa',
-    items: [
-      { code: 'ha', label: 'Hausa' },
-      { code: 'yo', label: 'Yoruba' },
-      { code: 'ig', label: 'Igbo' },
-      { code: 'tw', label: 'Twi' },
-      { code: 'wo', label: 'Wolof' },
-      { code: 'ga', label: 'Ga' },
-    ],
-  },
-  {
-    regionKey: 'settings.region.east_africa',
-    items: [
-      { code: 'sw', label: 'Swahili' },
-      { code: 'am', label: 'አማርኛ' },
-      { code: 'ti', label: 'ትግርኛ' },
-      { code: 'so', label: 'Somali' },
-      { code: 'rw', label: 'Kinyarwanda' },
-      { code: 'rn', label: 'Kirundi' },
-    ],
-  },
-  {
-    regionKey: 'settings.region.central_southern',
-    items: [
-      { code: 'zu', label: 'Zulu' },
-      { code: 'xh', label: 'Xhosa' },
-      { code: 'af', label: 'Afrikaans' },
-      { code: 'sn', label: 'Shona' },
-      { code: 'nd', label: 'Ndebele' },
-      { code: 'st', label: 'Sesotho' },
-      { code: 'tn', label: 'Tswana' },
-      { code: 'ss', label: 'Swati' },
-      { code: 'ny', label: 'Chichewa' },
-      { code: 'mg', label: 'Malagasy' },
-    ],
-  },
-] as const;
-
-const ABOUT_LINKS = [
-  { id: 'privacy', labelKey: 'settings.about.privacy' },
-  { id: 'terms', labelKey: 'settings.about.terms' },
-  { id: 'licenses', labelKey: 'settings.about.licenses' },
-  { id: 'contact', labelKey: 'settings.about.contact' },
-  { id: 'credits', labelKey: 'settings.about.credits' },
-] as const;
 
 export function SettingsScreen() {
-  const { isDark, themeMode, setThemeMode, systemTheme } = useTheme();
+  const { isDark } = useTheme();
   const colors = getColors(isDark);
   const insets = useSafeAreaInsets();
+  const navigation = useNavigation<any>();
   const { t } = useTranslation();
 
-  const [alertsEnabled, setAlertsEnabled] = useState(true);
-  const [privacyMode, setPrivacyMode] = useState(false);
-  const [liteMode, setLiteMode] = useState(false);
-  const [legalId, setLegalId] = useState<string | null>(null);
+  const themeMode       = useStore((s) => s.themeMode);
+  const setThemeMode    = useStore((s) => s.setThemeMode);
+  const alertsEnabled   = useStore((s) => s.alertsEnabled);
+  const setAlertsEnabled = useStore((s) => s.setAlertsEnabled);
+  const liteMode        = useStore((s) => s.liteMode);
+  const setLiteMode     = useStore((s) => s.setLiteMode);
+  const dataAnalytics   = useStore((s) => s.dataAnalytics);
+  const setDataAnalytics = useStore((s) => s.setDataAnalytics);
+  const locationSharing  = useStore((s) => s.locationSharing);
+  const setLocationSharing = useStore((s) => s.setLocationSharing);
+  const signOut = useStore((s) => s.signOut);
 
-  const legalTitle = legalId ? t(`legal.${legalId}.title`) : '';
-  const legalBody = legalId ? t(`legal.${legalId}.body`) : '';
+  function handleSignOut() {
+    signOut();
+  }
+
+  function locationSharingLabel(value: 'off' | 'balanced' | 'precise') {
+    return t(`settings.location_${value}`);
+  }
+
+  const THEME_MODES = ['light', 'dark', 'system'] as const;
+  const themeLabels = [t('settings.light'), t('settings.dark'), t('settings.system')];
+  const themeIndex = THEME_MODES.indexOf(themeMode as typeof THEME_MODES[number]);
+
+  const sectionLabel = (label: string) => (
+    <Text style={[styles.sectionLabel, { color: isDark ? Colors.textSecondary : Colors.lightTextSecondary }]}>
+      {label}
+    </Text>
+  );
+
+  const toggleRow = (
+    label: string,
+    value: boolean,
+    onChange: (v: boolean) => void,
+    sublabel?: string,
+  ) => (
+    <View style={[styles.row, { borderBottomColor: colors.border }]}>
+      <View style={{ flex: 1 }}>
+        <Text style={[styles.rowLabel, { color: colors.text }]}>{label}</Text>
+        {sublabel ? <Text style={[styles.rowSublabel, { color: colors.subtext }]}>{sublabel}</Text> : null}
+      </View>
+      <Switch
+        value={value}
+        onValueChange={onChange}
+        trackColor={{ false: colors.border, true: Colors.brandGreen }}
+        thumbColor={Platform.OS === 'android' ? (value ? Colors.brandGreen : '#fff') : '#fff'}
+        ios_backgroundColor={colors.border}
+      />
+    </View>
+  );
 
   return (
-    <>
+    <View style={[styles.root, { backgroundColor: colors.background }]}>
       <ScrollView
-        style={[styles.root, { backgroundColor: colors.background }]}
-        contentContainerStyle={{ paddingBottom: insets.bottom + 120 }}
+        contentContainerStyle={[styles.content, { paddingTop: insets.top + 12, paddingBottom: insets.bottom + 100 }]}
         showsVerticalScrollIndicator={false}
       >
-        <View style={{ height: insets.top }} />
+        {Platform.OS === 'android' ? (
+          <View style={styles.androidHeader}>
+            <Text style={[styles.androidTitle, { color: colors.text }]}>{t('settings.title').toUpperCase()}</Text>
+          </View>
+        ) : null}
 
-        <View style={styles.header}>
-          <Text style={[styles.title, { color: colors.text }]}>{t('settings.title').toUpperCase()}</Text>
-        </View>
+        <Text style={[styles.title, { color: colors.text }]}>{t('settings.title')}</Text>
 
-        <View style={[styles.sectionCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <Text style={[styles.sectionHeading, { color: colors.accentStrong }]}>{t('settings.appearance')}</Text>
-          <Text style={[styles.rowTitle, { color: colors.text }]}>{t('settings.theme')}</Text>
-          <View style={[styles.segmented, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-            {(['light', 'dark', 'system'] as ThemeMode[]).map((mode) => (
-              <TouchableOpacity
-                key={mode}
-                onPress={() => setThemeMode(mode)}
-                style={[
-                  styles.segment,
-                  themeMode === mode && { backgroundColor: colors.accentStrong },
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.segmentText,
-                    { color: themeMode === mode ? '#FFFFFF' : colors.text },
-                  ]}
-                >
-                  {mode === 'system'
-                    ? `${t('settings.system')} (${capitalize(systemTheme)})`
-                    : t(`settings.${mode}`)}
-                </Text>
-              </TouchableOpacity>
-            ))}
+        {/* Appearance */}
+        {sectionLabel(t('settings.appearance'))}
+        <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <View style={[styles.row, { borderBottomColor: colors.border }]}>
+            <Text style={[styles.rowLabel, { color: colors.text }]}>{t('settings.theme')}</Text>
+            <SegmentedControl
+              options={themeLabels}
+              selectedIndex={themeIndex === -1 ? 2 : themeIndex}
+              onSelectIndex={(i) => setThemeMode(THEME_MODES[i])}
+              isDark={isDark}
+            />
           </View>
         </View>
 
-        <View style={[styles.sectionCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <Text style={[styles.sectionHeading, { color: colors.accentStrong }]}>{t('settings.preferences')}</Text>
-          <PreferenceRow
-            label={t('settings.notifications')}
-            sublabel={t('settings.notifications_sub')}
-            colors={colors}
-            control={
-              <Switch
-                value={alertsEnabled}
-                onValueChange={setAlertsEnabled}
-                trackColor={{ false: colors.border, true: colors.accent + '88' }}
-                thumbColor={alertsEnabled ? colors.accent : colors.subtext}
-              />
-            }
-          />
-          <PreferenceRow
-            label={t('settings.privacy')}
-            sublabel={t('settings.privacy_sub')}
-            colors={colors}
-            control={
-              <Switch
-                value={privacyMode}
-                onValueChange={setPrivacyMode}
-                trackColor={{ false: colors.border, true: colors.accent + '88' }}
-                thumbColor={privacyMode ? colors.accent : colors.subtext}
-              />
-            }
-          />
-          <PreferenceRow
-            label={t('settings.lite')}
-            sublabel={t('settings.lite_sub')}
-            colors={colors}
-            control={
-              <Switch
-                value={liteMode}
-                onValueChange={setLiteMode}
-                trackColor={{ false: colors.border, true: colors.accent + '88' }}
-                thumbColor={liteMode ? colors.accent : colors.subtext}
-              />
-            }
-            last
-          />
+        {/* Notifications */}
+        {sectionLabel(t('settings.notifications'))}
+        <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          {toggleRow(t('settings.enable_alerts'), alertsEnabled, setAlertsEnabled)}
         </View>
 
-        <View style={[styles.sectionCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <Text style={[styles.sectionHeading, { color: colors.accentStrong }]}>{t('settings.language')}</Text>
-          <LanguageSelector colors={colors} />
-        </View>
-
-        <View style={[styles.aboutCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <View style={styles.aboutHeader}>
-            <MframapaLogo size="lg" />
-            <Text style={[styles.versionText, { color: colors.subtext }]}>{t('settings.version')}</Text>
-          </View>
-
-          {ABOUT_LINKS.map((link, index) => (
+        {/* Privacy */}
+        {sectionLabel(t('settings.privacy_section'))}
+        <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <View style={[styles.row, { borderBottomColor: colors.border }]}>
+            <Text style={[styles.rowLabel, { color: colors.text }]}>{t('settings.location_sharing')}</Text>
             <TouchableOpacity
-              key={link.id}
-              onPress={() => setLegalId(link.id)}
-              style={[
-                styles.aboutRow,
-                index < ABOUT_LINKS.length - 1 && {
-                  borderBottomWidth: 0.5,
-                  borderBottomColor: colors.border,
-                },
-              ]}
+              onPress={() => {
+                const opts: ('off' | 'balanced' | 'precise')[] = ['off', 'balanced', 'precise'];
+                const next = opts[(opts.indexOf(locationSharing) + 1) % opts.length];
+                setLocationSharing(next);
+              }}
+              style={styles.dropdownBtn}
             >
-              <Text style={[styles.aboutLabel, { color: colors.text }]}>{t(link.labelKey)}</Text>
-              <Ionicons name="chevron-forward" size={16} color={colors.subtext} />
+              <Text style={[styles.dropdownText, { color: colors.text }]}>
+                {locationSharingLabel(locationSharing)}
+              </Text>
+              <Ionicons name="chevron-down" size={14} color={colors.subtext} />
             </TouchableOpacity>
-          ))}
+          </View>
+          {toggleRow(t('settings.data_analytics'), dataAnalytics, setDataAnalytics)}
         </View>
 
-        <Text style={[styles.madeWith, { color: colors.subtext }]}>{t('settings.made_with')}</Text>
+        {/* Performance */}
+        {sectionLabel(t('settings.performance'))}
+        <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          {toggleRow(t('settings.lite'), liteMode, setLiteMode, Platform.OS === 'android' ? t('settings.lite_unavailable') : undefined)}
+        </View>
 
-        <TouchableOpacity style={[styles.signOutBtn, { borderColor: colors.danger + '33' }]}>
-          <Text style={[styles.signOutText, { color: colors.danger }]}>{t('settings.sign_out')}</Text>
+        {/* Sign out */}
+        <TouchableOpacity onPress={handleSignOut} style={styles.signOut}>
+          <Text style={styles.signOutText}>{t('settings.sign_out')}</Text>
         </TouchableOpacity>
       </ScrollView>
-
-      <InfoModal
-        visible={legalId != null}
-        title={legalTitle}
-        body={legalBody}
-        onClose={() => setLegalId(null)}
-      />
-    </>
-  );
-}
-
-function PreferenceRow({
-  label,
-  sublabel,
-  colors,
-  control,
-  last,
-}: {
-  label: string;
-  sublabel: string;
-  colors: ReturnType<typeof getColors>;
-  control: React.ReactNode;
-  last?: boolean;
-}) {
-  return (
-    <View
-      style={[
-        styles.preferenceRow,
-        !last && { borderBottomWidth: 0.5, borderBottomColor: colors.border },
-      ]}
-    >
-      <View style={{ flex: 1 }}>
-        <Text style={[styles.rowTitle, { color: colors.text }]}>{label}</Text>
-        <Text style={[styles.rowSubtitle, { color: colors.subtext }]}>{sublabel}</Text>
-      </View>
-      {control}
     </View>
   );
-}
-
-function LanguageSelector({ colors }: { colors: ReturnType<typeof getColors> }) {
-  const { t } = useTranslation();
-  const language = useStore((s) => s.language);
-  const setLanguage = useStore((s) => s.setLanguage);
-
-  return (
-    <View>
-      {LANGUAGE_GROUPS.map((group, gi) => (
-        <View key={group.regionKey} style={gi > 0 ? { marginTop: spacing.md } : undefined}>
-          <Text style={[styles.langGroupLabel, { color: colors.subtext }]}>{t(group.regionKey)}</Text>
-          <View style={[styles.langGrid]}>
-            {group.items.map((item) => {
-              const active = language === item.code;
-              return (
-                <TouchableOpacity
-                  key={item.code}
-                  onPress={() => setLanguage(item.code)}
-                  style={[
-                    styles.langChip,
-                    {
-                      backgroundColor: active ? colors.accentStrong : colors.surface,
-                      borderColor: active ? colors.accentStrong : colors.border,
-                    },
-                  ]}
-                >
-                  <Text
-                    style={[
-                      styles.langChipText,
-                      { color: active ? '#FFFFFF' : colors.text },
-                    ]}
-                    numberOfLines={1}
-                  >
-                    {item.label}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-        </View>
-      ))}
-    </View>
-  );
-}
-
-function capitalize(value: string) {
-  return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
-  header: {
-    paddingHorizontal: spacing.md,
-    paddingTop: spacing.sm,
-    paddingBottom: spacing.sm,
+  content: { paddingHorizontal: 16 },
+  androidHeader: { marginBottom: 8 },
+  androidTitle: { fontSize: 16, fontWeight: '700', letterSpacing: 0.5 },
+  title: { fontSize: 28, fontWeight: '800', marginBottom: 20 },
+  sectionLabel: {
+    fontSize: 13,
+    fontWeight: '600',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    marginTop: 20,
+    marginBottom: 6,
   },
-  title: {
-    fontSize: fontSize.xxl,
-    fontWeight: '800',
-    letterSpacing: 0.8,
-  },
-  sectionCard: {
-    marginHorizontal: spacing.md,
-    marginBottom: spacing.md,
-    borderRadius: 22,
-    borderWidth: 1,
-    padding: spacing.md,
-  },
-  sectionHeading: {
-    fontSize: fontSize.sm,
-    fontWeight: '700',
-    marginBottom: spacing.md,
-  },
-  segmented: {
+  card: {
     borderRadius: 16,
     borderWidth: 1,
-    flexDirection: 'row',
-    padding: 3,
-    gap: 4,
-  },
-  segment: {
-    flex: 1,
-    borderRadius: 13,
-    paddingVertical: 10,
-    alignItems: 'center',
-  },
-  segmentText: {
-    fontSize: fontSize.sm,
-    fontWeight: '700',
-  },
-  preferenceRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-    gap: spacing.md,
-  },
-  rowTitle: {
-    fontSize: fontSize.md,
-    fontWeight: '600',
-  },
-  rowSubtitle: {
-    fontSize: fontSize.sm,
-    marginTop: 3,
-  },
-  aboutCard: {
-    marginHorizontal: spacing.md,
-    marginTop: spacing.sm,
-    marginBottom: spacing.md,
-    borderRadius: 24,
-    borderWidth: 1,
-    paddingTop: spacing.xl,
     overflow: 'hidden',
   },
-  aboutHeader: {
-    alignItems: 'center',
-    marginBottom: spacing.lg,
-    gap: spacing.xs,
-  },
-  versionText: {
-    fontSize: fontSize.sm,
-  },
-  aboutRow: {
+  row: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: spacing.lg,
-    paddingVertical: 15,
-  },
-  aboutLabel: {
-    flex: 1,
-    fontSize: fontSize.md,
-  },
-  madeWith: {
-    textAlign: 'center',
-    fontSize: fontSize.sm,
-    marginTop: spacing.md,
-    marginBottom: spacing.sm,
-  },
-  signOutBtn: {
-    marginHorizontal: spacing.md,
-    borderRadius: borderRadius.full,
-    borderWidth: 1,
+    paddingHorizontal: 16,
     paddingVertical: 14,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    gap: 12,
+    justifyContent: 'space-between',
+  },
+  rowLabel: { fontSize: 15, fontWeight: '500' },
+  rowSublabel: { fontSize: 12, marginTop: 2 },
+  dropdownBtn: {
+    flexDirection: 'row',
     alignItems: 'center',
+    gap: 6,
+  },
+  dropdownText: { fontSize: 14 },
+  signOut: {
+    marginTop: 32,
+    alignSelf: 'center',
   },
   signOutText: {
-    fontSize: fontSize.md,
-    fontWeight: '700',
-  },
-  langGroupLabel: {
-    fontSize: fontSize.xs,
-    fontWeight: '700',
-    textTransform: 'uppercase',
-    letterSpacing: 0.8,
-    marginBottom: spacing.sm,
-  },
-  langGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.sm,
-  },
-  langChip: {
-    borderRadius: 20,
-    borderWidth: 1,
-    paddingVertical: 7,
-    paddingHorizontal: 14,
-  },
-  langChipText: {
-    fontSize: fontSize.sm,
-    fontWeight: '600',
+    color: Colors.danger,
+    fontSize: 16,
+    fontWeight: '500',
   },
 });

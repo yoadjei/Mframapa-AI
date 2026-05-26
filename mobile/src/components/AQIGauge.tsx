@@ -3,6 +3,7 @@ import { View, Text } from 'react-native';
 import { Svg, Circle, Path } from 'react-native-svg';
 import { getAQIColorFromCategory, pm25ToAQI } from '../utils/aqi';
 import { getColors, fontSize, spacing } from '../theme';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface AQIGaugeProps {
   pm25: number;
@@ -15,6 +16,7 @@ export function AQIGauge({ pm25, category, isDark, size = 140 }: AQIGaugeProps) 
   const colors = getColors(isDark);
   const aqiColor = getAQIColorFromCategory(category);
   const aqi = pm25ToAQI(pm25);
+  const { t } = useTranslation();
 
   const radius = (size - 20) / 2;
   const cx = size / 2;
@@ -68,7 +70,7 @@ export function AQIGauge({ pm25, category, isDark, size = 140 }: AQIGaugeProps) 
           {aqi}
         </Text>
         <Text style={{ color: colors.subtext, fontSize: fontSize.xs, marginTop: -4 }}>
-          AQI
+          {t('common.aqi')}
         </Text>
       </View>
 

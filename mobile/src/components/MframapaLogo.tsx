@@ -21,7 +21,7 @@ export function MframapaLogo({ size = 'md' }: MframapaLogoProps) {
 
   return (
     <View style={styles.row}>
-      <CloudRainIcon size={s.icon} />
+      <CloudIcon size={s.icon} color={colors.accent} />
       <View style={[styles.textRow, { gap: s.gap / 2 }]}>
         <Text style={[styles.name, { fontSize: s.text }]}>
           <Text style={[styles.mLetter, { color: colors.accent }]}>M</Text>
@@ -32,24 +32,22 @@ export function MframapaLogo({ size = 'md' }: MframapaLogoProps) {
   );
 }
 
-function CloudRainIcon({ size }: { size: number }) {
+function CloudIcon({ size, color }: { size: number; color: string }) {
   return (
     <Svg
       width={size}
       height={size}
       viewBox="0 0 24 24"
       fill="none"
+      stroke={color}
+      strokeWidth={2}
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      <Path
-        d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"
-        stroke="#00FFB3"
-        strokeWidth={2}
-      />
-      <Path d="M16 14v6" stroke="#00FFB3" strokeWidth={2} />
-      <Path d="M8 14v6" stroke="#00FFB3" strokeWidth={2} />
-      <Path d="M12 16v6" stroke="#00FFB3" strokeWidth={2} />
+      <Path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242" />
+      <Path d="M8 14v7" />
+      <Path d="M12 16v7" />
+      <Path d="M16 14v7" />
     </Svg>
   );
 }
@@ -75,3 +73,5 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
 });
+
+

@@ -6,6 +6,7 @@ export function aqiCategoryKey(category: string): string {
   if (lower.includes('unhealthy') && !lower.includes('sensitive')) return 'aqi.unhealthy';
   if (lower.includes('sensitive')) return 'aqi.sensitive';
   if (lower.includes('moderate')) return 'aqi.moderate';
+  if (lower === 'high') return 'aqi.high';
   return 'aqi.good';
 }
 

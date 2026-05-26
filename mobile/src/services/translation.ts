@@ -1,6 +1,12 @@
 import { EN_STRINGS } from '../locales/en';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { translateUiStrings } from './api';
+import { languageName } from '../utils/constants';
+import { mergeLocaleStrings } from '../utils/mergeLocale';
 
 const memory: Record<string, Record<string, string>> = { en: EN_STRINGS };
+const bundledCache: Record<string, Record<string, string>> = {};
+const CACHE_PREFIX = 'mframapa:mobile:locale:v4:';
 
 const BUNDLED: Record<string, () => Record<string, string>> = {
   en: () => require('../locales/en').default,
@@ -32,21 +38,85 @@ const BUNDLED: Record<string, () => Record<string, string>> = {
   ga: () => require('../locales/ga').default,
 };
 
-export function getLocaleStrings(lang: string): Record<string, string> {
-  if (memory[lang]) return memory[lang];
+function loadBundled(lang: string): Record<string, string> {
+  if (bundledCache[lang]) return bundledCache[lang];
   const loader = BUNDLED[lang];
-  if (loader) {
-    try {
-      memory[lang] = { ...EN_STRINGS, ...loader() };
-    } catch {
-      memory[lang] = EN_STRINGS;
-    }
-  } else {
-    memory[lang] = EN_STRINGS;
+  if (!loader) return {};
+  try {
+    bundledCache[lang] = loader();
+    return bundledCache[lang];
+  } catch {
+    return {};
   }
-  return memory[lang];
+}
+
+export function getLocaleStrings(lang: string): Record<string, string> {
+  if (lang === 'system') return EN_STRINGS;
+  // Return fully-loaded strings if ensureLocaleLoaded has completed.
+  if (memory[lang]) return memory[lang];
+  // During the async load, return bundled+en immediately for instant display.
+  // Do NOT write to memory here — ensureLocaleLoaded must remain the sole writer
+  // so it doesn't short-circuit before fetching Gemini translations.
+  const bundled = loadBundled(lang);
+  return mergeLocaleStrings(EN_STRINGS, {}, bundled);
 }
 
 export async function ensureLocaleLoaded(lang: string): Promise<Record<string, string>> {
-  return getLocaleStrings(lang);
+  if (lang === 'en' || lang === 'system') return EN_STRINGS;
+  if (memory[lang]) return memory[lang];
+
+  try {
+    const cached = await AsyncStorage.getItem(`${CACHE_PREFIX}${lang}`);
+    if (cached) {
+      memory[lang] = JSON.parse(cached) as Record<string, string>;
+      return memory[lang];
+    }
+  } catch {
+    // ignore corrupt cache
+  }
+
+  const bundled = loadBundled(lang);
+
+  // Exclude legal sections — long bodies inflate token count and are acceptable in English.
+  const UI_STRINGS = Object.fromEntries(
+    Object.entries(EN_STRINGS).filter(([k]) => !k.startsWith('legal.'))
+  );
+
+  try {
+    const { translations, fallback } = await translateUiStrings(
+      UI_STRINGS,
+      lang,
+      languageName(lang)
+    );
+    const merged = fallback
+      ? mergeLocaleStrings(EN_STRINGS, bundled)
+      : mergeLocaleStrings(EN_STRINGS, translations, bundled);
+    memory[lang] = merged;
+
+    try {
+      await AsyncStorage.setItem(`${CACHE_PREFIX}${lang}`, JSON.stringify(merged));
+    } catch {
+      // ignore cache writes
+    }
+
+    return merged;
+  } catch {
+    memory[lang] = mergeLocaleStrings(EN_STRINGS, bundled);
+    return memory[lang];
+  }
+}
+
+export async function clearLocaleCache(lang?: string): Promise<void> {
+  if (lang) {
+    delete memory[lang];
+    try {
+      await AsyncStorage.removeItem(`${CACHE_PREFIX}${lang}`);
+    } catch {
+      // ignore
+    }
+    return;
+  }
+  for (const key of Object.keys(memory)) {
+    if (key !== 'en') delete memory[key];
+  }
 }

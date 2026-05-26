@@ -1,100 +1,94 @@
-export const AQI_COLORS = {
-  good: '#10B981',
-  moderate: '#FBBF24',
-  sensitive: '#F97316',
-  unhealthy: '#EF4444',
-  hazardous: '#A855F7',
+export { Colors, getAQIColor } from './colors';
+export { Typography } from './typography';
+
+export const Spacing = {
+  xs: 4, sm: 8, md: 16, lg: 24, xl: 32, xxl: 48,
 } as const;
 
-export type AQICategory = keyof typeof AQI_COLORS;
-
-export function getAQIColor(category: string): string {
-  const map: Record<string, string> = {
-    good: AQI_COLORS.good,
-    moderate: AQI_COLORS.moderate,
-    'unhealthy for sensitive groups': AQI_COLORS.sensitive,
-    sensitive: AQI_COLORS.sensitive,
-    unhealthy: AQI_COLORS.unhealthy,
-    'very unhealthy': AQI_COLORS.hazardous,
-    hazardous: AQI_COLORS.hazardous,
-  };
-  return map[category.toLowerCase()] ?? AQI_COLORS.moderate;
-}
-
-export const HERO_GRADIENT: readonly [string, string, string] = [
-  '#23C28A',
-  '#168966',
-  '#12354E',
-];
-
-const darkColors = {
-  background: '#0B1018',
-  card: '#161D28',
-  surface: '#202938',
-  text: '#F7FAFC',
-  subtext: '#94A3B8',
-  accent: '#23C28A',
-  accentDim: '#143F34',
-  border: '#253243',
-  tabBar: '#0F151F',
-  inputBackground: '#171E29',
-  danger: '#EF4444',
-  warning: '#F4C34D',
-  accentStrong: '#169A6D',
-  surfaceAlt: '#111827',
-  successTint: '#123A30',
-  overlay: 'rgba(11, 16, 24, 0.7)',
-};
-
-const lightColors = {
-  background: '#F4FAF7',
-  card: '#FFFFFF',
-  surface: '#ECF5F1',
-  text: '#111827',
-  subtext: '#6B7280',
-  accent: '#1BAA78',
-  accentDim: '#DBF5EA',
-  border: '#D8E6DF',
-  tabBar: '#FFFFFF',
-  inputBackground: '#FFFFFF',
-  danger: '#EF4444',
-  warning: '#F4C34D',
-  accentStrong: '#0F8C63',
-  surfaceAlt: '#F8FCFA',
-  successTint: '#E7F8F0',
-  overlay: 'rgba(17, 24, 39, 0.12)',
-};
-
-export const spacing = {
-  xs: 4,
+export const Radius = {
   sm: 8,
-  md: 16,
-  lg: 24,
-  xl: 32,
-  xxl: 48,
-} as const;
-
-export const borderRadius = {
-  sm: 8,
-  md: 14,
-  lg: 22,
-  xl: 30,
+  md: 12,
+  lg: 16,
+  xl: 24,
+  pill: 999,
   full: 9999,
 } as const;
 
-export const fontSize = {
-  xs: 11,
-  sm: 13,
-  md: 15,
-  lg: 18,
-  xl: 22,
-  xxl: 28,
-  xxxl: 36,
-  hero: 62,
+export const Shadow = {
+  card: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 12,
+    elevation: 6,
+  },
 } as const;
+
+import { Colors } from './colors';
+
+const darkColors = {
+  background:      Colors.bgPrimary,
+  card:            Colors.bgCard,
+  surface:         Colors.bgSecondary,
+  cardAlt:         Colors.bgCardAlt,
+  text:            Colors.textPrimary,
+  subtext:         Colors.textSecondary,
+  muted:           Colors.textMuted,
+  accent:          Colors.brandGreen,
+  accentDim:       '#123127',
+  border:          '#25303C',
+  tabBar:          Colors.bgSecondary,
+  inputBackground: Colors.bgCardAlt,
+  danger:          Colors.danger,
+  warning:         Colors.warning,
+  success:         Colors.success,
+  enterprise:      Colors.enterprise,
+  overlay:         'rgba(11,15,20,0.8)',
+};
+
+const lightColors = {
+  background:      Colors.lightBg,
+  card:            Colors.lightCard,
+  surface:         '#EAF5EF',
+  cardAlt:         '#F0F9F4',
+  text:            Colors.lightTextPrimary,
+  subtext:         Colors.lightTextSecondary,
+  muted:           '#8BA99A',
+  accent:          Colors.brandGreen,
+  accentDim:       '#D6F5EC',
+  border:          Colors.lightBorder,
+  tabBar:          Colors.lightCard,
+  inputBackground: '#FFFFFF',
+  danger:          Colors.danger,
+  warning:         Colors.warning,
+  success:         Colors.success,
+  enterprise:      Colors.enterprise,
+  overlay:         'rgba(10,26,20,0.15)',
+};
 
 export function getColors(isDark: boolean) {
   return isDark ? darkColors : lightColors;
 }
 
 export type AppColors = typeof darkColors;
+
+// Legacy re-exports for backward compatibility
+export const AQI_COLORS = {
+  good:     Colors.aqiGood,
+  moderate: Colors.aqiModerate,
+  sensitive: Colors.aqiHigh,
+  unhealthy: Colors.aqiUnhealthy,
+  hazardous: Colors.aqiVeryUnhealthy,
+} as const;
+
+export const HERO_GRADIENT: readonly [string, string, string] = [
+  '#1B2A38',
+  '#121A24',
+  '#0B0F14',
+];
+
+export const spacing = Spacing;
+export const borderRadius = Radius;
+export const fontSize = {
+  xs: 11, sm: 13, md: 15, lg: 18, xl: 22, xxl: 28, xxxl: 36, hero: 56,
+} as const;

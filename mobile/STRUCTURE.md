@@ -50,7 +50,7 @@ User action → useAQI hook → api.ts (Axios) → /api/v1/predict
 - Reduces APK size
 
 ### 2. Lightweight Map
-- `react-native-maps` with OpenStreetMap tiles (free)
+- Mapbox GL JS via `AfricaMapView` WebView (`EXPO_PUBLIC_MAPBOX_TOKEN`)
 - No heavy commercial map SDKs
 
 ### 3. Minimal Dependencies

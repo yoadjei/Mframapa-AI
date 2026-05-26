@@ -1,172 +1,102 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  Switch,
-  StyleSheet,
+  View, Text, StyleSheet, FlatList, TouchableOpacity, Platform,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { requestPermissions, cancelAllNotifications, addNotificationListener } from '../services/notifications';
-import { getColors, spacing, borderRadius, fontSize } from '../theme';
 import { useNavigation } from '@react-navigation/native';
+import { getColors, Colors } from '../theme';
 import { useTheme } from '../hooks/useTheme';
+import { useStore, Notification } from '../store/useStore';
 import { useTranslation } from '../hooks/useTranslation';
-
-interface NotificationItem {
-  id: string;
-  title: string;
-  body: string;
-  date: Date;
-  read: boolean;
-}
 
 export function AlertsScreen() {
   const { isDark } = useTheme();
   const colors = getColors(isDark);
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<any>();
+  const notifications         = useStore((s) => s.notifications);
+  const markAllNotificationsRead = useStore((s) => s.markAllNotificationsRead);
+  const markNotificationRead  = useStore((s) => s.markNotificationRead);
   const { t } = useTranslation();
 
-  const [enabled, setEnabled] = useState(false);
-  const [alerts, setAlerts] = useState<NotificationItem[]>([]);
+  const iconName = (type: Notification['type']): React.ComponentProps<typeof Ionicons>['name'] => {
+    if (type === 'alert')   return 'notifications';
+    if (type === 'summary') return 'notifications-outline';
+    if (type === 'tip')     return 'notifications-outline';
+    return 'notifications-outline';
+  };
 
-  useEffect(() => {
-    const sub = addNotificationListener((n) => {
-      setAlerts((prev) => [
-        {
-          id: n.request.identifier,
-          title: n.request.content.title ?? t('alerts.default_title'),
-          body: n.request.content.body ?? '',
-          date: new Date(),
-          read: false,
-        },
-        ...prev,
-      ]);
-    });
-    return () => sub.remove();
-  }, []);
-
-  async function handleToggle(value: boolean) {
-    if (value) {
-      const granted = await requestPermissions();
-      setEnabled(granted);
-    } else {
-      await cancelAllNotifications();
-      setEnabled(false);
-    }
+  function notificationText(item: Notification) {
+    return {
+      title: item.titleKey ? t(item.titleKey, item.titleParams) : item.title,
+      subtitle: item.subtitleKey ? t(item.subtitleKey, item.subtitleParams) : item.subtitle,
+      timestamp: item.timestampKey ? t(item.timestampKey, item.timestampParams) : item.timestamp,
+    };
   }
 
-  function markAllRead() {
-    setAlerts((prev) => prev.map((a) => ({ ...a, read: true })));
-  }
-
-  const unreadCount = alerts.filter((a) => !a.read).length;
-
-  return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
-      <View style={{ height: insets.top }} />
-
-      <View style={styles.header}>
-        <Text style={[styles.title, { color: colors.text }]}>{t('alerts.title')}</Text>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('Settings')}
-          style={[styles.settingsBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
-        >
-          <Ionicons name="settings-outline" size={18} color={colors.subtext} />
-        </TouchableOpacity>
-      </View>
-
-      <View style={[styles.toggleCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <View style={styles.toggleInfo}>
-          <Text style={[styles.toggleTitle, { color: colors.text }]}>{t('alerts.toggle_title')}</Text>
-          <Text style={[styles.toggleSub, { color: colors.subtext }]}>
-            {t('alerts.toggle_sub')}
-          </Text>
-        </View>
-        <Switch
-          value={enabled}
-          onValueChange={handleToggle}
-          trackColor={{ false: colors.border, true: colors.accent + '88' }}
-          thumbColor={enabled ? colors.accent : colors.subtext}
-        />
-      </View>
-
-      {unreadCount > 0 ? (
-        <TouchableOpacity onPress={markAllRead} style={styles.markAllRow}>
-          <Text style={[styles.markAllText, { color: colors.accent }]}>
-            {t('alerts.mark_all')} ({unreadCount})
-          </Text>
-        </TouchableOpacity>
-      ) : null}
-
-      {alerts.length === 0 ? (
-        <View style={styles.emptyState}>
-          <View style={[styles.emptyIcon, { backgroundColor: colors.accentDim }]}>
-            <Ionicons name="notifications-outline" size={28} color={colors.accent} />
-          </View>
-          <Text style={[styles.emptyTitle, { color: colors.text }]}>{t('alerts.empty_title')}</Text>
-          <Text style={[styles.emptyText, { color: colors.subtext }]}>
-            {enabled ? t('alerts.empty_on') : t('alerts.empty_off')}
-          </Text>
-        </View>
-      ) : (
-        <FlatList
-          data={alerts}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={{ paddingHorizontal: spacing.md, paddingBottom: 140 }}
-          renderItem={({ item, index }) => (
-            <AlertRow item={item} isDark={isDark} highlight={index < 2 && !item.read} />
-          )}
-          showsVerticalScrollIndicator={false}
-        />
-      )}
-    </View>
-  );
-}
-
-function AlertRow({
-  item,
-  isDark,
-  highlight,
-}: {
-  item: NotificationItem;
-  isDark: boolean;
-  highlight: boolean;
-}) {
-  const colors = getColors(isDark);
-
-  return (
-    <View
-      style={[
-        styles.alertRow,
-        {
-          backgroundColor: highlight ? colors.successTint : colors.card,
-          borderColor: highlight ? colors.accent + '33' : colors.border,
-        },
-      ]}
-    >
-      <View
+  function renderItem({ item }: { item: Notification }) {
+    const unread = !item.read;
+    const text = notificationText(item);
+    return (
+      <TouchableOpacity
+        onPress={() => markNotificationRead(item.id)}
         style={[
-          styles.alertIcon,
-          { backgroundColor: highlight ? colors.accent + '22' : colors.surface },
+          styles.row,
+          { borderColor: colors.border },
+          unread && { backgroundColor: Colors.brandGreen + '12', borderLeftColor: Colors.brandGreen, borderLeftWidth: 3 },
         ]}
       >
-        <Ionicons
-          name={highlight ? 'notifications' : 'information-circle-outline'}
-          size={18}
-          color={highlight ? colors.accent : colors.subtext}
-        />
+        <View style={[
+          styles.iconWrap,
+          { backgroundColor: unread ? Colors.brandGreen + '22' : colors.surface },
+        ]}>
+          <Ionicons
+            name={iconName(item.type)}
+            size={18}
+            color={unread ? Colors.brandGreen : colors.subtext}
+          />
+        </View>
+        <View style={styles.textBlock}>
+          <Text style={[styles.title, { color: colors.text }, unread && styles.titleUnread]}>
+            {text.title}
+          </Text>
+          <Text style={[styles.subtitle, { color: colors.subtext }]}>{text.subtitle}</Text>
+          <Text style={[styles.time, { color: colors.muted }]}>{text.timestamp}</Text>
+        </View>
+        <Ionicons name="notifications-outline" size={16} color={colors.subtext} />
+      </TouchableOpacity>
+    );
+  }
+
+  return (
+    <View style={[styles.root, { backgroundColor: colors.background, paddingTop: insets.top }]}>
+      {/* Header */}
+      <View style={styles.header}>
+        {Platform.OS === 'android' ? (
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Ionicons name="arrow-back" size={24} color={colors.text} />
+          </TouchableOpacity>
+        ) : null}
+        <Text style={[styles.heading, { color: colors.text }]}>{t('alerts.title')}</Text>
+        <View style={styles.headerRight}>
+          <TouchableOpacity onPress={markAllNotificationsRead}>
+            <Text style={styles.markAll}>{t('alerts.mark_all')}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Ionicons name="settings-outline" size={20} color={colors.subtext} />
+          </TouchableOpacity>
+        </View>
       </View>
-      <View style={{ flex: 1 }}>
-        <Text style={[styles.alertTitle, { color: colors.text }]}>{item.title}</Text>
-        <Text style={[styles.alertBody, { color: colors.text }]}>{item.body}</Text>
-        <Text style={[styles.alertTime, { color: colors.subtext }]}>
-          {item.date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}
-        </Text>
-      </View>
+
+      <FlatList
+        data={notifications}
+        keyExtractor={(item) => item.id}
+        renderItem={renderItem}
+        contentContainerStyle={{ paddingBottom: insets.bottom + 100 }}
+        showsVerticalScrollIndicator={false}
+        ItemSeparatorComponent={() => <View style={[styles.sep, { backgroundColor: colors.border }]} />}
+      />
     </View>
   );
 }
@@ -176,104 +106,32 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: spacing.md,
-    paddingTop: spacing.sm,
-    paddingBottom: spacing.sm,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    gap: 12,
   },
-  title: {
-    fontSize: fontSize.xxl,
-    fontWeight: '800',
-  },
-  settingsBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-  },
-  toggleCard: {
-    marginHorizontal: spacing.md,
-    marginBottom: spacing.md,
-    borderRadius: borderRadius.lg,
-    borderWidth: 1,
-    padding: spacing.md,
+  heading: { fontSize: 28, fontWeight: '800', flex: 1 },
+  headerRight: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  markAll: { fontSize: 13, fontWeight: '600', color: Colors.brandGreen },
+  row: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.md,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    gap: 12,
+    borderBottomWidth: 0,
   },
-  toggleInfo: {
-    flex: 1,
-  },
-  toggleTitle: {
-    fontSize: fontSize.md,
-    fontWeight: '700',
-  },
-  toggleSub: {
-    fontSize: fontSize.sm,
-    marginTop: 4,
-    lineHeight: 19,
-  },
-  markAllRow: {
-    paddingHorizontal: spacing.md,
-    marginBottom: spacing.sm,
-  },
-  markAllText: {
-    fontSize: fontSize.sm,
-    fontWeight: '700',
-  },
-  emptyState: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: spacing.xl,
-  },
-  emptyIcon: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: spacing.md,
-  },
-  emptyTitle: {
-    fontSize: fontSize.lg,
-    fontWeight: '800',
-    marginBottom: spacing.xs,
-  },
-  emptyText: {
-    fontSize: fontSize.md,
-    textAlign: 'center',
-    lineHeight: 22,
-  },
-  alertRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    borderRadius: 20,
-    borderWidth: 1,
-    padding: spacing.md,
-    marginBottom: spacing.sm,
-    gap: spacing.md,
-  },
-  alertIcon: {
+  iconWrap: {
     width: 40,
     height: 40,
     borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  alertTitle: {
-    fontSize: fontSize.lg,
-    fontWeight: '700',
-  },
-  alertBody: {
-    fontSize: fontSize.md,
-    lineHeight: 21,
-    marginTop: 2,
-  },
-  alertTime: {
-    fontSize: fontSize.sm,
-    marginTop: spacing.sm,
-  },
+  textBlock: { flex: 1, gap: 2 },
+  title: { fontSize: 15, fontWeight: '500' },
+  titleUnread: { fontWeight: '700' },
+  subtitle: { fontSize: 13 },
+  time: { fontSize: 12, marginTop: 2 },
+  sep: { height: StyleSheet.hairlineWidth, marginLeft: 68 },
 });

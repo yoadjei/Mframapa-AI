@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { useStore, City } from '../store/useStore';
 import { getColors, spacing, borderRadius, fontSize } from '../theme';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface CityPickerProps {
   onSelect: (city: City) => void;
@@ -18,6 +19,7 @@ interface CityPickerProps {
 
 export function CityPicker({ onSelect, isDark, placeholder = 'Search city...' }: CityPickerProps) {
   const colors = getColors(isDark);
+  const { t } = useTranslation();
   const offlineCities = useStore((s) => s.offlineCities);
   const [visible, setVisible] = useState(false);
   const [query, setQuery] = useState('');
@@ -40,6 +42,8 @@ export function CityPicker({ onSelect, isDark, placeholder = 'Search city...' }:
     onSelect(city);
   }
 
+  const displayPlaceholder = placeholder === 'Search city...' ? t('search.city_placeholder') : placeholder;
+
   return (
     <>
       <TouchableOpacity
@@ -57,7 +61,7 @@ export function CityPicker({ onSelect, isDark, placeholder = 'Search city...' }:
       >
         <Text style={{ fontSize: fontSize.md, marginRight: spacing.sm }}>🌍</Text>
         <Text style={{ color: colors.subtext, fontSize: fontSize.md, flex: 1 }}>
-          {placeholder}
+          {displayPlaceholder}
         </Text>
       </TouchableOpacity>
 
@@ -76,7 +80,7 @@ export function CityPicker({ onSelect, isDark, placeholder = 'Search city...' }:
               autoFocus
               value={query}
               onChangeText={setQuery}
-              placeholder="Search city or country..."
+              placeholder={t('city_picker.search_city_country')}
               placeholderTextColor={colors.subtext}
               style={{
                 flex: 1,

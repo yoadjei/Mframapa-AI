@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text } from 'react-native';
 import { AQI_LEVELS } from '../utils/aqi';
 import { getColors, fontSize, spacing, borderRadius } from '../theme';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface AQIColorBarProps {
   pm25: number;
@@ -11,6 +12,7 @@ interface AQIColorBarProps {
 
 export function AQIColorBar({ pm25, isDark, showLabels = true }: AQIColorBarProps) {
   const colors = getColors(isDark);
+  const { t } = useTranslation();
 
   const activeLevelIndex = AQI_LEVELS.findIndex((l) => pm25 >= l.min && pm25 <= l.max);
   const activeIndex = activeLevelIndex === -1 ? AQI_LEVELS.length - 1 : activeLevelIndex;
@@ -50,9 +52,9 @@ export function AQIColorBar({ pm25, isDark, showLabels = true }: AQIColorBarProp
       )}
 
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: spacing.xs }}>
-        <Text style={{ color: AQI_LEVELS[0].color, fontSize: fontSize.xs }}>Good</Text>
+        <Text style={{ color: AQI_LEVELS[0].color, fontSize: fontSize.xs }}>{t('aqi.good')}</Text>
         <Text style={{ color: AQI_LEVELS[AQI_LEVELS.length - 1].color, fontSize: fontSize.xs }}>
-          Hazardous
+          {t('aqi.hazardous')}
         </Text>
       </View>
     </View>

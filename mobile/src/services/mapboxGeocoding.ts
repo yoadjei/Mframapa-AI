@@ -38,10 +38,75 @@ function countryFromFeature(feature: MapboxFeature): string | undefined {
   return countryContext?.short_code?.toUpperCase();
 }
 
+/** ISO 3166-1 alpha-2 from a Mapbox feature (handles short_code like "us" or "gb-eng"). */
+export function countryCodeFromFeature(feature: MapboxFeature): string | null {
+  const fromProps = feature.properties?.short_code;
+  if (fromProps) {
+    const code = fromProps.includes('-') ? fromProps.split('-').pop()! : fromProps;
+    return code.toLowerCase();
+  }
+  const countryContext = feature.context?.find((c) => c.id.startsWith('country.'));
+  if (countryContext?.short_code) {
+    const raw = countryContext.short_code;
+    const code = raw.includes('-') ? raw.split('-').pop()! : raw;
+    return code.toLowerCase();
+  }
+  return null;
+}
+
+/**
+ * Resolve the country at a coordinate (for Africa-only gating).
+ */
+export async function reverseGeocodeCountryCode(lat: number, lon: number): Promise<string | null> {
+  if (!MAPBOX_TOKEN) return null;
+
+  const base =
+    `https://api.mapbox.com/geocoding/v5/mapbox.places/${lon},${lat}.json` +
+    `?access_token=${MAPBOX_TOKEN}&limit=1`;
+
+  try {
+    for (const types of ['country', 'region,place,locality,district,neighborhood']) {
+      const { data } = await axios.get<{ features?: MapboxFeature[] }>(
+        `${base}&types=${types}`,
+        { timeout: 10000 }
+      );
+      const feature = data.features?.[0];
+      if (!feature) continue;
+      const code = countryCodeFromFeature(feature);
+      if (code) return code;
+    }
+  } catch {
+    return null;
+  }
+  return null;
+}
+
+/** Reverse geocode coordinates to a place label (city/town/region) within Africa. */
+
 /**
  * V1 parity: Mapbox forward geocode restricted to Africa bbox, filtered by country code.
- * @see https://mframapaai.health/ SearchBar component
  */
+export async function reverseGeocodePlace(lat: number, lon: number): Promise<string | null> {
+  if (!MAPBOX_TOKEN) return null;
+
+  const url =
+    `https://api.mapbox.com/geocoding/v5/mapbox.places/${lon},${lat}.json` +
+    `?access_token=${MAPBOX_TOKEN}` +
+    `&types=place,locality,district,region` +
+    `&limit=1`;
+
+  try {
+    const { data } = await axios.get<{ features?: MapboxFeature[] }>(url, { timeout: 10000 });
+    const feature = data.features?.[0];
+    if (!feature) return null;
+    if (!isAfricanFeature(feature)) return null;
+    const parts = feature.place_name.split(',').map((p) => p.trim());
+    return parts[0] || feature.place_name;
+  } catch {
+    return null;
+  }
+}
+
 export async function fetchAfricanPlaceSuggestions(
   query: string
 ): Promise<PlaceSuggestion[]> {
@@ -51,7 +116,7 @@ export async function fetchAfricanPlaceSuggestions(
   const url =
     `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(text)}.json` +
     `?access_token=${MAPBOX_TOKEN}` +
-    `&bbox=-26,-38,60,38` +
+    `&bbox=-26,-38,59,38` +
     `&types=country,region,district,place,locality` +
     `&limit=10`;
 

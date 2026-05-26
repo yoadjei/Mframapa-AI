@@ -1,6 +1,6 @@
 import { City, PredictionResult, useStore } from '../store/useStore';
 import { getPrediction, generateInsight } from './api';
-import { isInAfrica, nearestCity } from '../utils/geo';
+import { isLocationInAfricanNation, nearestCityWithin, MAX_CITY_SNAP_DEG } from '../utils/geo';
 import { loadPredictionForCity, savePredictionForCity } from './offline';
 
 function cityKey(lat: number, lon: number): string {
@@ -27,12 +27,13 @@ export async function fetchPredictionAtCoords(
   language: string,
   cities: City[]
 ): Promise<PredictionResult> {
-  if (!isInAfrica(lat, lon)) {
+  const allowed = await isLocationInAfricanNation(lat, lon, cities);
+  if (!allowed) {
     throw new Error('OUTSIDE_AFRICA');
   }
 
   let cityName = name;
-  const match = nearestCity(lat, lon, cities);
+  const match = nearestCityWithin(lat, lon, cities, MAX_CITY_SNAP_DEG);
   if (match) {
     cityName = match.name;
     lat = match.lat;
