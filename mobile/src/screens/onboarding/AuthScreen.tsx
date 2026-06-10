@@ -66,7 +66,7 @@ export function AuthScreen({ onAuth }: Props) {
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ScrollView
-        style={[styles.root, { backgroundColor: colors.background }]}
+        style={[styles.root]}
         contentContainerStyle={[styles.content, { paddingTop: insets.top + 16, paddingBottom: insets.bottom + 24 }]}
         keyboardShouldPersistTaps="handled"
       >
@@ -81,8 +81,7 @@ export function AuthScreen({ onAuth }: Props) {
                 style={[
                   styles.tabLabel,
                   { color: colors.muted },
-                  tab === tabKey && { color: colors.text, fontWeight: '700' },
-                ]}
+                  tab === tabKey && { color: colors.text, fontWeight: '700' }]}
               >
                 {t(TAB_KEYS[tabKey])}
               </Text>

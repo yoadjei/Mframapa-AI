@@ -16,8 +16,7 @@ const { width: W } = Dimensions.get('window');
 const SLIDE_KEYS = [
   { titleKey: 'screen.onboarding.slide1_title', subKey: 'screen.onboarding.slide1_sub', icon: 'earth-outline' as const },
   { titleKey: 'screen.onboarding.slide2_title', subKey: 'screen.onboarding.slide2_sub', icon: 'analytics-outline' as const },
-  { titleKey: 'screen.onboarding.slide3_title', subKey: 'screen.onboarding.slide3_sub', icon: 'shield-checkmark-outline' as const },
-];
+  { titleKey: 'screen.onboarding.slide3_title', subKey: 'screen.onboarding.slide3_sub', icon: 'shield-checkmark-outline' as const }];
 
 interface Props {
   onDone: () => void;
@@ -42,7 +41,7 @@ export function OnboardingSlidesScreen({ onDone }: Props) {
   }
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background, paddingTop: insets.top, paddingBottom: insets.bottom }]}>
+    <View style={[styles.root, {paddingTop: insets.top, paddingBottom: insets.bottom }]}>
       <View style={styles.header}>
         <MframapaLogo size="sm" />
       </View>

@@ -22,6 +22,31 @@ function resolveMapboxToken(): string {
 
 export const MAPBOX_TOKEN = resolveMapboxToken();
 
+function resolveSupabaseUrl(): string {
+  const extra = Constants.expoConfig?.extra as { supabaseUrl?: string } | undefined;
+  return (
+    extra?.supabaseUrl ||
+    (process.env.EXPO_PUBLIC_SUPABASE_URL as string | undefined) ||
+    ''
+  );
+}
+
+function resolveSupabaseAnonKey(): string {
+  // Accept both naming styles: the legacy "anon" key (eyJ… JWT) and the
+  // newer "publishable" key (sb_publishable_…). Both are client-safe and
+  // are passed unchanged into createClient.
+  const extra = Constants.expoConfig?.extra as { supabaseAnonKey?: string } | undefined;
+  return (
+    extra?.supabaseAnonKey ||
+    (process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY as string | undefined) ||
+    (process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY as string | undefined) ||
+    ''
+  );
+}
+
+export const SUPABASE_URL = resolveSupabaseUrl();
+export const SUPABASE_ANON_KEY = resolveSupabaseAnonKey();
+
 export const OFFLINE_CITIES_CACHE_KEY = 'offline_cities_v1';
 export const LAST_SYNC_KEY = 'last_sync_timestamp';
 

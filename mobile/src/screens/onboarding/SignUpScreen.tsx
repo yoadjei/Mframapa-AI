@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  View, Text, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, TouchableOpacity,
+  View, Text, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, TouchableOpacity, Alert,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -23,7 +23,7 @@ export function SignUpScreen({ onAuth }: Props) {
   const colors = getColors(isDark);
   const { t } = useTranslation();
   const navigation = useNavigation<any>();
-  const setProfile = useStore((s) => s.setProfile);
+  const signUp = useStore((s) => s.signUp);
 
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
@@ -32,17 +32,28 @@ export function SignUpScreen({ onAuth }: Props) {
   const [loading, setLoading] = useState(false);
 
   async function handleSignUp() {
+    if (!fullName.trim() || !email.trim() || !password) {
+      Alert.alert(t('screen.auth.error_required'));
+      return;
+    }
+    if (password !== confirmPassword) {
+      Alert.alert(t('screen.auth.error_password_match'));
+      return;
+    }
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 800));
-    setProfile({ fullName, email });
+    const res = await signUp(fullName, email, password);
     setLoading(false);
+    if (!res.ok) {
+      Alert.alert(res.error ?? t('screen.auth.error_sign_up'));
+      return;
+    }
     onAuth();
   }
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ScrollView
-        style={[styles.root, { backgroundColor: colors.background }]}
+        style={[styles.root]}
         contentContainerStyle={[styles.content, { paddingTop: insets.top + 16, paddingBottom: insets.bottom + 32 }]}
         keyboardShouldPersistTaps="handled"
       >
@@ -108,7 +119,7 @@ export function SignUpScreen({ onAuth }: Props) {
         <View style={styles.loginRow}>
           <Text style={[styles.loginPrompt, { color: colors.subtext }]}>{t('screen.auth.have_account')}</Text>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Text style={[styles.loginLink, { color: Colors.brandGreen }]}>{t('screen.auth.tab_login')}</Text>
+            <Text style={[styles.loginLink, { color: Colors.brandGreen }]}>{t('screen.auth.sign_in_btn')}</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

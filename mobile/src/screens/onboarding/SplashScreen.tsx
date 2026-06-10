@@ -17,14 +17,13 @@ export function SplashScreen({ onDone }: Props) {
   useEffect(() => {
     Animated.parallel([
       Animated.timing(opacity, { toValue: 1, duration: 600, useNativeDriver: true }),
-      Animated.spring(scale, { toValue: 1, useNativeDriver: true }),
-    ]).start(() => {
+      Animated.spring(scale, { toValue: 1, useNativeDriver: true })]).start(() => {
       setTimeout(onDone, 800);
     });
   }, []);
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <View style={[styles.root]}>
       <Animated.View style={[styles.center, { opacity, transform: [{ scale }] }]}>
         <MframapaLogo size="lg" />
       </Animated.View>
