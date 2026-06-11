@@ -26,8 +26,7 @@ const FEATURES: FeatureRow[] = [
   { key: 'screen.pricing.feat.heatmap',          free: false, pro: false, enterprise: true  },
   { key: 'screen.pricing.feat.batch',            free: false, pro: false, enterprise: true  },
   { key: 'screen.pricing.feat.api',              free: false, pro: false, enterprise: true  },
-  { key: 'screen.pricing.feat.country',          free: false, pro: false, enterprise: true  },
-];
+  { key: 'screen.pricing.feat.country',          free: false, pro: false, enterprise: true  }];
 
 export function PricingScreen() {
   const { isDark } = useTheme();
@@ -70,8 +69,7 @@ export function PricingScreen() {
       ctaKey: tier === 'enterprise' ? 'screen.pricing.cta_current' : 'screen.pricing.cta_contact',
       ctaDisabled: tier === 'enterprise',
       onPress: () => {},
-    },
-  ] as const;
+    }] as const;
 
   function Check({ included, color }: { included: boolean; color: string }) {
     return (
@@ -84,7 +82,7 @@ export function PricingScreen() {
   }
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <View style={[styles.root]}>
       <View style={[styles.header, { paddingTop: insets.top + 8 }]}>
         <TouchableOpacity onPress={() => navigation.goBack()} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
           <Ionicons name="chevron-back" size={22} color={colors.text} />
@@ -148,13 +146,11 @@ export function PricingScreen() {
               style={[
                 styles.cta,
                 { borderColor: tier.ctaDisabled ? colors.border : tier.color },
-                !tier.ctaDisabled && { backgroundColor: tier.color },
-              ]}
+                !tier.ctaDisabled && { backgroundColor: tier.color }]}
             >
               <Text style={[
                 styles.ctaText,
-                { color: tier.ctaDisabled ? colors.muted : '#fff' },
-              ]}>
+                { color: tier.ctaDisabled ? colors.muted : '#fff' }]}>
                 {t(tier.ctaKey)}
               </Text>
             </TouchableOpacity>

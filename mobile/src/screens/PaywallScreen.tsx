@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -16,8 +16,7 @@ const FEATURES = [
   'screen.paywall.feature_predictions',
   'screen.paywall.feature_health',
   'screen.paywall.feature_trends',
-  'screen.paywall.feature_exports',
-] as const;
+  'screen.paywall.feature_exports'] as const;
 
 interface Props {
   onDone?: () => void;
@@ -29,19 +28,60 @@ export function PaywallScreen({ onDone }: Props) {
   const navigation = useNavigation<any>();
   const { isDark } = useTheme();
   const colors = getColors(isDark);
-  const setProfile = useStore((s) => s.setProfile);
 
-  function handleStartTrial() {
-    setProfile({ tier: 'pro' });
-    if (onDone) { onDone(); } else { navigation.navigate('Subscription'); }
+  const startFreeTrial   = useStore((s) => s.startFreeTrial);
+  const restorePurchases = useStore((s) => s.restorePurchases);
+  const trialEndsAt      = useStore((s) => s.trialEndsAt);
+  const tier             = useStore((s) => s.profile.tier);
+
+  const trialActive = !!trialEndsAt && new Date(trialEndsAt) > new Date();
+  // State machine for the primary CTA:
+  //   • inTrial → "Continue with Free Trial" (paywall reopened during an
+  //     active trial; subscribing again would be a no-op)
+  //   • alreadyPro → "Continue" (manually upgraded, restore handles re-link)
+  //   • else → "Start Free Trial"
+  const primaryMode: 'continue_trial' | 'continue' | 'start_trial' =
+    trialActive ? 'continue_trial' : tier === 'pro' ? 'continue' : 'start_trial';
+
+  const primaryLabel = (() => {
+    switch (primaryMode) {
+      case 'continue_trial': return t('screen.paywall.continue_trial');
+      case 'continue':       return t('screen.paywall.continue');
+      case 'start_trial':    return t('screen.paywall.start_trial');
+    }
+  })();
+
+  const [restoring, setRestoring] = useState(false);
+
+  function handlePrimary() {
+    if (primaryMode === 'start_trial') startFreeTrial();
+    if (onDone) onDone();
+    else navigation.navigate('Subscription');
   }
 
   function handleContinueFree() {
-    if (onDone) { onDone(); } else { navigation.goBack(); }
+    if (onDone) onDone();
+    else navigation.goBack();
+  }
+
+  async function handleRestore() {
+    if (restoring) return;
+    setRestoring(true);
+    const res = await restorePurchases();
+    setRestoring(false);
+    if (res.restored === 'pro') {
+      Alert.alert(t('screen.paywall.pro_restored'));
+      if (onDone) onDone();
+    } else if (res.restored === 'trial') {
+      Alert.alert(t('screen.paywall.trial_restored'));
+      if (onDone) onDone();
+    } else {
+      Alert.alert(t('screen.paywall.nothing_to_restore'));
+    }
   }
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <View style={[styles.root]}>
       {/* Preview card with fade */}
       <View style={styles.previewArea}>
         <View style={[styles.previewCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -95,9 +135,15 @@ export function PaywallScreen({ onDone }: Props) {
           <TextLinkButton label={t('screen.paywall.privacy')} onPress={() => {}} size={12} color={colors.muted} />
         </View>
 
-        <PrimaryButton label={t('screen.paywall.start_trial')} onPress={handleStartTrial} style={styles.cta} />
+        <PrimaryButton label={primaryLabel} onPress={handlePrimary} style={styles.cta} />
         <TextLinkButton label={t('screen.paywall.continue_free')} onPress={handleContinueFree} color={colors.subtext} style={styles.skip} />
-        <TextLinkButton label={t('screen.paywall.restore')} onPress={() => {}} size={12} color={colors.muted} style={styles.restore} />
+        <TextLinkButton
+          label={restoring ? t('screen.paywall.restoring') : t('screen.paywall.restore')}
+          onPress={handleRestore}
+          size={12}
+          color={colors.muted}
+          style={styles.restore}
+        />
       </ScrollView>
     </View>
   );

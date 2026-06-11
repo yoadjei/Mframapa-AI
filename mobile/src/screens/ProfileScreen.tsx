@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  View, Text, StyleSheet, ScrollView, TouchableOpacity, Image,
+  View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Alert,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -11,10 +11,11 @@ import { AvatarPickerSheet, naviiUrl } from '../components/AvatarPickerSheet';
 import { InputField } from '../components/ui/InputField';
 import { PrimaryButton } from '../components/ui/PrimaryButton';
 import { MframapaLogo } from '../components/MframapaLogo';
-import { getColors } from '../theme';
+import { getColors, Colors } from '../theme';
 import { useTheme } from '../hooks/useTheme';
 import { useStore } from '../store/useStore';
 import { useTranslation } from '../hooks/useTranslation';
+import { PROFILE_MENU_ITEMS } from '../navigation/profileMenuItems';
 
 export function ProfileScreen() {
   const { t } = useTranslation();
@@ -22,24 +23,67 @@ export function ProfileScreen() {
   const colors = getColors(isDark);
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<any>();
-  const profile    = useStore((s) => s.profile);
-  const setProfile = useStore((s) => s.setProfile);
+  const profile       = useStore((s) => s.profile);
+  const updateProfile = useStore((s) => s.updateProfile);
+  const signOut       = useStore((s) => s.signOut);
 
-  const [fullName, setFullName]     = useState(profile.fullName || 'Kofi Antwi');
-  const [email, setEmail]           = useState(profile.email || 'kofi.antwi@email.com');
-  const [organization, setOrg]      = useState(profile.organization || 'University of Ghana');
+  // Initialise from the actual signed-in profile. Effect below keeps these
+  // in sync if profile is re-hydrated (e.g. after sign-in completes).
+  const [fullName, setFullName]     = useState(profile.fullName);
+  const [email]                     = useState(profile.email); // read-only (auth identity)
+  const [organization, setOrg]      = useState(profile.organization);
+  const [editing, setEditing]       = useState(false);
   const [saving, setSaving]         = useState(false);
   const [pickerVisible, setPickerVisible] = useState(false);
 
+  const isDirty =
+    fullName.trim() !== profile.fullName.trim() ||
+    organization.trim() !== profile.organization.trim();
+
+  useEffect(() => {
+    setFullName(profile.fullName);
+    setOrg(profile.organization);
+  }, [profile.fullName, profile.organization]);
+
   async function handleSave() {
+    if (saving) return;
+    // No edits → just exit edit mode silently.
+    if (!isDirty) {
+      setEditing(false);
+      return;
+    }
+    const cleanName = fullName.trim();
+    const cleanOrg  = organization.trim();
+    if (!cleanName) {
+      Alert.alert(t('screen.profile.full_name_required'));
+      return;
+    }
     setSaving(true);
-    await new Promise((r) => setTimeout(r, 600));
-    setProfile({ fullName, email, organization });
+    const res = await updateProfile({ fullName: cleanName, organization: cleanOrg });
     setSaving(false);
+    if (!res.ok) {
+      Alert.alert(res.error ?? t('screen.profile.could_not_save'));
+      return;
+    }
+    setEditing(false);
+    Alert.alert(t('screen.profile.changes_saved'));
+  }
+
+  function handlePrimaryAction() {
+    if (editing) {
+      void handleSave();
+    } else {
+      setEditing(true);
+    }
+  }
+
+  function handleAvatarSelect(seed: string) {
+    // Fire-and-forget — picker closes immediately, sync happens in background.
+    void updateProfile({ avatarSeed: seed });
   }
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <View style={[styles.root]}>
       <ScrollView
         contentContainerStyle={[styles.content, { paddingTop: insets.top + 12, paddingBottom: insets.bottom + 24 }]}
         showsVerticalScrollIndicator={false}
@@ -80,11 +124,13 @@ export function ProfileScreen() {
             onChangeText={setFullName}
             placeholder="Kofi Antwi"
             isDark={isDark}
+            editable={editing}
           />
           <InputField
             label={t('screen.profile.email')}
             value={email}
-            onChangeText={setEmail}
+            onChangeText={() => {}}
+            editable={false}
             placeholder="email@example.com"
             isDark={isDark}
             keyboardType="email-address"
@@ -96,31 +142,20 @@ export function ProfileScreen() {
             onChangeText={setOrg}
             placeholder="Organization"
             isDark={isDark}
+            editable={editing}
           />
         </View>
 
-        <PrimaryButton label={t('screen.profile.save')} onPress={handleSave} loading={saving} style={styles.saveBtn} />
+        <PrimaryButton
+          label={editing ? t('screen.profile.save') : t('screen.profile.edit')}
+          onPress={handlePrimaryAction}
+          loading={saving}
+          style={styles.saveBtn}
+        />
 
         {/* Profile links */}
         <View style={styles.links}>
-          {[
-            { labelKey: 'screen.profile.link_saved_locations', screen: 'SavedLocations' },
-            { labelKey: 'screen.profile.link_activity_feed', screen: 'ActivityFeed' },
-            { labelKey: 'screen.profile.link_pricing', screen: 'Pricing' },
-            { labelKey: 'screen.profile.link_ai_insights', screen: 'AIInsights' },
-            { labelKey: 'screen.profile.link_prediction', screen: 'PredictionDashboard' },
-            { labelKey: 'screen.profile.link_country', screen: 'CountryExplorer' },
-            { labelKey: 'screen.profile.link_heatmap', screen: 'AfricaHeatmap' },
-            { labelKey: 'screen.profile.link_historical', screen: 'HistoricalPlayback' },
-            { labelKey: 'screen.profile.link_compare', screen: 'CompareCities' },
-            { labelKey: 'screen.profile.link_community', screen: 'CommunityHub' },
-            { labelKey: 'screen.profile.link_trust', screen: 'TrustTransparency' },
-            { labelKey: 'screen.profile.link_export', screen: 'ExportCentre' },
-            { labelKey: 'screen.profile.link_language', screen: 'LanguageSelector' },
-            { labelKey: 'screen.profile.link_settings', screen: 'Settings' },
-            { labelKey: 'screen.profile.link_about', screen: 'AboutLegal' },
-            { labelKey: 'screen.profile.link_feedback', screen: 'FeedbackForm' },
-          ].map((item) => (
+          {PROFILE_MENU_ITEMS.map((item) => (
             <TouchableOpacity
               key={item.screen}
               onPress={() => navigation.navigate(item.screen)}
@@ -131,12 +166,16 @@ export function ProfileScreen() {
             </TouchableOpacity>
           ))}
         </View>
+
+        <TouchableOpacity onPress={() => signOut()} style={styles.signOut}>
+          <Text style={styles.signOutText}>{t('settings.sign_out')}</Text>
+        </TouchableOpacity>
       </ScrollView>
 
       <AvatarPickerSheet
         visible={pickerVisible}
         selected={profile.avatarSeed}
-        onSelect={(seed) => setProfile({ avatarSeed: seed })}
+        onSelect={handleAvatarSelect}
         onClose={() => setPickerVisible(false)}
       />
     </View>
@@ -170,4 +209,14 @@ const styles = StyleSheet.create({
   },
   linkText: { fontSize: 15 },
   linkChevron: { fontSize: 22, fontWeight: '300' },
+  signOut: {
+    marginTop: 32,
+    marginBottom: 8,
+    alignSelf: 'center',
+  },
+  signOutText: {
+    color: Colors.danger,
+    fontSize: 16,
+    fontWeight: '500',
+  },
 });

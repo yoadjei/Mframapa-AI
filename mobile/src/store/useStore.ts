@@ -2,6 +2,33 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { markSignOutThisSession } from '../session/authSession';
+import {
+  signInWithPassword,
+  signUpWithPassword,
+  signOutSupabase,
+  getSupabase,
+} from '../services/supabase';
+
+const TRIAL_DAYS = 7;
+
+// ── Activity-feed helper ─────────────────────────────────────────────────────
+// Each store mutator that the user can recognise as "something they did" pushes
+// an entry here so the Activity Feed screen stays current automatically.
+function makeActivity(
+  actionKey: string,
+  icon: ActivityItem['icon'],
+  params?: Record<string, string>,
+): ActivityItem {
+  const now = new Date();
+  return {
+    id: `${now.getTime()}-${actionKey}-${Math.random().toString(36).slice(2, 8)}`,
+    action: '', // localized at render time via actionKey
+    timestamp: now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }),
+    icon,
+    actionKey,
+    actionParams: params,
+  };
+}
 
 export interface PredictionResult {
   pm25: number;
@@ -60,6 +87,16 @@ export interface ActivityItem {
   timestampParams?: Record<string, string>;
 }
 
+export interface CommunityPost {
+  id: string;
+  author: string;
+  location: string;
+  body: string;
+  verified: boolean;
+  photoUri?: string;
+  createdAt: string;
+}
+
 export interface UserProfile {
   fullName: string;
   email: string;
@@ -70,6 +107,16 @@ export interface UserProfile {
 }
 
 export type ThemeMode = 'light' | 'dark' | 'system';
+
+export type NotifCategory = 'alert' | 'summary' | 'update' | 'tip';
+export type NotifPrefs = Record<NotifCategory, boolean>;
+
+const DEFAULT_NOTIF_PREFS: NotifPrefs = {
+  alert:   true,
+  summary: true,
+  update:  true,
+  tip:     true,
+};
 
 interface AppState {
   // Theme
@@ -83,11 +130,31 @@ interface AppState {
   // Auth
   isAuthenticated: boolean;
   setAuthenticated: (v: boolean) => void;
-  signOut: () => void;
+  signIn: (email: string, password: string) => Promise<{ ok: boolean; error?: string }>;
+  signUp: (
+    fullName: string,
+    email: string,
+    password: string,
+  ) => Promise<{ ok: boolean; error?: string }>;
+  signOut: () => Promise<void>;
 
   // Profile
   profile: UserProfile;
   setProfile: (p: Partial<UserProfile>) => void;
+  updateProfile: (
+    p: Partial<UserProfile>,
+  ) => Promise<{ ok: boolean; error?: string }>;
+
+  // Subscription / Trial
+  trialStartedAt: string | null;
+  trialEndsAt: string | null;
+  purchaseToken: string | null;
+  startFreeTrial: () => void;
+  cancelTrial: () => void;
+  restorePurchases: () => Promise<{ ok: boolean; restored: 'trial' | 'pro' | null }>;
+  isTrialActive: () => boolean;
+  trialDaysRemaining: () => number;
+  trialProgress: () => number;
 
   // AQI predictions
   lastPrediction: PredictionResult | null;
@@ -116,9 +183,16 @@ interface AppState {
   offlineCities: City[];
   setOfflineCities: (cities: City[]) => void;
 
+  // Community feed (populated when real backend is wired; empty otherwise).
+  communityPosts: CommunityPost[];
+  addCommunityPost: (post: CommunityPost) => void;
+  setCommunityPosts: (posts: CommunityPost[]) => void;
+
   // Settings
   alertsEnabled: boolean;
   setAlertsEnabled: (v: boolean) => void;
+  notifPrefs: NotifPrefs;
+  setNotifPref: (key: NotifCategory, value: boolean) => void;
   liteMode: boolean;
   setLiteMode: (v: boolean) => void;
   dataAnalytics: boolean;
@@ -288,9 +362,63 @@ export const useStore = create<AppState>()(
 
       isAuthenticated: false,
       setAuthenticated: (v) => set({ isAuthenticated: v }),
-      signOut: () => {
+
+      signIn: async (email, password) => {
+        const cleanEmail = email.trim().toLowerCase();
+        if (!cleanEmail || !password) {
+          return { ok: false, error: 'Email and password are required.' };
+        }
+        const res = await signInWithPassword(cleanEmail, password);
+        if (!res.ok) return res;
+        // Success: hydrate profile from the supabase session and flip flag
+        const user = res.session?.user;
+        const meta = (user?.user_metadata ?? {}) as Record<string, unknown>;
+        const fullName     = (meta.full_name    as string | undefined) ?? '';
+        const organization = (meta.organization as string | undefined) ?? '';
+        const avatarSeed   = (meta.avatar_seed  as string | undefined) ?? '';
+        // Use setProfile so initials recompute from the hydrated name.
+        get().setProfile({
+          email: user?.email ?? cleanEmail,
+          fullName:     fullName     || get().profile.fullName,
+          organization: organization || get().profile.organization,
+          avatarSeed:   avatarSeed   || get().profile.avatarSeed,
+        });
+        set((s) => ({
+          isAuthenticated: true,
+          activityFeed: [makeActivity('activity.signed_in', 'lock'), ...s.activityFeed].slice(0, 50),
+        }));
+        return { ok: true };
+      },
+
+      signUp: async (fullName, email, password) => {
+        const cleanEmail = email.trim().toLowerCase();
+        const cleanName  = fullName.trim();
+        if (!cleanName) return { ok: false, error: 'Full name is required.' };
+        if (!cleanEmail) return { ok: false, error: 'Email is required.' };
+        if (password.length < 6) {
+          return { ok: false, error: 'Password must be at least 6 characters.' };
+        }
+        const res = await signUpWithPassword(cleanEmail, password, cleanName);
+        if (!res.ok) return res;
+        // Use setProfile so initials are recomputed.
+        get().setProfile({ email: cleanEmail, fullName: cleanName });
+        set((s) => ({
+          isAuthenticated: true,
+          activityFeed: [makeActivity('activity.account_created', 'person'), ...s.activityFeed].slice(0, 50),
+        }));
+        return { ok: true };
+      },
+
+      signOut: async () => {
+        await signOutSupabase();
+        // Mark that this session has signed out so the next mount of the
+        // onboarding stack lands directly on the auth screen instead of the
+        // intro slides.
         markSignOutThisSession();
-        set({ isAuthenticated: false });
+        set((s) => ({
+          isAuthenticated: false,
+          activityFeed: [makeActivity('activity.signed_out', 'lock'), ...s.activityFeed].slice(0, 50),
+        }));
       },
 
       profile: {
@@ -305,14 +433,120 @@ export const useStore = create<AppState>()(
         set((state) => {
           const updated = { ...state.profile, ...p };
           if (p.fullName !== undefined) {
-            const parts = p.fullName.trim().split(' ');
+            const parts = p.fullName.trim().split(' ').filter(Boolean);
             updated.initials =
               parts.length >= 2
                 ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
-                : parts[0].slice(0, 2).toUpperCase();
+                : (parts[0]?.slice(0, 2) || '').toUpperCase();
           }
           return { profile: updated };
         }),
+
+      updateProfile: async (p) => {
+        // Local update first — gives the UI instant feedback even when
+        // offline. Supabase sync happens after.
+        get().setProfile(p);
+
+        // Log to activity feed when the user actually changed something
+        // user-facing (not just a passing avatar select).
+        if (p.fullName !== undefined || p.organization !== undefined) {
+          set((s) => ({
+            activityFeed: [makeActivity('activity.profile_updated', 'person'), ...s.activityFeed].slice(0, 50),
+          }));
+        }
+
+        const supabase = getSupabase();
+        if (!supabase) return { ok: true };
+
+        const metadata: Record<string, unknown> = {};
+        if (p.fullName !== undefined)     metadata.full_name    = p.fullName;
+        if (p.organization !== undefined) metadata.organization = p.organization;
+        if (p.avatarSeed !== undefined)   metadata.avatar_seed  = p.avatarSeed;
+
+        if (Object.keys(metadata).length === 0) return { ok: true };
+
+        // Skip the network call when the user is signed out — local-only edits
+        // are still useful (e.g. picking an avatar before signing up).
+        const { data: sessionData } = await supabase.auth.getSession();
+        if (!sessionData.session) return { ok: true };
+
+        const { error } = await supabase.auth.updateUser({ data: metadata });
+        if (error) return { ok: false, error: error.message };
+        return { ok: true };
+      },
+
+      // ── Subscription / Trial ─────────────────────────────────────────────
+      trialStartedAt: null,
+      trialEndsAt:    null,
+      purchaseToken:  null,
+
+      startFreeTrial: () => {
+        const now = new Date();
+        const ends = new Date(now.getTime() + TRIAL_DAYS * 24 * 60 * 60 * 1000);
+        set((s) => ({
+          trialStartedAt: now.toISOString(),
+          trialEndsAt:    ends.toISOString(),
+          profile:        { ...s.profile, tier: 'pro' },
+          activityFeed:   [
+            makeActivity('activity.trial_started', 'clock'),
+            ...s.activityFeed,
+          ].slice(0, 50),
+        }));
+      },
+
+      restorePurchases: async () => {
+        // Local-store restore: if a paid token exists, restore Pro; else if
+        // a still-valid trial is persisted, restore the trial.
+        // (When you wire a real IAP provider, this is where you'd verify
+        // the receipt.)
+        const s = get();
+        if (s.purchaseToken) {
+          set((cur) => ({ profile: { ...cur.profile, tier: 'pro' } }));
+          return { ok: true, restored: 'pro' };
+        }
+        if (s.trialEndsAt && new Date(s.trialEndsAt) > new Date()) {
+          set((cur) => ({ profile: { ...cur.profile, tier: 'pro' } }));
+          return { ok: true, restored: 'trial' };
+        }
+        return { ok: true, restored: null };
+      },
+
+      isTrialActive: () => {
+        const ends = get().trialEndsAt;
+        return !!ends && new Date(ends) > new Date();
+      },
+
+      trialDaysRemaining: () => {
+        const ends = get().trialEndsAt;
+        if (!ends) return 0;
+        const ms = new Date(ends).getTime() - Date.now();
+        return Math.max(0, Math.ceil(ms / (24 * 60 * 60 * 1000)));
+      },
+
+      // Linear progress from 0 (just started) to 1 (expired) of the trial
+      // window. Used by the SubscriptionScreen progress bar.
+      trialProgress: () => {
+        const s = get();
+        if (!s.trialStartedAt || !s.trialEndsAt) return 0;
+        const start = new Date(s.trialStartedAt).getTime();
+        const end   = new Date(s.trialEndsAt).getTime();
+        const now   = Date.now();
+        if (now <= start) return 0;
+        if (now >= end)   return 1;
+        return (now - start) / (end - start);
+      },
+
+      cancelTrial: () => {
+        set((s) => ({
+          trialStartedAt: null,
+          trialEndsAt:    null,
+          profile:        { ...s.profile, tier: 'free' },
+          activityFeed: [
+            makeActivity('activity.trial_cancelled', 'lock'),
+            ...s.activityFeed,
+          ].slice(0, 50),
+        }));
+      },
 
       lastPrediction: null,
       setPrediction: (p) =>
@@ -328,6 +562,13 @@ export const useStore = create<AppState>()(
                 )
             ),
           ].slice(0, 20),
+          activityFeed: [
+            makeActivity('activity.checked_city', 'clock', {
+              city: p.location.name,
+              value: p.pm25.toFixed(0),
+            }),
+            ...state.activityFeed,
+          ].slice(0, 50),
         })),
       predictionHistory: [],
       clearHistory: () => set({ predictionHistory: [] }),
@@ -338,6 +579,10 @@ export const useStore = create<AppState>()(
           savedLocations: [
             loc,
             ...state.savedLocations.filter((s) => s.id !== loc.id),
+          ].slice(0, 50),
+          activityFeed: [
+            makeActivity('activity.saved_city', 'location', { city: loc.name }),
+            ...state.activityFeed,
           ].slice(0, 50),
         })),
       removeSavedLocation: (id) =>
@@ -353,7 +598,13 @@ export const useStore = create<AppState>()(
 
       notifications: DEFAULT_NOTIFICATIONS,
       addNotification: (n) =>
-        set((state) => ({ notifications: [n, ...state.notifications].slice(0, 100) })),
+        set((state) => {
+          // Respect the master switch and per-category prefs — disabled
+          // categories never enter the inbox in the first place.
+          if (!state.alertsEnabled) return state;
+          if (state.notifPrefs[n.type] === false) return state;
+          return { notifications: [n, ...state.notifications].slice(0, 100) };
+        }),
       markNotificationRead: (id) =>
         set((state) => ({
           notifications: state.notifications.map((n) =>
@@ -373,8 +624,16 @@ export const useStore = create<AppState>()(
       offlineCities: [],
       setOfflineCities: (cities) => set({ offlineCities: cities }),
 
+      communityPosts: [],
+      addCommunityPost: (post) =>
+        set((s) => ({ communityPosts: [post, ...s.communityPosts].slice(0, 200) })),
+      setCommunityPosts: (posts) => set({ communityPosts: posts }),
+
       alertsEnabled: true,
       setAlertsEnabled: (v) => set({ alertsEnabled: v }),
+      notifPrefs: DEFAULT_NOTIF_PREFS,
+      setNotifPref: (key, value) =>
+        set((s) => ({ notifPrefs: { ...s.notifPrefs, [key]: value } })),
       liteMode: false,
       setLiteMode: (v) => set({ liteMode: v }),
       dataAnalytics: false,
@@ -384,7 +643,7 @@ export const useStore = create<AppState>()(
     }),
     {
       name: 'mframapa-persist',
-      version: 4,
+      version: 5,
       storage: createJSONStorage(() => AsyncStorage),
       migrate: (persistedState, version) => {
         const state = (persistedState ?? {}) as Partial<AppState> & { isDark?: boolean };
@@ -406,10 +665,15 @@ export const useStore = create<AppState>()(
         notifications: state.notifications,
         activityFeed: state.activityFeed,
         offlineCities: state.offlineCities,
+        communityPosts: state.communityPosts,
         alertsEnabled: state.alertsEnabled,
+        notifPrefs: state.notifPrefs,
         liteMode: state.liteMode,
         dataAnalytics: state.dataAnalytics,
         locationSharing: state.locationSharing,
+        trialStartedAt: state.trialStartedAt,
+        trialEndsAt: state.trialEndsAt,
+        purchaseToken: state.purchaseToken,
       }),
     }
   )
