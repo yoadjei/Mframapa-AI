@@ -27,7 +27,7 @@ export const Shadow = {
 import { Colors } from './colors';
 
 const darkColors = {
-  background:      Colors.bgPrimary,
+  background:      'transparent',
   card:            Colors.bgCard,
   surface:         Colors.bgSecondary,
   cardAlt:         Colors.bgCardAlt,
@@ -47,13 +47,13 @@ const darkColors = {
 };
 
 const lightColors = {
-  background:      Colors.lightBg,
+  background:      'transparent',
   card:            Colors.lightCard,
-  surface:         '#EAF5EF',
-  cardAlt:         '#F0F9F4',
+  surface:         '#E2E8F0',
+  cardAlt:         '#F1F5F9',
   text:            Colors.lightTextPrimary,
   subtext:         Colors.lightTextSecondary,
-  muted:           '#8BA99A',
+  muted:           '#7B8A99',
   accent:          Colors.brandGreen,
   accentDim:       '#D6F5EC',
   border:          Colors.lightBorder,
@@ -63,8 +63,10 @@ const lightColors = {
   warning:         Colors.warning,
   success:         Colors.success,
   enterprise:      Colors.enterprise,
-  overlay:         'rgba(10,26,20,0.15)',
+  overlay:         'rgba(15,20,25,0.2)',
 };
+
+export { AppBackgroundColors } from './background';
 
 export function getColors(isDark: boolean) {
   return isDark ? darkColors : lightColors;

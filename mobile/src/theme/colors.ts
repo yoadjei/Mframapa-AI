@@ -22,11 +22,11 @@ export const Colors = {
   success:    '#00C896',
   enterprise: '#C8A200',
 
-  lightBg:              '#F5FBF7',
+  lightBg:              '#E8ECF2',
   lightCard:            '#FFFFFF',
-  lightBorder:          '#D8EDE4',
-  lightTextPrimary:     '#0A1A14',
-  lightTextSecondary:   '#4A6A5A',
+  lightBorder:          '#D4DAE3',
+  lightTextPrimary:     '#0F1419',
+  lightTextSecondary:   '#5C6B7A',
 } as const;
 
 export type ColorKey = keyof typeof Colors;
