@@ -33,8 +33,7 @@ const TREND_DAY_KEYS = [
   'screen.city_detail.day_thu',
   'screen.city_detail.day_fri',
   'screen.city_detail.day_sat',
-  'screen.city_detail.day_sun',
-] as const;
+  'screen.city_detail.day_sun'] as const;
 
 const CONTEXT_INSIGHT_KEYS = [
   {
@@ -54,8 +53,7 @@ const CONTEXT_INSIGHT_KEYS = [
     titleKey: 'screen.ai_insights.hotspot_title',
     descKey: 'screen.ai_insights.hotspot_desc',
     sourceKey: 'screen.ai_insights.hotspot_source',
-  },
-];
+  }];
 
 function locationId(lat: number, lon: number): string {
   return `${lat.toFixed(4)}:${lon.toFixed(4)}`;
@@ -201,7 +199,7 @@ export function CityDetailScreen() {
 
   if (!pred) {
     return (
-      <View style={[styles.root, styles.emptyRoot, { backgroundColor: colors.background }]}>
+      <View style={[styles.root, styles.emptyRoot]}>
         <Text style={[styles.emptyText, { color: colors.subtext }]}>{t('home.tap_check')}</Text>
         <PrimaryButton label={t('common.back')} onPress={() => navigation.goBack()} />
       </View>
@@ -209,7 +207,7 @@ export function CityDetailScreen() {
   }
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <View style={[styles.root]}>
       <LinearGradient
         colors={[aqiColor + 'CC', aqiColor + '66', colors.background]}
         style={[styles.header, { paddingTop: insets.top }]}
@@ -270,8 +268,7 @@ export function CityDetailScreen() {
               icon: 'speedometer-outline',
               val: t('screen.city_detail.wind_kmh', { speed: weather.wind.toFixed(0) }),
               label: t('weather.wind'),
-            },
-          ].map((chip, i) => (
+            }].map((chip, i) => (
             <View key={i} style={[styles.chip, { backgroundColor: colors.card, borderColor: colors.border }]}>
               <Ionicons name={chip.icon as any} size={14} color={Colors.brandGreen} />
               <Text style={[styles.chipVal, { color: colors.text }]}>{chip.val}</Text>

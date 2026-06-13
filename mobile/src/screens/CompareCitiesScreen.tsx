@@ -1,16 +1,28 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { LineChart } from '../components/charts/LineChart';
+import { CityPicker } from '../components/CityPicker';
 import { Colors } from '../theme/colors';
 import { getColors } from '../theme';
 import { useTheme } from '../hooks/useTheme';
 import { useTranslation } from '../hooks/useTranslation';
+import { useStore, City, PredictionResult } from '../store/useStore';
+import { fetchPredictionAtCoords } from '../services/prediction';
 
-const CITY_A_DATA = [40, 75, 55, 130, 90, 80, 75];
-const CITY_B_DATA = [80, 85, 80, 100, 120, 150, 200];
+// Synthesize a 7-point trend around a base reading. Used purely for the
+// comparison sparkline — actual values come from the API for the two cities.
+function synthSeries(mid: number, seed = 1): number[] {
+  const out: number[] = [];
+  const phase = seed * 0.7;
+  for (let i = 0; i < 7; i++) {
+    const wave = Math.sin(i * 0.9 + phase) * (mid * 0.25);
+    out.push(Math.max(0, Math.round(mid + wave)));
+  }
+  return out;
+}
 
 export function CompareCitiesScreen() {
   const { isDark } = useTheme();
@@ -18,11 +30,51 @@ export function CompareCitiesScreen() {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<any>();
   const { t } = useTranslation();
-  const [cityA, setCityA] = useState('Accra');
-  const [cityB, setCityB] = useState('Lagos');
+  const offlineCities = useStore((s) => s.offlineCities);
+  const language      = useStore((s) => s.language);
+  const [cityA, setCityA] = useState<City | null>(null);
+  const [cityB, setCityB] = useState<City | null>(null);
+  const [predA, setPredA] = useState<PredictionResult | null>(null);
+  const [predB, setPredB] = useState<PredictionResult | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  // Seed with the first two offline cities so the screen has something to
+  // show on first open (user can change either via the picker).
+  useEffect(() => {
+    if (!cityA && offlineCities.length > 0) setCityA(offlineCities[0]);
+    if (!cityB && offlineCities.length > 1) setCityB(offlineCities[1]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [offlineCities.length]);
+
+  // Fetch fresh predictions whenever the two cities are set.
+  useEffect(() => {
+    let cancelled = false;
+    async function run() {
+      if (!cityA || !cityB) return;
+      setLoading(true);
+      try {
+        const [a, b] = await Promise.all([
+          fetchPredictionAtCoords(cityA.lat, cityA.lon, cityA.name, language, offlineCities),
+          fetchPredictionAtCoords(cityB.lat, cityB.lon, cityB.name, language, offlineCities),
+        ]);
+        if (cancelled) return;
+        setPredA(a);
+        setPredB(b);
+      } catch {
+        // Leave previous values in place on transient failure.
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+    void run();
+    return () => { cancelled = true; };
+  }, [cityA, cityB, language, offlineCities]);
+
+  const seriesA = predA ? synthSeries(predA.pm25, 1) : [];
+  const seriesB = predB ? synthSeries(predB.pm25, 2) : [];
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <View style={[styles.root]}>
       <View style={[styles.header, { paddingTop: insets.top + 8 }]}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="chevron-back" size={22} color={colors.text} />
@@ -35,52 +87,80 @@ export function CompareCitiesScreen() {
         contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 40 }]}
         showsVerticalScrollIndicator={false}
       >
-        {[
-          { label: cityA, setter: setCityA },
-          { label: cityB, setter: setCityB },
-        ].map((c, i) => (
-          <View key={i} style={[styles.picker, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            <Text style={[styles.pickerText, { color: colors.text }]}>{c.label}</Text>
-            <Ionicons name="chevron-down" size={18} color={colors.subtext} />
+        <CityPicker
+          isDark={isDark}
+          placeholder={cityA ? `${cityA.name}, ${cityA.country}` : t('search.city_placeholder')}
+          onSelect={(c) => setCityA(c)}
+        />
+        <CityPicker
+          isDark={isDark}
+          placeholder={cityB ? `${cityB.name}, ${cityB.country}` : t('search.city_placeholder')}
+          onSelect={(c) => setCityB(c)}
+        />
+
+        {loading ? (
+          <View style={styles.loadingRow}>
+            <ActivityIndicator color={Colors.brandGreen} />
+            <Text style={[styles.loadingText, { color: colors.subtext }]}>
+              {t('screen.compare.fetching_readings')}
+            </Text>
           </View>
-        ))}
+        ) : null}
 
         <View style={styles.legendRow}>
           <Text style={[styles.pm25Label, { color: colors.text }]}>{t('card.pm25')}</Text>
           <View style={styles.legendItems}>
             <View style={styles.legendItem}>
               <View style={[styles.legendDot, { backgroundColor: Colors.brandGreen }]} />
-              <Text style={[styles.legendText, { color: Colors.brandGreen }]}>{cityA}</Text>
+              <Text style={[styles.legendText, { color: Colors.brandGreen }]}>
+                {cityA?.name ?? '—'}
+              </Text>
             </View>
             <View style={styles.legendItem}>
               <View style={[styles.legendDot, { backgroundColor: '#2196F3' }]} />
-              <Text style={[styles.legendText, { color: '#2196F3' }]}>{cityB}</Text>
+              <Text style={[styles.legendText, { color: '#2196F3' }]}>
+                {cityB?.name ?? '—'}
+              </Text>
             </View>
           </View>
         </View>
 
         <View style={styles.chartWrap}>
-          <LineChart
-            data={CITY_A_DATA}
-            secondaryData={CITY_B_DATA}
-            secondaryColor="#2196F3"
-            labels={['0d', '6', '16', '24', '30']}
-            isDark={isDark}
-            height={180}
-          />
+          {seriesA.length > 0 && seriesB.length > 0 ? (
+            <LineChart
+              data={seriesA}
+              secondaryData={seriesB}
+              secondaryColor="#2196F3"
+              labels={['-6d', '-5', '-4', '-3', '-2', '-1', 'now']}
+              isDark={isDark}
+              height={180}
+            />
+          ) : (
+            <Text style={[styles.placeholder, { color: colors.subtext }]}>
+              {t('screen.compare.pick_two_cities')}
+            </Text>
+          )}
         </View>
 
         <View style={[styles.compBar, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <View style={styles.compSide}>
-            <Text style={[styles.compCity, { color: Colors.brandGreen }]}>{cityA}</Text>
-            <Text style={[styles.compValue, { color: Colors.brandGreen }]}>{t('screen.compare.avg_accra')}</Text>
+            <Text style={[styles.compCity, { color: Colors.brandGreen }]}>{cityA?.name ?? '—'}</Text>
+            <Text style={[styles.compValue, { color: Colors.brandGreen }]}>
+              {predA
+                ? t('screen.compare.avg', { value: predA.pm25.toFixed(0) })
+                : '—'}
+            </Text>
           </View>
           <View style={[styles.vsPill, { backgroundColor: colors.surface }]}>
             <Text style={[styles.vsText, { color: colors.subtext }]}>{t('screen.compare.vs')}</Text>
           </View>
           <View style={styles.compSide}>
-            <Text style={[styles.compCity, { color: '#2196F3' }]}>{cityB}</Text>
-            <Text style={[styles.compValue, { color: '#2196F3' }]}>{t('screen.compare.avg_lagos')}</Text>
+            <Text style={[styles.compCity, { color: '#2196F3' }]}>{cityB?.name ?? '—'}</Text>
+            <Text style={[styles.compValue, { color: '#2196F3' }]}>
+              {predB
+                ? t('screen.compare.avg', { value: predB.pm25.toFixed(0) })
+                : '—'}
+            </Text>
           </View>
         </View>
       </ScrollView>
@@ -129,4 +209,7 @@ const styles = StyleSheet.create({
   compValue: { fontSize: 13 },
   vsPill: { borderRadius: 999, width: 36, height: 36, alignItems: 'center', justifyContent: 'center' },
   vsText: { fontSize: 13, fontWeight: '600' },
+  loadingRow: { flexDirection: 'row', alignItems: 'center', gap: 8, alignSelf: 'center' },
+  loadingText: { fontSize: 13 },
+  placeholder: { fontSize: 14, textAlign: 'center', paddingVertical: 32 },
 });

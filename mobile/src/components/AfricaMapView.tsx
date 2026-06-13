@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from 'react';
+import React, { forwardRef, useImperativeHandle, useMemo, useRef } from 'react';
 import { StyleSheet, View, Text, Platform } from 'react-native';
 import { WebView, WebViewMessageEvent } from 'react-native-webview';
 import { City } from '../store/useStore';
@@ -17,6 +17,12 @@ export type MapMarker = {
 };
 
 export type AfricaMapVariant = 'markers' | 'heatmap';
+
+export type AfricaMapViewHandle = {
+  zoomIn: () => void;
+  zoomOut: () => void;
+  updateUserLocation: (lat: number, lon: number, fly?: boolean) => void;
+};
 
 interface AfricaMapViewProps {
   cities?: City[];
@@ -89,8 +95,7 @@ function buildMapHtml(
           0.35, '#F5C518',
           0.55, '#FF8C00',
           0.75, '#E53935',
-          1, '#9C27B0',
-        ],
+          1, '#9C27B0'],
         'heatmap-radius': ['interpolate', ['linear'], ['zoom'], 0, 18, 9, 40],
         'heatmap-opacity': 0.88,
       },
@@ -195,7 +200,6 @@ function buildMapHtml(
     map.doubleClickZoom.enable();
 
     map.addControl(new mapboxgl.AttributionControl({ compact: true }), 'bottom-left');
-    map.addControl(new mapboxgl.NavigationControl({ showCompass: true, visualizePitch: true }), 'top-right');
 
     let suppressTap = false;
     const armSuppressTap = () => { suppressTap = true; };
@@ -238,6 +242,43 @@ function buildMapHtml(
     });
 
     let userMarker = null;
+
+    function ensureUserMarker(lat, lon) {
+      if (userMarker) {
+        userMarker.setLngLat([lon, lat]);
+        return;
+      }
+      const el = document.createElement('div');
+      el.className = 'user-loc';
+      userMarker = new mapboxgl.Marker({ element: el, anchor: 'center' })
+        .setLngLat([lon, lat])
+        .addTo(map);
+    }
+
+    window.zoomMap = (delta) => {
+      const run = () => map.zoomTo(map.getZoom() + delta, { duration: 250 });
+      if (map.loaded()) run();
+      else map.once('load', run);
+    };
+
+    window.updateUserLocation = (lat, lon, fly) => {
+      const run = () => {
+        ensureUserMarker(lat, lon);
+        if (fly) {
+          map.flyTo({
+            center: [lon, lat],
+            zoom: Math.max(map.getZoom(), 15),
+            pitch: 55,
+            bearing: 0,
+            duration: 900,
+            essential: true,
+          });
+        }
+      };
+      if (map.loaded()) run();
+      else map.once('load', run);
+    };
+
     window.flyToCoords = (lat, lon, zoom, pitch, showUser) => {
       const run = () => {
         map.flyTo({
@@ -248,14 +289,7 @@ function buildMapHtml(
           duration: 1400,
           essential: true,
         });
-        if (showUser) {
-          if (userMarker) userMarker.remove();
-          const el = document.createElement('div');
-          el.className = 'user-loc';
-          userMarker = new mapboxgl.Marker({ element: el, anchor: 'center' })
-            .setLngLat([lon, lat])
-            .addTo(map);
-        }
+        if (showUser) ensureUserMarker(lat, lon);
       };
       if (map.loaded()) run();
       else map.once('load', run);
@@ -265,7 +299,7 @@ function buildMapHtml(
 </html>`;
 }
 
-export function AfricaMapView({
+export const AfricaMapView = forwardRef<AfricaMapViewHandle, AfricaMapViewProps>(function AfricaMapView({
   cities = [],
   markers: markersProp,
   variant = 'markers',
@@ -274,9 +308,21 @@ export function AfricaMapView({
   selectedCity,
   onMapPress,
   flyTo,
-}: AfricaMapViewProps) {
+}, ref) {
   const webRef = useRef<WebView>(null);
   const { t } = useTranslation();
+
+  function injectMapCall(script: string) {
+    webRef.current?.injectJavaScript(`${script}; true;`);
+  }
+
+  useImperativeHandle(ref, () => ({
+    zoomIn: () => injectMapCall('window.zoomMap(1)'),
+    zoomOut: () => injectMapCall('window.zoomMap(-1)'),
+    updateUserLocation: (lat, lon, fly = false) => {
+      injectMapCall(`window.updateUserLocation(${lat}, ${lon}, ${fly ? 'true' : 'false'})`);
+    },
+  }));
 
   const markers = useMemo(() => {
     if (markersProp?.length) return markersProp;
@@ -352,7 +398,7 @@ export function AfricaMapView({
       androidLayerType="hardware"
     />
   );
-}
+});
 
 const styles = StyleSheet.create({
   webview: {

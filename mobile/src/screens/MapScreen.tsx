@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -6,6 +6,9 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
+  Pressable,
+  Text,
+  Keyboard,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -15,11 +18,15 @@ import { isLocationInAfricanNation, nearestCityWithin, MAX_CITY_SNAP_DEG } from 
 import { getColors, Colors } from '../theme';
 import { getAQIColor } from '../theme/colors';
 import { useTheme } from '../hooks/useTheme';
-import { AfricaMapView, MapMarker } from '../components/AfricaMapView';
+import { AfricaMapView, AfricaMapViewHandle, MapMarker } from '../components/AfricaMapView';
 import { useTranslation } from '../hooks/useTranslation';
 import { useStore, PredictionResult } from '../store/useStore';
 import { fetchPredictionAtCoords } from '../services/prediction';
-import { reverseGeocodePlace } from '../services/mapboxGeocoding';
+import {
+  reverseGeocodePlace,
+  fetchAfricanPlaceSuggestions,
+  PlaceSuggestion,
+} from '../services/mapboxGeocoding';
 
 export function MapScreen() {
   const { isDark } = useTheme();
@@ -35,6 +42,9 @@ export function MapScreen() {
   const [loading, setLoading] = useState(false);
   const [prediction, setPrediction] = useState<PredictionResult | null>(null);
   const fetchGen = useRef(0);
+  const mapRef = useRef<AfricaMapViewHandle>(null);
+  const locationWatchRef = useRef<Location.LocationSubscription | null>(null);
+  const hasFlownToUserRef = useRef(false);
   const [flyTo, setFlyTo] = useState<{
     lat: number;
     lon: number;
@@ -54,23 +64,85 @@ export function MapScreen() {
     };
   }, [prediction]);
 
+  // Marker pool is independent of `search` — filtering it per-keystroke is what
+  // caused the flicker. Search now drives the suggestion dropdown only.
   const mapMarkers: MapMarker[] = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    const pool = q
-      ? offlineCities.filter(
-          (c) =>
-            c.name.toLowerCase().includes(q) ||
-            c.country.toLowerCase().includes(q)
-        )
-      : offlineCities;
     const limit = liteMode ? 80 : 250;
-    return pool.slice(0, limit).map((city) => ({
+    return offlineCities.slice(0, limit).map((city) => ({
       name: city.name,
       lat: city.lat,
       lon: city.lon,
       color: getAQIColor('good'),
     }));
-  }, [offlineCities, search, liteMode]);
+  }, [offlineCities, liteMode]);
+
+  // ── Search suggestions (offline-instant + debounced Mapbox enrich) ────────
+  const [searchFocused, setSearchFocused] = useState(false);
+  const [suggestions, setSuggestions] = useState<PlaceSuggestion[]>([]);
+  const suggestionGen = useRef(0);
+
+  useEffect(() => {
+    const text = search.trim();
+    if (text.length < 2) {
+      setSuggestions([]);
+      return;
+    }
+
+    // Instant offline matches — no network, no debounce.
+    const q = text.toLowerCase();
+    const offline: PlaceSuggestion[] = offlineCities
+      .filter(
+        (c) =>
+          c.name.toLowerCase().includes(q) ||
+          c.country.toLowerCase().includes(q),
+      )
+      .slice(0, 5)
+      .map((c) => ({
+        id: `offline-${c.name}-${c.lat}-${c.lon}`,
+        placeName: `${c.name}, ${c.country}`,
+        lat: c.lat,
+        lon: c.lon,
+        country: c.country,
+      }));
+    setSuggestions(offline);
+
+    // Mapbox enrichment requires ≥3 chars (per service) and is debounced
+    // so we don't hit the API on every keystroke.
+    if (text.length < 3) return;
+    const gen = ++suggestionGen.current;
+    const timer = setTimeout(async () => {
+      try {
+        const mapbox = await fetchAfricanPlaceSuggestions(text);
+        if (gen !== suggestionGen.current) return;
+        const seen = new Set(offline.map((s) => s.placeName.toLowerCase()));
+        const merged = [
+          ...offline,
+          ...mapbox.filter((s) => !seen.has(s.placeName.toLowerCase())),
+        ].slice(0, 8);
+        setSuggestions(merged);
+      } catch {
+        /* keep offline results */
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [search, offlineCities]);
+
+  function selectSuggestion(s: PlaceSuggestion) {
+    Keyboard.dismiss();
+    setSearchFocused(false);
+    setSearch('');
+    setSuggestions([]);
+    const cityName = s.placeName.split(',')[0]?.trim() || s.placeName;
+    setFlyTo({
+      lat: s.lat,
+      lon: s.lon,
+      zoom: 10,
+      pitch: 40,
+      key: Date.now(),
+    });
+    void loadPredictionAt(s.lat, s.lon, cityName);
+  }
 
   function showError(message: string) {
     Alert.alert(message);
@@ -157,27 +229,53 @@ export function MapScreen() {
     void loadPredictionAt(lat, lon, name, isWater);
   }
 
+  useEffect(() => () => {
+    locationWatchRef.current?.remove();
+    locationWatchRef.current = null;
+  }, []);
+
   async function handleLocate() {
     const { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== 'granted') return;
-    const loc = await Location.getCurrentPositionAsync({
-      accuracy: Location.Accuracy.High,
-    });
-    const { latitude, longitude } = loc.coords;
-    setFlyTo({
-      lat: latitude,
-      lon: longitude,
-      zoom: 15,
-      pitch: 55,
-      showUserMarker: true,
-      key: Date.now(),
-    });
-    await loadPredictionAt(latitude, longitude);
+    if (status !== 'granted') {
+      showError(t('error.location'));
+      return;
+    }
+
+    locationWatchRef.current?.remove();
+    hasFlownToUserRef.current = false;
+
+    locationWatchRef.current = await Location.watchPositionAsync(
+      {
+        accuracy: Location.Accuracy.High,
+        distanceInterval: 3,
+        timeInterval: 2000,
+      },
+      (loc) => {
+        const { latitude, longitude } = loc.coords;
+        const shouldFly = !hasFlownToUserRef.current;
+        if (shouldFly) {
+          hasFlownToUserRef.current = true;
+          setFlyTo({
+            lat: latitude,
+            lon: longitude,
+            zoom: 15,
+            pitch: 55,
+            showUserMarker: true,
+            key: Date.now(),
+          });
+        } else {
+          mapRef.current?.updateUserLocation(latitude, longitude);
+        }
+      },
+    );
   }
 
+  const chromeBg = isDark ? Colors.bgCard : '#fff';
+
   return (
-    <View style={[styles.root, { backgroundColor: isDark ? Colors.bgPrimary : '#E8F5E9' }]}>
+    <View style={styles.root}>
       <AfricaMapView
+        ref={mapRef}
         cities={offlineCities}
         markers={mapMarkers}
         isDark={isDark}
@@ -187,26 +285,91 @@ export function MapScreen() {
         onMapPress={handleMapPress}
       />
 
-      <View style={[styles.searchWrap, { top: insets.top + 12 }]}>
-        <View style={[styles.searchBar, { backgroundColor: isDark ? Colors.bgCard : '#fff' }]}>
+      <View style={[styles.topChrome, { top: insets.top + 12 }]}>
+        <View style={[styles.searchBar, { backgroundColor: chromeBg }]}>
           <Ionicons name="search-outline" size={16} color={colors.subtext} />
           <TextInput
             value={search}
             onChangeText={setSearch}
+            onFocus={() => setSearchFocused(true)}
+            // 150ms delay lets a tap on a suggestion fire before the
+            // dropdown unmounts on blur.
+            onBlur={() => setTimeout(() => setSearchFocused(false), 150)}
             placeholder={t('search.city_placeholder')}
             placeholderTextColor={colors.subtext}
             style={[styles.searchInput, { color: colors.text }]}
+            returnKeyType="search"
+            autoCorrect={false}
+            autoCapitalize="words"
           />
+          {search.length > 0 ? (
+            <TouchableOpacity
+              onPress={() => {
+                setSearch('');
+                setSuggestions([]);
+              }}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              accessibilityLabel={t('search.clear')}
+            >
+              <Ionicons name="close-circle" size={18} color={colors.subtext} />
+            </TouchableOpacity>
+          ) : null}
+          <TouchableOpacity
+            onPress={() => void handleLocate()}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            accessibilityLabel={t('search.locate')}
+          >
+            <Ionicons name="location-sharp" size={20} color={Colors.brandGreen} />
+          </TouchableOpacity>
+        </View>
+
+        {searchFocused && suggestions.length > 0 ? (
+          <View style={[styles.suggestionsCard, { backgroundColor: chromeBg }]}>
+            {suggestions.map((s, idx) => {
+              const isLast = idx === suggestions.length - 1;
+              return (
+                <Pressable
+                  key={s.id}
+                  onPress={() => selectSuggestion(s)}
+                  style={({ pressed }) => [
+                    styles.suggestionRow,
+                    !isLast && {
+                      borderBottomWidth: StyleSheet.hairlineWidth,
+                      borderBottomColor: 'rgba(128,128,128,0.18)',
+                    },
+                    pressed && { backgroundColor: 'rgba(128,128,128,0.08)' },
+                  ]}
+                >
+                  <Ionicons name="location-outline" size={16} color={colors.subtext} />
+                  <Text
+                    style={[styles.suggestionText, { color: colors.text }]}
+                    numberOfLines={1}
+                  >
+                    {s.placeName}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
+        ) : null}
+
+        <View style={styles.zoomStack}>
+          <TouchableOpacity
+            onPress={() => mapRef.current?.zoomIn()}
+            style={[styles.zoomBtn, styles.zoomBtnTop, { backgroundColor: chromeBg }]}
+            accessibilityLabel={t('map.zoom_in')}
+          >
+            <Ionicons name="add" size={20} color={colors.text} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => mapRef.current?.zoomOut()}
+            style={[styles.zoomBtn, styles.zoomBtnBottom, { backgroundColor: chromeBg }]}
+            accessibilityLabel={t('map.zoom_out')}
+          >
+            <Ionicons name="remove" size={20} color={colors.text} />
+          </TouchableOpacity>
         </View>
       </View>
-
-      <TouchableOpacity
-        onPress={handleLocate}
-        style={[styles.locBtn, { backgroundColor: colors.card, bottom: insets.bottom + 24 }]}
-        accessibilityLabel={t('search.locate')}
-      >
-        <Ionicons name="locate-outline" size={20} color={colors.text} />
-      </TouchableOpacity>
 
       {loading ? (
         <View style={styles.loadingOverlay} pointerEvents="none">
@@ -217,9 +380,22 @@ export function MapScreen() {
   );
 }
 
+const chromeShadow = {
+  shadowColor: '#000',
+  shadowRadius: 8,
+  shadowOpacity: 0.15,
+  elevation: 4,
+} as const;
+
 const styles = StyleSheet.create({
   root: { flex: 1 },
-  searchWrap: { position: 'absolute', left: 16, right: 16, zIndex: 2 },
+  topChrome: {
+    position: 'absolute',
+    left: 16,
+    right: 16,
+    zIndex: 2,
+    gap: 10,
+  },
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -227,26 +403,42 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 12,
     gap: 10,
-    shadowColor: '#000',
-    shadowRadius: 8,
-    shadowOpacity: 0.15,
-    elevation: 4,
+    ...chromeShadow,
   },
   searchInput: { flex: 1, fontSize: 15 },
-  locBtn: {
-    position: 'absolute',
-    right: 16,
-    zIndex: 2,
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+  suggestionsCard: {
+    borderRadius: 12,
+    overflow: 'hidden',
+    ...chromeShadow,
+  },
+  suggestionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+  },
+  suggestionText: {
+    flex: 1,
+    fontSize: 14,
+  },
+  zoomStack: {
+    alignSelf: 'flex-end',
+    borderRadius: 10,
+    overflow: 'hidden',
+    ...chromeShadow,
+  },
+  zoomBtn: {
+    width: 40,
+    height: 40,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowRadius: 8,
-    shadowOpacity: 0.2,
-    elevation: 4,
   },
+  zoomBtnTop: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: 'rgba(128,128,128,0.25)',
+  },
+  zoomBtnBottom: {},
   loadingOverlay: {
     ...StyleSheet.absoluteFillObject,
     zIndex: 3,

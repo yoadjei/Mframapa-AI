@@ -66,7 +66,7 @@ export function CityPicker({ onSelect, isDark, placeholder = 'Search city...' }:
       </TouchableOpacity>
 
       <Modal visible={visible} animationType="slide" onRequestClose={() => setVisible(false)}>
-        <View style={{ flex: 1, backgroundColor: colors.background }}>
+        <View style={{ flex: 1}}>
           <View
             style={{
               flexDirection: 'row',

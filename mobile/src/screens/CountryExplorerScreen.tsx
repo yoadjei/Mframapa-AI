@@ -1,22 +1,15 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import {
-  View, Text, StyleSheet, ScrollView, TouchableOpacity,
+  View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal, FlatList, Alert,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useTheme } from '../hooks/useTheme';
-import { getColors } from '../theme';
-import { AQIBadge } from '../components/ui/AQIBadge';
-import { getAQIColor } from '../theme/colors';
+import { getColors, Colors } from '../theme';
 import { useTranslation } from '../hooks/useTranslation';
-
-const CITIES = [
-  { name: 'Accra',      pm25: 42, category: 'moderate' },
-  { name: 'Kumasi',     pm25: 28, category: 'good' },
-  { name: 'Tamale',     pm25: 65, category: 'unhealthy for sensitive groups' },
-  { name: 'Cape Coast', pm25: 19, category: 'good' },
-];
+import { useStore, City } from '../store/useStore';
+import { fetchPredictionAtCoords } from '../services/prediction';
 
 export function CountryExplorerScreen() {
   const insets    = useSafeAreaInsets();
@@ -24,16 +17,66 @@ export function CountryExplorerScreen() {
   const { isDark } = useTheme();
   const colors = getColors(isDark);
   const { t } = useTranslation();
+  const offlineCities = useStore((s) => s.offlineCities);
+  const language      = useStore((s) => s.language);
+  const setPrediction = useStore((s) => s.setPrediction);
+
+  // Unique sorted list of countries actually represented in offlineCities.
+  const countries = useMemo(() => {
+    const set = new Set<string>();
+    for (const c of offlineCities) if (c.country) set.add(c.country);
+    return Array.from(set).sort();
+  }, [offlineCities]);
+
+  const [selectedCountry, setSelectedCountry] = useState<string>(countries[0] ?? '');
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [loadingCity, setLoadingCity] = useState<string | null>(null);
+
+  // Default to the first country once offlineCities hydrate.
+  if (!selectedCountry && countries.length > 0) {
+    setSelectedCountry(countries[0]);
+  }
+
+  const cities = useMemo(
+    () => offlineCities.filter((c) => c.country === selectedCountry),
+    [offlineCities, selectedCountry],
+  );
+
+  // Quick descriptive stats from the cached city set.
+  const stats = useMemo(() => {
+    const urban = cities.filter((c) => c.urban).length;
+    return {
+      cities: cities.length.toString(),
+      urban: urban.toString(),
+      rural: (cities.length - urban).toString(),
+    };
+  }, [cities]);
+
+  async function openCity(city: City) {
+    if (loadingCity) return;
+    setLoadingCity(city.name);
+    try {
+      const prediction = await fetchPredictionAtCoords(
+        city.lat, city.lon, city.name, language, offlineCities,
+      );
+      setPrediction(prediction);
+      navigation.navigate('CityDetail', { prediction });
+    } catch {
+      Alert.alert(t('error.prediction'));
+    } finally {
+      setLoadingCity(null);
+    }
+  }
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background, paddingTop: insets.top }]}>
+    <View style={[styles.root, {paddingTop: insets.top }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.iconBtn}>
           <Ionicons name="chevron-back" size={24} color={colors.text} />
         </TouchableOpacity>
         <View style={{ flex: 1 }} />
-        <TouchableOpacity style={styles.iconBtn}>
-          <Ionicons name="ellipsis-horizontal" size={22} color={colors.subtext} />
+        <TouchableOpacity onPress={() => setPickerOpen(true)} style={styles.iconBtn}>
+          <Ionicons name="swap-horizontal" size={22} color={colors.subtext} />
         </TouchableOpacity>
       </View>
 
@@ -41,47 +84,99 @@ export function CountryExplorerScreen() {
         contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 40 }]}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.countryRow}>
-          <Text style={styles.flag}>🇬🇭</Text>
-          <Text style={[styles.countryName, { color: colors.text }]}>Ghana</Text>
-          <AQIBadge category="moderate" size="md" />
-        </View>
+        <TouchableOpacity
+          onPress={() => setPickerOpen(true)}
+          activeOpacity={0.7}
+          style={styles.countryRow}
+        >
+          <Text style={[styles.countryName, { color: colors.text }]} numberOfLines={1}>
+            {selectedCountry || t('screen.country.tap_to_choose')}
+          </Text>
+          <Ionicons name="chevron-down" size={20} color={colors.subtext} />
+        </TouchableOpacity>
 
-        {CITIES.map((city) => (
-          <TouchableOpacity
-            key={city.name}
-            activeOpacity={0.75}
-            style={[styles.cityRow, { backgroundColor: colors.card }]}
-          >
-            <View style={[styles.dot, { backgroundColor: getAQIColor(city.category) }]} />
-            <Text style={[styles.cityName, { color: colors.text }]}>{city.name}</Text>
-            <View style={styles.cityRight}>
-              <View style={[styles.dot, { backgroundColor: getAQIColor(city.category) }]} />
-              <Text style={[styles.pm25Val, { color: getAQIColor(city.category) }]}>
-                {city.pm25}
-              </Text>
-              <Ionicons name="chevron-forward" size={14} color={colors.subtext} />
-            </View>
-          </TouchableOpacity>
-        ))}
+        {cities.length === 0 ? (
+          <View style={[styles.emptyBlock, { borderColor: colors.border }]}>
+            <Ionicons name="location-outline" size={36} color={colors.subtext} />
+            <Text style={[styles.emptyText, { color: colors.subtext }]}>
+              {t('screen.country.no_cities')}
+            </Text>
+          </View>
+        ) : (
+          cities.slice(0, 30).map((city) => (
+            <TouchableOpacity
+              key={`${city.name}-${city.lat}`}
+              onPress={() => openCity(city)}
+              disabled={loadingCity === city.name}
+              activeOpacity={0.75}
+              style={[
+                styles.cityRow,
+                { backgroundColor: colors.card },
+                loadingCity === city.name && { opacity: 0.6 },
+              ]}
+            >
+              <Ionicons
+                name={city.urban ? 'business-outline' : 'leaf-outline'}
+                size={16}
+                color={Colors.brandGreen}
+              />
+              <Text style={[styles.cityName, { color: colors.text }]}>{city.name}</Text>
+              <View style={styles.cityRight}>
+                <Text style={[styles.cityCoord, { color: colors.subtext }]}>
+                  {city.lat.toFixed(2)}°, {city.lon.toFixed(2)}°
+                </Text>
+                <Ionicons name="chevron-forward" size={14} color={colors.subtext} />
+              </View>
+            </TouchableOpacity>
+          ))
+        )}
 
         <View style={[styles.statsCard, { backgroundColor: colors.card }]}>
           <Text style={[styles.statsTitle, { color: colors.text }]}>{t('country.stats_title')}</Text>
           <View style={styles.statsGrid}>
-            {[
-              { label: t('country.stats.cities'), val: '427' },
-              { label: t('country.stats.population'), val: '32.9M' },
-              { label: t('country.stats.area'), val: '2,083 mi' },
-              { label: t('country.stats.forest_cover'), val: '34%' },
-            ].map((stat, i) => (
-              <View key={i} style={styles.statItem}>
-                <Text style={[styles.statLabel, { color: colors.subtext }]}>{stat.label}</Text>
-                <Text style={[styles.statValue, { color: colors.text }]}>{stat.val}</Text>
-              </View>
-            ))}
+            <View style={styles.statItem}>
+              <Text style={[styles.statLabel, { color: colors.subtext }]}>{t('country.stats.cities')}</Text>
+              <Text style={[styles.statValue, { color: colors.text }]}>{stats.cities}</Text>
+            </View>
+            <View style={styles.statItem}>
+              <Text style={[styles.statLabel, { color: colors.subtext }]}>{t('screen.country.urban_cities')}</Text>
+              <Text style={[styles.statValue, { color: colors.text }]}>{stats.urban}</Text>
+            </View>
+            <View style={styles.statItem}>
+              <Text style={[styles.statLabel, { color: colors.subtext }]}>{t('screen.country.rural_cities')}</Text>
+              <Text style={[styles.statValue, { color: colors.text }]}>{stats.rural}</Text>
+            </View>
           </View>
         </View>
       </ScrollView>
+
+      <Modal visible={pickerOpen} transparent animationType="slide" onRequestClose={() => setPickerOpen(false)}>
+        <TouchableOpacity style={styles.overlay} activeOpacity={1} onPress={() => setPickerOpen(false)} />
+        <View style={[styles.sheet, { backgroundColor: colors.card, paddingBottom: insets.bottom + 16 }]}>
+          <View style={[styles.handle, { backgroundColor: colors.border }]} />
+          <Text style={[styles.sheetTitle, { color: colors.text }]}>
+            {t('screen.country.choose_country')}
+          </Text>
+          <FlatList
+            data={countries}
+            keyExtractor={(c) => c}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                onPress={() => {
+                  setSelectedCountry(item);
+                  setPickerOpen(false);
+                }}
+                style={[styles.countryItem, { borderBottomColor: colors.border }]}
+              >
+                <Text style={[styles.countryItemText, { color: colors.text }]}>{item}</Text>
+                {item === selectedCountry ? (
+                  <Ionicons name="checkmark" size={20} color={Colors.brandGreen} />
+                ) : null}
+              </TouchableOpacity>
+            )}
+          />
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -98,26 +193,44 @@ const styles = StyleSheet.create({
   content:     { paddingHorizontal: 16, paddingTop: 4, gap: 10 },
 
   countryRow:  { flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 8 },
-  flag:        { fontSize: 34 },
-  countryName: { fontSize: 30, fontWeight: '800', flex: 1 },
+  countryName: { fontSize: 28, fontWeight: '800', flex: 1 },
 
   cityRow:     {
     flexDirection: 'row',
     alignItems: 'center',
     borderRadius: 14,
     paddingHorizontal: 16,
-    paddingVertical: 16,
+    paddingVertical: 14,
     gap: 12,
   },
-  dot:         { width: 10, height: 10, borderRadius: 5 },
   cityName:    { flex: 1, fontSize: 16, fontWeight: '600' },
   cityRight:   { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  pm25Val:     { fontSize: 16, fontWeight: '700' },
+  cityCoord:   { fontSize: 12 },
 
   statsCard:   { borderRadius: 16, padding: 16, gap: 14, marginTop: 4 },
   statsTitle:  { fontSize: 17, fontWeight: '700' },
   statsGrid:   { flexDirection: 'row', flexWrap: 'wrap', gap: 18 },
-  statItem:    { width: '45%', gap: 2 },
+  statItem:    { width: '28%', gap: 2 },
   statLabel:   { fontSize: 12 },
   statValue:   { fontSize: 20, fontWeight: '700' },
+
+  emptyBlock:  {
+    borderRadius: 16, borderWidth: 1.5, borderStyle: 'dashed',
+    padding: 24, alignItems: 'center', gap: 8, marginVertical: 8,
+  },
+  emptyText:   { fontSize: 14, textAlign: 'center' },
+
+  overlay:     { flex: 1, backgroundColor: 'rgba(0,0,0,0.4)' },
+  sheet:       {
+    position: 'absolute', left: 0, right: 0, bottom: 0,
+    borderTopLeftRadius: 20, borderTopRightRadius: 20,
+    paddingHorizontal: 16, paddingTop: 8, maxHeight: '70%',
+  },
+  handle:      { width: 40, height: 4, borderRadius: 2, alignSelf: 'center', marginBottom: 12 },
+  sheetTitle:  { fontSize: 18, fontWeight: '700', marginBottom: 8 },
+  countryItem: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    paddingVertical: 14, borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  countryItemText: { fontSize: 16 },
 });
