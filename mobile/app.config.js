@@ -1,6 +1,20 @@
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
+const { withEntitlementsPlist } = require('expo/config-plugins');
+
+/**
+ * Free Apple Developer teams can't sign Push Notifications.
+ * expo-notifications adds aps-environment automatically during prebuild —
+ * this strips it so local builds can sign with a personal team.
+ * Local notifications still work; only remote push is disabled (which a free
+ * team can't use anyway).
+ */
+const stripPushEntitlement = (config) =>
+  withEntitlementsPlist(config, (c) => {
+    delete c.modResults['aps-environment'];
+    return c;
+  });
 
 /** Load repo-root .env so EXPO_PUBLIC_* matches PWA (VITE_*). */
 const rootEnv = path.resolve(__dirname, '../.env');
@@ -66,6 +80,12 @@ module.exports = {
     extra: {
       mapboxToken,
       apiUrl,
+      supabaseUrl: process.env.EXPO_PUBLIC_SUPABASE_URL || '',
+      supabaseAnonKey:
+        process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ||
+        process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+        '',
+      paystackPublicKey: process.env.EXPO_PUBLIC_PAYSTACK_PUBLIC_KEY || '',
     },
     ios: {
       ...appJson.expo.ios,
@@ -76,5 +96,9 @@ module.exports = {
         },
       },
     },
+    plugins: [
+      ...(appJson.expo.plugins ?? []),
+      stripPushEntitlement,
+    ],
   },
 };

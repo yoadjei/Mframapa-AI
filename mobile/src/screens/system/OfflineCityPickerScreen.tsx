@@ -12,8 +12,7 @@ const OFFLINE_CITIES = [
   { name: 'Accra', selected: true },
   { name: 'Kumasi', selected: false },
   { name: 'Tamale', selected: false },
-  { name: 'Cape Coast', selected: false },
-];
+  { name: 'Cape Coast', selected: false }];
 
 export function OfflineCityPickerScreen() {
   const { isDark } = useTheme();
@@ -25,11 +24,10 @@ export function OfflineCityPickerScreen() {
   const crumbs = [
     'screen.offline.breadcrumb_africa',
     'screen.offline.breadcrumb_west',
-    'screen.offline.breadcrumb_ghana',
-  ] as const;
+    'screen.offline.breadcrumb_ghana'] as const;
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <View style={[styles.root]}>
       <View style={[styles.header, { paddingTop: insets.top + 8 }]}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backRow}>
           <Ionicons name="chevron-back" size={18} color={colors.text} />

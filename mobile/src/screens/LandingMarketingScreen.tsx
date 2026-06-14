@@ -2,7 +2,6 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '../hooks/useTheme';
 import { getColors, Colors } from '../theme';
 import { PrimaryButton } from '../components/ui/PrimaryButton';
@@ -11,8 +10,7 @@ import { useTranslation } from '../hooks/useTranslation';
 const FEATURE_KEYS = [
   { icon: 'pulse-outline' as const, labelKey: 'screen.landing.feature1_label', descKey: 'screen.landing.feature1_desc' },
   { icon: 'globe-outline' as const, labelKey: 'screen.landing.feature2_label', descKey: 'screen.landing.feature2_desc' },
-  { icon: 'cloud-offline-outline' as const, labelKey: 'screen.landing.feature3_label', descKey: 'screen.landing.feature3_desc' },
-];
+  { icon: 'cloud-offline-outline' as const, labelKey: 'screen.landing.feature3_label', descKey: 'screen.landing.feature3_desc' }];
 
 export function LandingMarketingScreen() {
   const insets = useSafeAreaInsets();
@@ -20,22 +18,12 @@ export function LandingMarketingScreen() {
   const colors = getColors(isDark);
   const { t } = useTranslation();
 
-  const gradientColors: [string, string, string] = isDark
-    ? ['#112518', '#0A1A14', '#080F0C']
-    : ['#E8F8F0', '#D4F0E4', '#F5FBF7'];
-
   return (
-    <LinearGradient
-      colors={gradientColors}
-      start={{ x: 0.2, y: 0 }}
-      end={{ x: 0.8, y: 1 }}
-      style={styles.root}
-    >
+    <View style={styles.root}>
       <ScrollView
         contentContainerStyle={[
           styles.content,
-          { paddingTop: insets.top + 32, paddingBottom: insets.bottom + 32 },
-        ]}
+          { paddingTop: insets.top + 32, paddingBottom: insets.bottom + 32 }]}
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.heroBlock}>
@@ -58,7 +46,7 @@ export function LandingMarketingScreen() {
           <Text style={[styles.statsText, { color: colors.subtext }]}>{t('screen.landing.stats')}</Text>
         </View>
       </ScrollView>
-    </LinearGradient>
+    </View>
   );
 }
 

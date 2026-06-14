@@ -28,11 +28,6 @@ export function SettingsScreen() {
   const setDataAnalytics = useStore((s) => s.setDataAnalytics);
   const locationSharing  = useStore((s) => s.locationSharing);
   const setLocationSharing = useStore((s) => s.setLocationSharing);
-  const signOut = useStore((s) => s.signOut);
-
-  function handleSignOut() {
-    signOut();
-  }
 
   function locationSharingLabel(value: 'off' | 'balanced' | 'precise') {
     return t(`settings.location_${value}`);
@@ -70,7 +65,7 @@ export function SettingsScreen() {
   );
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <View style={[styles.root]}>
       <ScrollView
         contentContainerStyle={[styles.content, { paddingTop: insets.top + 12, paddingBottom: insets.bottom + 100 }]}
         showsVerticalScrollIndicator={false}
@@ -130,11 +125,6 @@ export function SettingsScreen() {
         <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
           {toggleRow(t('settings.lite'), liteMode, setLiteMode, Platform.OS === 'android' ? t('settings.lite_unavailable') : undefined)}
         </View>
-
-        {/* Sign out */}
-        <TouchableOpacity onPress={handleSignOut} style={styles.signOut}>
-          <Text style={styles.signOutText}>{t('settings.sign_out')}</Text>
-        </TouchableOpacity>
       </ScrollView>
     </View>
   );
@@ -176,13 +166,4 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   dropdownText: { fontSize: 14 },
-  signOut: {
-    marginTop: 32,
-    alignSelf: 'center',
-  },
-  signOutText: {
-    color: Colors.danger,
-    fontSize: 16,
-    fontWeight: '500',
-  },
 });

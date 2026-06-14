@@ -41,9 +41,9 @@ export function LoadingSpinner({
     <View
       style={{
         flex: 1,
-        backgroundColor: colors.background,
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: isDark ? 'rgba(10,13,18,0.72)' : 'rgba(232,236,242,0.82)',
       }}
     >
       {inner}

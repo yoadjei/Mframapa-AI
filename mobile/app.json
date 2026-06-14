@@ -14,6 +14,10 @@
       "minSdkVersion": 21,
       "permissions": ["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION"]
     },
+    "ios": {
+      "bundleIdentifier": "ai.mframapa.app",
+      "supportsTablet": true
+    },
     "plugins": ["expo-location"]
   }
 }

@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
-  View, Text, StyleSheet, FlatList, TouchableOpacity, Platform,
+  View, Text, StyleSheet, FlatList, TouchableOpacity, Platform, Alert,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -9,6 +9,7 @@ import { getColors, Colors } from '../theme';
 import { useTheme } from '../hooks/useTheme';
 import { useStore, Notification } from '../store/useStore';
 import { useTranslation } from '../hooks/useTranslation';
+import { NotificationSettingsSheet } from '../components/NotificationSettingsSheet';
 
 export function AlertsScreen() {
   const { isDark } = useTheme();
@@ -19,6 +20,21 @@ export function AlertsScreen() {
   const markAllNotificationsRead = useStore((s) => s.markAllNotificationsRead);
   const markNotificationRead  = useStore((s) => s.markNotificationRead);
   const { t } = useTranslation();
+
+  // Live unread count — derived from `notifications` so any read/mark action
+  // re-renders the header badge in the same frame.
+  const unreadCount = notifications.filter((n) => !n.read).length;
+
+  const [settingsOpen, setSettingsOpen] = useState(false);
+
+  function handleMarkAll() {
+    if (unreadCount === 0) {
+      Alert.alert(t('alerts.all_caught_up'));
+      return;
+    }
+    markAllNotificationsRead();
+    Alert.alert(t('alerts.marked_as_read', { count: String(unreadCount) }));
+  }
 
   const iconName = (type: Notification['type']): React.ComponentProps<typeof Ionicons>['name'] => {
     if (type === 'alert')   return 'notifications';
@@ -44,13 +60,11 @@ export function AlertsScreen() {
         style={[
           styles.row,
           { borderColor: colors.border },
-          unread && { backgroundColor: Colors.brandGreen + '12', borderLeftColor: Colors.brandGreen, borderLeftWidth: 3 },
-        ]}
+          unread && { backgroundColor: Colors.brandGreen + '12', borderLeftColor: Colors.brandGreen, borderLeftWidth: 3 }]}
       >
         <View style={[
           styles.iconWrap,
-          { backgroundColor: unread ? Colors.brandGreen + '22' : colors.surface },
-        ]}>
+          { backgroundColor: unread ? Colors.brandGreen + '22' : colors.surface }]}>
           <Ionicons
             name={iconName(item.type)}
             size={18}
@@ -70,7 +84,7 @@ export function AlertsScreen() {
   }
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background, paddingTop: insets.top }]}>
+    <View style={[styles.root, {paddingTop: insets.top }]}>
       {/* Header */}
       <View style={styles.header}>
         {Platform.OS === 'android' ? (
@@ -78,12 +92,24 @@ export function AlertsScreen() {
             <Ionicons name="arrow-back" size={24} color={colors.text} />
           </TouchableOpacity>
         ) : null}
-        <Text style={[styles.heading, { color: colors.text }]}>{t('alerts.title')}</Text>
+        <View style={styles.headingWrap}>
+          <Text style={[styles.heading, { color: colors.text }]}>{t('alerts.title')}</Text>
+          {unreadCount > 0 ? (
+            <View style={styles.unreadPill}>
+              <Text style={styles.unreadPillText}>{unreadCount > 99 ? '99+' : unreadCount}</Text>
+            </View>
+          ) : null}
+        </View>
         <View style={styles.headerRight}>
-          <TouchableOpacity onPress={markAllNotificationsRead}>
-            <Text style={styles.markAll}>{t('alerts.mark_all')}</Text>
+          <TouchableOpacity onPress={handleMarkAll} disabled={unreadCount === 0}>
+            <Text style={[styles.markAll, unreadCount === 0 && { opacity: 0.4 }]}>
+              {t('alerts.mark_all')}
+            </Text>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setSettingsOpen(true)}
+            accessibilityLabel={t('alerts.open_settings')}
+          >
             <Ionicons name="settings-outline" size={20} color={colors.subtext} />
           </TouchableOpacity>
         </View>
@@ -91,11 +117,20 @@ export function AlertsScreen() {
 
       <FlatList
         data={notifications}
+        // extraData forces row re-render when read flags change even if the
+        // item IDs don't.
+        extraData={unreadCount}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
         contentContainerStyle={{ paddingBottom: insets.bottom + 100 }}
         showsVerticalScrollIndicator={false}
         ItemSeparatorComponent={() => <View style={[styles.sep, { backgroundColor: colors.border }]} />}
+      />
+
+      <NotificationSettingsSheet
+        visible={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+        onMarkAllRead={handleMarkAll}
       />
     </View>
   );
@@ -110,7 +145,22 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     gap: 12,
   },
-  heading: { fontSize: 28, fontWeight: '800', flex: 1 },
+  heading: { fontSize: 28, fontWeight: '800' },
+  headingWrap: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 10 },
+  unreadPill: {
+    backgroundColor: Colors.brandGreen,
+    minWidth: 24,
+    height: 22,
+    borderRadius: 11,
+    paddingHorizontal: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  unreadPillText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: '700',
+  },
   headerRight: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   markAll: { fontSize: 13, fontWeight: '600', color: Colors.brandGreen },
   row: {

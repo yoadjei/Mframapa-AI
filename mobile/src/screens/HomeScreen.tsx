@@ -101,7 +101,7 @@ export function HomeScreen() {
   );
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <View style={[styles.root]}>
       <View style={{ height: insets.top }} />
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: insets.bottom + 100 }}>
 
@@ -152,8 +152,7 @@ export function HomeScreen() {
               {
                 backgroundColor: pred ? aqiColor + (isDark ? '22' : '14') : colors.card,
                 borderColor: pred ? aqiColor + (isDark ? '45' : '40') : colors.border,
-              },
-            ]}
+              }]}
           >
             {heroCardContent}
             {pred ? (
@@ -189,8 +188,7 @@ export function HomeScreen() {
           {[
             { icon: 'navigate-circle-outline' as const, label: t('home.action_check'), action: handleLocate, loading },
             { icon: 'search-outline' as const, label: t('tab.search'), action: () => navigation.navigate('Search') },
-            { icon: 'notifications-outline' as const, label: t('tab.alerts'), action: () => navigation.navigate('Alerts') },
-          ].map((item, i) => (
+            { icon: 'notifications-outline' as const, label: t('tab.alerts'), action: () => navigation.navigate('Alerts') }].map((item, i) => (
             <TouchableOpacity
               key={i}
               onPress={item.action}

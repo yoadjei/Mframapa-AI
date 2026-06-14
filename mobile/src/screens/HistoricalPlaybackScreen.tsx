@@ -22,20 +22,21 @@ const PLAYBACK_CITIES = [
   { name: 'Lagos', lat: 6.5, lon: 3.4 },
   { name: 'Cairo', lat: 30.1, lon: 31.2 },
   { name: 'Nairobi', lat: -1.3, lon: 36.8 },
-  { name: 'Kinshasa', lat: -4.3, lon: 15.3 },
-] as const;
+  { name: 'Kinshasa', lat: -4.3, lon: 15.3 }] as const;
 
 const AQI_CATEGORIES = [
   'good',
   'moderate',
   'unhealthy for sensitive groups',
   'unhealthy',
-  'very unhealthy',
-] as const;
+  'very unhealthy'] as const;
 
-/** Jan 2024 → May 2025 (matches range labels). */
 const RANGE_START = new Date(2024, 0, 1);
-const RANGE_END = new Date(2025, 4, 31, 23, 59, 59);
+
+function endOfToday(): Date {
+  const now = new Date();
+  return new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+}
 const PLAYBACK_DURATION_MS = 14_000;
 const TICK_MS = 80;
 /** Map marker updates are stepped to limit WebView reloads during playback. */
@@ -54,8 +55,8 @@ function categoryAtProgress(cityIndex: number, progress: number): string {
   return AQI_CATEGORIES[idx];
 }
 
-function dateAtProgress(progress: number): Date {
-  const t = RANGE_START.getTime() + progress * (RANGE_END.getTime() - RANGE_START.getTime());
+function dateAtProgress(progress: number, rangeEnd: Date): Date {
+  const t = RANGE_START.getTime() + progress * (rangeEnd.getTime() - RANGE_START.getTime());
   return new Date(t);
 }
 
@@ -84,10 +85,11 @@ export function HistoricalPlaybackScreen() {
   playingRef.current = playing;
 
   const locale = language === 'en' ? undefined : language;
+  const rangeEnd = useMemo(() => endOfToday(), []);
 
   const displayDate = useMemo(
-    () => formatPlaybackDate(dateAtProgress(progress), locale),
-    [progress, locale]
+    () => formatPlaybackDate(dateAtProgress(progress, rangeEnd), locale),
+    [progress, locale, rangeEnd]
   );
 
   const markerProgress = useMemo(
@@ -194,12 +196,12 @@ export function HistoricalPlaybackScreen() {
     [locale]
   );
   const rangeEndLabel = useMemo(
-    () => RANGE_END.toLocaleDateString(locale, { month: 'short', year: 'numeric' }),
-    [locale]
+    () => rangeEnd.toLocaleDateString(locale, { month: 'short', year: 'numeric' }),
+    [locale, rangeEnd]
   );
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <View style={[styles.root]}>
       <View style={[styles.header, { paddingTop: insets.top + 8 }]}>
         <View style={styles.headerSideLeft} />
         <MframapaLogo size="sm" />
@@ -215,8 +217,7 @@ export function HistoricalPlaybackScreen() {
       <View
         style={[
           styles.bottomPanel,
-          { backgroundColor: isDark ? Colors.bgCard : '#fff', paddingBottom: insets.bottom + 16 },
-        ]}
+          { backgroundColor: isDark ? Colors.bgCard : '#fff', paddingBottom: insets.bottom + 16 }]}
       >
         <Text style={[styles.dateText, { color: colors.text }]}>{displayDate}</Text>
 

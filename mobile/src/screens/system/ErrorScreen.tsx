@@ -17,11 +17,11 @@ export function ErrorScreen() {
   const colors = getColors(isDark);
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background, paddingTop: insets.top, paddingBottom: insets.bottom }]}>
+    <View style={[styles.root, {paddingTop: insets.top, paddingBottom: insets.bottom }]}>
       <View style={styles.center}>
         <View style={[styles.iconWrap]}>
           <Ionicons name="cloud-outline" size={80} color={Colors.brandGreen} />
-          <View style={[styles.xOverlay, { backgroundColor: colors.background }]}>
+          <View style={[styles.xOverlay, { backgroundColor: colors.card }]}>
             <Ionicons name="close" size={32} color={Colors.brandGreen} />
           </View>
         </View>

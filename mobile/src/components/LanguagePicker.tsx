@@ -47,8 +47,7 @@ export function LanguagePicker() {
                 index < SUPPORTED_LANGUAGES.length - 1 && {
                   borderBottomWidth: 0.5,
                   borderBottomColor: colors.border,
-                },
-              ]}
+                }]}
             >
               <Text style={styles.flag}>{lang.flag}</Text>
               <Text style={[styles.optionLabel, { color: colors.text }]}>{lang.name}</Text>

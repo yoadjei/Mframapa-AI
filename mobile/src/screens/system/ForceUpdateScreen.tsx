@@ -16,7 +16,7 @@ export function ForceUpdateScreen() {
   const { t } = useTranslation();
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background, paddingTop: insets.top, paddingBottom: insets.bottom }]}>
+    <View style={[styles.root, {paddingTop: insets.top, paddingBottom: insets.bottom }]}>
       <View style={styles.logoContainer}>
         <MframapaLogo size="md" />
       </View>

@@ -15,8 +15,7 @@ const CATEGORY_KEYS = [
   'screen.feedback.cat_bug',
   'screen.feedback.cat_feature',
   'screen.feedback.cat_data',
-  'screen.feedback.cat_general',
-] as const;
+  'screen.feedback.cat_general'] as const;
 
 export function FeedbackFormScreen() {
   const { isDark } = useTheme();
@@ -40,7 +39,7 @@ export function FeedbackFormScreen() {
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <View style={[styles.root, { backgroundColor: colors.background }]}>
+      <View style={[styles.root]}>
         <View style={[styles.navBar, { paddingTop: insets.top + 8, backgroundColor: colors.card }]}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <Ionicons name="arrow-back" size={22} color={colors.text} />

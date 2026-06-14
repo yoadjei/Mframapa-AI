@@ -59,11 +59,10 @@ export function AfricaHeatmapScreen() {
     'screen.heatmap.legend_good',
     'screen.heatmap.legend_moderate',
     'screen.heatmap.legend_sahel',
-    'screen.heatmap.legend_unhealthy',
-  ] as const;
+    'screen.heatmap.legend_unhealthy'] as const;
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background, paddingTop: insets.top }]}>
+    <View style={[styles.root, {paddingTop: insets.top }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.iconBtn}>
           <Ionicons name="chevron-back" size={24} color={colors.text} />

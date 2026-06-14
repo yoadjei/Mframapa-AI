@@ -30,8 +30,7 @@ export function LanguageSelectorScreen() {
         label: item.name,
         flag: item.flag,
       })),
-    },
-  ];
+    }];
 
   const filtered = languageSections.map((sec) => ({
     ...sec,
@@ -39,7 +38,7 @@ export function LanguageSelectorScreen() {
   })).filter((sec) => sec.data.length > 0);
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background, paddingTop: insets.top }]}>
+    <View style={[styles.root, {paddingTop: insets.top }]}>
       <View style={styles.titleBlock}>
         <Text style={[styles.title, { color: colors.text }]}>{t('language.title')}</Text>
       </View>
@@ -59,7 +58,7 @@ export function LanguageSelectorScreen() {
         sections={filtered}
         keyExtractor={(item) => item.code}
         renderSectionHeader={({ section }) => (
-          <Text style={[styles.sectionLabel, { color: colors.text, backgroundColor: colors.background }]}>
+          <Text style={[styles.sectionLabel, { color: colors.text, backgroundColor: colors.card }]}>
             {section.title}
           </Text>
         )}

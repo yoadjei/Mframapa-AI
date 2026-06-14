@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -8,46 +8,47 @@ import { useTheme } from '../hooks/useTheme';
 import { Badge } from '../components/ui/Badge';
 import { MframapaLogo } from '../components/MframapaLogo';
 import { useTranslation } from '../hooks/useTranslation';
-
-const POSTS = [
-  { id: '1', user: 'Juan Marira', location: 'Accra, Kaneshie', verified: true, photo: false },
-  { id: '2', user: 'Jona Muua', location: 'Accra, Kaneshie', verified: false, photo: true },
-  { id: '3', user: 'Mma Filax', location: 'Accra, Kaneshie', verified: false, photo: true },
-];
+import { useStore } from '../store/useStore';
+import { CommunityComposerSheet } from '../components/CommunityComposerSheet';
 
 export function CommunityHubScreen() {
   const { isDark } = useTheme();
   const colors = getColors(isDark);
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
+  const posts = useStore((s) => s.communityPosts);
+  const [composerOpen, setComposerOpen] = useState(false);
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <View style={[styles.root]}>
       <View style={[styles.header, { paddingTop: insets.top + 8 }]}>
         <MframapaLogo size="sm" />
-        <View style={styles.headerIcons}>
-          <TouchableOpacity>
-            <Ionicons name="chatbubble-outline" size={22} color={colors.text} />
-          </TouchableOpacity>
-          <TouchableOpacity style={{ position: 'relative' }}>
-            <Ionicons name="notifications-outline" size={22} color={colors.text} />
-            <View style={styles.badge} />
-          </TouchableOpacity>
-        </View>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>
+          {t('screen.community.title')}
+        </Text>
+        <TouchableOpacity
+          onPress={() => setComposerOpen(true)}
+          style={[styles.shareBtn, { backgroundColor: Colors.brandGreen + '22' }]}
+        >
+          <Ionicons name="create-outline" size={16} color={Colors.brandGreen} />
+          <Text style={[styles.shareBtnText, { color: Colors.brandGreen }]}>
+            {t('screen.community.share')}
+          </Text>
+        </TouchableOpacity>
       </View>
 
       <FlatList
-        data={POSTS}
+        data={posts}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={[styles.post, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <View style={styles.postHeader}>
               <View style={[styles.avatar, { backgroundColor: Colors.brandGreen }]}>
-                <Text style={styles.avatarText}>{item.user.charAt(0)}</Text>
+                <Text style={styles.avatarText}>{item.author.charAt(0)}</Text>
               </View>
               <View style={{ flex: 1 }}>
                 <View style={styles.nameRow}>
-                  <Text style={[styles.userName, { color: colors.text }]}>{item.user}</Text>
+                  <Text style={[styles.userName, { color: colors.text }]}>{item.author}</Text>
                   <Badge
                     label={item.verified ? t('screen.community.verified') : t('screen.community.pending')}
                     variant={item.verified ? 'verified' : 'pending'}
@@ -59,8 +60,8 @@ export function CommunityHubScreen() {
                 </View>
               </View>
             </View>
-            <Text style={[styles.postText, { color: colors.text }]}>{t('screen.community.post_sample')}</Text>
-            {item.photo ? (
+            <Text style={[styles.postText, { color: colors.text }]}>{item.body}</Text>
+            {item.photoUri ? (
               <View style={[styles.photoPlaceholder, { backgroundColor: colors.surface }]}>
                 <Ionicons name="image-outline" size={32} color={colors.subtext} />
                 <Text style={[styles.photoLabel, { color: colors.subtext }]}>{t('screen.community.photo_in')}</Text>
@@ -70,11 +71,30 @@ export function CommunityHubScreen() {
         )}
         contentContainerStyle={{ padding: 16, gap: 12, paddingBottom: insets.bottom + 100 }}
         showsVerticalScrollIndicator={false}
+        ListEmptyComponent={() => (
+          <View style={styles.emptyState}>
+            <Ionicons name="people-outline" size={48} color={colors.subtext} />
+            <Text style={[styles.emptyTitle, { color: colors.text }]}>
+              {t('screen.community.no_posts_yet')}
+            </Text>
+            <Text style={[styles.emptyBody, { color: colors.subtext }]}>
+              {t('screen.community.first_to_share')}
+            </Text>
+            <TouchableOpacity
+              onPress={() => setComposerOpen(true)}
+              style={[styles.emptyCta, { backgroundColor: Colors.brandGreen }]}
+            >
+              <Ionicons name="create-outline" size={16} color="#fff" />
+              <Text style={styles.emptyCtaText}>{t('screen.community.share_an_update')}</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       />
 
-      <TouchableOpacity style={[styles.fab, { bottom: insets.bottom + 80 }]}>
-        <Ionicons name="add" size={28} color="#fff" />
-      </TouchableOpacity>
+      <CommunityComposerSheet
+        visible={composerOpen}
+        onClose={() => setComposerOpen(false)}
+      />
     </View>
   );
 }
@@ -88,16 +108,26 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingBottom: 12,
   },
-  headerIcons: { flexDirection: 'row', gap: 14 },
-  badge: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: Colors.danger,
+  headerTitle: { fontSize: 16, fontWeight: '700', flex: 1, marginLeft: 12 },
+  shareBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 999,
   },
+  shareBtnText: { fontSize: 13, fontWeight: '600' },
+  emptyCta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingHorizontal: 18,
+    paddingVertical: 12,
+    borderRadius: 999,
+    marginTop: 8,
+  },
+  emptyCtaText: { color: '#fff', fontSize: 14, fontWeight: '600' },
   post: { borderRadius: 16, borderWidth: 1, padding: 14, gap: 10 },
   postHeader: { flexDirection: 'row', gap: 10, alignItems: 'flex-start' },
   avatar: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
@@ -109,18 +139,7 @@ const styles = StyleSheet.create({
   postText: { fontSize: 14, lineHeight: 20 },
   photoPlaceholder: { borderRadius: 10, height: 80, alignItems: 'center', justifyContent: 'center', gap: 4 },
   photoLabel: { fontSize: 12 },
-  fab: {
-    position: 'absolute',
-    right: 16,
-    width: 52,
-    height: 52,
-    borderRadius: 26,
-    backgroundColor: Colors.brandGreen,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: Colors.brandGreen,
-    shadowRadius: 12,
-    shadowOpacity: 0.4,
-    elevation: 8,
-  },
+  emptyState: { alignItems: 'center', paddingTop: 80, paddingHorizontal: 32, gap: 12 },
+  emptyTitle: { fontSize: 18, fontWeight: '700' },
+  emptyBody: { fontSize: 14, textAlign: 'center' },
 });

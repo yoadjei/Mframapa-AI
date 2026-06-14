@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  View, Text, StyleSheet, FlatList, TouchableOpacity, Animated,
+  View, Text, StyleSheet, FlatList, TouchableOpacity, Alert,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -10,6 +10,7 @@ import { getAQIColor } from '../theme/colors';
 import { useTheme } from '../hooks/useTheme';
 import { useStore, SavedLocation } from '../store/useStore';
 import { useTranslation } from '../hooks/useTranslation';
+import { fetchPredictionAtCoords } from '../services/prediction';
 
 export function SavedLocationsScreen() {
   const { t } = useTranslation();
@@ -19,21 +20,45 @@ export function SavedLocationsScreen() {
   const navigation = useNavigation<any>();
   const savedLocations       = useStore((s) => s.savedLocations);
   const removeSavedLocation  = useStore((s) => s.removeSavedLocation);
-  const addSavedLocation     = useStore((s) => s.addSavedLocation);
+  const updateSavedLocation  = useStore((s) => s.updateSavedLocation);
+  const offlineCities        = useStore((s) => s.offlineCities);
+  const language             = useStore((s) => s.language);
+  const setPrediction        = useStore((s) => s.setPrediction);
 
   const [swipedId, setSwipedId] = useState<string | null>(null);
+  const [loadingId, setLoadingId] = useState<string | null>(null);
 
   function handleDelete(id: string) {
     removeSavedLocation(id);
     setSwipedId(null);
   }
 
-  // Use default data if empty
-  const displayLocations: SavedLocation[] = savedLocations.length > 0 ? savedLocations : [
-    { id: 'accra', name: 'Accra', country: 'Accra', lat: 5.6, lon: -0.2, lastPm25: 42, lastAqiCategory: 'moderate', lastChecked: '7:59 AM' },
-    { id: 'london', name: 'London', country: 'London', lat: 51.5, lon: -0.1, lastPm25: 18, lastAqiCategory: 'good', lastChecked: '12:30 AM' },
-    { id: 'lomptam', name: 'Lomptam', country: 'Germany', lat: 52, lon: 13, lastPm25: 18, lastAqiCategory: 'moderate', lastChecked: '12:39 AM' },
-  ];
+  function handleAdd() {
+    // Search tab is a sibling at the navigator root — React Navigation will
+    // resolve the name even from inside the Profile stack.
+    navigation.navigate('Search');
+  }
+
+  async function handleOpen(loc: SavedLocation) {
+    if (loadingId) return;
+    setLoadingId(loc.id);
+    try {
+      const prediction = await fetchPredictionAtCoords(
+        loc.lat, loc.lon, loc.name, language, offlineCities,
+      );
+      setPrediction(prediction);
+      updateSavedLocation(loc.id, {
+        lastPm25: prediction.pm25,
+        lastAqiCategory: prediction.aqi_category,
+        lastChecked: new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }),
+      });
+      navigation.navigate('CityDetail', { prediction });
+    } catch {
+      Alert.alert(t('error.prediction'));
+    } finally {
+      setLoadingId(null);
+    }
+  }
 
   function renderItem({ item }: { item: SavedLocation }) {
     const isSwiped = swipedId === item.id;
@@ -51,9 +76,14 @@ export function SavedLocationsScreen() {
         ) : null}
 
         <TouchableOpacity
-          onPress={() => isSwiped ? setSwipedId(null) : setSwipedId(item.id)}
+          onPress={() => (isSwiped ? setSwipedId(null) : handleOpen(item))}
           onLongPress={() => setSwipedId(item.id)}
-          style={[styles.row, { backgroundColor: colors.card, borderColor: colors.border }]}
+          disabled={loadingId === item.id}
+          style={[
+            styles.row,
+            { backgroundColor: colors.card, borderColor: colors.border },
+            loadingId === item.id && { opacity: 0.6 },
+          ]}
         >
           <View style={styles.rowLeft}>
             <Text style={[styles.cityName, { color: colors.text }]}>{item.name}</Text>
@@ -76,31 +106,36 @@ export function SavedLocationsScreen() {
   }
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <View style={[styles.root]}>
       {/* Header */}
       <View style={[styles.header, { paddingTop: insets.top + 8 }]}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="chevron-back" size={22} color={colors.text} />
         </TouchableOpacity>
         <Text style={[styles.title, { color: colors.text }]}>{t('screen.saved_locations.title').toUpperCase()}</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={handleAdd} accessibilityLabel={t('screen.saved_locations.add')}>
           <Ionicons name="add" size={24} color={Colors.brandGreen} />
         </TouchableOpacity>
       </View>
 
       <FlatList
-        data={displayLocations}
+        data={savedLocations}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
         contentContainerStyle={{ padding: 16, gap: 10, paddingBottom: insets.bottom + 100 }}
         showsVerticalScrollIndicator={false}
-        ListFooterComponent={() => (
+        ListEmptyComponent={() => (
           <View style={[styles.emptyCard, { borderColor: colors.border }]}>
-            <Ionicons name="location-outline" size={32} color={colors.subtext} />
-            <Ionicons name="cloud-outline" size={32} color={colors.subtext} />
+            <Ionicons name="location-outline" size={36} color={colors.subtext} />
             <Text style={[styles.emptyText, { color: colors.subtext }]}>
-              Add more locations to monitor more.
+              {t('screen.saved_locations.nothing_saved_yet')}
             </Text>
+            <TouchableOpacity onPress={handleAdd} style={[styles.emptyCta, { backgroundColor: Colors.brandGreen + '22' }]}>
+              <Ionicons name="add" size={16} color={Colors.brandGreen} />
+              <Text style={[styles.emptyCtaText, { color: Colors.brandGreen }]}>
+                {t('screen.saved_locations.add')}
+              </Text>
+            </TouchableOpacity>
           </View>
         )}
       />
@@ -158,7 +193,12 @@ const styles = StyleSheet.create({
     borderStyle: 'dashed',
     padding: 24,
     alignItems: 'center',
-    gap: 8,
+    gap: 12,
   },
   emptyText: { fontSize: 14, textAlign: 'center' },
+  emptyCta: {
+    flexDirection: 'row', alignItems: 'center', gap: 6,
+    paddingHorizontal: 14, paddingVertical: 8, borderRadius: 999,
+  },
+  emptyCtaText: { fontSize: 14, fontWeight: '600' },
 });

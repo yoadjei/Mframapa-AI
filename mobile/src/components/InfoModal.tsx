@@ -35,8 +35,7 @@ export function InfoModal({ visible, title, body, onClose }: InfoModalProps) {
               backgroundColor: colors.card,
               borderColor: colors.border,
               paddingBottom: insets.bottom + spacing.lg,
-            },
-          ]}
+            }]}
           onPress={(e) => e.stopPropagation()}
         >
           <View style={styles.handleRow}>

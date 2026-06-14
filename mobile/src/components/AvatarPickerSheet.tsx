@@ -12,8 +12,7 @@ import { useTranslation } from '../hooks/useTranslation';
 const SEEDS = [
   'amara', 'kofi', 'zuri', 'kwame', 'abena', 'efua', 'adjoa', 'yaw',
   'akosua', 'fiifi', 'nana', 'esi', 'baaba', 'araba', 'adwoa', 'akua',
-  'sena', 'edem', 'dela', 'mawuli', 'dzifa', 'selorm', 'eyram', 'kafui',
-];
+  'sena', 'edem', 'dela', 'mawuli', 'dzifa', 'selorm', 'eyram', 'kafui'];
 
 const NUM_COLS = 4;
 const ITEM_SIZE = (Dimensions.get('window').width - 32 - (NUM_COLS - 1) * 12) / NUM_COLS;
@@ -64,8 +63,7 @@ export function AvatarPickerSheet({ visible, selected, onSelect, onClose }: Prop
                 style={[
                   styles.avatarBtn,
                   { width: ITEM_SIZE, height: ITEM_SIZE, backgroundColor: colors.surface },
-                  active && { borderColor: Colors.brandGreen, borderWidth: 2.5 },
-                ]}
+                  active && { borderColor: Colors.brandGreen, borderWidth: 2.5 }]}
               >
                 <Image
                   source={{ uri: naviiUrl(seed) }}

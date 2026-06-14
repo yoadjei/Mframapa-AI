@@ -24,7 +24,7 @@ export function ActivityFeedScreen() {
   };
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <View style={[styles.root]}>
       <View style={[styles.header, { paddingTop: insets.top + 8 }]}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="chevron-back" size={22} color={colors.text} />
@@ -37,6 +37,14 @@ export function ActivityFeedScreen() {
         contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 100 }]}
         showsVerticalScrollIndicator={false}
       >
+        {activityFeed.length === 0 ? (
+          <View style={styles.emptyState}>
+            <Ionicons name="time-outline" size={40} color={colors.subtext} />
+            <Text style={[styles.emptyText, { color: colors.subtext }]}>
+              {t('activity.no_activity_yet')}
+            </Text>
+          </View>
+        ) : null}
         {activityFeed.map((item, index) => (
           <View key={item.id} style={styles.itemRow}>
             {/* Timeline line */}
@@ -89,4 +97,6 @@ const styles = StyleSheet.create({
   itemContent: { flex: 1, paddingTop: 10, paddingBottom: 24 },
   itemAction: { fontSize: 15, fontWeight: '600' },
   itemTime: { fontSize: 12, marginTop: 4 },
+  emptyState: { alignItems: 'center', paddingVertical: 48, gap: 12 },
+  emptyText: { fontSize: 14, textAlign: 'center', paddingHorizontal: 24 },
 });

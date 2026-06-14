@@ -12,8 +12,7 @@ const ITEM_KEYS = [
   { labelKey: 'screen.anomaly.item1_label', infoKey: 'screen.anomaly.item1_info', color: Colors.aqiGood },
   { labelKey: 'screen.anomaly.item2_label', infoKey: 'screen.anomaly.item2_info', color: Colors.aqiModerate },
   { labelKey: 'screen.anomaly.item3_label', infoKey: 'screen.anomaly.item3_info', color: Colors.aqiUnhealthy },
-  { labelKey: 'screen.anomaly.item4_label', infoKey: 'screen.anomaly.item4_info', color: Colors.aqiGood },
-] as const;
+  { labelKey: 'screen.anomaly.item4_label', infoKey: 'screen.anomaly.item4_info', color: Colors.aqiGood }] as const;
 
 export function AnomalyAlertScreen() {
   const { isDark } = useTheme();
@@ -23,7 +22,7 @@ export function AnomalyAlertScreen() {
   const { t } = useTranslation();
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <View style={[styles.root]}>
       <View style={styles.glowOrb} />
 
       <View style={[styles.header, { paddingTop: insets.top + 8 }]}>

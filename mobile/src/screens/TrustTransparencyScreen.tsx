@@ -26,7 +26,7 @@ export function TrustTransparencyScreen() {
   const sources = ['ERA5', 'Sentinel-5P', 'MODIS'];
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <View style={[styles.root]}>
       <View style={[styles.header, { paddingTop: insets.top + 8 }]}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="chevron-back" size={22} color={colors.text} />

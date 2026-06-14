@@ -29,8 +29,7 @@ const RISK_KEYS = [
     nameKey: 'screen.health_risk.uv_name',
     descKey: 'screen.health_risk.uv_desc',
     category: 'high',
-  },
-] as const;
+  }] as const;
 
 export function HealthRiskScreen() {
   const { isDark } = useTheme();
@@ -40,7 +39,7 @@ export function HealthRiskScreen() {
   const { t } = useTranslation();
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <View style={[styles.root]}>
       <View style={[styles.header, { paddingTop: insets.top + 8 }]}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="chevron-back" size={22} color={colors.text} />

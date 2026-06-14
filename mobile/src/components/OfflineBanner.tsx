@@ -48,8 +48,7 @@ export function OfflineBanner() {
         {
           backgroundColor: isDark ? '#51320E' : '#FFF5DD',
           borderColor: colors.warning,
-        },
-      ]}
+        }]}
     >
       <View style={[styles.iconWrap, { backgroundColor: colors.warning + '22' }]}>
         <Ionicons name="cloud-offline-outline" size={15} color={colors.warning} />

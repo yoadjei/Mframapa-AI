@@ -19,7 +19,7 @@ export function DeleteAccountScreen() {
   const canDelete = confirm === 'DELETE';
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <View style={[styles.root]}>
       <ScrollView
         contentContainerStyle={[styles.content, { paddingTop: insets.top + 24, paddingBottom: insets.bottom + 40 }]}
         showsVerticalScrollIndicator={false}
@@ -39,8 +39,7 @@ export function DeleteAccountScreen() {
             t('delete.item.erase'),
             t('delete.item.saved_cities'),
             t('delete.item.subscriptions'),
-            t('delete.item.api_keys'),
-          ].map((item, i) => (
+            t('delete.item.api_keys')].map((item, i) => (
             <View key={i} style={styles.checkRow}>
               <Text style={styles.cross}>✕</Text>
               <Text style={[styles.checkText, { color: colors.subtext }]}>{item}</Text>

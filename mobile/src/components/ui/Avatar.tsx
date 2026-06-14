@@ -20,8 +20,7 @@ export function Avatar({ initials = 'YA', photo, size = 80, borderColor }: Props
           borderRadius: size / 2,
           borderColor: borderColor ?? Colors.brandGreen,
           backgroundColor: Colors.brandGreen,
-        },
-      ]}
+        }]}
     >
       {photo ? (
         <Image source={{ uri: photo }} style={{ width: size - 6, height: size - 6, borderRadius: (size - 6) / 2 }} />

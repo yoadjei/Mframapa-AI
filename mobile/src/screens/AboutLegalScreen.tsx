@@ -13,8 +13,7 @@ const LINK_KEYS = [
   'settings.about.terms',
   'settings.about.licenses',
   'settings.about.contact',
-  'settings.about.credits',
-];
+  'settings.about.credits'];
 
 export function AboutLegalScreen() {
   const insets = useSafeAreaInsets();
@@ -24,7 +23,7 @@ export function AboutLegalScreen() {
   const { t } = useTranslation();
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background, paddingTop: insets.top }]}>
+    <View style={[styles.root, {paddingTop: insets.top }]}>
       <ScrollView
         contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 40 }]}
         showsVerticalScrollIndicator={false}
@@ -41,8 +40,7 @@ export function AboutLegalScreen() {
               style={[
                 styles.linkRow,
                 { backgroundColor: colors.card, borderBottomColor: colors.border },
-                i === LINK_KEYS.length - 1 && styles.linkRowLast,
-              ]}
+                i === LINK_KEYS.length - 1 && styles.linkRowLast]}
             >
               <Text style={[styles.linkText, { color: colors.text }]}>{t(linkKey)}</Text>
               <Ionicons name="chevron-forward" size={16} color={colors.muted} />

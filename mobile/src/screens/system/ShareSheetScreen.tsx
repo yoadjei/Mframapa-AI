@@ -75,8 +75,7 @@ export function ShareSheetScreen({
     { label: 'WhatsApp', icon: 'logo-whatsapp' as const, color: '#25D366', onPress: handleWhatsApp },
     { label: 'X', icon: 'logo-twitter' as const, color: '#000000', onPress: handleX },
     { label: 'LinkedIn', icon: 'logo-linkedin' as const, color: '#0077B5', onPress: handleLinkedIn },
-    { label: copied ? t('screen.share.copied') : t('screen.share.copy_link'), icon: copied ? 'checkmark' as const : 'link-outline' as const, color: copied ? Colors.brandGreen : '#8E8E93', onPress: handleCopyLink },
-  ];
+    { label: copied ? t('screen.share.copied') : t('screen.share.copy_link'), icon: copied ? 'checkmark' as const : 'link-outline' as const, color: copied ? Colors.brandGreen : '#8E8E93', onPress: handleCopyLink }];
 
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
