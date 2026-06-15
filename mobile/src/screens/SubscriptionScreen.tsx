@@ -27,14 +27,16 @@ export function SubscriptionScreen() {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<any>();
 
-  const tier               = useStore((s) => s.profile.tier);
-  const trialStartedAt     = useStore((s) => s.trialStartedAt);
-  const trialEndsAt        = useStore((s) => s.trialEndsAt);
-  const startFreeTrial     = useStore((s) => s.startFreeTrial);
-  const cancelTrial        = useStore((s) => s.cancelTrial);
-  const restorePurchases   = useStore((s) => s.restorePurchases);
-  const trialDaysRemaining = useStore((s) => s.trialDaysRemaining);
-  const trialProgress      = useStore((s) => s.trialProgress);
+  const tier                  = useStore((s) => s.profile.tier);
+  const trialStartedAt        = useStore((s) => s.trialStartedAt);
+  const trialEndsAt           = useStore((s) => s.trialEndsAt);
+  const subscriptionPlan      = useStore((s) => s.subscriptionPlan);
+  const subscriptionExpiresAt = useStore((s) => s.subscriptionExpiresAt);
+  const startFreeTrial        = useStore((s) => s.startFreeTrial);
+  const cancelTrial           = useStore((s) => s.cancelTrial);
+  const restorePurchases      = useStore((s) => s.restorePurchases);
+  const trialDaysRemaining    = useStore((s) => s.trialDaysRemaining);
+  const trialProgress         = useStore((s) => s.trialProgress);
 
   const [restoring, setRestoring]   = useState(false);
   const [cancelling, setCancelling] = useState(false);
@@ -153,17 +155,30 @@ export function SubscriptionScreen() {
       );
     }
     if (mode === 'pro') {
+      const planLabel = subscriptionPlan === 'pro_annual'
+        ? t('screen.subscription.plan_pro_annual')
+        : subscriptionPlan === 'pro_monthly'
+          ? t('screen.subscription.plan_pro_monthly')
+          : t('screen.subscription.plan_pro');
+      const renewsOn = subscriptionExpiresAt
+        ? new Date(subscriptionExpiresAt).toLocaleDateString([], {
+            month: 'short', day: 'numeric', year: 'numeric',
+          })
+        : '';
       return (
         <View style={[styles.planCard, { backgroundColor: colors.card, borderColor: Colors.brandGreen }]}>
           <View style={styles.planTop}>
             <Ionicons name="star" size={16} color={Colors.brandGreen} />
-            <Text style={[styles.planName, { color: Colors.brandGreen }]}>
-              {t('screen.subscription.plan_pro')}
-            </Text>
+            <Text style={[styles.planName, { color: Colors.brandGreen }]}>{planLabel}</Text>
           </View>
           <Text style={[styles.planDetail, { color: colors.text }]}>
             {t('screen.subscription.subscription_active')}
           </Text>
+          {renewsOn ? (
+            <Text style={[styles.planSub, { color: colors.subtext }]}>
+              {t('screen.subscription.renews_on', { date: renewsOn })}
+            </Text>
+          ) : null}
         </View>
       );
     }

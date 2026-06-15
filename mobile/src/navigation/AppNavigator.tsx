@@ -47,6 +47,7 @@ import { AnomalyAlertScreen } from '../screens/AnomalyAlertScreen';
 import { CommunityHubScreen } from '../screens/CommunityHubScreen';
 import { TrustTransparencyScreen } from '../screens/TrustTransparencyScreen';
 import { ExportCentreScreen } from '../screens/ExportCentreScreen';
+import { PaystackCheckoutScreen } from '../screens/PaystackCheckoutScreen';
 import { LanguageSelectorScreen } from '../screens/LanguageSelectorScreen';
 import { DeleteAccountScreen } from '../screens/DeleteAccountScreen';
 import { AboutLegalScreen } from '../screens/AboutLegalScreen';
@@ -133,6 +134,11 @@ function ProfileStack() {
       <Stack.Screen name="CommunityHub" component={CommunityHubScreen} />
       <Stack.Screen name="TrustTransparency" component={TrustTransparencyScreen} />
       <Stack.Screen name="ExportCentre" component={ExportCentreScreen} />
+      <Stack.Screen
+        name="PaystackCheckout"
+        component={PaystackCheckoutScreen}
+        options={{ presentation: 'modal' }}
+      />
       <Stack.Screen name="LanguageSelector" component={LanguageSelectorScreen} />
       <Stack.Screen name="DeleteAccount" component={DeleteAccountScreen} />
       <Stack.Screen name="AboutLegal" component={AboutLegalScreen} />
