@@ -47,6 +47,19 @@ function resolveSupabaseAnonKey(): string {
 export const SUPABASE_URL = resolveSupabaseUrl();
 export const SUPABASE_ANON_KEY = resolveSupabaseAnonKey();
 
+function resolvePaystackPublicKey(): string {
+  // pk_test_… for development, pk_live_… for production. Safe to ship in
+  // the client bundle (Paystack uses it for Inline checkout only).
+  const extra = Constants.expoConfig?.extra as { paystackPublicKey?: string } | undefined;
+  return (
+    extra?.paystackPublicKey ||
+    (process.env.EXPO_PUBLIC_PAYSTACK_PUBLIC_KEY as string | undefined) ||
+    ''
+  );
+}
+
+export const PAYSTACK_PUBLIC_KEY = resolvePaystackPublicKey();
+
 export const OFFLINE_CITIES_CACHE_KEY = 'offline_cities_v1';
 export const LAST_SYNC_KEY = 'last_sync_timestamp';
 
