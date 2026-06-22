@@ -50,8 +50,8 @@ export function PermissionsScreen({ onAllow, onSkip }: Props) {
       // flow so the user isn't stuck on this screen.
       setLocationSharing('off');
       Alert.alert(
-        t('screen.permissions.denied_title'),
-        t('screen.permissions.denied_body'),
+        t('screen.permissions.access_denied'),
+        t('screen.permissions.enable_in_settings'),
         [
           { text: t('screen.permissions.open_settings'), onPress: () => Linking.openSettings() },
           { text: t('common.continue'), onPress: onAllow, style: 'cancel' },

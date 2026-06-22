@@ -149,10 +149,22 @@ interface AppState {
   trialStartedAt: string | null;
   trialEndsAt: string | null;
   purchaseToken: string | null;
+  // Paid Paystack subscription state
+  subscriptionPlan: 'pro_monthly' | 'pro_annual' | null;
+  subscriptionStartedAt: string | null;
+  subscriptionExpiresAt: string | null;
+  subscriptionReference: string | null;
   startFreeTrial: () => void;
   cancelTrial: () => void;
+  activateSubscription: (args: {
+    plan: 'pro_monthly' | 'pro_annual';
+    reference: string;
+    intervalDays: number;
+    amountUsd: number;
+  }) => void;
   restorePurchases: () => Promise<{ ok: boolean; restored: 'trial' | 'pro' | null }>;
   isTrialActive: () => boolean;
+  isSubscriptionActive: () => boolean;
   trialDaysRemaining: () => number;
   trialProgress: () => number;
 
@@ -191,6 +203,8 @@ interface AppState {
   // Settings
   alertsEnabled: boolean;
   setAlertsEnabled: (v: boolean) => void;
+  paymentCurrency: 'USD' | 'GHS' | 'NGN' | 'KES' | 'ZAR';
+  setPaymentCurrency: (c: 'USD' | 'GHS' | 'NGN' | 'KES' | 'ZAR') => void;
   notifPrefs: NotifPrefs;
   setNotifPref: (key: NotifCategory, value: boolean) => void;
   liteMode: boolean;
@@ -480,6 +494,39 @@ export const useStore = create<AppState>()(
       trialEndsAt:    null,
       purchaseToken:  null,
 
+      subscriptionPlan:       null,
+      subscriptionStartedAt:  null,
+      subscriptionExpiresAt:  null,
+      subscriptionReference:  null,
+
+      activateSubscription: ({ plan, reference, intervalDays, amountUsd }) => {
+        const now = new Date();
+        const expires = new Date(now.getTime() + intervalDays * 24 * 60 * 60 * 1000);
+        set((s) => ({
+          subscriptionPlan:      plan,
+          subscriptionStartedAt: now.toISOString(),
+          subscriptionExpiresAt: expires.toISOString(),
+          subscriptionReference: reference,
+          purchaseToken:         reference,  // simple alias for restore-from-store
+          profile:               { ...s.profile, tier: 'pro' },
+          // Activating a paid plan ends any running trial.
+          trialStartedAt: null,
+          trialEndsAt:    null,
+          activityFeed: [
+            makeActivity('activity.subscribed', 'lock', {
+              plan: plan === 'pro_annual' ? 'Pro Annual' : 'Pro Monthly',
+              amount: amountUsd.toFixed(2),
+            }),
+            ...s.activityFeed,
+          ].slice(0, 50),
+        }));
+      },
+
+      isSubscriptionActive: () => {
+        const exp = get().subscriptionExpiresAt;
+        return !!exp && new Date(exp) > new Date();
+      },
+
       startFreeTrial: () => {
         const now = new Date();
         const ends = new Date(now.getTime() + TRIAL_DAYS * 24 * 60 * 60 * 1000);
@@ -495,11 +542,14 @@ export const useStore = create<AppState>()(
       },
 
       restorePurchases: async () => {
-        // Local-store restore: if a paid token exists, restore Pro; else if
-        // a still-valid trial is persisted, restore the trial.
-        // (When you wire a real IAP provider, this is where you'd verify
-        // the receipt.)
+        // Local-store restore. When the Paystack backend is wired, this is
+        // where you'd hit `GET /payments/subscriptions/me` and reconcile the
+        // local state with the server.
         const s = get();
+        if (s.subscriptionExpiresAt && new Date(s.subscriptionExpiresAt) > new Date()) {
+          set((cur) => ({ profile: { ...cur.profile, tier: 'pro' } }));
+          return { ok: true, restored: 'pro' };
+        }
         if (s.purchaseToken) {
           set((cur) => ({ profile: { ...cur.profile, tier: 'pro' } }));
           return { ok: true, restored: 'pro' };
@@ -631,6 +681,8 @@ export const useStore = create<AppState>()(
 
       alertsEnabled: true,
       setAlertsEnabled: (v) => set({ alertsEnabled: v }),
+      paymentCurrency: 'GHS',
+      setPaymentCurrency: (c) => set({ paymentCurrency: c }),
       notifPrefs: DEFAULT_NOTIF_PREFS,
       setNotifPref: (key, value) =>
         set((s) => ({ notifPrefs: { ...s.notifPrefs, [key]: value } })),
@@ -668,12 +720,17 @@ export const useStore = create<AppState>()(
         communityPosts: state.communityPosts,
         alertsEnabled: state.alertsEnabled,
         notifPrefs: state.notifPrefs,
+        paymentCurrency: state.paymentCurrency,
         liteMode: state.liteMode,
         dataAnalytics: state.dataAnalytics,
         locationSharing: state.locationSharing,
         trialStartedAt: state.trialStartedAt,
         trialEndsAt: state.trialEndsAt,
         purchaseToken: state.purchaseToken,
+        subscriptionPlan: state.subscriptionPlan,
+        subscriptionStartedAt: state.subscriptionStartedAt,
+        subscriptionExpiresAt: state.subscriptionExpiresAt,
+        subscriptionReference: state.subscriptionReference,
       }),
     }
   )

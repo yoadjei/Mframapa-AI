@@ -29,14 +29,14 @@ export function LoginScreen({ onAuth }: Props) {
 
   async function handleLogin() {
     if (!email.trim() || !password) {
-      Alert.alert(t('screen.auth.error_required'));
+      Alert.alert(t('screen.auth.fill_required_fields'));
       return;
     }
     setLoading(true);
     const res = await signIn(email, password);
     setLoading(false);
     if (!res.ok) {
-      Alert.alert(res.error ?? t('screen.auth.error_sign_in'));
+      Alert.alert(res.error ?? t('screen.auth.could_not_sign_in'));
       return;
     }
     onAuth();

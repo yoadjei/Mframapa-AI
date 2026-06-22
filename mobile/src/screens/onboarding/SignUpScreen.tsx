@@ -33,18 +33,18 @@ export function SignUpScreen({ onAuth }: Props) {
 
   async function handleSignUp() {
     if (!fullName.trim() || !email.trim() || !password) {
-      Alert.alert(t('screen.auth.error_required'));
+      Alert.alert(t('screen.auth.fill_required_fields'));
       return;
     }
     if (password !== confirmPassword) {
-      Alert.alert(t('screen.auth.error_password_match'));
+      Alert.alert(t('screen.auth.passwords_do_not_match'));
       return;
     }
     setLoading(true);
     const res = await signUp(fullName, email, password);
     setLoading(false);
     if (!res.ok) {
-      Alert.alert(res.error ?? t('screen.auth.error_sign_up'));
+      Alert.alert(res.error ?? t('screen.auth.could_not_sign_up'));
       return;
     }
     onAuth();
