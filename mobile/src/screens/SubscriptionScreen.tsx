@@ -6,7 +6,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { OutlineButton } from '../components/ui/OutlineButton';
-import { PrimaryButton } from '../components/ui/PrimaryButton';
 import { Colors } from '../theme/colors';
 import { getColors } from '../theme';
 import { useTheme } from '../hooks/useTheme';
@@ -32,7 +31,6 @@ export function SubscriptionScreen() {
   const trialEndsAt           = useStore((s) => s.trialEndsAt);
   const subscriptionPlan      = useStore((s) => s.subscriptionPlan);
   const subscriptionExpiresAt = useStore((s) => s.subscriptionExpiresAt);
-  const startFreeTrial        = useStore((s) => s.startFreeTrial);
   const cancelTrial           = useStore((s) => s.cancelTrial);
   const restorePurchases      = useStore((s) => s.restorePurchases);
   const trialDaysRemaining    = useStore((s) => s.trialDaysRemaining);
@@ -233,16 +231,9 @@ export function SubscriptionScreen() {
 
         <PlanCard />
 
-        {/* Primary CTA for the Free tier — start trial or open paywall */}
+        {/* On the free tier, only surface the plan upgrade path */}
         {mode === 'free' ? (
-          <View style={{ gap: 8, marginBottom: 16 }}>
-            <PrimaryButton
-              label={t('screen.paywall.start_trial')}
-              onPress={() => {
-                startFreeTrial();
-                Alert.alert(t('screen.subscription.trial_started_message'));
-              }}
-            />
+          <View style={{ marginBottom: 16 }}>
             <OutlineButton label={t('screen.subscription.see_all_plans')} onPress={handleUpgrade} />
           </View>
         ) : null}

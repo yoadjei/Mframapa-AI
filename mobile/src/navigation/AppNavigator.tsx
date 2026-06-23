@@ -187,11 +187,11 @@ function MainApp() {
   );
 }
 
-// ─── Auth Stack (Login → SignUp / ForgotPassword → Paywall) ──────────────────
+// ─── Auth Stack (Login → SignUp / ForgotPassword) ────────────────────────────
+// Users land as Free after auth and can upgrade via Profile → Subscription.
 const AuthStack = createNativeStackNavigator();
 
 function AuthFlow() {
-  const [showPaywall, setShowPaywall] = useState(false);
   const setAuthenticated = useStore((s) => s.setAuthenticated);
 
   function finishAuth() {
@@ -199,19 +199,15 @@ function AuthFlow() {
     clearSignOutSession();
   }
 
-  if (showPaywall) {
-    return <PaywallScreen onDone={finishAuth} />;
-  }
-
   return (
     <AuthStack.Navigator screenOptions={stackScreenOptions}>
       <AuthStack.Screen
         name="Login"
-        children={() => <LoginScreen onAuth={() => setShowPaywall(true)} />}
+        children={() => <LoginScreen onAuth={finishAuth} />}
       />
       <AuthStack.Screen
         name="SignUp"
-        children={() => <SignUpScreen onAuth={() => setShowPaywall(true)} />}
+        children={() => <SignUpScreen onAuth={finishAuth} />}
       />
       <AuthStack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
     </AuthStack.Navigator>

@@ -344,6 +344,15 @@ const base: Record<string, string> = {
   'screen.paywall.channel_qr': 'QR code',
   'screen.paywall.channel_bank': 'Bank',
 
+  // See All Plans screen
+  'screen.paywall.all_plans_title': 'All Plans',
+  'screen.paywall.all_plans_subtitle': 'Choose the plan that\'s right for you. Start with a 7-day free trial.',
+  'screen.paywall.billing_monthly': 'Monthly',
+  'screen.paywall.billing_annual': 'Annual',
+  'screen.paywall.start_free_trial_plan': 'Start 7-Day Free Trial · {{plan}}',
+  'screen.paywall.trial_note': 'Enter your card or mobile money details now. Your 7-day trial is free — billing starts after it ends. Cancel anytime.',
+  'screen.paywall.select_plan_prompt': 'Select a plan above to continue',
+
   'screen.checkout.title': 'Subscribe — {{plan}}',
   'screen.checkout.plan_missing': 'No plan was selected for checkout.',
   'screen.checkout.not_configured':
