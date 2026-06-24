@@ -47,12 +47,12 @@ export function SubscriptionScreen() {
     ? new Date(trialEndsAt).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })
     : '';
 
-  type Mode = 'free' | 'trial' | 'pro' | 'enterprise';
+  type Mode = 'free' | 'trial' | 'researcher' | 'institutional';
   const mode: Mode =
-    tier === 'enterprise'           ? 'enterprise' :
-    tier === 'pro' && trialActive   ? 'trial' :
-    tier === 'pro'                  ? 'pro' :
-                                      'free';
+    tier === 'institutional'                    ? 'institutional' :
+    tier === 'researcher' && trialActive        ? 'trial' :
+    tier === 'researcher'                       ? 'researcher' :
+                                                  'free';
 
   // ── Handlers ───────────────────────────────────────────────────────────────
   function handleUpgrade() {
@@ -64,7 +64,7 @@ export function SubscriptionScreen() {
     setRestoring(true);
     const res = await restorePurchases();
     setRestoring(false);
-    if (res.restored === 'pro')   Alert.alert(t('screen.paywall.pro_restored'));
+    if (res.restored === 'researcher') Alert.alert(t('screen.paywall.pro_restored'));
     else if (res.restored === 'trial') Alert.alert(t('screen.paywall.trial_restored'));
     else Alert.alert(t('screen.paywall.nothing_to_restore'));
   }
@@ -152,12 +152,12 @@ export function SubscriptionScreen() {
         </View>
       );
     }
-    if (mode === 'pro') {
-      const planLabel = subscriptionPlan === 'pro_annual'
-        ? t('screen.subscription.plan_pro_annual')
-        : subscriptionPlan === 'pro_monthly'
-          ? t('screen.subscription.plan_pro_monthly')
-          : t('screen.subscription.plan_pro');
+    if (mode === 'researcher') {
+      const planLabel = subscriptionPlan === 'researcher_annual'
+        ? t('screen.subscription.plan_researcher_annual')
+        : subscriptionPlan === 'researcher_monthly'
+          ? t('screen.subscription.plan_researcher_monthly')
+          : t('screen.subscription.plan_researcher');
       const renewsOn = subscriptionExpiresAt
         ? new Date(subscriptionExpiresAt).toLocaleDateString([], {
             month: 'short', day: 'numeric', year: 'numeric',
@@ -166,7 +166,7 @@ export function SubscriptionScreen() {
       return (
         <View style={[styles.planCard, { backgroundColor: colors.card, borderColor: Colors.brandGreen }]}>
           <View style={styles.planTop}>
-            <Ionicons name="star" size={16} color={Colors.brandGreen} />
+            <Ionicons name="flask" size={16} color={Colors.brandGreen} />
             <Text style={[styles.planName, { color: Colors.brandGreen }]}>{planLabel}</Text>
           </View>
           <Text style={[styles.planDetail, { color: colors.text }]}>
@@ -180,13 +180,13 @@ export function SubscriptionScreen() {
         </View>
       );
     }
-    if (mode === 'enterprise') {
+    if (mode === 'institutional') {
       return (
         <View style={[styles.planCard, { backgroundColor: colors.card, borderColor: Colors.enterprise }]}>
           <View style={styles.planTop}>
             <Ionicons name="business" size={16} color={Colors.enterprise} />
             <Text style={[styles.planName, { color: Colors.enterprise }]}>
-              {t('screen.subscription.plan_enterprise')}
+              {t('screen.subscription.plan_institutional')}
             </Text>
           </View>
           <Text style={[styles.planDetail, { color: colors.text }]}>
@@ -247,12 +247,12 @@ export function SubscriptionScreen() {
               features: ['screen.pricing.feat.basic_aqi', 'screen.pricing.feat.search', 'screen.pricing.feat.saved_3'],
             },
             {
-              nameKey: 'screen.subscription.plan_pro',
+              nameKey: 'screen.subscription.plan_researcher',
               color: Colors.brandGreen,
               features: ['screen.pricing.feat.saved_unlimited', 'screen.pricing.feat.ai_insights', 'screen.pricing.feat.predictions', 'screen.pricing.feat.health_risk', 'screen.pricing.feat.historical', 'screen.pricing.feat.compare', 'screen.pricing.feat.exports'],
             },
             {
-              nameKey: 'screen.subscription.plan_enterprise',
+              nameKey: 'screen.subscription.plan_institutional',
               color: Colors.enterprise,
               features: ['screen.pricing.feat.anomaly', 'screen.pricing.feat.heatmap', 'screen.pricing.feat.batch', 'screen.pricing.feat.api', 'screen.pricing.feat.country'],
             }] as const).map((plan) => (

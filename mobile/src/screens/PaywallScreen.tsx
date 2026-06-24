@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Alert, TouchableOpacity, Linking } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useTheme } from '../hooks/useTheme';
 import { getColors, Colors } from '../theme';
 import { PrimaryButton } from '../components/ui/PrimaryButton';
+import { OutlineButton } from '../components/ui/OutlineButton';
 import { TextLinkButton } from '../components/ui/TextLinkButton';
 import { useTranslation } from '../hooks/useTranslation';
 import { useStore } from '../store/useStore';
@@ -39,13 +40,11 @@ export function PaywallScreen({ onDone }: Props) {
   const [selectedPlan, setSelected] = useState<PlanId | null>(null);
   const [restoring, setRestoring]   = useState(false);
 
-  const proMonthly    = PRICING_PLANS.find((p) => p.id === 'pro_monthly')!;
-  const proAnnual     = PRICING_PLANS.find((p) => p.id === 'pro_annual')!;
-  const entMonthly    = PRICING_PLANS.find((p) => p.id === 'enterprise_monthly')!;
-  const entAnnual     = PRICING_PLANS.find((p) => p.id === 'enterprise_annual')!;
-  const selectedInfo  = selectedPlan ? PRICING_PLANS.find((p) => p.id === selectedPlan) : null;
+  const researcherMonthly = PRICING_PLANS.find((p) => p.id === 'researcher_monthly')!;
+  const researcherAnnual  = PRICING_PLANS.find((p) => p.id === 'researcher_annual')!;
+  const selectedInfo      = selectedPlan ? PRICING_PLANS.find((p) => p.id === selectedPlan) : null;
 
-  function handleStartTrial() {
+  function handleSubscribe() {
     if (!selectedPlan) return;
     if (!isPaystackConfigured()) {
       Alert.alert(t('screen.paywall.paystack_not_configured'));
@@ -59,7 +58,7 @@ export function PaywallScreen({ onDone }: Props) {
     setRestoring(true);
     const res = await restorePurchases();
     setRestoring(false);
-    if (res.restored === 'pro' || res.restored === 'trial') {
+    if (res.restored === 'researcher' || res.restored === 'trial') {
       Alert.alert(t('screen.paywall.pro_restored'));
       if (onDone) onDone();
       else navigation.goBack();
@@ -68,9 +67,8 @@ export function PaywallScreen({ onDone }: Props) {
     }
   }
 
-  function PlanCard({ plan, tier }: { plan: PricingPlan; tier: 'pro' | 'enterprise' }) {
+  function PlanCard({ plan }: { plan: PricingPlan }) {
     const selected = selectedPlan === plan.id;
-    const tierColor = tier === 'pro' ? Colors.brandGreen : Colors.enterprise;
     const isAnnual = plan.id.endsWith('_annual');
 
     return (
@@ -81,17 +79,17 @@ export function PaywallScreen({ onDone }: Props) {
           styles.planCard,
           {
             backgroundColor: colors.card,
-            borderColor: selected ? tierColor : colors.border,
+            borderColor: selected ? Colors.brandGreen : colors.border,
             borderWidth: selected ? 2 : 1,
           },
         ]}
       >
         {plan.badge ? (
-          <View style={[styles.planBadge, { backgroundColor: tierColor }]}>
+          <View style={[styles.planBadge, { backgroundColor: Colors.brandGreen }]}>
             <Text style={styles.planBadgeText}>{plan.badge}</Text>
           </View>
         ) : null}
-        <Text style={[styles.planInterval, { color: selected ? tierColor : colors.subtext }]}>
+        <Text style={[styles.planInterval, { color: selected ? Colors.brandGreen : colors.subtext }]}>
           {isAnnual ? t('screen.paywall.billing_annual') : t('screen.paywall.billing_monthly')}
         </Text>
         <View style={styles.priceRow}>
@@ -112,7 +110,7 @@ export function PaywallScreen({ onDone }: Props) {
         ) : null}
         {selected ? (
           <View style={styles.selectedBadge}>
-            <Ionicons name="checkmark-circle" size={16} color={tierColor} />
+            <Ionicons name="checkmark-circle" size={16} color={Colors.brandGreen} />
           </View>
         ) : null}
       </TouchableOpacity>
@@ -141,28 +139,115 @@ export function PaywallScreen({ onDone }: Props) {
           {t('screen.paywall.all_plans_subtitle')}
         </Text>
 
-        {/* ── Pro Plans ────────────────────────────────────────────────────────── */}
+        {/* ── Free / Public Good ────────────────────────────────────────────── */}
+        <View style={[styles.tierSection, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <View style={styles.tierHeader}>
+            <View style={[styles.tierIconWrap, { backgroundColor: colors.surface }]}>
+              <Ionicons name="leaf-outline" size={18} color={colors.subtext} />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={[styles.tierName, { color: colors.text }]}>
+                {t('screen.pricing.tier_free')}
+              </Text>
+              <Text style={[styles.tierDesc, { color: colors.subtext }]}>
+                {t('screen.pricing.tier_free_desc')}
+              </Text>
+            </View>
+            <View style={[styles.freeBadge, { backgroundColor: colors.surface }]}>
+              <Text style={[styles.freeBadgeText, { color: colors.subtext }]}>
+                {t('screen.pricing.price_free')}
+              </Text>
+            </View>
+          </View>
+        </View>
+
+        {/* ── Researcher ────────────────────────────────────────────────────── */}
         <View style={[styles.tierSection, { backgroundColor: colors.card, borderColor: Colors.brandGreen }]}>
           <View style={styles.tierHeader}>
             <View style={[styles.tierIconWrap, { backgroundColor: Colors.brandGreen + '22' }]}>
-              <Ionicons name="star" size={18} color={Colors.brandGreen} />
+              <Ionicons name="flask" size={18} color={Colors.brandGreen} />
             </View>
             <View style={{ flex: 1 }}>
               <Text style={[styles.tierName, { color: Colors.brandGreen }]}>
-                {t('screen.subscription.plan_pro')}
+                {t('screen.subscription.plan_researcher')}
               </Text>
               <Text style={[styles.tierDesc, { color: colors.subtext }]}>
-                {t('screen.pricing.tier_pro_desc')}
+                {t('screen.pricing.tier_researcher_desc')}
               </Text>
             </View>
           </View>
           <View style={styles.plansRow}>
-            <View style={styles.planHalf}><PlanCard plan={proMonthly} tier="pro" /></View>
-            <View style={styles.planHalf}><PlanCard plan={proAnnual} tier="pro" /></View>
+            <View style={styles.planHalf}><PlanCard plan={researcherMonthly} /></View>
+            <View style={styles.planHalf}><PlanCard plan={researcherAnnual} /></View>
           </View>
+
+          {/* Currency selector */}
+          <Text style={[styles.payInLabel, { color: colors.subtext }]}>
+            {t('screen.paywall.pay_in')}
+          </Text>
+          <View style={styles.currencyRow}>
+            {SUPPORTED_CURRENCIES.map((c: Currency) => {
+              const info = CURRENCY_INFO[c];
+              const sel  = paymentCurrency === c;
+              return (
+                <TouchableOpacity
+                  key={c}
+                  onPress={() => setPaymentCurrency(c)}
+                  activeOpacity={0.8}
+                  style={[
+                    styles.currencyChip,
+                    {
+                      backgroundColor: sel ? Colors.brandGreen : colors.surface,
+                      borderColor:     sel ? Colors.brandGreen : colors.border,
+                    },
+                  ]}
+                >
+                  <Text style={styles.currencyFlag}>{info.flag}</Text>
+                  <Text style={[styles.currencyCode, { color: sel ? '#fff' : colors.text }]}>{c}</Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+
+          {/* Payment channels */}
+          <View style={styles.channelsRow}>
+            {CURRENCY_INFO[paymentCurrency].channels.map((ch) => (
+              <View key={ch} style={[styles.channelChip, { backgroundColor: Colors.brandGreen + '15' }]}>
+                <Ionicons
+                  name={
+                    ch === 'card'           ? 'card-outline'           :
+                    ch === 'mobile_money'   ? 'phone-portrait-outline' :
+                    ch === 'bank_transfer'  ? 'business-outline'       :
+                    ch === 'ussd'           ? 'keypad-outline'         :
+                    ch === 'qr'             ? 'qr-code-outline'        :
+                                              'card-outline'
+                  }
+                  size={12}
+                  color={Colors.brandGreen}
+                />
+                <Text style={[styles.channelText, { color: Colors.brandGreen }]}>
+                  {t(`screen.paywall.channel_${ch}`)}
+                </Text>
+              </View>
+            ))}
+          </View>
+
+          {selectedInfo ? (
+            <PrimaryButton
+              label={t('screen.paywall.subscribe_for', { price: formatPriceWithLocal(selectedInfo.amountUsd, paymentCurrency) + selectedInfo.perUnit })}
+              onPress={handleSubscribe}
+            />
+          ) : (
+            <View style={[styles.selectPrompt, { borderColor: colors.border, backgroundColor: colors.surface }]}>
+              <Ionicons name="hand-left-outline" size={16} color={colors.muted} />
+              <Text style={[styles.selectPromptText, { color: colors.muted }]}>
+                {t('screen.paywall.select_plan_prompt')}
+              </Text>
+            </View>
+          )}
         </View>
 
-        {/* ── Enterprise Plans ──────────────────────────────────────────────────── */}
+        {/* ── Institutional API ─────────────────────────────────────────────── */}
         <View style={[styles.tierSection, { backgroundColor: colors.card, borderColor: Colors.enterprise }]}>
           <View style={styles.tierHeader}>
             <View style={[styles.tierIconWrap, { backgroundColor: Colors.enterprise + '22' }]}>
@@ -170,90 +255,36 @@ export function PaywallScreen({ onDone }: Props) {
             </View>
             <View style={{ flex: 1 }}>
               <Text style={[styles.tierName, { color: Colors.enterprise }]}>
-                {t('screen.pricing.tier_enterprise')}
+                {t('screen.pricing.tier_institutional')}
               </Text>
               <Text style={[styles.tierDesc, { color: colors.subtext }]}>
-                {t('screen.pricing.tier_enterprise_desc')}
+                {t('screen.pricing.tier_institutional_desc')}
               </Text>
             </View>
           </View>
-          <View style={styles.plansRow}>
-            <View style={styles.planHalf}><PlanCard plan={entMonthly} tier="enterprise" /></View>
-            <View style={styles.planHalf}><PlanCard plan={entAnnual} tier="enterprise" /></View>
-          </View>
+          <Text style={[styles.contactPrice, { color: colors.text }]}>
+            {t('screen.pricing.price_institutional')}
+          </Text>
+          <OutlineButton label={t('screen.pricing.cta_contact')} onPress={() => Linking.openURL('mailto:adjeiyawosei@gmail.com')} />
         </View>
 
-        {/* ── Currency selector ─────────────────────────────────────────────────── */}
-        <Text style={[styles.payInLabel, { color: colors.subtext }]}>
-          {t('screen.paywall.pay_in')}
-        </Text>
-        <View style={styles.currencyRow}>
-          {SUPPORTED_CURRENCIES.map((c: Currency) => {
-            const info = CURRENCY_INFO[c];
-            const sel  = paymentCurrency === c;
-            return (
-              <TouchableOpacity
-                key={c}
-                onPress={() => setPaymentCurrency(c)}
-                activeOpacity={0.8}
-                style={[
-                  styles.currencyChip,
-                  {
-                    backgroundColor: sel ? Colors.brandGreen : colors.surface,
-                    borderColor:     sel ? Colors.brandGreen : colors.border,
-                  },
-                ]}
-              >
-                <Text style={styles.currencyFlag}>{info.flag}</Text>
-                <Text style={[styles.currencyCode, { color: sel ? '#fff' : colors.text }]}>{c}</Text>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-
-        {/* Payment channels for selected currency */}
-        <View style={styles.channelsRow}>
-          {CURRENCY_INFO[paymentCurrency].channels.map((ch) => (
-            <View key={ch} style={[styles.channelChip, { backgroundColor: Colors.brandGreen + '15' }]}>
-              <Ionicons
-                name={
-                  ch === 'card'           ? 'card-outline'           :
-                  ch === 'mobile_money'   ? 'phone-portrait-outline' :
-                  ch === 'bank_transfer'  ? 'business-outline'       :
-                  ch === 'ussd'           ? 'keypad-outline'         :
-                  ch === 'qr'             ? 'qr-code-outline'        :
-                                            'card-outline'
-                }
-                size={12}
-                color={Colors.brandGreen}
-              />
-              <Text style={[styles.channelText, { color: Colors.brandGreen }]}>
-                {t(`screen.paywall.channel_${ch}`)}
+        {/* ── Programme & Verification ──────────────────────────────────────── */}
+        <View style={[styles.tierSection, { backgroundColor: colors.card, borderColor: '#8B5CF6' }]}>
+          <View style={styles.tierHeader}>
+            <View style={[styles.tierIconWrap, { backgroundColor: '#8B5CF620' }]}>
+              <Ionicons name="analytics" size={18} color="#8B5CF6" />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={[styles.tierName, { color: '#8B5CF6' }]}>
+                {t('screen.pricing.tier_programme')}
+              </Text>
+              <Text style={[styles.tierDesc, { color: colors.subtext }]}>
+                {t('screen.pricing.tier_programme_desc')}
               </Text>
             </View>
-          ))}
+          </View>
+          <OutlineButton label={t('screen.pricing.cta_contact')} onPress={() => Linking.openURL('mailto:adjeiyawosei@gmail.com')} />
         </View>
-
-        {/* ── Trial CTA ────────────────────────────────────────────────────────── */}
-        {selectedInfo ? (
-          <View style={styles.trialSection}>
-            <PrimaryButton
-              label={t('screen.paywall.start_free_trial_plan', { plan: selectedInfo.label })}
-              onPress={handleStartTrial}
-              style={styles.trialBtn}
-            />
-            <Text style={[styles.trialNote, { color: colors.subtext }]}>
-              {t('screen.paywall.trial_note')}
-            </Text>
-          </View>
-        ) : (
-          <View style={[styles.selectPrompt, { borderColor: colors.border, backgroundColor: colors.surface }]}>
-            <Ionicons name="hand-left-outline" size={16} color={colors.muted} />
-            <Text style={[styles.selectPromptText, { color: colors.muted }]}>
-              {t('screen.paywall.select_plan_prompt')}
-            </Text>
-          </View>
-        )}
 
         <View style={styles.legalRow}>
           <TextLinkButton label={t('screen.paywall.terms')} onPress={() => {}} size={12} color={colors.muted} />
@@ -301,6 +332,9 @@ const styles = StyleSheet.create({
   },
   tierName: { fontSize: 18, fontWeight: '800' },
   tierDesc: { fontSize: 12, lineHeight: 16, marginTop: 2 },
+  freeBadge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 999 },
+  freeBadgeText: { fontSize: 13, fontWeight: '700' },
+  contactPrice: { fontSize: 14, fontWeight: '600' },
 
   plansRow: { flexDirection: 'row', gap: 10 },
   planHalf: { flex: 1 },
@@ -332,10 +366,8 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     textTransform: 'uppercase',
     letterSpacing: 0.5,
-    marginBottom: 8,
-    marginTop: 4,
   },
-  currencyRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 10 },
+  currencyRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   currencyChip: {
     flexDirection: 'row', alignItems: 'center', gap: 5,
     paddingHorizontal: 11, paddingVertical: 7,
@@ -345,7 +377,7 @@ const styles = StyleSheet.create({
   currencyCode: { fontSize: 12, fontWeight: '700' },
   channelsRow: {
     flexDirection: 'row', flexWrap: 'wrap', gap: 6,
-    marginBottom: 20, justifyContent: 'flex-start',
+    justifyContent: 'flex-start',
   },
   channelChip: {
     flexDirection: 'row', alignItems: 'center', gap: 4,
@@ -353,14 +385,10 @@ const styles = StyleSheet.create({
   },
   channelText: { fontSize: 11, fontWeight: '600' },
 
-  trialSection: { gap: 10, marginBottom: 16 },
-  trialBtn: { width: '100%' },
-  trialNote: { fontSize: 12, textAlign: 'center', lineHeight: 18 },
-
   selectPrompt: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
     gap: 8, borderRadius: 12, borderWidth: 1,
-    paddingVertical: 14, marginBottom: 16,
+    paddingVertical: 14,
   },
   selectPromptText: { fontSize: 13, fontWeight: '500' },
 
