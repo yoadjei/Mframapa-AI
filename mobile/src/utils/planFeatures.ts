@@ -1,31 +1,31 @@
-export type Tier = 'free' | 'pro' | 'enterprise';
+export type Tier = 'free' | 'researcher' | 'institutional';
 
-const RANK: Record<Tier, number> = { free: 0, pro: 1, enterprise: 2 };
+const RANK: Record<Tier, number> = { free: 0, researcher: 1, institutional: 2 };
 
 export const PLAN_FEATURES = {
-  // Free tier
+  // Free tier — never gated, mission-critical
   basicAqi:              'free',
   searchCities:          'free',
-  savedLocations3:       'free',   // up to 3 saved cities
+  savedLocations3:       'free',
 
-  // Pro tier
-  savedLocationsUnlimited: 'pro',
-  aiInsights:            'pro',
-  predictionDashboard:   'pro',
-  historicalPlayback:    'pro',
-  healthRisk:            'pro',
-  compareCities:         'pro',
-  dataExports:           'pro',
-  communityHub:          'pro',
-  trendAnalysis:         'pro',
+  // Researcher tier
+  savedLocationsUnlimited: 'researcher',
+  aiInsights:            'researcher',
+  predictionDashboard:   'researcher',
+  historicalPlayback:    'researcher',
+  healthRisk:            'researcher',
+  compareCities:         'researcher',
+  dataExports:           'researcher',
+  communityHub:          'researcher',
+  trendAnalysis:         'researcher',
 
-  // Enterprise tier
-  anomalyAlerts:         'enterprise',
-  africaHeatmap:         'enterprise',
-  batchPredict:          'enterprise',
-  apiAccess:             'enterprise',
-  countryExplorer:       'enterprise',
-  trustTransparency:     'enterprise',
+  // Institutional API tier
+  anomalyAlerts:         'institutional',
+  africaHeatmap:         'institutional',
+  batchPredict:          'institutional',
+  apiAccess:             'institutional',
+  countryExplorer:       'institutional',
+  trustTransparency:     'institutional',
 } as const satisfies Record<string, Tier>;
 
 export type FeatureKey = keyof typeof PLAN_FEATURES;

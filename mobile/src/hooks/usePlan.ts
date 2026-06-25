@@ -7,8 +7,8 @@ export function usePlan() {
   return {
     tier,
     can: (feature: FeatureKey) => hasAccess(tier, feature),
-    isPro:        tier === 'pro' || tier === 'enterprise',
-    isEnterprise: tier === 'enterprise',
-    isFree:       tier === 'free',
+    isResearcher:    tier === 'researcher' || tier === 'institutional',
+    isInstitutional: tier === 'institutional',
+    isFree:          tier === 'free',
   };
 }

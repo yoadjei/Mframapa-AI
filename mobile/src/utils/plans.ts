@@ -3,7 +3,7 @@
 // on the Paystack dashboard. We ship USD as the base and let the dashboard
 // auto-convert if the customer pays in NGN/GHS/etc.
 
-export type PlanId = 'pro_monthly' | 'pro_annual' | 'enterprise_monthly' | 'enterprise_annual';
+export type PlanId = 'researcher_monthly' | 'researcher_annual';
 export type Currency = 'USD' | 'NGN' | 'GHS' | 'KES' | 'ZAR';
 
 /**
@@ -53,34 +53,19 @@ export interface PricingPlan {
 
 export const PRICING_PLANS: PricingPlan[] = [
   {
-    id: 'pro_monthly',
-    label: 'Pro Monthly',
-    amountUsd: 4.99,
+    id: 'researcher_monthly',
+    label: 'Researcher Monthly',
+    amountUsd: 15,
     intervalDays: 30,
     perUnit: '/month',
   },
   {
-    id: 'pro_annual',
-    label: 'Pro Annual',
-    amountUsd: 39.99,
+    id: 'researcher_annual',
+    label: 'Researcher Annual',
+    amountUsd: 144,
     intervalDays: 365,
     perUnit: '/year',
-    badge: 'Save 33%',
-  },
-  {
-    id: 'enterprise_monthly',
-    label: 'Enterprise Monthly',
-    amountUsd: 29.99,
-    intervalDays: 30,
-    perUnit: '/month',
-  },
-  {
-    id: 'enterprise_annual',
-    label: 'Enterprise Annual',
-    amountUsd: 249.99,
-    intervalDays: 365,
-    perUnit: '/year',
-    badge: 'Save 30%',
+    badge: 'Save 20%',
   },
 ];
 
