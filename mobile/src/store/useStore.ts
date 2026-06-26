@@ -101,7 +101,7 @@ export interface UserProfile {
   fullName: string;
   email: string;
   organization: string;
-  tier: 'free' | 'pro' | 'enterprise';
+  tier: 'free' | 'researcher' | 'institutional';
   initials: string;
   avatarSeed: string;
 }
@@ -150,19 +150,19 @@ interface AppState {
   trialEndsAt: string | null;
   purchaseToken: string | null;
   // Paid Paystack subscription state
-  subscriptionPlan: 'pro_monthly' | 'pro_annual' | null;
+  subscriptionPlan: 'researcher_monthly' | 'researcher_annual' | null;
   subscriptionStartedAt: string | null;
   subscriptionExpiresAt: string | null;
   subscriptionReference: string | null;
   startFreeTrial: () => void;
   cancelTrial: () => void;
   activateSubscription: (args: {
-    plan: 'pro_monthly' | 'pro_annual';
+    plan: 'researcher_monthly' | 'researcher_annual';
     reference: string;
     intervalDays: number;
     amountUsd: number;
   }) => void;
-  restorePurchases: () => Promise<{ ok: boolean; restored: 'trial' | 'pro' | null }>;
+  restorePurchases: () => Promise<{ ok: boolean; restored: 'trial' | 'researcher' | null }>;
   isTrialActive: () => boolean;
   isSubscriptionActive: () => boolean;
   trialDaysRemaining: () => number;
@@ -508,13 +508,13 @@ export const useStore = create<AppState>()(
           subscriptionExpiresAt: expires.toISOString(),
           subscriptionReference: reference,
           purchaseToken:         reference,  // simple alias for restore-from-store
-          profile:               { ...s.profile, tier: 'pro' },
+          profile:               { ...s.profile, tier: 'researcher' },
           // Activating a paid plan ends any running trial.
           trialStartedAt: null,
           trialEndsAt:    null,
           activityFeed: [
             makeActivity('activity.subscribed', 'lock', {
-              plan: plan === 'pro_annual' ? 'Pro Annual' : 'Pro Monthly',
+              plan: plan === 'researcher_annual' ? 'Researcher Annual' : 'Researcher Monthly',
               amount: amountUsd.toFixed(2),
             }),
             ...s.activityFeed,
@@ -533,7 +533,7 @@ export const useStore = create<AppState>()(
         set((s) => ({
           trialStartedAt: now.toISOString(),
           trialEndsAt:    ends.toISOString(),
-          profile:        { ...s.profile, tier: 'pro' },
+          profile:        { ...s.profile, tier: 'researcher' },
           activityFeed:   [
             makeActivity('activity.trial_started', 'clock'),
             ...s.activityFeed,
@@ -547,15 +547,15 @@ export const useStore = create<AppState>()(
         // local state with the server.
         const s = get();
         if (s.subscriptionExpiresAt && new Date(s.subscriptionExpiresAt) > new Date()) {
-          set((cur) => ({ profile: { ...cur.profile, tier: 'pro' } }));
-          return { ok: true, restored: 'pro' };
+          set((cur) => ({ profile: { ...cur.profile, tier: 'researcher' } }));
+          return { ok: true, restored: 'researcher' };
         }
         if (s.purchaseToken) {
-          set((cur) => ({ profile: { ...cur.profile, tier: 'pro' } }));
-          return { ok: true, restored: 'pro' };
+          set((cur) => ({ profile: { ...cur.profile, tier: 'researcher' } }));
+          return { ok: true, restored: 'researcher' };
         }
         if (s.trialEndsAt && new Date(s.trialEndsAt) > new Date()) {
-          set((cur) => ({ profile: { ...cur.profile, tier: 'pro' } }));
+          set((cur) => ({ profile: { ...cur.profile, tier: 'researcher' } }));
           return { ok: true, restored: 'trial' };
         }
         return { ok: true, restored: null };

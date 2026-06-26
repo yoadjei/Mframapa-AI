@@ -6,7 +6,7 @@ import { mergeLocaleStrings } from '../utils/mergeLocale';
 
 const memory: Record<string, Record<string, string>> = { en: EN_STRINGS };
 const bundledCache: Record<string, Record<string, string>> = {};
-const CACHE_PREFIX = 'mframapa:mobile:locale:v4:';
+const CACHE_PREFIX = 'mframapa:mobile:locale:v5:';
 
 const BUNDLED: Record<string, () => Record<string, string>> = {
   en: () => require('../locales/en').default,
