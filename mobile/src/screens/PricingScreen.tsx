@@ -8,25 +8,25 @@ import { useTheme } from '../hooks/useTheme';
 import { useTranslation } from '../hooks/useTranslation';
 import { useStore } from '../store/useStore';
 
-type FeatureRow = { key: string; free: boolean; pro: boolean; enterprise: boolean };
+type FeatureRow = { key: string; free: boolean; researcher: boolean; institutional: boolean };
 
 const FEATURES: FeatureRow[] = [
-  { key: 'screen.pricing.feat.basic_aqi',       free: true,  pro: true,  enterprise: true  },
-  { key: 'screen.pricing.feat.search',           free: true,  pro: true,  enterprise: true  },
-  { key: 'screen.pricing.feat.saved_3',          free: true,  pro: false, enterprise: false },
-  { key: 'screen.pricing.feat.saved_unlimited',  free: false, pro: true,  enterprise: true  },
-  { key: 'screen.pricing.feat.ai_insights',      free: false, pro: true,  enterprise: true  },
-  { key: 'screen.pricing.feat.predictions',      free: false, pro: true,  enterprise: true  },
-  { key: 'screen.pricing.feat.health_risk',      free: false, pro: true,  enterprise: true  },
-  { key: 'screen.pricing.feat.historical',       free: false, pro: true,  enterprise: true  },
-  { key: 'screen.pricing.feat.compare',          free: false, pro: true,  enterprise: true  },
-  { key: 'screen.pricing.feat.exports',          free: false, pro: true,  enterprise: true  },
-  { key: 'screen.pricing.feat.community',        free: false, pro: true,  enterprise: true  },
-  { key: 'screen.pricing.feat.anomaly',          free: false, pro: false, enterprise: true  },
-  { key: 'screen.pricing.feat.heatmap',          free: false, pro: false, enterprise: true  },
-  { key: 'screen.pricing.feat.batch',            free: false, pro: false, enterprise: true  },
-  { key: 'screen.pricing.feat.api',              free: false, pro: false, enterprise: true  },
-  { key: 'screen.pricing.feat.country',          free: false, pro: false, enterprise: true  }];
+  { key: 'screen.pricing.feat.basic_aqi',       free: true,  researcher: true,  institutional: true  },
+  { key: 'screen.pricing.feat.search',           free: true,  researcher: true,  institutional: true  },
+  { key: 'screen.pricing.feat.saved_3',          free: true,  researcher: false, institutional: false },
+  { key: 'screen.pricing.feat.saved_unlimited',  free: false, researcher: true,  institutional: true  },
+  { key: 'screen.pricing.feat.ai_insights',      free: false, researcher: true,  institutional: true  },
+  { key: 'screen.pricing.feat.predictions',      free: false, researcher: true,  institutional: true  },
+  { key: 'screen.pricing.feat.health_risk',      free: false, researcher: true,  institutional: true  },
+  { key: 'screen.pricing.feat.historical',       free: false, researcher: true,  institutional: true  },
+  { key: 'screen.pricing.feat.compare',          free: false, researcher: true,  institutional: true  },
+  { key: 'screen.pricing.feat.exports',          free: false, researcher: true,  institutional: true  },
+  { key: 'screen.pricing.feat.community',        free: false, researcher: true,  institutional: true  },
+  { key: 'screen.pricing.feat.anomaly',          free: false, researcher: false, institutional: true  },
+  { key: 'screen.pricing.feat.heatmap',          free: false, researcher: false, institutional: true  },
+  { key: 'screen.pricing.feat.batch',            free: false, researcher: false, institutional: true  },
+  { key: 'screen.pricing.feat.api',              free: false, researcher: true,  institutional: true  },
+  { key: 'screen.pricing.feat.country',          free: false, researcher: false, institutional: true  }];
 
 export function PricingScreen() {
   const { isDark } = useTheme();
@@ -49,25 +49,36 @@ export function PricingScreen() {
       onPress: () => {},
     },
     {
-      key: 'pro' as const,
-      nameKey: 'screen.subscription.plan_pro',
-      descKey: 'screen.pricing.tier_pro_desc',
-      priceKey: 'screen.pricing.price_pro',
+      key: 'researcher' as const,
+      nameKey: 'screen.subscription.plan_researcher',
+      descKey: 'screen.pricing.tier_researcher_desc',
+      priceKey: 'screen.pricing.price_researcher',
       color: Colors.brandGreen,
       borderColor: Colors.brandGreen,
-      ctaKey: tier === 'pro' || tier === 'enterprise' ? 'screen.pricing.cta_current' : 'screen.pricing.cta_upgrade',
-      ctaDisabled: tier === 'pro' || tier === 'enterprise',
+      ctaKey: tier === 'researcher' || tier === 'institutional' ? 'screen.pricing.cta_current' : 'screen.pricing.cta_upgrade',
+      ctaDisabled: tier === 'researcher' || tier === 'institutional',
       onPress: () => navigation.navigate('Paywall'),
     },
     {
-      key: 'enterprise' as const,
-      nameKey: 'screen.pricing.tier_enterprise',
-      descKey: 'screen.pricing.tier_enterprise_desc',
-      priceKey: 'screen.pricing.price_enterprise',
+      key: 'institutional' as const,
+      nameKey: 'screen.pricing.tier_institutional',
+      descKey: 'screen.pricing.tier_institutional_desc',
+      priceKey: 'screen.pricing.price_institutional',
       color: Colors.enterprise,
       borderColor: Colors.enterprise,
-      ctaKey: tier === 'enterprise' ? 'screen.pricing.cta_current' : 'screen.pricing.cta_contact',
-      ctaDisabled: tier === 'enterprise',
+      ctaKey: tier === 'institutional' ? 'screen.pricing.cta_current' : 'screen.pricing.cta_contact',
+      ctaDisabled: tier === 'institutional',
+      onPress: () => {},
+    },
+    {
+      key: 'programme' as const,
+      nameKey: 'screen.pricing.tier_programme',
+      descKey: 'screen.pricing.tier_programme_desc',
+      priceKey: 'screen.pricing.price_programme',
+      color: '#8B5CF6',
+      borderColor: '#8B5CF6',
+      ctaKey: 'screen.pricing.cta_contact',
+      ctaDisabled: false,
       onPress: () => {},
     }] as const;
 
@@ -109,7 +120,7 @@ export function PricingScreen() {
                 <Text style={[styles.tierName, { color: tier.color }]}>{t(tier.nameKey)}</Text>
                 <Text style={[styles.tierPrice, { color: colors.text }]}>{t(tier.priceKey)}</Text>
               </View>
-              {tier.key === 'pro' ? (
+              {tier.key === 'researcher' ? (
                 <View style={[styles.popularBadge, { backgroundColor: Colors.brandGreen + '22' }]}>
                   <Text style={[styles.popularText, { color: Colors.brandGreen }]}>{t('screen.pricing.badge_popular')}</Text>
                 </View>
@@ -126,7 +137,7 @@ export function PricingScreen() {
 
             {/* Feature rows */}
             {FEATURES.map((f) => {
-              const included = tier.key === 'free' ? f.free : tier.key === 'pro' ? f.pro : f.enterprise;
+              const included = tier.key === 'free' ? f.free : tier.key === 'researcher' ? f.researcher : tier.key === 'institutional' ? f.institutional : false;
               return (
                 <View key={f.key} style={styles.featureRow}>
                   <Check included={included} color={tier.color} />
