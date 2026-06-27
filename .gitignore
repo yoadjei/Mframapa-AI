@@ -25,7 +25,9 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-
+ios/
+android/
+.expo/
 # Virtual Environment
 venv/
 .venv/
