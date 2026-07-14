@@ -391,3 +391,113 @@ def generate_insight(body: InsightBody) -> Dict[str, str]:
                     pass
 
     return {"insight": _STUB_INSIGHTS_EN[key]}
+
+
+# ── Push token registration ────────────────────────────────────────────────────
+
+_push_tokens: Dict[str, Any] = {}  # in-memory store; replace with DB in production
+
+class PushTokenBody(BaseModel):
+    token: str = Field(..., min_length=1)
+    platform: str = Field(..., pattern="^(android|ios|web)$")
+    lat: Optional[float] = None
+    lon: Optional[float] = None
+
+@router.post("/register-push-token", status_code=200)
+def register_push_token(body: PushTokenBody) -> Dict[str, str]:
+    """Register an Expo/Web Push token for AQI alert delivery."""
+    _push_tokens[body.token] = {
+        "platform": body.platform,
+        "lat": body.lat,
+        "lon": body.lon,
+        "registered_at": str(dt_date.today()),
+    }
+    logger.info("Push token registered: platform=%s lat=%s lon=%s", body.platform, body.lat, body.lon)
+    return {"status": "registered"}
+
+
+# ── OTA translation sync ───────────────────────────────────────────────────────
+
+@router.get("/translations/sync")
+def translations_sync(
+    lang: str = Query(..., min_length=2, max_length=8, description="Target language code"),
+    lang_name: str = Query("", description="Human-readable language name for Gemini"),
+) -> Dict[str, Any]:
+    """Return a full translated UI string bundle for the requested language.
+
+    Backed by Gemini when available; falls back to English strings with
+    fallback=true so the client knows to use its own bundled locale.
+    """
+    if lang.lower() == "en":
+        return {"lang": "en", "translations": {}, "fallback": True, "provider": "bundled"}
+
+    if not gemini_client.is_available():
+        return {"lang": lang, "translations": {}, "fallback": True, "provider": "none"}
+
+    from backend.services.gemini_client import translate_strings  # local import to avoid circular
+    try:
+        from backend.api.v1.router import _SYNC_EN_STRINGS  # populated lazily below
+    except ImportError:
+        pass
+
+    en_strings = _get_sync_en_strings()
+    try:
+        translations = gemini_client.translate_strings(
+            en_strings,
+            target_language=lang,
+            source_language="en",
+            target_language_name=lang_name or None,
+        )
+        return {"lang": lang, "translations": translations, "fallback": False, "provider": "gemini"}
+    except Exception as exc:
+        logger.warning("OTA translation sync failed for %s: %s", lang, exc)
+        return {"lang": lang, "translations": {}, "fallback": True, "provider": "none"}
+
+
+_SYNC_EN_STRINGS_CACHE: Optional[Dict[str, str]] = None
+
+def _get_sync_en_strings() -> Dict[str, str]:
+    """Lazily load English UI strings from the backend data directory (if present)."""
+    global _SYNC_EN_STRINGS_CACHE
+    if _SYNC_EN_STRINGS_CACHE is not None:
+        return _SYNC_EN_STRINGS_CACHE
+    strings_path = REPO_ROOT / "mobile" / "src" / "locales" / "en.ts"
+    if not strings_path.is_file():
+        _SYNC_EN_STRINGS_CACHE = {}
+        return _SYNC_EN_STRINGS_CACHE
+    # Parse the exported flat object from the TypeScript file heuristically.
+    import re
+    raw = strings_path.read_text(encoding="utf-8")
+    matches = re.findall(r"^\s+'([^']+)':\s*'([^']*)'", raw, re.MULTILINE)
+    result = {k: v for k, v in matches if not k.startswith("legal.")}
+    _SYNC_EN_STRINGS_CACHE = result
+    return result
+
+
+# ── Translation suggestions (community corrections) ────────────────────────────
+
+class TranslationSuggestionBody(BaseModel):
+    key: str = Field(..., min_length=1)
+    original: str
+    suggested: str = Field(..., min_length=1)
+    language: str = Field(..., min_length=2, max_length=8)
+    language_name: str = ""
+
+_translation_suggestions: list = []
+
+@router.post("/translations/suggest", status_code=201)
+def suggest_translation(body: TranslationSuggestionBody) -> Dict[str, str]:
+    """Accept a community-submitted natural-language translation correction."""
+    _translation_suggestions.append({
+        "key": body.key,
+        "original": body.original,
+        "suggested": body.suggested,
+        "language": body.language,
+        "language_name": body.language_name,
+        "submitted_at": str(dt_date.today()),
+    })
+    logger.info(
+        "Translation suggestion: lang=%s key=%s suggested=%r",
+        body.language, body.key, body.suggested[:80],
+    )
+    return {"status": "received"}

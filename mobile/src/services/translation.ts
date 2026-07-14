@@ -1,6 +1,6 @@
 import { EN_STRINGS } from '../locales/en';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { translateUiStrings } from './api';
+import { translateUiStrings, syncTranslations } from './api';
 import { languageName } from '../utils/constants';
 import { mergeLocaleStrings } from '../utils/mergeLocale';
 
@@ -76,8 +76,26 @@ export async function ensureLocaleLoaded(lang: string): Promise<Record<string, s
   }
 
   const bundled = loadBundled(lang);
+  const langDisplayName = languageName(lang);
 
-  // Exclude legal sections — long bodies inflate token count and are acceptable in English.
+  // Try OTA sync endpoint first (server-side Gemini caching = faster repeat loads).
+  try {
+    const { translations, fallback } = await syncTranslations(lang, langDisplayName);
+    if (!fallback && Object.keys(translations).length > 0) {
+      const merged = mergeLocaleStrings(EN_STRINGS, translations, bundled);
+      memory[lang] = merged;
+      try {
+        await AsyncStorage.setItem(`${CACHE_PREFIX}${lang}`, JSON.stringify(merged));
+      } catch {
+        // ignore cache writes
+      }
+      return merged;
+    }
+  } catch {
+    // OTA sync unavailable — fall through to on-demand translate
+  }
+
+  // Fallback: generate translations on-demand via POST /translate.
   const UI_STRINGS = Object.fromEntries(
     Object.entries(EN_STRINGS).filter(([k]) => !k.startsWith('legal.'))
   );
@@ -86,7 +104,7 @@ export async function ensureLocaleLoaded(lang: string): Promise<Record<string, s
     const { translations, fallback } = await translateUiStrings(
       UI_STRINGS,
       lang,
-      languageName(lang)
+      langDisplayName,
     );
     const merged = fallback
       ? mergeLocaleStrings(EN_STRINGS, bundled)
@@ -103,6 +121,24 @@ export async function ensureLocaleLoaded(lang: string): Promise<Record<string, s
   } catch {
     memory[lang] = mergeLocaleStrings(EN_STRINGS, bundled);
     return memory[lang];
+  }
+}
+
+/**
+ * Background OTA sync — fetches the latest server-side translations on startup
+ * without blocking the UI. Saves to AsyncStorage for the next cold start.
+ */
+export async function syncLocaleInBackground(lang: string): Promise<void> {
+  if (lang === 'en' || lang === 'system') return;
+  try {
+    const { translations, fallback } = await syncTranslations(lang, languageName(lang));
+    if (fallback || Object.keys(translations).length === 0) return;
+    const bundled = loadBundled(lang);
+    const merged = mergeLocaleStrings(EN_STRINGS, translations, bundled);
+    memory[lang] = merged;
+    await AsyncStorage.setItem(`${CACHE_PREFIX}${lang}`, JSON.stringify(merged));
+  } catch {
+    // background sync failures are silent
   }
 }
 

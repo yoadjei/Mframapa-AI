@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { PredictionResult } from '../store/useStore';
 import { API_BASE_URL, languageName } from '../utils/constants';
 
@@ -16,6 +16,29 @@ const client = axios.create({
     'X-API-Key': 'mframapa-internal-dev-key',
   },
 });
+
+// ── 429 Rate-limit state ───────────────────────────────────────────────────────
+type RateLimitListener = (retryAfterMs: number) => void;
+const _rateLimitListeners: Set<RateLimitListener> = new Set();
+
+/** Subscribe to rate-limit events. Returns an unsubscribe fn. */
+export function onRateLimit(listener: RateLimitListener): () => void {
+  _rateLimitListeners.add(listener);
+  return () => _rateLimitListeners.delete(listener);
+}
+
+client.interceptors.response.use(
+  (res) => res,
+  (err: AxiosError) => {
+    if (err.response?.status === 429) {
+      const retryAfterHeader =
+        (err.response.headers as Record<string, string>)['retry-after'] ?? '60';
+      const retryAfterMs = parseFloat(retryAfterHeader) * 1000;
+      _rateLimitListeners.forEach((fn) => fn(retryAfterMs));
+    }
+    return Promise.reject(err);
+  },
+);
 
 function mapPrediction(
   data: Record<string, unknown>,
@@ -125,4 +148,37 @@ export async function resolveLocation(
 export async function checkHealth(): Promise<{ status: string }> {
   const { data } = await client.get('/api/v1/health');
   return data;
+}
+
+export async function registerPushToken(
+  token: string,
+  platform: 'android' | 'ios' | 'web',
+  lat?: number,
+  lon?: number,
+): Promise<void> {
+  await client.post('/api/v1/register-push-token', { token, platform, lat, lon });
+}
+
+export async function syncTranslations(
+  lang: string,
+  langName?: string,
+): Promise<{ translations: Record<string, string>; fallback: boolean }> {
+  const { data } = await client.get<{
+    translations: Record<string, string>;
+    fallback: boolean;
+  }>('/api/v1/translations/sync', {
+    params: { lang, lang_name: langName ?? '' },
+    timeout: 90000,
+  });
+  return { translations: data.translations, fallback: data.fallback };
+}
+
+export async function suggestTranslation(body: {
+  key: string;
+  original: string;
+  suggested: string;
+  language: string;
+  language_name?: string;
+}): Promise<void> {
+  await client.post('/api/v1/translations/suggest', body);
 }
