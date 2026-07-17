@@ -1,53 +1,48 @@
-# Mframapa AI — Data Pipeline
+# mframapa ai data pipeline
 
-Pulls new PM2.5 ground truth from OpenAQ, enriches with weather data, and produces an updated training dataset ready for Colab.
+pulls fresh pm2.5 readings from openaq, adds weather, and writes an updated training dataset for colab.
 
-## Quick Start
+## run
 
-```bash
+```
 cd pipeline
 pip install -r requirements.txt
 python run_pipeline.py
 ```
 
-This runs three steps:
+three steps:
+1. **fetch openaq**: finds stations and pulls pm2.5 across 54 african countries (dec 2025 to today).
+2. **fetch weather**: attaches open-meteo history to each reading (temp, humidity, pressure, wind, cloud, precip).
+3. **prepare**: feature engineering, qa cleaning, then merges into the existing `training_dataset.csv`.
 
-1. **Fetch OpenAQ** — discovers stations and pulls PM2.5 measurements from 29 African countries (Dec 2025 → today)
-2. **Fetch Weather** — enriches each observation with historical weather from Open-Meteo (temp, humidity, pressure, wind, clouds, precip)
-3. **Prepare Data** — applies feature engineering + QA cleaning + merges with existing `training_dataset.csv`
+output: `pipeline/output/training_dataset_updated.csv`
 
-Output: `pipeline/output/training_dataset_updated.csv`
+## retrain
 
-## After Running
+upload the output to google drive (`mframapa/`), open your colab training notebook, point `DATA_PATH` at the uploaded file, and run all cells.
 
-1. Upload `output/training_dataset_updated.csv` to Google Drive (`mframapa/` folder)
-2. Open `notebooks/train_pm25_model.ipynb` in Colab
-3. Update `DATA_PATH` to point to the uploaded file
-4. Run all cells to retrain
+## config
 
-## Configuration
+edit `config.py`:
 
-Edit `config.py` to change:
+| setting | default | notes |
+|---|---|---|
+| `FETCH_START_DATE` | 2025-12-01 | window start |
+| `FETCH_END_DATE` | today | window end |
+| `PM25_MAX` | 500 | outlier cutoff |
+| `OPENAQ_API_KEY` | none | optional, higher rate limits |
 
-| Setting | Default | Description |
-|---------|---------|-------------|
-| `FETCH_START_DATE` | `2025-12-01` | Start date for new data |
-| `FETCH_END_DATE` | today | End date for new data |
-| `PM25_MAX` | 500 | Upper outlier threshold |
-| `OPENAQ_API_KEY` | None | Optional, for higher rate limits |
-
-## Skip Flags
-
-```bash
-python run_pipeline.py --skip-fetch     # reuse cached OpenAQ data
-python run_pipeline.py --skip-weather   # reuse cached weather data
+skip a step by reusing cached data:
+```
+python run_pipeline.py --skip-fetch      # reuse openaq
+python run_pipeline.py --skip-weather    # reuse weather
 ```
 
-## Output Files
+## outputs
 
-| File | Description |
-|------|-------------|
-| `data/openaq_raw.csv` | Raw PM2.5 measurements from OpenAQ |
-| `data/with_weather.csv` | Observations enriched with weather |
-| `data/cleaned_new.csv` | New data after QA cleaning |
-| `output/training_dataset_updated.csv` | **Final merged dataset for Colab** |
+| file | what |
+|---|---|
+| `data/openaq_raw.csv` | raw openaq measurements |
+| `data/with_weather.csv` | readings + weather |
+| `data/cleaned_new.csv` | after qa |
+| `output/training_dataset_updated.csv` | final merged dataset |
