@@ -28,6 +28,14 @@ python-dotenv>=1.0.0
 # ── CDS API (ERA5) ────────────────────────────────────────────
 cdsapi>=0.6.1
 
+# ── Satellite enrichment (optional) ───────────────────────────
+# real sentinel-5p / modis maiac columns via google earth engine (pipeline/enrich_gee.py)
+earthengine-api>=0.1.400
+
+# ── Alerts & scheduling ───────────────────────────────────────
+httpx>=0.27.0              # Expo push delivery
+apscheduler>=3.10.0        # daily episode-scan / digest cron
+
 # ── Monitoring ────────────────────────────────────────────────
 sentry-sdk[fastapi]>=2.0.0  # error tracking (set SENTRY_DSN env var)
 
