@@ -1,0 +1,36 @@
+# mframapa backend stack: nginx -> api (uvicorn) -> redis.
+# tls is terminated upstream by cloudflare, so nginx serves plain http on :80.
+services:
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--save", "60", "1", "--appendonly", "yes"]
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+
+  api:
+    build: .
+    env_file: .env
+    environment:
+      # overrides whatever REDIS_URL is in .env — points at the compose redis service.
+      REDIS_URL: redis://redis:6379
+      WORKERS: "2"
+    volumes:
+      # swap in new model bundles without rebuilding the image.
+      - ./ml/exports:/app/ml/exports:ro
+    depends_on:
+      - redis
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./deploy/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  redis-data:

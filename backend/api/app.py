@@ -18,6 +18,7 @@ from datetime import date as dt_date
 from functools import lru_cache
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+from contextlib import asynccontextmanager
 
 from fastapi import Depends, FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
@@ -46,10 +47,18 @@ from ml.paths import repository_root
 from ml.regions import assign_region
 from ml.urban_rural import classify_from_population_density
 
+# Optional: model bundle loader + batch router and tracing
+from backend.api.middleware.tracing import TracingMiddleware
+from backend.api.security import verify_and_rate_limit
+from backend.api.v1.batch import batch_router
+from backend.api.v1.router import router as v1_router
+from backend.ml.inference import load_bundles
+
 logger = logging.getLogger(__name__)
 
 REPO_ROOT = repository_root()
 CITIES_PATH = REPO_ROOT / "backend" / "data" / "african_cities.json"
+_EXPORTS_DIR = REPO_ROOT / "ml" / "exports"
 
 
 def _default_conformal_half_width(pm25: float) -> float:
@@ -81,12 +90,27 @@ def get_feature_pipeline() -> FeaturePipeline:
     return FeaturePipeline()
 
 
-from backend.api.v1.router import router as v1_router
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Preload model bundles into app.state for fast inference
+    try:
+        app.state.models = load_bundles(_EXPORTS_DIR)
+    except Exception:
+        logger.exception("Failed to load model bundles at startup")
+        app.state.models = {}
+    yield
+    app.state.models = {}
 
-app = FastAPI(title="Mframapa API", version="2.0.0", description="Mframapa AI v2.0 Versioned API with rate limiting and API keys.")
+
+app = FastAPI(title="Mframapa API", version="2.0.0", description="Mframapa AI v2.0 Versioned API with rate limiting and API keys.", lifespan=lifespan)
+
+_ALLOWED_ORIGINS = [
+    o.strip() for o in os.getenv("ALLOWED_ORIGINS", "http://localhost:5173").split(",") if o.strip()
+]
+app.add_middleware(TracingMiddleware)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=_ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -94,6 +118,11 @@ app.add_middleware(
 app.add_middleware(GZipMiddleware, minimum_size=100)
 
 app.include_router(v1_router, prefix="/api/v1", tags=["v1"])
+# batch is mounted separately (not under v1_router) to avoid a router<->batch import cycle.
+app.include_router(
+    batch_router, prefix="/api/v1", tags=["v1"],
+    dependencies=[Depends(verify_and_rate_limit)],
+)
 
 # Legacy support - keeping the old root paths but returning a hint to use v1.
 @app.get("/api/health")

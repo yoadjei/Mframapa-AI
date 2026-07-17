@@ -4,10 +4,7 @@ __pycache__/
 *$py.class
 *.so
 
-# Local history and internal docs
-.history/
-docs/
-MANUAL_DOWNLOADS.md
+# Build / packaging
 .Python
 env/
 build/
@@ -36,25 +33,44 @@ venv/
 # Trained regional model bundles (regenerate via notebooks / ml.training)
 ml/exports/
 ml/data/model_registry.json
+# generated static grid + benchmark artifacts
+ml/data/static_grid*.csv
+ml/data/static_grid.json
+pipeline/data/cams_baseline.csv
+pipeline/output/benchmark.csv
 
 # Jupyter Notebook
 .ipynb_checkpoints
 
-# VS Code
+# VS Code / editor
 .vscode/
+.history/
+*.bkp
+*.swp
+*~
 
-# Data (Too large for GitHub)
+# Data (too large for GitHub)
 backend/data/ground_truth/
 backend/data/space/
 backend/data/*.csv
 backend/data/*.zip
 backend/data/*.nc
 backend/data/*.tif
+pipeline/data/*.csv
+pipeline/output/
+research/results_final/*.csv
+research/results_final/*.npy
+research/splits/
 *.pkl
 *.h5
 *.joblib
-# *.json
-!universal_african_model.json
+*.npy
+
+# Archives
+*.zip
+
+# Documents (keep in Google Drive / local, not git)
+*.docx
 
 # Logs
 *.log
@@ -63,5 +79,17 @@ logs/
 # OS Generated
 .DS_Store
 Thumbs.db
+
+# AI coding assistants
 .claude
-node_modules/ 
+.gemini/
+
+# Node
+node_modules/
+
+# Cleanup script (one-time use)
+cleanup.ps1
+
+# Misc
+MANUAL_DOWNLOADS.md
+pipeline/data/

@@ -51,6 +51,7 @@ export function CommunityHubScreen({ isOnline, isDark, params }) {
           <ArrowLeft size={22} color={colors.text} />
         </button>
         <span style={{ fontSize: 16, fontWeight: 700, color: colors.text, flex: 1, textAlign: "center" }}>
+
           {t("screen.community.title")}
         </span>
         <button

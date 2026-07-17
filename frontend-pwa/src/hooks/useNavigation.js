@@ -22,6 +22,7 @@ export function useNavigation() {
     navigate,
     goBack,
     navigateToTab,
+
     currentRoute: current?.name ?? null,
     params: current?.params ?? {},
     canGoBack: stack.length > 0,

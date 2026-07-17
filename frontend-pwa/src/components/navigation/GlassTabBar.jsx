@@ -43,8 +43,7 @@ export function GlassTabBar({ isDark }) {
   const menuRef = useRef(null);
   const fabRef  = useRef(null);
 
-  // Main tab switches (no back button needed)
-  function switchTab(key) {
+  function navigate(key) {
     dispatch({ type: "SET_ACTIVE_SCREEN", payload: key });
     setMenuOpen(false);
   }
@@ -54,6 +53,7 @@ export function GlassTabBar({ isDark }) {
     dispatch({ type: "NAVIGATE", payload: { name: key, params: {} } });
     setMenuOpen(false);
   }
+
 
   // Close on outside click — exclude the FAB so the toggle works correctly
   useEffect(() => {
@@ -133,7 +133,7 @@ export function GlassTabBar({ isDark }) {
               <button
                 key={tab.key}
                 type="button"
-                onClick={() => switchTab(tab.key)}
+                onClick={() => navigate(tab.key)}
                 className="flex h-14 items-center justify-center px-1.5"
               >
                 <span

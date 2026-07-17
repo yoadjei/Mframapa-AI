@@ -121,18 +121,8 @@ html, body {
 }
 
 :focus-visible {
-  outline: none;
-}
-
-/* iOS Safari: prevent the browser from treating taps as scroll/zoom gestures,
-   which cancels the click event. touch-action: manipulation removes the 300ms
-   delay and stops micro-movement from cancelling a tap on buttons. */
-button,
-[role="button"],
-a {
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-  cursor: pointer;
+  outline: 2px solid #34d399;
+  outline-offset: 2px;
 }
 
 /* Custom Scrollbar - Dark Mode */

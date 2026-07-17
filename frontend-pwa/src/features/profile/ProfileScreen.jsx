@@ -99,7 +99,6 @@ export function ProfileScreen({ isOnline, isDark }) {
   function handleAvatarSelect(seed) {
     dispatch({ type: "UPDATE_PROFILE", payload: { avatarSeed: seed } });
   }
-
   return (
     <div
       className="min-h-[100dvh] overflow-y-auto pb-36 px-4"
@@ -161,7 +160,6 @@ export function ProfileScreen({ isOnline, isDark }) {
           onClose={() => setPickerOpen(false)}
           isDark={isDark ?? true}
         />
-
         {/* Tier badge */}
         <div className="flex items-center justify-center gap-2 mb-6">
           <span className="text-[14px]" style={{ color: colors.subtext }}>
