@@ -1,9 +1,5 @@
-import { httpClient, normalizeError } from "./httpClient.js";
-
-function shouldUseLocalFallback(error) {
-  const status = error?.response?.status;
-  return !status || status === 404 || status >= 500;
-}
+import { supabase } from "./supabase.js";
+import { normalizeError } from "./httpClient.js";
 
 function buildLocalSession(email) {
   return {
@@ -16,25 +12,54 @@ function buildLocalSession(email) {
   };
 }
 
-async function authenticate(endpoint, payload) {
-  try {
-    const response = await httpClient.post(endpoint, payload);
-    return {
-      token: response.data.access_token ?? response.data.token,
-      user: response.data.user ?? { email: payload.email, fullName: payload.email },
-    };
-  } catch (error) {
-    if (import.meta.env.DEV && shouldUseLocalFallback(error)) {
-      return buildLocalSession(payload.email);
-    }
-    throw new Error(normalizeError(error, "Authentication failed"));
-  }
+export async function login({ email, password }) {
+  if (!supabase) return buildLocalSession(email);
+
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error) throw new Error(error.message);
+
+  return {
+    token: data.session.access_token,
+    user: {
+      id: data.user.id,
+      email: data.user.email,
+      fullName: data.user.user_metadata?.full_name ?? data.user.email,
+    },
+  };
 }
 
-export function login({ email, password }) {
-  return authenticate("/api/v1/auth/login", { email, password });
+export async function signup({ fullName, email, password }) {
+  if (!supabase) return buildLocalSession(email);
+
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: { data: { full_name: fullName } },
+  });
+  if (error) throw new Error(error.message);
+
+  // Supabase returns a session immediately when email confirmation is disabled.
+  // If email confirmation is required, session is null — return a pending state.
+  const token = data.session?.access_token ?? `pending-${Date.now()}`;
+  return {
+    token,
+    user: {
+      id: data.user.id,
+      email: data.user.email,
+      fullName: fullName,
+    },
+  };
 }
 
-export function signup({ fullName, email, password }) {
-  return authenticate("/api/v1/auth/signup", { full_name: fullName, email, password });
+export async function logout() {
+  await supabase?.auth.signOut();
+}
+
+export async function resetPassword(email) {
+  if (!supabase) throw new Error("Auth service not configured.");
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${window.location.origin}/`,
+  });
+  if (error) throw new Error(error.message);
 }

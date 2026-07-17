@@ -106,7 +106,8 @@
 }
 
 body {
-  @apply bg-gray-50 dark:bg-[#0A0F1C] text-gray-900 dark:text-white transition-colors duration-300;
+  background-color: transparent;
+  @apply text-gray-900 dark:text-white transition-colors duration-300;
 }
 
 /* Smooth scrolling */

@@ -41,10 +41,16 @@ export async function ensureLocale(lang) {
     bundled = mod.default ?? mod;
   }
 
-  const { translations, fallback } = await translateUiStrings(EN_STRINGS, lang, languageName(lang));
-  const merged = fallback
-    ? mergeLocaleStrings(EN_STRINGS, bundled)
-    : mergeLocaleStrings(EN_STRINGS, translations, bundled);
+  let merged;
+  try {
+    const { translations, fallback } = await translateUiStrings(EN_STRINGS, lang, languageName(lang));
+    merged = fallback
+      ? mergeLocaleStrings(EN_STRINGS, bundled)
+      : mergeLocaleStrings(EN_STRINGS, translations, bundled);
+  } catch {
+    // Backend translate endpoint unavailable — use bundled JSON locale
+    merged = mergeLocaleStrings(EN_STRINGS, bundled);
+  }
 
   memory[lang] = merged;
   try {

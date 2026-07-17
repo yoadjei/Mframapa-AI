@@ -1,24 +1,174 @@
-import { useEffect, useMemo } from "react";
+import React, { Suspense, useEffect, useMemo } from "react";
 import { useAppState } from "../state/appState.jsx";
 import { useOnlineStatus } from "../hooks/useOnlineStatus.js";
 import { useInstallPrompt } from "../hooks/useInstallPrompt.js";
+import { CloudRainBackground } from "../components/background/CloudRainBackground.jsx";
 import { NetworkBanner } from "../components/feedback/NetworkBanner.jsx";
 import { MobileShell } from "../components/layout/MobileShell.jsx";
 import { OnboardingScreen } from "../features/onboarding/OnboardingScreen.jsx";
 import { AuthScreen } from "../features/auth/AuthScreen.jsx";
 import { HomeScreen } from "../features/home/HomeScreen.jsx";
-import { CoreFeatureScreen } from "../features/core/CoreFeatureScreen.jsx";
-import { ActivityScreen } from "../features/activity/ActivityScreen.jsx";
-import { SearchScreen } from "../features/search/SearchScreen.jsx";
-import { ProfileScreen } from "../features/profile/ProfileScreen.jsx";
-import { SettingsScreen } from "../features/settings/SettingsScreen.jsx";
-import { NotificationsScreen } from "../features/notifications/NotificationsScreen.jsx";
 import { PreviewGallery } from "../features/preview/PreviewGallery.jsx";
 import { preloadCityPack } from "../services/cityPackService.js";
 
-const IS_PREVIEW = new URLSearchParams(window.location.search).has("preview");
+// ── Tab screens (loaded eagerly — they are the main experience) ─────────────
+// All screen files use named exports; .then() wraps them as the default export
+// that React.lazy() requires.
+const CoreFeatureScreen = React.lazy(() =>
+  import("../features/core/CoreFeatureScreen.jsx")
+    .then((m) => ({ default: m.CoreFeatureScreen }))
+    .catch(fallback("Map"))
+);
+const ActivityScreen = React.lazy(() =>
+  import("../features/activity/ActivityScreen.jsx")
+    .then((m) => ({ default: m.ActivityScreen }))
+    .catch(fallback("Activity"))
+);
+const SearchScreen = React.lazy(() =>
+  import("../features/search/SearchScreen.jsx")
+    .then((m) => ({ default: m.SearchScreen }))
+    .catch(fallback("Search"))
+);
+const ProfileScreen = React.lazy(() =>
+  import("../features/profile/ProfileScreen.jsx")
+    .then((m) => ({ default: m.ProfileScreen }))
+    .catch(fallback("Profile"))
+);
+const SettingsScreen = React.lazy(() =>
+  import("../features/settings/SettingsScreen.jsx")
+    .then((m) => ({ default: m.SettingsScreen }))
+    .catch(fallback("Settings"))
+);
+const NotificationsScreen = React.lazy(() =>
+  import("../features/notifications/NotificationsScreen.jsx")
+    .then((m) => ({ default: m.NotificationsScreen }))
+    .catch(fallback("Alerts"))
+);
 
-const SCREEN_COMPONENTS = {
+// ── Stack screens (sub-pages opened via navigate()) ─────────────────────────
+const CityDetailScreen = React.lazy(() =>
+  import("../features/cityDetail/CityDetailScreen.jsx")
+    .then((m) => ({ default: m.CityDetailScreen }))
+    .catch(fallback("City Detail"))
+);
+const HealthRiskScreen = React.lazy(() =>
+  import("../features/healthRisk/HealthRiskScreen.jsx")
+    .then((m) => ({ default: m.HealthRiskScreen }))
+    .catch(fallback("Health Risk"))
+);
+const LanguageSelectorScreen = React.lazy(() =>
+  import("../features/language/LanguageSelectorScreen.jsx")
+    .then((m) => ({ default: m.LanguageSelectorScreen }))
+    .catch(fallback("Language"))
+);
+const SavedLocationsScreen = React.lazy(() =>
+  import("../features/savedLocations/SavedLocationsScreen.jsx")
+    .then((m) => ({ default: m.SavedLocationsScreen }))
+    .catch(fallback("Saved Locations"))
+);
+const PricingScreen = React.lazy(() =>
+  import("../features/pricing/PricingScreen.jsx")
+    .then((m) => ({ default: m.PricingScreen }))
+    .catch(fallback("Pricing"))
+);
+const SubscriptionScreen = React.lazy(() =>
+  import("../features/subscription/SubscriptionScreen.jsx")
+    .then((m) => ({ default: m.SubscriptionScreen }))
+    .catch(fallback("Subscription"))
+);
+const PaywallScreen = React.lazy(() =>
+  import("../features/paywall/PaywallScreen.jsx")
+    .then((m) => ({ default: m.PaywallScreen }))
+    .catch(fallback("Paywall"))
+);
+const PaystackCheckoutScreen = React.lazy(() =>
+  import("../features/paystack/PaystackCheckoutScreen.jsx")
+    .then((m) => ({ default: m.PaystackCheckoutScreen }))
+    .catch(fallback("Checkout"))
+);
+const LandingMarketingScreen = React.lazy(() =>
+  import("../features/landing/LandingMarketingScreen.jsx")
+    .then((m) => ({ default: m.LandingMarketingScreen }))
+    .catch(fallback("About"))
+);
+const AIInsightsScreen = React.lazy(() =>
+  import("../features/aiInsights/AIInsightsScreen.jsx")
+    .then((m) => ({ default: m.AIInsightsScreen }))
+    .catch(fallback("AI Insights"))
+);
+const PredictionDashboardScreen = React.lazy(() =>
+  import("../features/predictionDashboard/PredictionDashboardScreen.jsx")
+    .then((m) => ({ default: m.PredictionDashboardScreen }))
+    .catch(fallback("Prediction Dashboard"))
+);
+const CountryExplorerScreen = React.lazy(() =>
+  import("../features/countryExplorer/CountryExplorerScreen.jsx")
+    .then((m) => ({ default: m.CountryExplorerScreen }))
+    .catch(fallback("Country Explorer"))
+);
+const AfricaHeatmapScreen = React.lazy(() =>
+  import("../features/africaHeatmap/AfricaHeatmapScreen.jsx")
+    .then((m) => ({ default: m.AfricaHeatmapScreen }))
+    .catch(fallback("Africa Heatmap"))
+);
+const HistoricalPlaybackScreen = React.lazy(() =>
+  import("../features/historical/HistoricalPlaybackScreen.jsx")
+    .then((m) => ({ default: m.HistoricalPlaybackScreen }))
+    .catch(fallback("Historical"))
+);
+const CompareCitiesScreen = React.lazy(() =>
+  import("../features/compareCities/CompareCitiesScreen.jsx")
+    .then((m) => ({ default: m.CompareCitiesScreen }))
+    .catch(fallback("Compare Cities"))
+);
+const CommunityHubScreen = React.lazy(() =>
+  import("../features/community/CommunityHubScreen.jsx")
+    .then((m) => ({ default: m.CommunityHubScreen }))
+    .catch(fallback("Community"))
+);
+const TrustTransparencyScreen = React.lazy(() =>
+  import("../features/trust/TrustTransparencyScreen.jsx")
+    .then((m) => ({ default: m.TrustTransparencyScreen }))
+    .catch(fallback("Trust & Transparency"))
+);
+const ExportCentreScreen = React.lazy(() =>
+  import("../features/export/ExportCentreScreen.jsx")
+    .then((m) => ({ default: m.ExportCentreScreen }))
+    .catch(fallback("Export Centre"))
+);
+const FeedbackFormScreen = React.lazy(() =>
+  import("../features/feedback/FeedbackFormScreen.jsx")
+    .then((m) => ({ default: m.FeedbackFormScreen }))
+    .catch(fallback("Feedback"))
+);
+const AboutLegalScreen = React.lazy(() =>
+  import("../features/about/AboutLegalScreen.jsx")
+    .then((m) => ({ default: m.AboutLegalScreen }))
+    .catch(fallback("About & Legal"))
+);
+const AnomalyAlertScreen = React.lazy(() =>
+  import("../features/anomaly/AnomalyAlertScreen.jsx")
+    .then((m) => ({ default: m.AnomalyAlertScreen }))
+    .catch(fallback("Anomaly Alert"))
+);
+const DeleteAccountScreen = React.lazy(() =>
+  import("../features/deleteAccount/DeleteAccountScreen.jsx")
+    .then((m) => ({ default: m.DeleteAccountScreen }))
+    .catch(fallback("Delete Account"))
+);
+const ErrorScreen = React.lazy(() =>
+  import("../features/system/ErrorScreen.jsx")
+    .then((m) => ({ default: m.ErrorScreen }))
+    .catch(fallback("Error"))
+);
+const OfflineCityPickerScreen = React.lazy(() =>
+  import("../features/system/OfflineCityPickerScreen.jsx")
+    .then((m) => ({ default: m.OfflineCityPickerScreen }))
+    .catch(fallback("Offline Cities"))
+);
+
+// ── Screen name → component maps ─────────────────────────────────────────────
+const TAB_SCREENS = {
   home: HomeScreen,
   core: CoreFeatureScreen,
   activity: ActivityScreen,
@@ -28,48 +178,128 @@ const SCREEN_COMPONENTS = {
   settings: SettingsScreen,
 };
 
+const STACK_SCREENS = {
+  cityDetail:          CityDetailScreen,
+  healthRisk:          HealthRiskScreen,
+  languageSelector:    LanguageSelectorScreen,
+  savedLocations:      SavedLocationsScreen,
+  pricing:             PricingScreen,
+  subscription:        SubscriptionScreen,
+  paywall:             PaywallScreen,
+  paystackCheckout:    PaystackCheckoutScreen,
+  landing:             LandingMarketingScreen,
+  aiInsights:          AIInsightsScreen,
+  predictionDashboard: PredictionDashboardScreen,
+  countryExplorer:     CountryExplorerScreen,
+  africaHeatmap:       AfricaHeatmapScreen,
+  historical:          HistoricalPlaybackScreen,
+  historicalPlayback:  HistoricalPlaybackScreen,
+  compareCities:       CompareCitiesScreen,
+  community:           CommunityHubScreen,
+  trust:               TrustTransparencyScreen,
+  exportCentre:        ExportCentreScreen,
+  feedback:            FeedbackFormScreen,
+  about:               AboutLegalScreen,
+  anomalyAlert:        AnomalyAlertScreen,
+  deleteAccount:       DeleteAccountScreen,
+  error:               ErrorScreen,
+  offlineCityPicker:   OfflineCityPickerScreen,
+};
+
+// ── Lazy fallback factory ──────────────────────────────────────────────────
+function fallback(name) {
+  return () => ({
+    default: function ComingSoon() {
+      return (
+        <div className="flex h-full min-h-[60vh] flex-col items-center justify-center gap-3 px-8 text-center">
+          <div className="h-12 w-12 rounded-full" style={{ backgroundColor: "rgba(0,200,150,0.12)" }}>
+            <span style={{ fontSize: 28, lineHeight: "48px" }}>🌿</span>
+          </div>
+          <p className="font-semibold" style={{ color: "#FFFFFF" }}>{name}</p>
+          <p className="text-sm" style={{ color: "#9AA7B5" }}>Coming soon</p>
+        </div>
+      );
+    },
+  });
+}
+
+function ScreenSuspense({ children }) {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex h-[100dvh] items-center justify-center">
+          <span className="h-8 w-8 animate-spin rounded-full border-2 border-app-green border-t-transparent" />
+        </div>
+      }
+    >
+      {children}
+    </Suspense>
+  );
+}
+
+const IS_PREVIEW = new URLSearchParams(window.location.search).has("preview");
+
 export function App() {
-  const {
-    state: { onboardingComplete, session, ui },
-  } = useAppState();
+  const { state: { onboardingComplete, session, ui, preferences } } = useAppState();
   const isOnline = useOnlineStatus();
   const { canInstall, promptInstall } = useInstallPrompt();
 
-  if (IS_PREVIEW) return <PreviewGallery isOnline={isOnline} />;
-  const ActiveScreen = useMemo(
-    () => SCREEN_COMPONENTS[ui.activeScreen] ?? HomeScreen,
-    [ui.activeScreen]
-  );
+  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const isDark =
+    preferences.theme === "dark" ||
+    (preferences.theme === "system" && prefersDark);
 
   useEffect(() => {
     if (!session.authenticated || !isOnline) return;
     preloadCityPack().catch(() => undefined);
   }, [session.authenticated, isOnline]);
 
-  if (!onboardingComplete) {
-    return (
-      <>
-        <NetworkBanner isOnline={isOnline} />
-        <OnboardingScreen canInstall={canInstall} onInstall={promptInstall} />
-      </>
-    );
-  }
+  if (IS_PREVIEW) return <PreviewGallery isOnline={isOnline} />;
 
-  if (!session.authenticated) {
-    return (
-      <>
-        <NetworkBanner isOnline={isOnline} />
-        <AuthScreen isOnline={isOnline} />
-      </>
-    );
-  }
+  // ── Top of screenStack overrides the tab view (no tab bar) ────────────────
+  const stackTop = ui.screenStack[ui.screenStack.length - 1] ?? null;
+  const StackScreen = stackTop ? (STACK_SCREENS[stackTop.name] ?? null) : null;
+
+  const ActiveTab = useMemo(
+    () => TAB_SCREENS[ui.activeScreen] ?? HomeScreen,
+    [ui.activeScreen]
+  );
 
   return (
     <>
-      <NetworkBanner isOnline={isOnline} />
-      <MobileShell canInstall={canInstall} onInstall={promptInstall}>
-        <ActiveScreen isOnline={isOnline} />
-      </MobileShell>
+      <CloudRainBackground isDark={isDark} />
+
+      <div style={{ position: "relative", zIndex: 1 }}>
+        <NetworkBanner isOnline={isOnline} />
+
+        {!onboardingComplete ? (
+          <OnboardingScreen canInstall={canInstall} onInstall={promptInstall} />
+        ) : !session.authenticated ? (
+          <AuthScreen isOnline={isOnline} />
+        ) : StackScreen ? (
+          // Full-screen stack route — no tab bar, safe area insets handled by each screen
+          <div
+            style={{
+              minHeight: "100dvh",
+              backgroundColor: isDark ? "#0A0D12" : "#F8FAFC",
+            }}
+          >
+            <ScreenSuspense>
+              <StackScreen
+                isOnline={isOnline}
+                params={stackTop.params}
+                isDark={isDark}
+              />
+            </ScreenSuspense>
+          </div>
+        ) : (
+          <MobileShell canInstall={canInstall} onInstall={promptInstall} isDark={isDark}>
+            <ScreenSuspense>
+              <ActiveTab isOnline={isOnline} isDark={isDark} />
+            </ScreenSuspense>
+          </MobileShell>
+        )}
+      </div>
     </>
   );
 }

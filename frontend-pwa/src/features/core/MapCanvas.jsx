@@ -23,7 +23,8 @@ export function MapCanvas({
       mapboxAccessToken={mapboxToken}
       mapStyle={isDark ? "mapbox://styles/mapbox/dark-v11" : "mapbox://styles/mapbox/light-v11"}
       projection="globe"
-      style={{ width: "100%", height: "76vh" }}
+      style={{ width: "100%", height: "100%" }}
+      maxBounds={[[-30, -40], [62, 40]]}
       fog={{
         range: [0.5, 10],
         color: isDark ? "#0b1220" : "#eff6ff",

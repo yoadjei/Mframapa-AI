@@ -13,12 +13,12 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'icons/mframapa logo.png', 'city-packs/top-cities.v1.json'],
+      includeAssets: ['favicon.svg', 'icons/*.png', 'splash/*.png', 'city-packs/top-cities.v1.json'],
       manifest: {
         id: '/',
         name: 'Mframapa Air Quality',
         short_name: 'Mframapa',
-        description: 'Mobile-first air quality checks across African cities.',
+        description: 'Satellite-powered PM2.5 air quality for any city in Africa. Free, offline-ready, 27 languages.',
         theme_color: '#06080d',
         background_color: '#06080d',
         start_url: '/',
@@ -26,14 +26,26 @@ export default defineConfig({
         display: 'standalone',
         orientation: 'portrait-primary',
         categories: ['health', 'weather', 'utilities'],
+        lang: 'en',
+        dir: 'ltr',
         icons: [
-          {
-            src: 'icons/mframapa logo.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'any maskable'
-          }
+          { src: 'icons/icon-72.png',  sizes: '72x72',   type: 'image/png', purpose: 'any' },
+          { src: 'icons/icon-96.png',  sizes: '96x96',   type: 'image/png', purpose: 'any' },
+          { src: 'icons/icon-128.png', sizes: '128x128', type: 'image/png', purpose: 'any' },
+          { src: 'icons/icon-144.png', sizes: '144x144', type: 'image/png', purpose: 'any' },
+          { src: 'icons/icon-152.png', sizes: '152x152', type: 'image/png', purpose: 'any' },
+          { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+          { src: 'icons/icon-384.png', sizes: '384x384', type: 'image/png', purpose: 'any' },
+          { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+          { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+        ],
+        screenshots: [
+          { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png', form_factor: 'narrow' }
         ]
+      },
+      devOptions: {
+        enabled: true,
+        type: 'module',
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,json}'],

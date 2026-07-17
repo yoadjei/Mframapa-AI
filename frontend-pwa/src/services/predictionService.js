@@ -43,6 +43,9 @@ export async function fetchCityPrediction(cityName, language = "en") {
     timestamp: response.timestamp || new Date().toISOString(),
     weather: response.weather ?? null,
     sourceSummary: response.sources_used ?? [],
+    factors: response.factors ?? null,
+    uncertainty: response.uncertainty ?? null,
+    model: response.model ?? null,
     insight,
   };
 }

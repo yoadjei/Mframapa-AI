@@ -2,22 +2,76 @@
 <html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
-    <meta name="theme-color" content="#0f172a" />
-    <meta name="color-scheme" content="light dark" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+    <!-- PWA / theme -->
     <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#06080d" />
+    <meta name="color-scheme" content="dark light" />
+
+    <!-- Standard icons -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/icons/icon-512.png" />
+
+    <!-- iOS home-screen app behaviour -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Mframapa" />
     <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="description" content="Mframapa AI: Real-time satellite-based air quality monitoring and prediction for Africa. Crowdsourced data and AI-driven insights for cleaner air." />
-    <meta name="keywords" content="Air Quality, Africa, AI, Satellite Data, PM2.5, Mframapa, Health, Environment" />
-    <title>Mframapa AI - Satellite Air Quality Monitoring</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+
+    <!-- iOS touch icons (largest first — Safari picks the best fit) -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152.png" />
+    <link rel="apple-touch-icon" sizes="144x144" href="/icons/icon-144.png" />
+    <link rel="apple-touch-icon" sizes="128x128" href="/icons/icon-128.png" />
+
+    <!-- iOS splash screens (portrait) -->
+    <!-- iPhone 15 Pro Max / 16 Pro Max — 430×932 @3x -->
+    <link rel="apple-touch-startup-image"
+      media="screen and (device-width:430px) and (device-height:932px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)"
+      href="/splash/iphone15promax.png" />
+    <!-- iPhone 15 Pro / 15 / 16 Pro / 16 — 393×852 @3x -->
+    <link rel="apple-touch-startup-image"
+      media="screen and (device-width:393px) and (device-height:852px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)"
+      href="/splash/iphone15pro.png" />
+    <!-- iPhone 14 Plus / 15 Plus — 428×926 @3x -->
+    <link rel="apple-touch-startup-image"
+      media="screen and (device-width:428px) and (device-height:926px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)"
+      href="/splash/iphone14plus.png" />
+    <!-- iPhone 14 / 13 / 12 — 390×844 @3x -->
+    <link rel="apple-touch-startup-image"
+      media="screen and (device-width:390px) and (device-height:844px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)"
+      href="/splash/iphone14.png" />
+    <!-- iPhone SE (3rd gen) / 8 / 7 — 375×667 @2x -->
+    <link rel="apple-touch-startup-image"
+      media="screen and (device-width:375px) and (device-height:667px) and (-webkit-device-pixel-ratio:2) and (orientation:portrait)"
+      href="/splash/iphonese.png" />
+    <!-- iPad Pro 12.9" — 1024×1366 @2x -->
+    <link rel="apple-touch-startup-image"
+      media="screen and (device-width:1024px) and (device-height:1366px) and (-webkit-device-pixel-ratio:2) and (orientation:portrait)"
+      href="/splash/ipad12.png" />
+    <!-- iPad Pro 11" / Air — 834×1194 @2x -->
+    <link rel="apple-touch-startup-image"
+      media="screen and (device-width:834px) and (device-height:1194px) and (-webkit-device-pixel-ratio:2) and (orientation:portrait)"
+      href="/splash/ipad11.png" />
+
+    <!-- SEO -->
+    <meta name="description" content="Mframapa AI: Real-time satellite-based air quality monitoring for Africa. PM2.5 predictions, health advice, 27 languages, works offline." />
+    <meta name="keywords" content="air quality, Africa, AI, satellite, PM2.5, health, environment, Mframapa" />
+
+    <!-- Open Graph / social -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Mframapa AI — Air Quality for Africa" />
+    <meta property="og:description" content="Satellite-powered PM2.5 checks for any city in Africa. Free, offline-ready, 27 languages." />
+    <meta property="og:image" content="/icons/icon-512.png" />
+
+    <title>Mframapa AI - Air Quality for Africa</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Outfit:wght@100..900&display=swap" rel="stylesheet" />
   </head>
   <body>
     <div id="root"></div>

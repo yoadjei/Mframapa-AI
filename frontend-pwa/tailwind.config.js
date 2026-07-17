@@ -10,32 +10,40 @@ export default {
     theme: {
         extend: {
             colors: {
-                background: '#0A0F1C',   // Deep Space
-                surface: '#1a1435',      // Surface variant
+                // ── Mobile app exact palette ──────────────────────────
+                'app-bg':       '#0B0F14',
+                'app-bg-light': '#E8ECF2',
+                'app-card':     '#171E28',
+                'app-card-alt': '#10161F',
+                'app-surface':  '#121821',
+                'app-border':   '#25303C',
+                'app-border-light': '#D4DAE3',
+                'app-green':    '#00C896',
+                'app-green-dim':'#00A87C',
+                'app-text':     '#FFFFFF',
+                'app-text-light':'#0F1419',
+                'app-sub':      '#9AA7B5',
+                'app-sub-light':'#5C6B7A',
+                'app-muted':    '#647182',
+                'app-muted-light':'#7B8A99',
+                'aqi-good':     '#00C896',
+                'aqi-moderate': '#F5C518',
+                'aqi-high':     '#FF8C00',
+                'aqi-unhealthy':'#E53935',
+                'aqi-hazardous':'#9C27B0',
+                'app-danger':   '#E53935',
+                'app-warning':  '#F5C518',
+                // ── Legacy tokens kept for components not yet migrated ─
+                background: '#0B0F14',
                 primary: {
-                    DEFAULT: '#00FFB3',  // Neon Mint
-                    400: '#66ffcc',
-                    500: '#00FFB3',      // MAIN BRAND COLOR
-                    600: '#00cc8f',
-                    700: '#00ccb3',      // Hover State (Darker Mint)
-                },
-                accent: {
-                    DEFAULT: '#8B5CF6',  // Violet
-                    400: '#a78bfa',
-                    500: '#8B5CF6',
-                    600: '#7c3aed',
-                },
-                aqi: {
-                    good: '#10B981',         // 0-50
-                    moderate: '#FBBF24',     // 51-100
-                    unhealthy_sg: '#F97316', // 101-150
-                    unhealthy: '#EF4444',    // 151-200
-                    hazardous: '#A855F7',    // 201+
+                    DEFAULT: '#00C896',
+                    500: '#00C896',
+                    600: '#00A87C',
                 },
                 gray: {
-                    900: '#0A0F1C',
-                    800: '#111827',
-                    700: '#1f2937',
+                    900: '#0B0F14',
+                    800: '#121821',
+                    700: '#171E28',
                 },
             },
             fontFamily: {

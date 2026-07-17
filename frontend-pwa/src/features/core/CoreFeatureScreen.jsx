@@ -1,15 +1,17 @@
-import { lazy, Suspense, useMemo, useState } from "react";
-import { Crosshair, Loader2, Search, X } from "lucide-react";
+import { lazy, Suspense, useMemo, useRef, useState } from "react";
+import { Loader2, MapPin, Minus, Navigation, Plus, Search, X } from "lucide-react";
 import { useAppState } from "../../state/appState.jsx";
+import { useNavigation } from "../../hooks/useNavigation.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
-import { fetchCityPrediction } from "../../services/predictionService.js";
-import { translateError } from "../../utils/translateError.js";
-import { aqiCategoryKey } from "../../utils/i18nHelpers.js";
-import { StateMessage } from "../../components/feedback/StateMessage.jsx";
+import { getPrediction, generateInsight } from "../../services/api.js";
 import { useCityPack } from "../../hooks/useCityPack.js";
+import { getColors, Colors } from "../../utils/colors.js";
+import { aqiCategoryKey } from "../../utils/i18nHelpers.js";
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN ?? "";
-const MapCanvas = lazy(() => import("./MapCanvas.jsx").then((module) => ({ default: module.MapCanvas })));
+const MapCanvas = lazy(() =>
+  import("./MapCanvas.jsx").then((m) => ({ default: m.MapCanvas }))
+);
 
 const INITIAL_VIEW = {
   longitude: 17.5,
@@ -19,7 +21,18 @@ const INITIAL_VIEW = {
   bearing: 0,
 };
 
-function squaredDistance(lat1, lon1, lat2, lon2) {
+const AFRICA_BOUNDS = { minLat: -38, maxLat: 38.5, minLon: -26, maxLon: 60 };
+
+function isInAfrica(lat, lon) {
+  return (
+    lat >= AFRICA_BOUNDS.minLat &&
+    lat <= AFRICA_BOUNDS.maxLat &&
+    lon >= AFRICA_BOUNDS.minLon &&
+    lon <= AFRICA_BOUNDS.maxLon
+  );
+}
+
+function squaredDist(lat1, lon1, lat2, lon2) {
   const dLat = lat1 - lat2;
   const dLon = lon1 - lon2;
   return dLat * dLat + dLon * dLon;
@@ -29,324 +42,553 @@ function nearestCity(lat, lon, cities) {
   if (!cities.length) return null;
   let best = cities[0];
   let min = Infinity;
-  for (const city of cities) {
-    const dist = squaredDistance(lat, lon, city.lat, city.lon);
-    if (dist < min) {
-      min = dist;
-      best = city;
-    }
+  for (const c of cities) {
+    const d = squaredDist(lat, lon, c.lat, c.lon);
+    if (d < min) { min = d; best = c; }
   }
   return best;
 }
 
-function getAQITone(pm25, t) {
-  let key = "aqi.hazardous";
-  if (pm25 <= 12) key = "aqi.good";
-  else if (pm25 <= 35) key = "aqi.moderate";
-  else if (pm25 <= 55) key = "aqi.sensitive";
-  else if (pm25 <= 150) key = "aqi.unhealthy";
-  const className =
-    key === "aqi.good"
-      ? "text-emerald-600 bg-emerald-100"
-      : key === "aqi.moderate"
-        ? "text-yellow-700 bg-yellow-100"
-        : key === "aqi.sensitive"
-          ? "text-orange-700 bg-orange-100"
-          : key === "aqi.unhealthy"
-            ? "text-red-700 bg-red-100"
-            : "text-purple-700 bg-purple-100";
-  return { label: t(key), className };
+async function fetchFullPrediction(city, language) {
+  const response = await getPrediction(city.lat, city.lon, city.name);
+  let insight;
+  try {
+    insight = await generateInsight({
+      pm25: response.pm25,
+      aqi_category: response.aqi_category,
+      weather: response.weather ?? {},
+      language: language ?? "en",
+    });
+  } catch {
+    insight = undefined;
+  }
+  return {
+    city: { name: city.name, lat: city.lat, lon: city.lon, country: city.country },
+    pm25: response.pm25,
+    category: response.aqi_category,
+    timestamp: response.timestamp || new Date().toISOString(),
+    weather: response.weather ?? null,
+    factors: response.factors ?? null,
+    uncertainty: response.uncertainty ?? null,
+    model: response.model ?? null,
+    insight,
+  };
 }
 
-export function CoreFeatureScreen({ isOnline }) {
-  const {
-    state: { ui, homeSummary, preferences },
-    dispatch,
-  } = useAppState();
+export function CoreFeatureScreen({ isOnline, isDark }) {
+  const { state, dispatch } = useAppState();
+  const { navigate } = useNavigation();
   const { t } = useTranslation();
-  const language = preferences.language ?? "en";
+  const colors = getColors(isDark);
+  const language = state.preferences?.language ?? "en";
 
-  const [viewState, setViewState] = useState(INITIAL_VIEW);
-  const [query, setQuery] = useState(ui.selectedCity?.name ?? homeSummary.city ?? "");
-  const [result, setResult] = useState(null);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [searchFocused, setSearchFocused] = useState(false);
   const { cities, loading: cityPackLoading } = useCityPack(isOnline);
 
-  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-  const isDark =
-    preferences.theme === "dark" || (preferences.theme === "system" && prefersDark);
+  const [search, setSearch] = useState("");
+  const [searchFocused, setSearchFocused] = useState(false);
+  const [suggestions, setSuggestions] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [locating, setLocating] = useState(false);
+  const [error, setError] = useState("");
+  const [viewState, setViewState] = useState(INITIAL_VIEW);
+  const fetchGen = useRef(0);
+  const suggestionGen = useRef(0);
 
-  const candidates = useMemo(() => {
-    if (!query.trim()) return cities.slice(0, 10);
-    const text = query.trim().toLowerCase();
-    return cities
-      .filter((city) => city.name.toLowerCase().includes(text))
-      .slice(0, 10);
-  }, [cities, query]);
+  // ── Search suggestions (offline-instant, matches mobile behaviour) ──────────
+  useMemo(() => {
+    const text = search.trim();
+    if (text.length < 2) {
+      setSuggestions([]);
+      return;
+    }
 
-  const syncPredictionToState = (prediction) => {
-    dispatch({ type: "SELECT_CITY", payload: prediction.city });
-    dispatch({ type: "SAVE_CITY", payload: prediction.city });
-    dispatch({
-      type: "SET_HOME_SUMMARY",
-      payload: {
-        city: prediction.city.name,
-        pm25: prediction.pm25,
-        aqiCategory: prediction.category,
-        degraded: prediction.degraded,
-        lastUpdated: prediction.timestamp,
-      },
-    });
-    dispatch({
-      type: "ADD_ACTIVITY",
-      payload: {
-        id: crypto.randomUUID(),
-        type: "prediction",
-        message: t("pwa.activity.checked", {
-          city: prediction.city.name,
-          pm25: Math.round(prediction.pm25),
-        }),
-        createdAt: prediction.timestamp,
-      },
-    });
-    if (preferences.notificationsEnabled) {
+    // Instant offline matches
+    const q = text.toLowerCase();
+    const offline = cities
+      .filter(
+        (c) =>
+          c.name.toLowerCase().includes(q) ||
+          (c.country ?? "").toLowerCase().includes(q)
+      )
+      .slice(0, 8)
+      .map((c) => ({
+        id: `offline-${c.name}-${c.lat}-${c.lon}`,
+        placeName: c.country ? `${c.name}, ${c.country}` : c.name,
+        lat: c.lat,
+        lon: c.lon,
+        country: c.country,
+        name: c.name,
+      }));
+    setSuggestions(offline);
+
+    // Debounced enrichment placeholder (≥3 chars): kept for future Mapbox integration
+    if (text.length < 3) return;
+    const gen = ++suggestionGen.current;
+    const timer = setTimeout(() => {
+      if (gen !== suggestionGen.current) return;
+      // Mapbox enrichment would merge here when a token is available
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [search, cities]);
+
+  async function loadPredictionAndNavigate(city) {
+    const gen = ++fetchGen.current;
+    setLoading(true);
+    setError("");
+    try {
+      const prediction = await fetchFullPrediction(city, language);
+      if (gen !== fetchGen.current) return;
+
+      dispatch({ type: "SELECT_CITY", payload: prediction.city });
       dispatch({
-        type: "ADD_NOTIFICATION",
+        type: "SET_HOME_SUMMARY",
+        payload: {
+          city: city.name,
+          pm25: prediction.pm25,
+          aqiCategory: prediction.category,
+        },
+      });
+      dispatch({
+        type: "ADD_ACTIVITY",
         payload: {
           id: crypto.randomUUID(),
-          title: t("pwa.notification.reading_title", { city: prediction.city.name }),
-          message: t("pwa.notification.reading_message", {
-            pm25: Math.round(prediction.pm25),
-            category: t(aqiCategoryKey(prediction.category)),
-          }),
-          read: false,
+          type: "prediction",
+          cityName: city.name,
+          pm25: prediction.pm25,
+          category: prediction.category,
+          message: `Checked ${city.name}: ${Math.round(prediction.pm25)} μg/m³`,
           createdAt: prediction.timestamp,
         },
       });
-    }
-  };
+      if (state.preferences?.notificationsEnabled) {
+        dispatch({
+          type: "ADD_NOTIFICATION",
+          payload: {
+            id: crypto.randomUUID(),
+            title: `${city.name} air quality`,
+            message: `PM2.5 ${Math.round(prediction.pm25)} μg/m³ — ${t(aqiCategoryKey(prediction.category))}`,
+            read: false,
+            createdAt: prediction.timestamp,
+          },
+        });
+      }
 
-  const runCheckByCity = async (cityName) => {
-    setError("");
-    setLoading(true);
-    try {
-      const prediction = await fetchCityPrediction(cityName, language);
-      setResult(prediction);
-      setQuery(prediction.city.name);
-      setViewState((current) => ({
-        ...current,
-        longitude: prediction.city.lon,
-        latitude: prediction.city.lat,
-        zoom: 11.5,
+      // Fly map to the city
+      setViewState((prev) => ({
+        ...prev,
+        longitude: city.lon,
+        latitude: city.lat,
+        zoom: 10,
         pitch: 40,
       }));
-      syncPredictionToState(prediction);
-    } catch (requestError) {
-      setError(translateError(t, requestError.message));
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  const runCheckByCoords = async (lat, lon) => {
-    const candidate = nearestCity(lat, lon, cities);
-    if (!candidate) {
-      setError(t("pwa.core.no_city_pack"));
+      navigate("cityDetail", { city: prediction.city, prediction });
+    } catch {
+      if (gen === fetchGen.current) {
+        setError(t("error.prediction"));
+      }
+    } finally {
+      if (gen === fetchGen.current) setLoading(false);
+    }
+  }
+
+  function selectSuggestion(s) {
+    setSearch("");
+    setSearchFocused(false);
+    setSuggestions([]);
+    loadPredictionAndNavigate({
+      name: s.name ?? s.placeName.split(",")[0]?.trim() ?? s.placeName,
+      lat: s.lat,
+      lon: s.lon,
+      country: s.country,
+    });
+  }
+
+  function handleMapPress(event) {
+    if (!event?.lngLat) return;
+    const lat = event.lngLat.lat;
+    const lon = event.lngLat.lng;
+    if (!isInAfrica(lat, lon)) { setError(t("error.outside_africa")); return; }
+    try {
+      const waterFeatures = event.target.queryRenderedFeatures(event.point, { layers: ["water"] });
+      if (waterFeatures && waterFeatures.length > 0) {
+        setError(t("error.water_only"));
+        return;
+      }
+    } catch {
+      // Map may not be fully loaded yet — proceed
+    }
+    const city = nearestCity(lat, lon, cities);
+    if (city) loadPredictionAndNavigate(city);
+  }
+
+  function handleLocate() {
+    if (!navigator.geolocation) {
+      setError(t("error.location"));
       return;
     }
-    await runCheckByCity(candidate.name);
-  };
-
-  const onMapClick = (event) => {
-    if (!isOnline) return;
-    runCheckByCoords(event.lngLat.lat, event.lngLat.lng);
-  };
-
-  const onLocateMe = () => {
-    if (!navigator.geolocation || !isOnline) return;
+    setLocating(true);
+    setError("");
     navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        setViewState((prev) => ({
-          ...prev,
-          latitude,
-          longitude,
-          zoom: 15,
-          pitch: 50,
-          transitionDuration: 1400,
-        }));
-        runCheckByCoords(latitude, longitude);
+      (pos) => {
+        setLocating(false);
+        const { latitude, longitude } = pos.coords;
+        if (!isInAfrica(latitude, longitude)) {
+          setError(t("error.outside_africa"));
+          return;
+        }
+        setViewState((prev) => ({ ...prev, longitude, latitude, zoom: 13, pitch: 45 }));
+        if (isOnline) {
+          const city = nearestCity(latitude, longitude, cities);
+          if (city) loadPredictionAndNavigate(city);
+        }
       },
-      () => setError(t("pwa.core.location_error"))
+      () => {
+        setLocating(false);
+        setError(t("error.location"));
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 30000 }
     );
-  };
+  }
 
+  const chromeBg = isDark ? colors.card : "#ffffff";
+  const chromeShadow = "0 2px 12px rgba(0,0,0,0.18)";
+
+  // ── No Mapbox token fallback: city list ──────────────────────────────────────
   if (!MAPBOX_TOKEN) {
     return (
-      <StateMessage
-        tone="error"
-        title={t("pwa.core.map_missing")}
-        message={t("pwa.core.map_token")}
+      <NoCityListFallback
+        cities={cities}
+        loading={cityPackLoading || loading}
+        onSelectCity={loadPredictionAndNavigate}
+        colors={colors}
+        t={t}
+        error={error}
       />
     );
   }
 
-  const tone = result ? getAQITone(result.pm25, t) : null;
-
   return (
-    <section className="space-y-4">
-      <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-slate-950 shadow-xl dark:border-slate-700">
-        <div className="absolute left-4 right-4 top-4 z-30 md:left-6 md:right-auto md:w-[34rem]">
-          <form
-            onSubmit={(event) => {
-              event.preventDefault();
-              if (query && isOnline) runCheckByCity(query);
-            }}
-            className="rounded-2xl border border-emerald-400/70 bg-slate-900/90 p-2 backdrop-blur"
-          >
-            <div className="flex items-center gap-2">
-              <Search size={18} className="text-emerald-400" />
-              <input
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                onFocus={() => setSearchFocused(true)}
-                onBlur={() => setTimeout(() => setSearchFocused(false), 140)}
-                placeholder={t("search.placeholder")}
-                className="h-10 flex-1 bg-transparent text-sm text-white outline-none placeholder:text-slate-400"
-              />
-              {loading ? <Loader2 size={16} className="animate-spin text-emerald-300" /> : null}
-              {query ? (
-                <button
-                  type="button"
-                  onClick={() => setQuery("")}
-                  className="rounded-lg p-1 text-slate-400 hover:bg-white/10 hover:text-white"
-                >
-                  <X size={16} />
-                </button>
-              ) : null}
-              <button
-                type="button"
-                onClick={onLocateMe}
-                className="rounded-lg p-1 text-slate-400 hover:bg-white/10 hover:text-white"
-              >
-                <Crosshair size={16} />
-              </button>
-            </div>
-          </form>
-
-          {searchFocused && candidates.length > 0 ? (
-            <div className="mt-2 rounded-2xl border border-slate-700 bg-slate-900/95 p-1 shadow-2xl backdrop-blur">
-              {candidates.map((city) => (
-                <button
-                  key={`${city.name}-${city.country}`}
-                  type="button"
-                  onMouseDown={(event) => {
-                    event.preventDefault();
-                    runCheckByCity(city.name);
-                  }}
-                  className="flex w-full items-center justify-between rounded-xl px-3 py-2 text-left hover:bg-white/10"
-                >
-                  <span className="text-sm font-medium text-white">{city.name}</span>
-                  <span className="text-xs text-slate-400">{city.country}</span>
-                </button>
-              ))}
-            </div>
-          ) : null}
-        </div>
-
-        <Suspense fallback={<div className="h-[76vh] w-full animate-pulse bg-slate-900" />}>
+    <div className="fixed inset-0 overflow-hidden">
+      {/* Map canvas fills the full screen */}
+      <div className="h-full w-full">
+        <Suspense
+          fallback={
+            <div
+              className="h-full w-full animate-pulse"
+              style={{ backgroundColor: colors.card }}
+            />
+          }
+        >
           <MapCanvas
             viewState={viewState}
-            onMove={(event) => setViewState(event.viewState)}
-            onMapClick={onMapClick}
+            onMove={(e) => setViewState(e.viewState)}
+            onMapClick={handleMapPress}
             mapboxToken={MAPBOX_TOKEN}
             isDark={isDark}
             cities={cities}
-            selectedCity={result?.city ?? null}
-            liteMode={preferences.liteMode ?? false}
+            selectedCity={null}
+            liteMode={state.preferences?.liteMode ?? false}
           />
         </Suspense>
-
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-slate-950/95 to-transparent p-4 md:p-6">
-          <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
-            <StatusCard
-              title={t("pwa.core.status_satellite")}
-              value={isOnline ? t("pwa.core.status_active") : t("pwa.core.status_offline")}
-            />
-            <StatusCard title={t("pwa.core.status_ground")} value={t("pwa.core.status_ground_value")} />
-            <StatusCard title={t("pwa.core.status_prediction")} value={t("pwa.core.status_prediction_value")} />
-          </div>
-        </div>
-
-        {result ? (
-          <aside className="absolute bottom-4 left-4 right-4 z-30 rounded-2xl border border-slate-200 bg-white/95 p-4 text-slate-900 shadow-xl backdrop-blur dark:border-slate-700 dark:bg-slate-900/95 dark:text-slate-100 md:bottom-auto md:left-auto md:right-6 md:top-28 md:w-[28rem]">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <h3 className="text-3xl font-black">{Math.round(result.pm25)}</h3>
-                <p className="text-sm text-slate-500 dark:text-slate-300">
-                  {t("card.pm25_label")} {t("card.unit")}
-                </p>
-              </div>
-              <span className={`rounded-full px-3 py-1 text-xs font-bold ${tone?.className || ""}`}>
-                {tone?.label || result.category}
-              </span>
-            </div>
-            <p className="mt-3 text-lg font-semibold">{result.city.name}</p>
-            <p className="text-xs text-slate-500">
-              {result.city.lat.toFixed(4)}, {result.city.lon.toFixed(4)}
-            </p>
-            {result.insight ? (
-              <div className="mt-4 rounded-xl bg-slate-100 px-3 py-3 text-sm dark:bg-slate-800">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
-                  {t("pwa.core.insight_title")}
-                </p>
-                <p className="mt-1">{result.insight}</p>
-              </div>
-            ) : null}
-            <p className="mt-3 text-xs text-slate-500">
-              {t("pwa.core.updated", { time: new Date(result.timestamp).toLocaleString() })}
-            </p>
-            {result.degraded ? (
-              <p className="mt-2 rounded-lg bg-amber-100 px-2 py-1 text-xs font-semibold text-amber-800">
-                {t("pwa.core.degraded")}
-              </p>
-            ) : null}
-          </aside>
-        ) : (
-          <div className="absolute right-6 top-28 z-20 hidden max-w-sm rounded-2xl border border-white/20 bg-slate-900/75 p-5 text-white backdrop-blur md:block">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-emerald-300">
-              {t("pwa.core.start_badge")}
-            </p>
-            <h3 className="mt-2 text-xl font-bold">{t("pwa.core.start_title")}</h3>
-            <p className="mt-2 text-sm text-slate-200">{t("pwa.core.start_body")}</p>
-          </div>
-        )}
       </div>
 
-      {!isOnline ? (
-        <StateMessage
-          tone="warning"
-          title={t("pwa.core.offline_title")}
-          message={t("pwa.core.offline_message")}
-        />
+      {/* ── Top chrome overlay — mirrors mobile topChrome ── */}
+      <div
+        className="absolute left-4 right-4 z-20 flex flex-col gap-[10px]"
+        style={{ top: "calc(12px + env(safe-area-inset-top))" }}
+      >
+        {/* Search bar */}
+        <div
+          className="flex items-center gap-[10px] rounded-xl px-[14px] py-3"
+          style={{
+            backgroundColor: chromeBg,
+            boxShadow: chromeShadow,
+          }}
+        >
+          <Search size={16} color={colors.subtext} style={{ flexShrink: 0 }} />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            onFocus={() => setSearchFocused(true)}
+            onBlur={() => setTimeout(() => setSearchFocused(false), 150)}
+            placeholder={t("search.city_placeholder")}
+            autoCorrect="off"
+            autoCapitalize="words"
+            className="flex-1 bg-transparent text-[15px] outline-none"
+            style={{ color: colors.text }}
+          />
+          {search.length > 0 ? (
+            <button
+              type="button"
+              onClick={() => { setSearch(""); setSuggestions([]); }}
+              aria-label={t("search.clear") ?? "Clear"}
+              className="active:opacity-60"
+              style={{ padding: 8, margin: -8 }}
+            >
+              <X size={18} color={colors.subtext} />
+            </button>
+          ) : null}
+          <button
+            type="button"
+            onClick={handleLocate}
+            disabled={locating}
+            aria-label={t("search.locate")}
+            className="active:opacity-60 disabled:opacity-50"
+            style={{ padding: 8, margin: -8 }}
+          >
+            {locating ? (
+              <span
+                className="block h-5 w-5 animate-spin rounded-full border-2"
+                style={{ borderColor: Colors.brandGreen, borderTopColor: "transparent" }}
+              />
+            ) : (
+              <Navigation size={20} color={Colors.brandGreen} />
+            )}
+          </button>
+        </div>
+
+        {/* Suggestions dropdown */}
+        {searchFocused && suggestions.length > 0 ? (
+          <div
+            className="overflow-hidden rounded-xl"
+            style={{
+              backgroundColor: chromeBg,
+              boxShadow: "0 4px 16px rgba(0,0,0,0.2)",
+            }}
+          >
+            {suggestions.map((s, idx) => (
+              <button
+                key={s.id}
+                type="button"
+                onPointerDown={(e) => {
+                  e.preventDefault();
+                  selectSuggestion(s);
+                }}
+                className="flex w-full items-center gap-[10px] px-[14px] py-3 text-left active:bg-black/5"
+                style={{
+                  borderBottom:
+                    idx < suggestions.length - 1
+                      ? "1px solid rgba(128,128,128,0.18)"
+                      : "none",
+                }}
+              >
+                <MapPin size={16} color={colors.subtext} style={{ flexShrink: 0 }} />
+                <span
+                  className="flex-1 truncate text-[14px]"
+                  style={{ color: colors.text }}
+                >
+                  {s.placeName}
+                </span>
+              </button>
+            ))}
+          </div>
+        ) : null}
+
+        {/* Inline feedback chips */}
+        {error ? (
+          <div
+            className="rounded-xl px-3 py-2 text-xs font-semibold"
+            style={{
+              backgroundColor: "rgba(229,57,53,0.15)",
+              color: "#ef9a9a",
+              border: "1px solid rgba(229,57,53,0.4)",
+            }}
+          >
+            {error}
+          </div>
+        ) : null}
+
+        {!isOnline ? (
+          <div
+            className="rounded-xl px-3 py-2 text-xs font-semibold"
+            style={{
+              backgroundColor: "rgba(245,196,24,0.12)",
+              color: "#ffd54f",
+              border: "1px solid rgba(245,196,24,0.3)",
+            }}
+          >
+            {t("offline.banner")} — {t("offline.cached_data")}
+          </div>
+        ) : null}
+
+        {cityPackLoading ? (
+          <div
+            className="flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold"
+            style={{
+              backgroundColor: colors.card,
+              color: colors.subtext,
+              border: `1px solid ${colors.border}`,
+            }}
+          >
+            <Loader2 size={12} className="animate-spin" color={Colors.brandGreen} />
+            {t("map.loading")}
+          </div>
+        ) : null}
+
+        {/* Zoom controls — mirrors mobile zoomStack (alignSelf: flex-end) */}
+        <div
+          className="self-end overflow-hidden rounded-[10px]"
+          style={{
+            backgroundColor: chromeBg,
+            boxShadow: chromeShadow,
+          }}
+        >
+          <button
+            type="button"
+            onClick={() =>
+              setViewState((v) => ({ ...v, zoom: Math.min((v.zoom ?? 2) + 1, 20) }))
+            }
+            className="flex h-10 w-10 items-center justify-center active:opacity-60"
+            style={{ borderBottom: "1px solid rgba(128,128,128,0.25)" }}
+            aria-label={t("map.zoom_in")}
+          >
+            <Plus size={20} color={colors.text} />
+          </button>
+          <button
+            type="button"
+            onClick={() =>
+              setViewState((v) => ({ ...v, zoom: Math.max((v.zoom ?? 2) - 1, 1) }))
+            }
+            className="flex h-10 w-10 items-center justify-center active:opacity-60"
+            aria-label={t("map.zoom_out")}
+          >
+            <Minus size={20} color={colors.text} />
+          </button>
+        </div>
+      </div>
+
+      {/* Loading overlay */}
+      {loading ? (
+        <div
+          className="pointer-events-none absolute inset-0 z-30 flex items-center justify-center"
+          style={{ backgroundColor: "rgba(0,0,0,0.15)" }}
+        >
+          <span
+            className="block h-10 w-10 animate-spin rounded-full border-[3px]"
+            style={{ borderColor: Colors.brandGreen, borderTopColor: "transparent" }}
+          />
+        </div>
       ) : null}
-      {cityPackLoading ? (
-        <StateMessage title={t("pwa.core.city_pack_title")} message={t("pwa.core.city_pack_message")} />
-      ) : null}
-      {error ? (
-        <StateMessage tone="error" title={t("pwa.core.prediction_failed")} message={error} />
-      ) : null}
-    </section>
+    </div>
   );
 }
 
-function StatusCard({ title, value }) {
+// ── City list fallback (no Mapbox token) ─────────────────────────────────────
+function NoCityListFallback({ cities, loading, onSelectCity, colors, t, error }) {
+  const [query, setQuery] = useState("");
+
+  const filtered = useMemo(() => {
+    const text = query.trim().toLowerCase();
+    if (!text) return cities.slice(0, 40);
+    return cities
+      .filter(
+        (c) =>
+          c.name.toLowerCase().includes(text) ||
+          (c.country ?? "").toLowerCase().includes(text)
+      )
+      .slice(0, 40);
+  }, [cities, query]);
+
   return (
-    <div className="rounded-2xl border border-white/20 bg-slate-900/75 px-3 py-2 backdrop-blur">
-      <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-300">{title}</p>
-      <p className="mt-1 text-sm font-semibold text-white">{value}</p>
+    <div
+      className="min-h-[100dvh] overflow-y-auto"
+      style={{
+        backgroundColor: colors.bg,
+        paddingBottom: "calc(env(safe-area-inset-bottom) + 100px)",
+      }}
+    >
+      {/* Search bar */}
+      <div className="px-4 py-3">
+        <div
+          className="flex items-center gap-[10px] rounded-xl border px-[14px] py-3"
+          style={{ backgroundColor: colors.card, borderColor: colors.border }}
+        >
+          <Search size={16} color={colors.subtext} style={{ flexShrink: 0 }} />
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder={t("search.city_placeholder")}
+            autoCorrect="off"
+            autoCapitalize="words"
+            className="flex-1 bg-transparent text-[15px] outline-none"
+            style={{ color: colors.text }}
+          />
+          {query ? (
+            <button
+              type="button"
+              onClick={() => setQuery("")}
+              className="active:opacity-60"
+              style={{ padding: 8, margin: -8 }}
+            >
+              <X size={16} color={colors.subtext} />
+            </button>
+          ) : null}
+        </div>
+      </div>
+
+      {/* Section label */}
+      <p
+        className="px-4 pb-1 text-[13px] font-semibold uppercase tracking-wide"
+        style={{ color: colors.subtext }}
+      >
+        {t("map.recent")}
+      </p>
+
+      {/* Error */}
+      {error ? (
+        <div
+          className="mx-4 mb-3 rounded-xl px-3 py-2 text-xs font-semibold"
+          style={{
+            backgroundColor: "rgba(229,57,53,0.12)",
+            color: "#ef9a9a",
+            border: "1px solid rgba(229,57,53,0.3)",
+          }}
+        >
+          {error}
+        </div>
+      ) : null}
+
+      {/* City tiles */}
+      {loading ? (
+        <div className="flex justify-center py-10">
+          <span
+            className="block h-7 w-7 animate-spin rounded-full border-2"
+            style={{ borderColor: Colors.brandGreen, borderTopColor: "transparent" }}
+          />
+        </div>
+      ) : (
+        <ul>
+          {filtered.map((city) => (
+            <li key={`${city.name}-${city.lat}`}>
+              <button
+                type="button"
+                onClick={() => onSelectCity(city)}
+                className="flex w-full items-center gap-3 px-4 py-[14px] text-left active:opacity-60"
+                style={{ borderBottom: `1px solid ${colors.border}` }}
+              >
+                <MapPin size={18} color={Colors.brandGreen} style={{ flexShrink: 0 }} />
+                <div className="min-w-0 flex-1">
+                  <p
+                    className="truncate text-[16px] font-bold"
+                    style={{ color: colors.text }}
+                  >
+                    {city.name}
+                  </p>
+                  {city.country ? (
+                    <p className="mt-0.5 text-[13px]" style={{ color: colors.subtext }}>
+                      {city.country}
+                    </p>
+                  ) : null}
+                </div>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
