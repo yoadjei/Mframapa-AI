@@ -46,8 +46,11 @@ export function ActivityScreen({ isOnline, isDark }) {
   const feed = state.activityFeed ?? state.activity ?? [];
 
   return (
-    <div className="flex flex-col" style={{ flex: 1 }}>
-      {/* Header — matches mobile: chevron-back | title | spacer */}
+    <div style={{ minHeight: "100dvh", display: "flex", flexDirection: "column" }}>
+      {/* Safe-area spacer — MobileShell won't provide it when rendered as a stack screen */}
+      <div style={{ height: "env(safe-area-inset-top)" }} />
+
+      {/* Header — title centred, left slot reserved for global back button */}
       <div
         className="flex flex-row items-center justify-between px-4 pb-3"
         style={{ paddingTop: 8 }}

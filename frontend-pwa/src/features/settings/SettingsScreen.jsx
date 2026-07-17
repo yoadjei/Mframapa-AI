@@ -121,7 +121,7 @@ export function SettingsScreen({ isOnline, isDark }) {
       className="min-h-[100dvh] overflow-y-auto pb-36 px-4"
       style={{ backgroundColor: colors.bg }}
     >
-      <div style={{ paddingTop: 12 }}>
+      <div style={{ paddingTop: "calc(env(safe-area-inset-top) + 12px)" }}>
 
         <p className="text-[28px] font-extrabold mb-5" style={{ color: colors.text }}>
           {t("settings.title")}

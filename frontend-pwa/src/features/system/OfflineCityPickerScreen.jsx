@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import { MapPin, Plane, Info, ChevronLeft, User } from "lucide-react";
+import { ArrowLeft, MapPin, Plane, Info, User } from "lucide-react";
 import { getColors, Colors } from "../../utils/colors.js";
 import { useAppState } from "../../state/appState.jsx";
+import { useNavigation } from "../../hooks/useNavigation.js";
 import {
   readCachedCityPack,
   getCachedCities,
@@ -20,6 +21,7 @@ const FALLBACK_CITIES = [
 export function OfflineCityPickerScreen({ params, isOnline, isDark }) {
   const colors = getColors(isDark ?? true);
   const { state, dispatch } = useAppState();
+  const { goBack } = useNavigation();
 
   const [cities, setCities] = useState(FALLBACK_CITIES);
   const [selectedCity, setSelectedCity] = useState("Accra");
@@ -73,12 +75,13 @@ export function OfflineCityPickerScreen({ params, isOnline, isDark }) {
         style={{ borderBottom: `1px solid ${colors.border}` }}
       >
         <button
-          onClick={() => dispatch({ type: "GO_BACK" })}
-          className="flex items-center gap-1 text-sm"
-          style={{ color: colors.text }}
+          type="button"
+          onClick={goBack}
+          className="flex items-center justify-center active:opacity-60"
+          style={{ width: 36, height: 36 }}
+          aria-label="Go back"
         >
-          <ChevronLeft size={18} />
-          Back
+          <ArrowLeft size={22} color={colors.text} />
         </button>
         <button>
           <User size={20} color={colors.text} />

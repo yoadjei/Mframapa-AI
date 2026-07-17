@@ -43,8 +43,15 @@ export function GlassTabBar({ isDark }) {
   const menuRef = useRef(null);
   const fabRef  = useRef(null);
 
-  function navigate(key) {
+  // Main tab switches (no back button needed)
+  function switchTab(key) {
     dispatch({ type: "SET_ACTIVE_SCREEN", payload: key });
+    setMenuOpen(false);
+  }
+
+  // "+" more-menu items navigate as stack screens so the global back button appears
+  function navigateToStack(key) {
+    dispatch({ type: "NAVIGATE", payload: { name: key, params: {} } });
     setMenuOpen(false);
   }
 
@@ -92,7 +99,7 @@ export function GlassTabBar({ isDark }) {
               <button
                 key={item.key}
                 type="button"
-                onClick={() => navigate(item.key)}
+                onClick={() => navigateToStack(item.key)}
                 className="flex w-full items-center gap-3 px-4 py-3.5 text-left active:opacity-70"
                 style={{
                   borderBottom: i < MORE_ITEMS.length - 1
@@ -126,7 +133,7 @@ export function GlassTabBar({ isDark }) {
               <button
                 key={tab.key}
                 type="button"
-                onClick={() => navigate(tab.key)}
+                onClick={() => switchTab(tab.key)}
                 className="flex h-14 items-center justify-center px-1.5"
               >
                 <span

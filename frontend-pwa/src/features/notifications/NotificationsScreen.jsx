@@ -193,8 +193,9 @@ export function NotificationsScreen({ isOnline, isDark }) {
   }
 
   return (
-    <>
-      {/* scrollable content — no top safe-area (MobileShell handles it), paddingTop 12 matches mobile */}
+    <div style={{ minHeight: "100dvh" }}>
+      {/* Safe-area spacer — needed when rendered as stack screen outside MobileShell */}
+      <div style={{ height: "env(safe-area-inset-top)" }} />
       <div
         className="overflow-y-auto"
         style={{
@@ -354,6 +355,6 @@ export function NotificationsScreen({ isOnline, isDark }) {
         isDark={isDark}
         unreadCount={unreadCount}
       />
-    </>
+    </div>
   );
 }

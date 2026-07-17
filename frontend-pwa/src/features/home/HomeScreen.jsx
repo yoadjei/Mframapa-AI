@@ -67,6 +67,7 @@ export function HomeScreen({ isOnline }) {
     text:    isDark ? "#FFFFFF" : "#0F1419",
     sub:     isDark ? "#9AA7B5" : "#5C6B7A",
     muted:   isDark ? "#647182" : "#7B8A99",
+    bg:      isDark ? "#0A0D12" : "#F8FAFC",
   };
 
   // Auto-fetch on mount if city is known
@@ -119,7 +120,7 @@ export function HomeScreen({ isOnline }) {
   const unreadCount = state.notifications?.filter((n) => !n.read).length ?? 0;
 
   return (
-    <div className="flex flex-col pb-36">
+    <div className="flex flex-col pb-36 min-h-[100dvh]" style={{ backgroundColor: colors.bg }}>
 
         {/* ── Header ── */}
         <div className="flex items-center justify-between px-4 py-3">

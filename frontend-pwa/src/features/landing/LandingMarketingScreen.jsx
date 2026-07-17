@@ -1,4 +1,4 @@
-import { Activity, Globe, WifiOff, Sparkles, ShieldCheck, Users } from "lucide-react";
+import { Activity, ArrowLeft, Globe, WifiOff, Sparkles, ShieldCheck, Users } from "lucide-react";
 import { useNavigation } from "../../hooks/useNavigation.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { getColors, Colors } from "../../utils/colors.js";
@@ -44,12 +44,33 @@ export function LandingMarketingScreen({ params, isOnline, isDark }) {
         paddingBottom: "env(safe-area-inset-bottom)",
       }}
     >
+      {/* Header */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "8px 16px 4px",
+        }}
+      >
+        <button
+          type="button"
+          onClick={goBack}
+          className="flex items-center justify-center active:opacity-60"
+          style={{ width: 36, height: 36 }}
+          aria-label="Go back"
+        >
+          <ArrowLeft size={22} color={colors.text} />
+        </button>
+        <div style={{ width: 36 }} />
+      </div>
+
       <div
         style={{
           display: "flex",
           flexDirection: "column",
           gap: 0,
-          padding: "32px 24px 40px",
+          padding: "8px 24px 40px",
         }}
       >
         {/* Hero */}
@@ -90,22 +111,6 @@ export function LandingMarketingScreen({ params, isOnline, isDark }) {
             label={t("screen.landing.get_started")}
             onClick={() => navigate("auth")}
           />
-
-          <button
-            type="button"
-            style={{
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              textAlign: "center",
-              fontSize: 14,
-              fontWeight: 600,
-              color: colors.subtext,
-            }}
-            onClick={goBack}
-          >
-            Back
-          </button>
         </div>
 
         {/* Feature cards */}

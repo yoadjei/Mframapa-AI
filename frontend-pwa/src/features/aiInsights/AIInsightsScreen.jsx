@@ -96,14 +96,15 @@ export function AIInsightsScreen({ isOnline, isDark, params }) {
     }
 
     // Card 2 — current reading + category, always shown when we have data.
+    const unc = lastPrediction.uncertainty;
     out.push({
       icon: BarChart3,
       title: t("screen.ai_insights.current_reading"),
       desc: t("screen.ai_insights.reading_explanation", {
-        pm25: lastPrediction.pm25.toFixed(0),
-        category: lastPrediction.aqi_category,
-        lower: lastPrediction.uncertainty.pm25_lower.toFixed(0),
-        upper: lastPrediction.uncertainty.pm25_upper.toFixed(0),
+        pm25: (lastPrediction.pm25 ?? 0).toFixed(0),
+        category: lastPrediction.aqi_category ?? "unknown",
+        lower: (unc?.pm25_lower ?? 0).toFixed(0),
+        upper: (unc?.pm25_upper ?? 0).toFixed(0),
       }),
     });
 

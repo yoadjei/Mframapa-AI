@@ -1,4 +1,4 @@
-import { ChevronRight, Leaf } from "lucide-react";
+import { ArrowLeft, ChevronRight, Leaf } from "lucide-react";
 import { getColors, Colors } from "../../utils/colors.js";
 import { useNavigation } from "../../hooks/useNavigation.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
@@ -13,6 +13,7 @@ const LINK_KEYS = [
 
 export function AboutLegalScreen({ params, isOnline, isDark }) {
   const colors = getColors(isDark ?? true);
+  const { goBack } = useNavigation();
   const { t } = useTranslation();
 
   function handleLinkClick(href) {
@@ -24,6 +25,27 @@ export function AboutLegalScreen({ params, isOnline, isDark }) {
   return (
     <div style={{ minHeight: "100dvh" }}>
       <div style={{ height: "env(safe-area-inset-top)" }} />
+
+      {/* Header */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "8px 16px 4px",
+        }}
+      >
+        <button
+          type="button"
+          onClick={goBack}
+          className="flex items-center justify-center active:opacity-60"
+          style={{ width: 36, height: 36 }}
+          aria-label="Go back"
+        >
+          <ArrowLeft size={22} color={colors.text} />
+        </button>
+        <div style={{ width: 36 }} />
+      </div>
 
       {/* Scrollable content */}
       <div

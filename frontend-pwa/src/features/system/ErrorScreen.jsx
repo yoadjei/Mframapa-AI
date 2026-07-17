@@ -1,10 +1,12 @@
-import { CloudOff, Leaf, X } from "lucide-react";
+import { ArrowLeft, CloudOff, Leaf, X } from "lucide-react";
 import { getColors, Colors } from "../../utils/colors.js";
 import { useAppState } from "../../state/appState.jsx";
+import { useNavigation } from "../../hooks/useNavigation.js";
 
 export function ErrorScreen({ params, isOnline, isDark }) {
   const colors = getColors(isDark ?? true);
   const { dispatch } = useAppState();
+  const { goBack } = useNavigation();
 
   const message = params?.message ?? "No Connection";
   const subtitle =
@@ -29,6 +31,23 @@ export function ErrorScreen({ params, isOnline, isDark }) {
       className="min-h-[100dvh] flex flex-col px-6"
       style={{ backgroundColor: colors.bg }}
     >
+      {/* Safe area top spacer */}
+      <div style={{ height: "env(safe-area-inset-top)" }} />
+
+      {/* Header */}
+      <div className="flex items-center justify-between py-2">
+        <button
+          type="button"
+          onClick={goBack}
+          className="flex items-center justify-center active:opacity-60"
+          style={{ width: 36, height: 36 }}
+          aria-label="Go back"
+        >
+          <ArrowLeft size={22} color={colors.text} />
+        </button>
+        <div style={{ width: 36 }} />
+      </div>
+
       {/* Center content */}
       <div className="flex-1 flex flex-col items-center justify-center gap-4 text-center">
         {/* Icon stack */}

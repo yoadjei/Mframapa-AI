@@ -7,13 +7,14 @@ import { getColors, Colors } from "../../utils/colors.js";
 import { MframapaLogo } from "../../components/brand/MframapaLogo.jsx";
 import { InputField } from "../../components/ui/InputField.jsx";
 import { PrimaryButton } from "../../components/ui/PrimaryButton.jsx";
+import { AvatarPickerSheet, naviiUrl } from "../../components/ui/AvatarPickerSheet.jsx";
 
 // All profile menu items (PROFILE_MENU_ITEMS + MORE_MENU_ITEMS from mobile)
 const ALL_MENU_ITEMS = [
   { id: "pricing",    labelKey: "screen.profile.link_pricing",        target: { type: "navigate", name: "pricing" } },
-  { id: "settings",  labelKey: "screen.profile.link_settings",       target: { type: "tab", name: "settings" } },
+  { id: "settings",  labelKey: "screen.profile.link_settings",       target: { type: "navigate", name: "settings" } },
   { id: "saved",     labelKey: "screen.profile.link_saved_locations", target: { type: "navigate", name: "savedLocations" } },
-  { id: "activity",  labelKey: "screen.profile.link_activity_feed",  target: { type: "navigate", name: "activityFeed" } },
+  { id: "activity",  labelKey: "screen.profile.link_activity_feed",  target: { type: "navigate", name: "activity" } },
   { id: "ai",        labelKey: "screen.profile.link_ai_insights",    target: { type: "navigate", name: "aiInsights" } },
   { id: "prediction",labelKey: "screen.profile.link_prediction",     target: { type: "navigate", name: "predictionDashboard" } },
   { id: "country",   labelKey: "screen.profile.link_country",        target: { type: "navigate", name: "countryExplorer" } },
@@ -54,6 +55,8 @@ export function ProfileScreen({ isOnline, isDark }) {
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState("");
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const avatarSeed = profile.avatarSeed ?? null;
 
   // Keep local state in sync if profile is re-hydrated
   useEffect(() => {
@@ -93,6 +96,10 @@ export function ProfileScreen({ isOnline, isDark }) {
   const tierStyle = getTierStyle(tier);
   const initials = getInitials(profile.fullName ?? state.session?.user?.fullName);
 
+  function handleAvatarSelect(seed) {
+    dispatch({ type: "UPDATE_PROFILE", payload: { avatarSeed: seed } });
+  }
+
   return (
     <div
       className="min-h-[100dvh] overflow-y-auto pb-36 px-4"
@@ -110,16 +117,32 @@ export function ProfileScreen({ isOnline, isDark }) {
           {t("screen.profile.title")}
         </p>
 
-        {/* Avatar */}
+        {/* Avatar — Navi if seed selected, initials fallback */}
         <div className="flex justify-center mb-3">
-          <div className="relative">
+          <button
+            type="button"
+            onClick={() => setPickerOpen(true)}
+            className="relative active:opacity-70"
+            aria-label="Change avatar"
+          >
             <div
-              className="w-[88px] h-[88px] rounded-full flex items-center justify-center select-none"
-              style={{ backgroundColor: Colors.brandGreen + "26" }}
+              className="w-[88px] h-[88px] rounded-full flex items-center justify-center select-none overflow-hidden"
+              style={{
+                backgroundColor: Colors.brandGreen + "26",
+                border: `3px solid ${Colors.brandGreen}`,
+              }}
             >
-              <span className="text-[30px] font-bold" style={{ color: Colors.brandGreen }}>
-                {initials}
-              </span>
+              {avatarSeed ? (
+                <img
+                  src={naviiUrl(avatarSeed, 160)}
+                  alt={avatarSeed}
+                  style={{ width: "100%", height: "100%", objectFit: "contain" }}
+                />
+              ) : (
+                <span className="text-[30px] font-bold" style={{ color: Colors.brandGreen }}>
+                  {initials}
+                </span>
+              )}
             </div>
             {/* Edit badge */}
             <div
@@ -128,8 +151,16 @@ export function ProfileScreen({ isOnline, isDark }) {
             >
               <Pencil size={13} color={colors.subtext} />
             </div>
-          </div>
+          </button>
         </div>
+
+        <AvatarPickerSheet
+          visible={pickerOpen}
+          selected={avatarSeed ?? ""}
+          onSelect={handleAvatarSelect}
+          onClose={() => setPickerOpen(false)}
+          isDark={isDark ?? true}
+        />
 
         {/* Tier badge */}
         <div className="flex items-center justify-center gap-2 mb-6">

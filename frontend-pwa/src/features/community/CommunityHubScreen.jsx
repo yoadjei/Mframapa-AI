@@ -1,12 +1,14 @@
 import { useState } from "react";
-import { Users, MapPin, PenLine, Image } from "lucide-react";
+import { ArrowLeft, Users, MapPin, PenLine, Image } from "lucide-react";
 import { useAppState } from "../../state/appState.jsx";
+import { useNavigation } from "../../hooks/useNavigation.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { getColors, Colors, liquidGlass } from "../../utils/colors.js";
 
 export function CommunityHubScreen({ isOnline, isDark, params }) {
   const { state, dispatch } = useAppState();
   const { t } = useTranslation();
+  const { goBack } = useNavigation();
   const colors = getColors(isDark ?? true);
 
   const posts = state.communityPosts ?? [];
@@ -39,7 +41,16 @@ export function CommunityHubScreen({ isOnline, isDark, params }) {
           borderBottom: `1px solid ${colors.border}`,
         }}
       >
-        <span style={{ fontSize: 16, fontWeight: 700, color: colors.text, flex: 1 }}>
+        <button
+          type="button"
+          onClick={goBack}
+          className="flex items-center justify-center active:opacity-60"
+          style={{ width: 36, height: 36 }}
+          aria-label="Go back"
+        >
+          <ArrowLeft size={22} color={colors.text} />
+        </button>
+        <span style={{ fontSize: 16, fontWeight: 700, color: colors.text, flex: 1, textAlign: "center" }}>
           {t("screen.community.title")}
         </span>
         <button

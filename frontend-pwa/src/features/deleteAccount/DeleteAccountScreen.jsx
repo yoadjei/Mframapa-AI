@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, ArrowLeft } from "lucide-react";
 import { getColors, Colors } from "../../utils/colors.js";
 import { useNavigation } from "../../hooks/useNavigation.js";
 import { useAppState } from "../../state/appState.jsx";
@@ -77,13 +77,34 @@ export function DeleteAccountScreen({ params, isOnline, isDark }) {
     <div style={{ minHeight: "100dvh" }}>
       <div style={{ height: "env(safe-area-inset-top)" }} />
 
+      {/* Header */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "8px 16px 4px",
+        }}
+      >
+        <button
+          type="button"
+          onClick={goBack}
+          className="flex items-center justify-center active:opacity-60"
+          style={{ width: 36, height: 36 }}
+          aria-label="Go back"
+        >
+          <ArrowLeft size={22} color={colors.text} />
+        </button>
+        <div style={{ width: 36 }} />
+      </div>
+
       {/* Scrollable content */}
       <div
         style={{
           overflowY: "auto",
           paddingLeft: 24,
           paddingRight: 24,
-          paddingTop: 24,
+          paddingTop: 8,
           paddingBottom: 40,
           display: "flex",
           flexDirection: "column",

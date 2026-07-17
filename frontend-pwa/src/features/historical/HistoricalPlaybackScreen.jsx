@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
-import { Info, Play, Pause } from "lucide-react";
+import { ArrowLeft, Info, Play, Pause } from "lucide-react";
 import { useTranslation } from "../../hooks/useTranslation.js";
+import { useNavigation } from "../../hooks/useNavigation.js";
 import { getColors, Colors, getAQIColor } from "../../utils/colors.js";
 import { MframapaLogo } from "../../components/brand/MframapaLogo.jsx";
 
@@ -59,6 +60,7 @@ function formatPlaybackDate(date, locale) {
 
 export function HistoricalPlaybackScreen({ isDark }) {
   const { t, language } = useTranslation();
+  const { goBack } = useNavigation();
   const colors = getColors(isDark ?? true);
 
   const [playing, setPlaying] = useState(false);
@@ -149,13 +151,20 @@ export function HistoricalPlaybackScreen({ isDark }) {
       {/* Safe area top */}
       <div style={{ height: "env(safe-area-inset-top)" }} />
 
-      {/* Header — mirrors mobile: logo centred, info icon right, no back button */}
+      {/* Header — back arrow left, logo centred, info icon right */}
       <div
         className="flex items-center justify-between"
         style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, zIndex: 2 }}
       >
-        {/* Left spacer — matches headerSideLeft width 36 on mobile */}
-        <div style={{ width: 36 }} />
+        <button
+          type="button"
+          onClick={goBack}
+          className="flex items-center justify-center active:opacity-60"
+          style={{ width: 36, height: 36 }}
+          aria-label="Go back"
+        >
+          <ArrowLeft size={22} color={colors.text} />
+        </button>
 
         <MframapaLogo size="sm" />
 
@@ -241,7 +250,7 @@ export function HistoricalPlaybackScreen({ isDark }) {
           paddingLeft: 20,
           paddingRight: 20,
           paddingTop: 20,
-          paddingBottom: "max(1rem, env(safe-area-inset-bottom))",
+          paddingBottom: "calc(env(safe-area-inset-bottom) + 16px)",
           gap: 12,
           zIndex: 2,
           display: "flex",

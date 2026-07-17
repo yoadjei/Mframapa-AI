@@ -1,4 +1,5 @@
 import React, { Suspense, useEffect, useMemo } from "react";
+import { ArrowLeft } from "lucide-react";
 import { useAppState } from "../state/appState.jsx";
 import { useOnlineStatus } from "../hooks/useOnlineStatus.js";
 import { useInstallPrompt } from "../hooks/useInstallPrompt.js";
@@ -196,14 +197,24 @@ const STACK_SCREENS = {
   historicalPlayback:  HistoricalPlaybackScreen,
   compareCities:       CompareCitiesScreen,
   community:           CommunityHubScreen,
+  communityHub:        CommunityHubScreen,
   trust:               TrustTransparencyScreen,
+  trustTransparency:   TrustTransparencyScreen,
   exportCentre:        ExportCentreScreen,
   feedback:            FeedbackFormScreen,
+  feedbackForm:        FeedbackFormScreen,
   about:               AboutLegalScreen,
+  aboutLegal:          AboutLegalScreen,
   anomalyAlert:        AnomalyAlertScreen,
   deleteAccount:       DeleteAccountScreen,
   error:               ErrorScreen,
   offlineCityPicker:   OfflineCityPickerScreen,
+  // These tab screens are also reachable as stack screens (from "+" and Profile menus)
+  // so the global back button appears on them.
+  activity:      ActivityScreen,
+  settings:      SettingsScreen,
+  notifications: NotificationsScreen,
+  search:        SearchScreen,
 };
 
 // ── Lazy fallback factory ──────────────────────────────────────────────────
@@ -240,7 +251,7 @@ function ScreenSuspense({ children }) {
 const IS_PREVIEW = new URLSearchParams(window.location.search).has("preview");
 
 export function App() {
-  const { state: { onboardingComplete, session, ui, preferences } } = useAppState();
+  const { state: { onboardingComplete, session, ui, preferences }, dispatch } = useAppState();
   const isOnline = useOnlineStatus();
   const { canInstall, promptInstall } = useInstallPrompt();
 
@@ -278,19 +289,41 @@ export function App() {
           <AuthScreen isOnline={isOnline} />
         ) : StackScreen ? (
           // Full-screen stack route — no tab bar, safe area insets handled by each screen
-          <div
-            style={{
-              minHeight: "100dvh",
-              backgroundColor: isDark ? "#0A0D12" : "#F8FAFC",
-            }}
-          >
+          <div style={{ minHeight: "100dvh", backgroundColor: isDark ? "#0A0D12" : "#F8FAFC" }}>
             <ScreenSuspense>
-              <StackScreen
-                isOnline={isOnline}
-                params={stackTop.params}
-                isDark={isDark}
-              />
+              <StackScreen isOnline={isOnline} params={stackTop.params} isDark={isDark} />
             </ScreenSuspense>
+
+            {/* Single, guaranteed back button for every stack screen.
+                Uses onPointerDown (fires before gesture detection on iOS Safari)
+                and a solid background so no duplicate button shows through. */}
+            <button
+              type="button"
+              onPointerDown={(e) => {
+                e.preventDefault();
+                dispatch({ type: "GO_BACK" });
+              }}
+              aria-label="Go back"
+              style={{
+                position: "fixed",
+                top: "calc(env(safe-area-inset-top) + 8px)",
+                left: 12,
+                zIndex: 9999,
+                width: 44,
+                height: 44,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: 22,
+                backgroundColor: isDark ? "#0A0D12" : "#F8FAFC",
+                border: `1px solid ${isDark ? "rgba(255,255,255,0.10)" : "rgba(0,0,0,0.08)"}`,
+                cursor: "pointer",
+                touchAction: "manipulation",
+                WebkitTapHighlightColor: "transparent",
+              }}
+            >
+              <ArrowLeft size={22} color={isDark ? "#FFFFFF" : "#0F1419"} />
+            </button>
           </div>
         ) : (
           <MobileShell canInstall={canInstall} onInstall={promptInstall} isDark={isDark}>
