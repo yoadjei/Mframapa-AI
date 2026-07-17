@@ -1,15 +1,16 @@
-import io
-import csv
 import json
 from datetime import date as dt_date
 from typing import Any, Dict, Optional
 
-from fastapi import APIRouter, Depends, Query, HTTPException, Response
+from fastapi import APIRouter, Depends, Query, HTTPException, Request
 from pydantic import BaseModel, Field
 
 from backend.api.aqi import aqi_category_from_pm25
 from backend.api.security import verify_and_rate_limit
+from backend.ml.inference import rectify_prediction, select_bundle
 from backend.pipeline.feature_pipeline import FeaturePipeline
+from ml.derived_features import for_point as _derived_for_point
+from ml.static_features import for_point as _static_for_point
 from ml.model_selection import regional_export_dir
 from ml.paths import repository_root
 from ml.regions import assign_region
@@ -37,6 +38,27 @@ def _load_manifest_half_width(region_id: str, segment: str) -> Optional[float]:
     except (json.JSONDecodeError, TypeError, ValueError):
         return None
 
+def _run_inference(request, feats, region_id, segment, om_pm25):
+    """predict via the region/segment bundle; fall back to openmeteo, then a constant.
+
+    returns (pm25, half_width, degraded, source, method).
+    """
+    bundles = getattr(request.app.state, "models", {}) or {}
+    bundle = select_bundle(bundles, region_id, segment)
+    if bundle is not None:
+        pm25, degraded = rectify_prediction(bundle.predict_point(feats), om_pm25)
+        half = bundle.conformal_half_width or _default_conformal_half_width(pm25)
+        return pm25, half, degraded, "model_ensemble", "split_conformal_manifest"
+
+    manifest_hw = _load_manifest_half_width(region_id, segment)
+    if om_pm25 is not None:
+        half = manifest_hw or _default_conformal_half_width(om_pm25)
+        method = "split_conformal_manifest" if manifest_hw is not None else "heuristic_relative"
+        return om_pm25, half, False, "openmeteo_fallback", method
+
+    logger.warning("predict: no model or OpenMeteo pm25 for %s/%s; constant fallback", region_id, segment)
+    return 25.0, _default_conformal_half_width(25.0), False, "fallback_constant", "heuristic_relative"
+
 def _cities() -> list:
     with CITIES_PATH.open(encoding="utf-8") as f:
         return json.load(f)["cities"]
@@ -54,9 +76,23 @@ def get_feature_pipeline() -> FeaturePipeline:
 
 router = APIRouter(dependencies=[Depends(verify_and_rate_limit)])
 
+from backend.api.v1.translations import translations_router
+router.include_router(translations_router)
+
 @router.get("/health")
-def health() -> Dict[str, str]:
-    return {"status": "ok", "version": "v1"}
+def health(request: Request) -> Dict[str, Any]:
+    models = getattr(request.app.state, "models", {}) or {}
+    try:
+        from backend.cache.redis_cache import RedisCache
+        redis_ok = RedisCache().is_available
+    except Exception:
+        redis_ok = False
+    return {
+        "status": "ok",
+        "version": "v1",
+        "models_loaded": len(models),
+        "redis": bool(redis_ok),
+    }
 
 @router.get("/resolve-location")
 def resolve_location(
@@ -86,95 +122,74 @@ def resolve_location(
         "is_africa": True,
     }
 
-@router.get("/predict")
-def predict(
-    lat: float = Query(..., ge=-90, le=90),
-    lon: float = Query(..., ge=-180, le=180),
-    name: str = Query("Unknown"),
-    day: Optional[str] = Query(None, description="ISO date YYYY-MM-DD (default: today)"),
-    format: Optional[str] = Query("json", description="Output format: json, csv, geojson"),
-    pipeline: FeaturePipeline = Depends(get_feature_pipeline),
-) -> Any:
+def compute_prediction(
+    request: Request,
+    lat: float,
+    lon: float,
+    name: str,
+    day: Optional[str],
+    pipeline: FeaturePipeline,
+) -> Dict[str, Any]:
+    """assemble features, run inference, and build the §2 response dict."""
     d = day or dt_date.today().isoformat()
 
     feats = pipeline.get_features(lat, lon, d)
-    pm25_raw = feats.get("pm25_surface")
-    if pm25_raw is None:
-        pm25 = 25.0
-        logger.warning("pm25_surface missing for (%s,%s); using fallback", lat, lon)
-    else:
-        pm25 = float(pm25_raw)
+    feats["lat"], feats["lon"] = lat, lon  # spatial features for models that use them
+    feats.update(_derived_for_point(lat, lon, d))  # season + dust-proximity features
+    feats.update(_static_for_point(lat, lon))       # ndvi + night-lights (nan until grid built)
+    om_pm25 = feats.get("pm25_surface")
+    om_pm25 = float(om_pm25) if om_pm25 is not None else None
 
-    cat = aqi_category_from_pm25(pm25)
     pop = feats.get("population_density")
     region_id = assign_region(lat, lon) or "west_africa"
     segment = classify_from_population_density(pop if isinstance(pop, (int, float)) else None)
-    half = _load_manifest_half_width(region_id, segment) or _default_conformal_half_width(pm25)
-    lower = max(0.0, pm25 - half)
-    upper = pm25 + half
 
-    temp = feats.get("temperature_2m")
-    rh = feats.get("relative_humidity")
+    pm25, half, degraded, source, method = _run_inference(request, feats, region_id, segment, om_pm25)
+    pm25 = round(pm25, 2)
+
     u = feats.get("u_component_of_wind_10m") or 0.0
     v = feats.get("v_component_of_wind_10m") or 0.0
     wind_speed = (float(u) ** 2 + float(v) ** 2) ** 0.5
 
+    temp = feats.get("temperature_2m")
+    rh = feats.get("relative_humidity")
     factors = {
         k: feats.get(k)
-        for k in ("no2_tropospheric_column", "aerosol_optical_depth", "pm10_surface", "population_density", "elevation")
+        for k in ("aerosol_optical_depth", "no2_tropospheric_column", "population_density", "elevation")
         if feats.get(k) is not None
     }
 
-    manifest_hw = _load_manifest_half_width(region_id, segment)
-    uncertainty_method = "split_conformal_manifest" if manifest_hw is not None else "heuristic_relative"
-
-    result = {
-        "pm25": round(pm25, 2),
-        "aqi_category": cat,
+    return {
+        "pm25": pm25,
+        "aqi_category": aqi_category_from_pm25(pm25),
+        "degraded": degraded,
         "factors": factors,
         "weather": {
             "temp": float(temp) if temp is not None else None,
             "humidity": float(rh) if rh is not None else None,
             "wind": round(wind_speed, 2),
-            "pressure": None,
         },
         "uncertainty": {
-            "pm25_lower": round(lower, 2),
-            "pm25_upper": round(upper, 2),
+            "pm25_lower": round(max(0.0, pm25 - half), 2),
+            "pm25_upper": round(pm25 + half, 2),
             "half_width": round(half, 2),
             "coverage": 0.9,
-            "method": uncertainty_method,
+            "method": method,
         },
         "location": {"name": name, "lat": lat, "lon": lon},
-        "model": {"region_id": region_id, "segment": segment, "version": "2.0.0", "source": "feature_pipeline_pm25_surface"},
+        "model": {"region_id": region_id, "segment": segment, "version": "2.0.0", "source": source},
     }
 
-    if format == "csv":
-        output = io.StringIO()
-        writer = csv.writer(output)
-        writer.writerow(["lat", "lon", "name", "day", "pm25", "aqi_category", "uncertainty_half_width"])
-        writer.writerow([lat, lon, name, d, result["pm25"], result["aqi_category"], result["uncertainty"]["half_width"]])
-        return Response(content=output.getvalue(), media_type="text/csv")
-        
-    elif format == "geojson":
-        geojson = {
-            "type": "FeatureCollection",
-            "features": [{
-                "type": "Feature",
-                "geometry": {"type": "Point", "coordinates": [lon, lat]},
-                "properties": {
-                    "name": name,
-                    "day": d,
-                    "pm25": result["pm25"],
-                    "aqi_category": result["aqi_category"],
-                    "uncertainty_lower": result["uncertainty"]["pm25_lower"],
-                    "uncertainty_upper": result["uncertainty"]["pm25_upper"]
-                }
-            }]
-        }
-        return Response(content=json.dumps(geojson), media_type="application/geo+json")
-
-    return result
+@router.get("/predict")
+def predict(
+    request: Request,
+    lat: float = Query(..., ge=-90, le=90),
+    lon: float = Query(..., ge=-180, le=180),
+    name: str = Query("Unknown"),
+    day: Optional[str] = Query(None, description="ISO date YYYY-MM-DD (default: today)"),
+    pipeline: FeaturePipeline = Depends(get_feature_pipeline),
+) -> Dict[str, Any]:
+    return compute_prediction(request, lat, lon, name, day, pipeline)
 
 class InsightBody(BaseModel):
     pm25: float = Field(..., ge=0)
@@ -196,3 +211,20 @@ def generate_insight(body: InsightBody) -> Dict[str, str]:
         key = "moderate"
     text = _STUB_INSIGHTS_EN[key]
     return {"insight": text}
+
+class PushTokenBody(BaseModel):
+    token: str = Field(..., min_length=1)
+    platform: str = "android"
+    lat: float = Field(..., ge=-90, le=90)
+    lon: float = Field(..., ge=-180, le=180)
+
+def get_push_store():
+    from backend.alerts.storage import get_push_store as _default
+    return _default()
+
+@router.post("/register-push-token")
+def register_push_token(body: PushTokenBody, store=Depends(get_push_store)) -> Dict[str, str]:
+    if body.platform not in ("android", "web", "ios"):
+        raise HTTPException(400, "platform must be android, web, or ios")
+    store.register(body.token, body.platform, body.lat, body.lon)
+    return {"status": "registered"}
