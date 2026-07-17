@@ -10,6 +10,7 @@ import { getColors, Colors } from '../theme';
 import { useTheme } from '../hooks/useTheme';
 import { useStore } from '../store/useStore';
 import { useTranslation } from '../hooks/useTranslation';
+import { SUPPORTED_LANGUAGES } from '../utils/constants';
 
 export function SettingsScreen() {
   const { isDark } = useTheme();
@@ -28,6 +29,9 @@ export function SettingsScreen() {
   const setDataAnalytics = useStore((s) => s.setDataAnalytics);
   const locationSharing  = useStore((s) => s.locationSharing);
   const setLocationSharing = useStore((s) => s.setLocationSharing);
+  const language = useStore((s) => s.language);
+  const currentLanguage =
+    SUPPORTED_LANGUAGES.find((l) => l.code === language) ?? SUPPORTED_LANGUAGES[0];
 
   function locationSharingLabel(value: 'off' | 'balanced' | 'precise') {
     return t(`settings.location_${value}`);
@@ -90,6 +94,18 @@ export function SettingsScreen() {
               isDark={isDark}
             />
           </View>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('LanguageSelector')}
+            style={[styles.row, { borderBottomWidth: 0 }]}
+            accessibilityRole="button"
+          >
+            <Text style={[styles.rowLabel, { color: colors.text }]}>{t('settings.language')}</Text>
+            <View style={styles.dropdownBtn}>
+              <Text style={styles.flag}>{currentLanguage.flag}</Text>
+              <Text style={[styles.dropdownText, { color: colors.text }]}>{currentLanguage.name}</Text>
+              <Ionicons name="chevron-forward" size={14} color={colors.subtext} />
+            </View>
+          </TouchableOpacity>
         </View>
 
         {/* Notifications */}
@@ -166,4 +182,5 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   dropdownText: { fontSize: 14 },
+  flag: { fontSize: 16 },
 });

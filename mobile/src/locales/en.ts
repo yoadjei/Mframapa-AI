@@ -209,6 +209,7 @@ const base: Record<string, string> = {
   'error.city_not_found': 'City not found in supported African cities',
   'error.location_permission': 'Location permission denied.',
   'error.location_unknown': 'Could not determine your location.',
+  'error.rate_limited': 'Too many requests. Please wait {{seconds}}s before refreshing.',
 
   'screen.saved_locations.title': 'Saved Locations',
   'screen.saved_locations.last_pm25': 'Last PM2.5',

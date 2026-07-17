@@ -10,12 +10,16 @@ import { AppBackgroundColors } from './src/theme/background';
 import { useTheme } from './src/hooks/useTheme';
 import { getAfricanCities } from './src/services/cities';
 import { saveCities } from './src/services/offline';
+import { requestPermissions, getAndRegisterPushToken } from './src/services/notifications';
+import { syncLocaleInBackground } from './src/services/translation';
 
 export default function App() {
   const { isDark } = useTheme();
   const isAuthenticated = useStore((s) => s.isAuthenticated);
   const offlineCities = useStore((s) => s.offlineCities);
   const setOfflineCities = useStore((s) => s.setOfflineCities);
+  const lastPrediction = useStore((s) => s.lastPrediction);
+  const language = useStore((s) => s.language);
 
   useEffect(() => {
     if (offlineCities.length < 500) {
@@ -24,6 +28,25 @@ export default function App() {
       saveCities(cities).catch(() => undefined);
     }
   }, []);
+
+  // Request push permissions and register token with backend on startup.
+  useEffect(() => {
+    async function initPush() {
+      const granted = await requestPermissions();
+      if (granted) {
+        const lat = lastPrediction?.location.lat;
+        const lon = lastPrediction?.location.lon;
+        await getAndRegisterPushToken(lat, lon);
+      }
+    }
+    initPush().catch(() => undefined);
+  }, []);
+
+  // Background OTA translation sync — refreshes the server-side locale bundle
+  // whenever the app language changes so strings stay current without blocking the UI.
+  useEffect(() => {
+    syncLocaleInBackground(language).catch(() => undefined);
+  }, [language]);
 
   const navTheme = isDark
     ? {

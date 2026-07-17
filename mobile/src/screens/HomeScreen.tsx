@@ -18,6 +18,7 @@ import { useTheme } from '../hooks/useTheme';
 import { useTranslation } from '../hooks/useTranslation';
 import { aqiCategoryKey } from '../utils/i18nHelpers';
 import { MframapaLogo } from '../components/MframapaLogo';
+import { useRateLimit } from '../hooks/useRateLimit';
 
 export function HomeScreen() {
   const { isDark } = useTheme();
@@ -33,6 +34,7 @@ export function HomeScreen() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError]     = useState<string | null>(null);
+  const { secondsRemaining, isRateLimited } = useRateLimit();
 
   // AQI count-up animation
   const animVal = useRef(new Animated.Value(0)).current;
@@ -183,21 +185,42 @@ export function HomeScreen() {
           </View>
         ) : null}
 
+        {/* Rate-limit notice */}
+        {isRateLimited ? (
+          <View style={[styles.rateLimitBox, { backgroundColor: Colors.warning + '18', borderColor: Colors.warning + '40' }]}>
+            <Ionicons name="time-outline" size={16} color={Colors.warning} />
+            <Text style={[styles.rateLimitText, { color: Colors.warning }]}>
+              {t('error.rate_limited', { seconds: String(secondsRemaining) })}
+            </Text>
+          </View>
+        ) : null}
+
         {/* Quick Actions */}
         <View style={styles.actionRow}>
           {[
-            { icon: 'navigate-circle-outline' as const, label: t('home.action_check'), action: handleLocate, loading },
-            { icon: 'search-outline' as const, label: t('tab.search'), action: () => navigation.navigate('Search') },
-            { icon: 'notifications-outline' as const, label: t('tab.alerts'), action: () => navigation.navigate('Alerts') }].map((item, i) => (
+            {
+              icon: 'navigate-circle-outline' as const,
+              label: isRateLimited ? `${secondsRemaining}s` : t('home.action_check'),
+              action: handleLocate,
+              loading,
+              disabled: loading || isRateLimited,
+            },
+            { icon: 'search-outline' as const, label: t('tab.search'), action: () => navigation.navigate('Search'), loading: false, disabled: false },
+            { icon: 'notifications-outline' as const, label: t('tab.alerts'), action: () => navigation.navigate('Alerts'), loading: false, disabled: false },
+          ].map((item, i) => (
             <TouchableOpacity
               key={i}
               onPress={item.action}
-              disabled={item.loading}
-              style={[styles.actionTile, { backgroundColor: colors.card, borderColor: colors.border }]}
+              disabled={item.disabled}
+              style={[
+                styles.actionTile,
+                { backgroundColor: colors.card, borderColor: colors.border },
+                item.disabled ? { opacity: 0.5 } : null,
+              ]}
             >
               {item.loading
                 ? <ActivityIndicator size="small" color={Colors.brandGreen} />
-                : <Ionicons name={item.icon} size={24} color={Colors.brandGreen} />
+                : <Ionicons name={item.icon} size={24} color={isRateLimited && i === 0 ? Colors.warning : Colors.brandGreen} />
               }
               <Text style={[styles.actionLabel, { color: colors.text }]}>{item.label}</Text>
             </TouchableOpacity>
@@ -276,6 +299,17 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   errorText: { flex: 1, fontSize: 13, fontWeight: '500' },
+  rateLimitBox: {
+    marginHorizontal: 16,
+    marginBottom: 8,
+    borderRadius: 12,
+    borderWidth: 1,
+    padding: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  rateLimitText: { flex: 1, fontSize: 13, fontWeight: '500' },
   heroCardWrap: { paddingHorizontal: 16, marginBottom: 12 },
   heroCard: {
     borderRadius: 20,

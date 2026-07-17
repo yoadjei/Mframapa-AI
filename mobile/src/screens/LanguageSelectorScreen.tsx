@@ -38,8 +38,11 @@ export function LanguageSelectorScreen() {
   })).filter((sec) => sec.data.length > 0);
 
   return (
-    <View style={[styles.root, {paddingTop: insets.top }]}>
-      <View style={styles.titleBlock}>
+    <View style={[styles.root, { paddingTop: insets.top }]}>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+          <Ionicons name="chevron-back" size={22} color={colors.text} />
+        </TouchableOpacity>
         <Text style={[styles.title, { color: colors.text }]}>{t('language.title')}</Text>
       </View>
 
@@ -86,8 +89,15 @@ export function LanguageSelectorScreen() {
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
-  titleBlock: { paddingHorizontal: 16, paddingTop: 16, paddingBottom: 8 },
-  title: { fontSize: 26, fontWeight: '800' },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingTop: 8,
+    paddingBottom: 8,
+    gap: 8,
+  },
+  title: { fontSize: 26, fontWeight: '800', flex: 1 },
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
