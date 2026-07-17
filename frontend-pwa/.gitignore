@@ -24,3 +24,7 @@ dist-ssr
 *.sw?
 
 .env
+# Android TWA build
+android/
+*.keystore
+*.jks

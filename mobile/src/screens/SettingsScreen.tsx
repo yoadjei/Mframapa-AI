@@ -1,252 +1,186 @@
 import React from 'react';
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  Switch,
+  View, Text, StyleSheet, ScrollView, Switch, TouchableOpacity, Platform,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
+import { SegmentedControl } from '../components/ui/SegmentedControl';
+import { getColors, Colors } from '../theme';
+import { useTheme } from '../hooks/useTheme';
 import { useStore } from '../store/useStore';
-import { getColors, spacing, borderRadius, fontSize } from '../theme';
 import { useTranslation } from '../hooks/useTranslation';
-
-const LANGUAGES = [
-  { code: 'en', label: 'English', native: 'English' },
-  { code: 'fr', label: 'French', native: 'Français' },
-];
+import { SUPPORTED_LANGUAGES } from '../utils/constants';
 
 export function SettingsScreen() {
-  const isDark = useStore((s) => s.isDark);
-  const toggleTheme = useStore((s) => s.toggleTheme);
-  const language = useStore((s) => s.language);
-  const setLanguage = useStore((s) => s.setLanguage);
+  const { isDark } = useTheme();
   const colors = getColors(isDark);
+  const insets = useSafeAreaInsets();
+  const navigation = useNavigation<any>();
   const { t } = useTranslation();
 
-  return (
-    <ScrollView
-      style={{ flex: 1, backgroundColor: colors.background }}
-      contentContainerStyle={{ paddingBottom: spacing.xxl }}
-      showsVerticalScrollIndicator={false}
-    >
-      {/* Header */}
-      <View
-        style={{
-          paddingTop: spacing.xl,
-          paddingHorizontal: spacing.md,
-          paddingBottom: spacing.md,
-        }}
-      >
-        <Text
-          style={{
-            color: colors.text,
-            fontSize: fontSize.xl,
-            fontWeight: '700',
-          }}
-        >
-          {t('settings.title')}
-        </Text>
-      </View>
+  const themeMode       = useStore((s) => s.themeMode);
+  const setThemeMode    = useStore((s) => s.setThemeMode);
+  const alertsEnabled   = useStore((s) => s.alertsEnabled);
+  const setAlertsEnabled = useStore((s) => s.setAlertsEnabled);
+  const liteMode        = useStore((s) => s.liteMode);
+  const setLiteMode     = useStore((s) => s.setLiteMode);
+  const dataAnalytics   = useStore((s) => s.dataAnalytics);
+  const setDataAnalytics = useStore((s) => s.setDataAnalytics);
+  const locationSharing  = useStore((s) => s.locationSharing);
+  const setLocationSharing = useStore((s) => s.setLocationSharing);
+  const language = useStore((s) => s.language);
+  const currentLanguage =
+    SUPPORTED_LANGUAGES.find((l) => l.code === language) ?? SUPPORTED_LANGUAGES[0];
 
-      {/* Theme Section */}
-      <SectionHeader title={t('settings.theme')} colors={colors} />
-      <View
-        style={{
-          backgroundColor: colors.card,
-          borderRadius: borderRadius.lg,
-          marginHorizontal: spacing.md,
-          marginBottom: spacing.md,
-          borderWidth: 1,
-          borderColor: colors.border,
-          overflow: 'hidden',
-        }}
-      >
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            paddingHorizontal: spacing.md,
-            paddingVertical: spacing.md,
-          }}
-        >
-          <Text style={{ fontSize: fontSize.lg, marginRight: spacing.md }}>
-            {isDark ? '🌙' : '☀️'}
-          </Text>
-          <Text
-            style={{
-              flex: 1,
-              color: colors.text,
-              fontSize: fontSize.md,
-              fontWeight: '500',
-            }}
-          >
-            {isDark ? t('settings.dark') : t('settings.light')} Mode
-          </Text>
-          <Switch
-            value={isDark}
-            onValueChange={toggleTheme}
-            trackColor={{ false: colors.border, true: colors.accent + '66' }}
-            thumbColor={isDark ? colors.accent : colors.subtext}
-          />
-        </View>
-      </View>
+  function locationSharingLabel(value: 'off' | 'balanced' | 'precise') {
+    return t(`settings.location_${value}`);
+  }
 
-      {/* Language Section */}
-      <SectionHeader title={t('settings.language')} colors={colors} />
-      <View
-        style={{
-          backgroundColor: colors.card,
-          borderRadius: borderRadius.lg,
-          marginHorizontal: spacing.md,
-          marginBottom: spacing.md,
-          borderWidth: 1,
-          borderColor: colors.border,
-          overflow: 'hidden',
-        }}
-      >
-        {LANGUAGES.map((lang, index) => (
-          <TouchableOpacity
-            key={lang.code}
-            onPress={() => setLanguage(lang.code)}
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              paddingHorizontal: spacing.md,
-              paddingVertical: spacing.md,
-              borderBottomWidth: index < LANGUAGES.length - 1 ? 1 : 0,
-              borderBottomColor: colors.border,
-              backgroundColor:
-                language === lang.code ? colors.accent + '11' : 'transparent',
-            }}
-          >
-            <Text style={{ fontSize: fontSize.lg, marginRight: spacing.md }}>
-              {lang.code === 'en' ? '🇬🇧' : '🇫🇷'}
-            </Text>
-            <View style={{ flex: 1 }}>
-              <Text
-                style={{
-                  color: colors.text,
-                  fontSize: fontSize.md,
-                  fontWeight: language === lang.code ? '700' : '500',
-                }}
-              >
-                {lang.native}
-              </Text>
-              <Text style={{ color: colors.subtext, fontSize: fontSize.xs }}>
-                {lang.label}
-              </Text>
-            </View>
-            {language === lang.code && (
-              <Text style={{ color: colors.accent, fontSize: fontSize.lg }}>✓</Text>
-            )}
-          </TouchableOpacity>
-        ))}
-      </View>
+  const THEME_MODES = ['light', 'dark', 'system'] as const;
+  const themeLabels = [t('settings.light'), t('settings.dark'), t('settings.system')];
+  const themeIndex = THEME_MODES.indexOf(themeMode as typeof THEME_MODES[number]);
 
-      {/* About Section */}
-      <SectionHeader title={t('settings.about')} colors={colors} />
-      <View
-        style={{
-          backgroundColor: colors.card,
-          borderRadius: borderRadius.lg,
-          marginHorizontal: spacing.md,
-          padding: spacing.lg,
-          borderWidth: 1,
-          borderColor: colors.border,
-        }}
-      >
-        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: spacing.md }}>
-          <Text style={{ fontSize: 32, marginRight: spacing.md }}>🌍</Text>
-          <View>
-            <Text
-              style={{
-                color: colors.accent,
-                fontSize: fontSize.lg,
-                fontWeight: '800',
-              }}
-            >
-              Mframapa
-            </Text>
-            <Text style={{ color: colors.subtext, fontSize: fontSize.xs }}>
-              Version 1.0.0
-            </Text>
-          </View>
-        </View>
-
-        <Text
-          style={{
-            color: colors.subtext,
-            fontSize: fontSize.sm,
-            lineHeight: 20,
-            marginBottom: spacing.md,
-          }}
-        >
-          Mframapa is an African air quality intelligence platform powered by a
-          universal machine-learning model trained on satellite, meteorological,
-          and ground sensor data across the continent.
-        </Text>
-
-        <InfoRow
-          label="API"
-          value={process.env.EXPO_PUBLIC_API_URL ?? 'https://mframapa.ai'}
-          colors={colors}
-        />
-        <InfoRow label="Model" value="Universal African PM2.5" colors={colors} />
-        <InfoRow label="Coverage" value="54 African countries" colors={colors} />
-        <InfoRow label="Resolution" value="~1 km spatial" colors={colors} />
-      </View>
-    </ScrollView>
-  );
-}
-
-interface SectionHeaderProps {
-  title: string;
-  colors: ReturnType<typeof getColors>;
-}
-
-function SectionHeader({ title, colors }: SectionHeaderProps) {
-  return (
-    <Text
-      style={{
-        color: colors.subtext,
-        fontSize: fontSize.xs,
-        fontWeight: '600',
-        textTransform: 'uppercase',
-        letterSpacing: 0.8,
-        paddingHorizontal: spacing.md,
-        marginBottom: spacing.xs,
-        marginTop: spacing.xs,
-      }}
-    >
-      {title}
+  const sectionLabel = (label: string) => (
+    <Text style={[styles.sectionLabel, { color: isDark ? Colors.textSecondary : Colors.lightTextSecondary }]}>
+      {label}
     </Text>
   );
-}
 
-interface InfoRowProps {
-  label: string;
-  value: string;
-  colors: ReturnType<typeof getColors>;
-}
+  const toggleRow = (
+    label: string,
+    value: boolean,
+    onChange: (v: boolean) => void,
+    sublabel?: string,
+  ) => (
+    <View style={[styles.row, { borderBottomColor: colors.border }]}>
+      <View style={{ flex: 1 }}>
+        <Text style={[styles.rowLabel, { color: colors.text }]}>{label}</Text>
+        {sublabel ? <Text style={[styles.rowSublabel, { color: colors.subtext }]}>{sublabel}</Text> : null}
+      </View>
+      <Switch
+        value={value}
+        onValueChange={onChange}
+        trackColor={{ false: colors.border, true: Colors.brandGreen }}
+        thumbColor={Platform.OS === 'android' ? (value ? Colors.brandGreen : '#fff') : '#fff'}
+        ios_backgroundColor={colors.border}
+      />
+    </View>
+  );
 
-function InfoRow({ label, value, colors }: InfoRowProps) {
   return (
-    <View
-      style={{
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        paddingVertical: spacing.xs,
-        borderTopWidth: 1,
-        borderTopColor: colors.border,
-      }}
-    >
-      <Text style={{ color: colors.subtext, fontSize: fontSize.sm }}>{label}</Text>
-      <Text
-        style={{ color: colors.text, fontSize: fontSize.sm, fontWeight: '500', flex: 1, textAlign: 'right' }}
-        numberOfLines={1}
+    <View style={[styles.root]}>
+      <ScrollView
+        contentContainerStyle={[styles.content, { paddingTop: insets.top + 12, paddingBottom: insets.bottom + 100 }]}
+        showsVerticalScrollIndicator={false}
       >
-        {value}
-      </Text>
+        {Platform.OS === 'android' ? (
+          <View style={styles.androidHeader}>
+            <Text style={[styles.androidTitle, { color: colors.text }]}>{t('settings.title').toUpperCase()}</Text>
+          </View>
+        ) : null}
+
+        <Text style={[styles.title, { color: colors.text }]}>{t('settings.title')}</Text>
+
+        {/* Appearance */}
+        {sectionLabel(t('settings.appearance'))}
+        <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <View style={[styles.row, { borderBottomColor: colors.border }]}>
+            <Text style={[styles.rowLabel, { color: colors.text }]}>{t('settings.theme')}</Text>
+            <SegmentedControl
+              options={themeLabels}
+              selectedIndex={themeIndex === -1 ? 2 : themeIndex}
+              onSelectIndex={(i) => setThemeMode(THEME_MODES[i])}
+              isDark={isDark}
+            />
+          </View>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('LanguageSelector')}
+            style={[styles.row, { borderBottomWidth: 0 }]}
+            accessibilityRole="button"
+          >
+            <Text style={[styles.rowLabel, { color: colors.text }]}>{t('settings.language')}</Text>
+            <View style={styles.dropdownBtn}>
+              <Text style={styles.flag}>{currentLanguage.flag}</Text>
+              <Text style={[styles.dropdownText, { color: colors.text }]}>{currentLanguage.name}</Text>
+              <Ionicons name="chevron-forward" size={14} color={colors.subtext} />
+            </View>
+          </TouchableOpacity>
+        </View>
+
+        {/* Notifications */}
+        {sectionLabel(t('settings.notifications'))}
+        <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          {toggleRow(t('settings.enable_alerts'), alertsEnabled, setAlertsEnabled)}
+        </View>
+
+        {/* Privacy */}
+        {sectionLabel(t('settings.privacy_section'))}
+        <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <View style={[styles.row, { borderBottomColor: colors.border }]}>
+            <Text style={[styles.rowLabel, { color: colors.text }]}>{t('settings.location_sharing')}</Text>
+            <TouchableOpacity
+              onPress={() => {
+                const opts: ('off' | 'balanced' | 'precise')[] = ['off', 'balanced', 'precise'];
+                const next = opts[(opts.indexOf(locationSharing) + 1) % opts.length];
+                setLocationSharing(next);
+              }}
+              style={styles.dropdownBtn}
+            >
+              <Text style={[styles.dropdownText, { color: colors.text }]}>
+                {locationSharingLabel(locationSharing)}
+              </Text>
+              <Ionicons name="chevron-down" size={14} color={colors.subtext} />
+            </TouchableOpacity>
+          </View>
+          {toggleRow(t('settings.data_analytics'), dataAnalytics, setDataAnalytics)}
+        </View>
+
+        {/* Performance */}
+        {sectionLabel(t('settings.performance'))}
+        <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          {toggleRow(t('settings.lite'), liteMode, setLiteMode, Platform.OS === 'android' ? t('settings.lite_unavailable') : undefined)}
+        </View>
+      </ScrollView>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  root: { flex: 1 },
+  content: { paddingHorizontal: 16 },
+  androidHeader: { marginBottom: 8 },
+  androidTitle: { fontSize: 16, fontWeight: '700', letterSpacing: 0.5 },
+  title: { fontSize: 28, fontWeight: '800', marginBottom: 20 },
+  sectionLabel: {
+    fontSize: 13,
+    fontWeight: '600',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    marginTop: 20,
+    marginBottom: 6,
+  },
+  card: {
+    borderRadius: 16,
+    borderWidth: 1,
+    overflow: 'hidden',
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    gap: 12,
+    justifyContent: 'space-between',
+  },
+  rowLabel: { fontSize: 15, fontWeight: '500' },
+  rowSublabel: { fontSize: 12, marginTop: 2 },
+  dropdownBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  dropdownText: { fontSize: 14 },
+  flag: { fontSize: 16 },
+});

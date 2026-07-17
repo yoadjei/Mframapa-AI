@@ -17,6 +17,7 @@ const PRECACHE_URLS = [
   '/manifest.json',
   '/icons/icon-192x192.png',
   '/icons/icon-512x512.png',
+  '/city-packs/top-cities.v1.json',
 ];
 
 self.addEventListener('install', (event) => {
@@ -47,6 +48,16 @@ self.addEventListener('fetch', (event) => {
 
   if (url.pathname.startsWith('/api/')) {
     event.respondWith(networkFirstAPI(request));
+    return;
+  }
+
+  if (url.pathname.startsWith('/city-packs/')) {
+    event.respondWith(cacheFirstStatic(request));
+    return;
+  }
+
+  if (url.hostname.includes('mapbox.com')) {
+    event.respondWith(staleWhileRevalidate(request));
     return;
   }
 
@@ -103,4 +114,17 @@ async function cacheFirstStatic(request) {
   } catch {
     return Response.error();
   }
+}
+
+async function staleWhileRevalidate(request) {
+  const cache = await caches.open(STATIC_CACHE);
+  const cached = await cache.match(request);
+  const fetchPromise = fetch(request)
+    .then((response) => {
+      if (response.ok) cache.put(request, response.clone());
+      return response;
+    })
+    .catch(() => cached);
+
+  return cached || fetchPromise;
 }

@@ -1,0 +1,9015 @@
+{
+  "total": 1000,
+  "regions": {
+    "west_africa": 270,
+    "east_africa": 190,
+    "north_africa": 160,
+    "central_africa": 140,
+    "southern_africa": 160,
+    "horn_of_africa": 80
+  },
+  "urban": 413,
+  "rural": 587,
+  "cities": [
+    {
+      "name": "Lagos",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 6.5244,
+      "lon": 3.3792,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Accra",
+      "country": "Ghana",
+      "iso3": "GHA",
+      "lat": 5.6037,
+      "lon": -0.187,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Abidjan",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 5.36,
+      "lon": -4.0083,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Dakar",
+      "country": "Senegal",
+      "iso3": "SEN",
+      "lat": 14.6928,
+      "lon": -17.4467,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Kano",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 12.0022,
+      "lon": 8.592,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Ibadan",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 7.3775,
+      "lon": 3.947,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Kumasi",
+      "country": "Ghana",
+      "iso3": "GHA",
+      "lat": 6.6885,
+      "lon": -1.6244,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Conakry",
+      "country": "Guinea",
+      "iso3": "GIN",
+      "lat": 9.6412,
+      "lon": -13.5784,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Bamako",
+      "country": "Mali",
+      "iso3": "MLI",
+      "lat": 12.6392,
+      "lon": -8.0029,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Ouagadougou",
+      "country": "Burkina Faso",
+      "iso3": "BFA",
+      "lat": 12.3647,
+      "lon": -1.5353,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Niamey",
+      "country": "Niger",
+      "iso3": "NER",
+      "lat": 13.5137,
+      "lon": 2.1098,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Abuja",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 9.0765,
+      "lon": 7.3986,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Freetown",
+      "country": "Sierra Leone",
+      "iso3": "SLE",
+      "lat": 8.4657,
+      "lon": -13.2317,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Monrovia",
+      "country": "Liberia",
+      "iso3": "LBR",
+      "lat": 6.3005,
+      "lon": -10.7969,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Lomé",
+      "country": "Togo",
+      "iso3": "TGO",
+      "lat": 6.1375,
+      "lon": 1.2123,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Cotonou",
+      "country": "Benin",
+      "iso3": "BEN",
+      "lat": 6.3703,
+      "lon": 2.3912,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Nouakchott",
+      "country": "Mauritania",
+      "iso3": "MRT",
+      "lat": 18.0735,
+      "lon": -15.9582,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Bissau",
+      "country": "Guinea-Bissau",
+      "iso3": "GNB",
+      "lat": 11.8636,
+      "lon": -15.5977,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Praia",
+      "country": "Cape Verde",
+      "iso3": "CPV",
+      "lat": 14.9315,
+      "lon": -23.5136,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Enugu",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 6.4584,
+      "lon": 7.5464,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Port Harcourt",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 4.8156,
+      "lon": 7.0498,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Benin City",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 6.335,
+      "lon": 5.627,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Kaduna",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 10.5222,
+      "lon": 7.4383,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Maiduguri",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 11.8333,
+      "lon": 13.15,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Zaria",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 11.0851,
+      "lon": 7.7199,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Aba",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 5.1066,
+      "lon": 7.3666,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Jos",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 9.8965,
+      "lon": 8.8583,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Ilorin",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 8.4966,
+      "lon": 4.5421,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Onitsha",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 6.1667,
+      "lon": 6.7833,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Warri",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 5.5167,
+      "lon": 5.75,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Tamale",
+      "country": "Ghana",
+      "iso3": "GHA",
+      "lat": 9.4008,
+      "lon": -0.8393,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Sekondi-Takoradi",
+      "country": "Ghana",
+      "iso3": "GHA",
+      "lat": 4.9016,
+      "lon": -1.7544,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Cape Coast",
+      "country": "Ghana",
+      "iso3": "GHA",
+      "lat": 5.1053,
+      "lon": -1.2466,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Tema",
+      "country": "Ghana",
+      "iso3": "GHA",
+      "lat": 5.6698,
+      "lon": -0.0166,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Bouaké",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 7.6833,
+      "lon": -5.0333,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Yamoussoukro",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 6.8276,
+      "lon": -5.2893,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Thiès",
+      "country": "Senegal",
+      "iso3": "SEN",
+      "lat": 14.7833,
+      "lon": -16.9167,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Kaolack",
+      "country": "Senegal",
+      "iso3": "SEN",
+      "lat": 14.1333,
+      "lon": -16.0667,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Saint-Louis",
+      "country": "Senegal",
+      "iso3": "SEN",
+      "lat": 16.0333,
+      "lon": -16.5,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Sikasso",
+      "country": "Mali",
+      "iso3": "MLI",
+      "lat": 11.3167,
+      "lon": -5.6667,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Ségou",
+      "country": "Mali",
+      "iso3": "MLI",
+      "lat": 13.45,
+      "lon": -6.2667,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Mopti",
+      "country": "Mali",
+      "iso3": "MLI",
+      "lat": 14.4833,
+      "lon": -4.1833,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Timbuktu",
+      "country": "Mali",
+      "iso3": "MLI",
+      "lat": 16.7735,
+      "lon": -3.0074,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Bobo-Dioulasso",
+      "country": "Burkina Faso",
+      "iso3": "BFA",
+      "lat": 11.1771,
+      "lon": -4.2979,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Koudougou",
+      "country": "Burkina Faso",
+      "iso3": "BFA",
+      "lat": 12.25,
+      "lon": -2.3667,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Maradi",
+      "country": "Niger",
+      "iso3": "NER",
+      "lat": 13.5,
+      "lon": 7.1,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Zinder",
+      "country": "Niger",
+      "iso3": "NER",
+      "lat": 13.8,
+      "lon": 8.9833,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Tahoua",
+      "country": "Niger",
+      "iso3": "NER",
+      "lat": 14.8833,
+      "lon": 5.2667,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Agadez",
+      "country": "Niger",
+      "iso3": "NER",
+      "lat": 16.9742,
+      "lon": 7.9893,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Kankan",
+      "country": "Guinea",
+      "iso3": "GIN",
+      "lat": 10.3833,
+      "lon": -9.3,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Nzérékoré",
+      "country": "Guinea",
+      "iso3": "GIN",
+      "lat": 7.7564,
+      "lon": -8.8175,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Labé",
+      "country": "Guinea",
+      "iso3": "GIN",
+      "lat": 11.3167,
+      "lon": -12.3,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Bo",
+      "country": "Sierra Leone",
+      "iso3": "SLE",
+      "lat": 7.9647,
+      "lon": -11.7383,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Kenema",
+      "country": "Sierra Leone",
+      "iso3": "SLE",
+      "lat": 7.8764,
+      "lon": -11.1869,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Makeni",
+      "country": "Sierra Leone",
+      "iso3": "SLE",
+      "lat": 8.8833,
+      "lon": -12.05,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Sokodé",
+      "country": "Togo",
+      "iso3": "TGO",
+      "lat": 8.9833,
+      "lon": 1.1333,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Kara",
+      "country": "Togo",
+      "iso3": "TGO",
+      "lat": 9.5511,
+      "lon": 1.1861,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Parakou",
+      "country": "Benin",
+      "iso3": "BEN",
+      "lat": 9.3372,
+      "lon": 2.62,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Bohicon",
+      "country": "Benin",
+      "iso3": "BEN",
+      "lat": 7.1833,
+      "lon": 2.0667,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Sokoto",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 13.0059,
+      "lon": 5.2476,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Uyo",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 5.0333,
+      "lon": 7.9333,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Calabar",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 4.9517,
+      "lon": 8.322,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Akure",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 7.2526,
+      "lon": 5.1935,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Oshogbo",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 7.7667,
+      "lon": 4.5667,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Abeokuta",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 7.1557,
+      "lon": 3.3451,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Ogbomosho",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 8.1333,
+      "lon": 4.25,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Sunyani",
+      "country": "Ghana",
+      "iso3": "GHA",
+      "lat": 7.3394,
+      "lon": -2.3266,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Ho",
+      "country": "Ghana",
+      "iso3": "GHA",
+      "lat": 6.6011,
+      "lon": 0.4706,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Koforidua",
+      "country": "Ghana",
+      "iso3": "GHA",
+      "lat": 6.0833,
+      "lon": -0.25,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Wa",
+      "country": "Ghana",
+      "iso3": "GHA",
+      "lat": 10.0601,
+      "lon": -2.5,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Bolgatanga",
+      "country": "Ghana",
+      "iso3": "GHA",
+      "lat": 10.786,
+      "lon": -0.8514,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Man",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 7.4,
+      "lon": -7.55,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Daloa",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 6.8833,
+      "lon": -6.45,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Korhogo",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 9.4578,
+      "lon": -5.6297,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Mbour",
+      "country": "Senegal",
+      "iso3": "SEN",
+      "lat": 14.3667,
+      "lon": -16.9667,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Touba",
+      "country": "Senegal",
+      "iso3": "SEN",
+      "lat": 14.85,
+      "lon": -15.8833,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Diourbel",
+      "country": "Senegal",
+      "iso3": "SEN",
+      "lat": 14.65,
+      "lon": -16.2333,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Kolda",
+      "country": "Senegal",
+      "iso3": "SEN",
+      "lat": 12.8833,
+      "lon": -14.95,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Tambacounda",
+      "country": "Senegal",
+      "iso3": "SEN",
+      "lat": 13.7667,
+      "lon": -13.6667,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Gao",
+      "country": "Mali",
+      "iso3": "MLI",
+      "lat": 16.2741,
+      "lon": -0.0462,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Kayes",
+      "country": "Mali",
+      "iso3": "MLI",
+      "lat": 14.4333,
+      "lon": -11.4333,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Koutiala",
+      "country": "Mali",
+      "iso3": "MLI",
+      "lat": 12.3833,
+      "lon": -5.4667,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Dédougou",
+      "country": "Burkina Faso",
+      "iso3": "BFA",
+      "lat": 12.4667,
+      "lon": -3.4667,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Fada N'Gourma",
+      "country": "Burkina Faso",
+      "iso3": "BFA",
+      "lat": 12.0619,
+      "lon": 0.3519,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Kaya",
+      "country": "Burkina Faso",
+      "iso3": "BFA",
+      "lat": 13.1,
+      "lon": -1.0833,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Ouahigouya",
+      "country": "Burkina Faso",
+      "iso3": "BFA",
+      "lat": 13.5667,
+      "lon": -2.4167,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Tenkodogo",
+      "country": "Burkina Faso",
+      "iso3": "BFA",
+      "lat": 11.7833,
+      "lon": -0.3667,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Diffa",
+      "country": "Niger",
+      "iso3": "NER",
+      "lat": 13.3167,
+      "lon": 12.6167,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Dosso",
+      "country": "Niger",
+      "iso3": "NER",
+      "lat": 13.0511,
+      "lon": 3.1939,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Tillabéri",
+      "country": "Niger",
+      "iso3": "NER",
+      "lat": 14.2097,
+      "lon": 1.4547,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Gbarnga",
+      "country": "Liberia",
+      "iso3": "LBR",
+      "lat": 6.9942,
+      "lon": -9.4739,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Buchanan",
+      "country": "Liberia",
+      "iso3": "LBR",
+      "lat": 5.8808,
+      "lon": -10.0467,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Atakpamé",
+      "country": "Togo",
+      "iso3": "TGO",
+      "lat": 7.5333,
+      "lon": 1.1333,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Abomey",
+      "country": "Benin",
+      "iso3": "BEN",
+      "lat": 7.1833,
+      "lon": 1.9833,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Natitingou",
+      "country": "Benin",
+      "iso3": "BEN",
+      "lat": 10.3167,
+      "lon": 1.3833,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Atar",
+      "country": "Mauritania",
+      "iso3": "MRT",
+      "lat": 20.5167,
+      "lon": -13.05,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Kaédi",
+      "country": "Mauritania",
+      "iso3": "MRT",
+      "lat": 16.15,
+      "lon": -13.5,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Gabú",
+      "country": "Guinea-Bissau",
+      "iso3": "GNB",
+      "lat": 12.2833,
+      "lon": -14.2167,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Bafatá",
+      "country": "Guinea-Bissau",
+      "iso3": "GNB",
+      "lat": 12.1667,
+      "lon": -14.65,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Mindelo",
+      "country": "Cape Verde",
+      "iso3": "CPV",
+      "lat": 16.89,
+      "lon": -25.0,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Asaba",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 6.198,
+      "lon": 6.7406,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Mushin",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 6.55,
+      "lon": 3.35,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Obuasi",
+      "country": "Ghana",
+      "iso3": "GHA",
+      "lat": 6.2001,
+      "lon": -1.6756,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Gagnoa",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 6.1333,
+      "lon": -5.95,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "San-Pédro",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 4.748,
+      "lon": -6.6363,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Abengourou",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 6.7286,
+      "lon": -3.4969,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Louga",
+      "country": "Senegal",
+      "iso3": "SEN",
+      "lat": 15.6167,
+      "lon": -16.2333,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Kédougou",
+      "country": "Senegal",
+      "iso3": "SEN",
+      "lat": 12.5575,
+      "lon": -12.1747,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Sélingué",
+      "country": "Mali",
+      "iso3": "MLI",
+      "lat": 11.7,
+      "lon": -8.2167,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Kidal",
+      "country": "Mali",
+      "iso3": "MLI",
+      "lat": 18.4411,
+      "lon": 1.4078,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Banfora",
+      "country": "Burkina Faso",
+      "iso3": "BFA",
+      "lat": 10.6333,
+      "lon": -4.7667,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Gaoua",
+      "country": "Burkina Faso",
+      "iso3": "BFA",
+      "lat": 10.33,
+      "lon": -3.18,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Réo",
+      "country": "Burkina Faso",
+      "iso3": "BFA",
+      "lat": 12.3167,
+      "lon": -2.4667,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Kindia",
+      "country": "Guinea",
+      "iso3": "GIN",
+      "lat": 10.05,
+      "lon": -12.8667,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Nzérékoré",
+      "country": "Guinea",
+      "iso3": "GIN",
+      "lat": 7.7564,
+      "lon": -8.8175,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Ziguinchor",
+      "country": "Senegal",
+      "iso3": "SEN",
+      "lat": 12.5833,
+      "lon": -16.2719,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Séguéla",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 7.9618,
+      "lon": -6.673,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Matam",
+      "country": "Senegal",
+      "iso3": "SEN",
+      "lat": 15.6559,
+      "lon": -13.255,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Odienné",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 9.5,
+      "lon": -7.5667,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Dimbokro",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 6.65,
+      "lon": -4.7,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Agboville",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 5.9167,
+      "lon": -4.2167,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Nairobi",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -1.2921,
+      "lon": 36.8219,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Dar es Salaam",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -6.7924,
+      "lon": 39.2083,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Kampala",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": 0.3476,
+      "lon": 32.5825,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Kigali",
+      "country": "Rwanda",
+      "iso3": "RWA",
+      "lat": -1.9441,
+      "lon": 30.0619,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Bujumbura",
+      "country": "Burundi",
+      "iso3": "BDI",
+      "lat": -3.3822,
+      "lon": 29.3644,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Mombasa",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -4.0435,
+      "lon": 39.6682,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Kisumu",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -0.1022,
+      "lon": 34.7617,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Nakuru",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -0.3031,
+      "lon": 36.08,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Eldoret",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": 0.52,
+      "lon": 35.2699,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Meru",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": 0.0468,
+      "lon": 37.649,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Thika",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -1.0332,
+      "lon": 37.0693,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Malindi",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -3.2138,
+      "lon": 40.1169,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Kitale",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": 1.0154,
+      "lon": 35.0062,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Garissa",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -0.4532,
+      "lon": 39.6461,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Dodoma",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -6.1731,
+      "lon": 35.7395,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Arusha",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -3.3869,
+      "lon": 36.683,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Mwanza",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -2.5164,
+      "lon": 32.9175,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Zanzibar City",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -6.1659,
+      "lon": 39.2026,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Tanga",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -5.0668,
+      "lon": 39.099,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Morogoro",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -6.82,
+      "lon": 37.66,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Mbeya",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -8.9,
+      "lon": 33.45,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Tabora",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -5.0168,
+      "lon": 32.8,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Iringa",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -7.7673,
+      "lon": 35.6934,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Kigoma",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -4.8769,
+      "lon": 29.6258,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Moshi",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -3.35,
+      "lon": 37.3333,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Shinyanga",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -3.66,
+      "lon": 33.42,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Singida",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -4.8167,
+      "lon": 34.75,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Gulu",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": 2.7747,
+      "lon": 32.299,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Mbarara",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": -0.6167,
+      "lon": 30.65,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Jinja",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": 0.4478,
+      "lon": 33.2026,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Mbale",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": 1.0799,
+      "lon": 34.1754,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Lira",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": 2.2499,
+      "lon": 32.8999,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Masaka",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": -0.3367,
+      "lon": 31.75,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Arua",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": 3.021,
+      "lon": 30.91,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Fort Portal",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": 0.6592,
+      "lon": 30.2738,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Kabale",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": -1.25,
+      "lon": 29.9833,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Soroti",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": 1.7135,
+      "lon": 33.611,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Gitarama",
+      "country": "Rwanda",
+      "iso3": "RWA",
+      "lat": -2.0746,
+      "lon": 29.7564,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Butare",
+      "country": "Rwanda",
+      "iso3": "RWA",
+      "lat": -2.6,
+      "lon": 29.7333,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Gisenyi",
+      "country": "Rwanda",
+      "iso3": "RWA",
+      "lat": -1.6979,
+      "lon": 29.2566,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Gitega",
+      "country": "Burundi",
+      "iso3": "BDI",
+      "lat": -3.4272,
+      "lon": 29.925,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Ngozi",
+      "country": "Burundi",
+      "iso3": "BDI",
+      "lat": -2.9072,
+      "lon": 29.8299,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Muyinga",
+      "country": "Burundi",
+      "iso3": "BDI",
+      "lat": -2.85,
+      "lon": 30.3333,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Narok",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -1.0833,
+      "lon": 35.8667,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Kericho",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -0.3667,
+      "lon": 35.2833,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Machakos",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -1.5167,
+      "lon": 37.2667,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Nyeri",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -0.4169,
+      "lon": 36.9511,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Kakamega",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": 0.2827,
+      "lon": 34.7519,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Bungoma",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": 0.5635,
+      "lon": 34.5606,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Embu",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -0.5333,
+      "lon": 37.45,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Homa Bay",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -0.5167,
+      "lon": 34.45,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Isiolo",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": 0.35,
+      "lon": 37.5833,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Mandera",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": 3.9366,
+      "lon": 41.867,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Wajir",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": 1.7471,
+      "lon": 40.0573,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Marsabit",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": 2.3333,
+      "lon": 37.9667,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Kilifi",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -3.6305,
+      "lon": 39.8499,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Lamu",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -2.2692,
+      "lon": 40.902,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Musoma",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -1.4997,
+      "lon": 33.8008,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Bukoba",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -1.3344,
+      "lon": 31.8196,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Lindi",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -9.9972,
+      "lon": 39.715,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Mtwara",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -10.2667,
+      "lon": 40.1833,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Songea",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -10.6833,
+      "lon": 35.65,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Njombe",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -9.3333,
+      "lon": 34.7667,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Bagamoyo",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -6.4398,
+      "lon": 38.9066,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Masindi",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": 1.6742,
+      "lon": 31.715,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Hoima",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": 1.4345,
+      "lon": 31.3568,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Tororo",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": 0.6927,
+      "lon": 34.181,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Entebbe",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": 0.0512,
+      "lon": 32.4637,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Rukungiri",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": -0.8406,
+      "lon": 29.9424,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Iganga",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": 0.6092,
+      "lon": 33.4681,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Busia",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": 0.4608,
+      "lon": 34.095,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Nanyuki",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": 0.018,
+      "lon": 37.072,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Kiambu",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -1.1719,
+      "lon": 36.8356,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Cairo",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 30.0444,
+      "lon": 31.2357,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Alexandria",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 31.2001,
+      "lon": 29.9187,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Casablanca",
+      "country": "Morocco",
+      "iso3": "MAR",
+      "lat": 33.5731,
+      "lon": -7.5898,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Algiers",
+      "country": "Algeria",
+      "iso3": "DZA",
+      "lat": 36.7372,
+      "lon": 3.0863,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Tunis",
+      "country": "Tunisia",
+      "iso3": "TUN",
+      "lat": 36.819,
+      "lon": 10.1658,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Tripoli",
+      "country": "Libya",
+      "iso3": "LBY",
+      "lat": 32.902,
+      "lon": 13.1802,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Khartoum",
+      "country": "Sudan",
+      "iso3": "SDN",
+      "lat": 15.5007,
+      "lon": 32.5599,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Rabat",
+      "country": "Morocco",
+      "iso3": "MAR",
+      "lat": 34.0209,
+      "lon": -6.8416,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Fès",
+      "country": "Morocco",
+      "iso3": "MAR",
+      "lat": 34.0433,
+      "lon": -5.0033,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Marrakech",
+      "country": "Morocco",
+      "iso3": "MAR",
+      "lat": 31.6295,
+      "lon": -7.9811,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Tangier",
+      "country": "Morocco",
+      "iso3": "MAR",
+      "lat": 35.7595,
+      "lon": -5.834,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Agadir",
+      "country": "Morocco",
+      "iso3": "MAR",
+      "lat": 30.4278,
+      "lon": -9.5981,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Meknès",
+      "country": "Morocco",
+      "iso3": "MAR",
+      "lat": 33.8833,
+      "lon": -5.5667,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Oujda",
+      "country": "Morocco",
+      "iso3": "MAR",
+      "lat": 34.68,
+      "lon": -1.9,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Kenitra",
+      "country": "Morocco",
+      "iso3": "MAR",
+      "lat": 34.2541,
+      "lon": -6.5804,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Giza",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 30.0131,
+      "lon": 31.2089,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Port Said",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 31.2565,
+      "lon": 32.2841,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Suez",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 29.9737,
+      "lon": 32.5263,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Luxor",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 25.6872,
+      "lon": 32.6396,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Asyut",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 27.1783,
+      "lon": 31.1859,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Mansoura",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 31.0367,
+      "lon": 31.3783,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Tanta",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 30.7865,
+      "lon": 30.9965,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Zagazig",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 30.5877,
+      "lon": 31.5021,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Ismailia",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 30.5965,
+      "lon": 32.2715,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Fayyum",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 29.3084,
+      "lon": 30.8428,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Sohag",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 26.5591,
+      "lon": 31.6968,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Beni Suef",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 29.0661,
+      "lon": 31.0994,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Aswan",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 24.0889,
+      "lon": 32.8998,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Minia",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 28.087,
+      "lon": 30.7618,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Damanhur",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 31.0339,
+      "lon": 30.4701,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Oran",
+      "country": "Algeria",
+      "iso3": "DZA",
+      "lat": 35.6969,
+      "lon": -0.6331,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Constantine",
+      "country": "Algeria",
+      "iso3": "DZA",
+      "lat": 36.365,
+      "lon": 6.6147,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Annaba",
+      "country": "Algeria",
+      "iso3": "DZA",
+      "lat": 36.9,
+      "lon": 7.7667,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Blida",
+      "country": "Algeria",
+      "iso3": "DZA",
+      "lat": 36.4703,
+      "lon": 2.8277,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Batna",
+      "country": "Algeria",
+      "iso3": "DZA",
+      "lat": 35.5559,
+      "lon": 6.174,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Sétif",
+      "country": "Algeria",
+      "iso3": "DZA",
+      "lat": 36.1898,
+      "lon": 5.4108,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Biskra",
+      "country": "Algeria",
+      "iso3": "DZA",
+      "lat": 34.85,
+      "lon": 5.7333,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Béjaïa",
+      "country": "Algeria",
+      "iso3": "DZA",
+      "lat": 36.751,
+      "lon": 5.0564,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Tlemcen",
+      "country": "Algeria",
+      "iso3": "DZA",
+      "lat": 34.8828,
+      "lon": -1.3167,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Sfax",
+      "country": "Tunisia",
+      "iso3": "TUN",
+      "lat": 34.7406,
+      "lon": 10.7603,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Sousse",
+      "country": "Tunisia",
+      "iso3": "TUN",
+      "lat": 35.8333,
+      "lon": 10.6333,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Kairouan",
+      "country": "Tunisia",
+      "iso3": "TUN",
+      "lat": 35.6722,
+      "lon": 10.1,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Bizerte",
+      "country": "Tunisia",
+      "iso3": "TUN",
+      "lat": 37.2744,
+      "lon": 9.8739,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Gabès",
+      "country": "Tunisia",
+      "iso3": "TUN",
+      "lat": 33.8833,
+      "lon": 10.1167,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Ariana",
+      "country": "Tunisia",
+      "iso3": "TUN",
+      "lat": 36.86,
+      "lon": 10.1936,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Gafsa",
+      "country": "Tunisia",
+      "iso3": "TUN",
+      "lat": 34.425,
+      "lon": 8.7842,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Benghazi",
+      "country": "Libya",
+      "iso3": "LBY",
+      "lat": 32.1167,
+      "lon": 20.0667,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Misrata",
+      "country": "Libya",
+      "iso3": "LBY",
+      "lat": 32.3742,
+      "lon": 15.0925,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Sabha",
+      "country": "Libya",
+      "iso3": "LBY",
+      "lat": 27.0377,
+      "lon": 14.4283,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Tobruk",
+      "country": "Libya",
+      "iso3": "LBY",
+      "lat": 32.0794,
+      "lon": 23.9561,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Omdurman",
+      "country": "Sudan",
+      "iso3": "SDN",
+      "lat": 15.65,
+      "lon": 32.48,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Port Sudan",
+      "country": "Sudan",
+      "iso3": "SDN",
+      "lat": 19.6158,
+      "lon": 37.2164,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Kassala",
+      "country": "Sudan",
+      "iso3": "SDN",
+      "lat": 15.45,
+      "lon": 36.4,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "El Obeid",
+      "country": "Sudan",
+      "iso3": "SDN",
+      "lat": 13.1842,
+      "lon": 30.2174,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Nyala",
+      "country": "Sudan",
+      "iso3": "SDN",
+      "lat": 12.058,
+      "lon": 24.882,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Wad Medani",
+      "country": "Sudan",
+      "iso3": "SDN",
+      "lat": 14.4,
+      "lon": 33.5167,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Al-Fashir",
+      "country": "Sudan",
+      "iso3": "SDN",
+      "lat": 13.6281,
+      "lon": 25.3493,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Gedaref",
+      "country": "Sudan",
+      "iso3": "SDN",
+      "lat": 14.038,
+      "lon": 35.381,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Tamanrasset",
+      "country": "Algeria",
+      "iso3": "DZA",
+      "lat": 22.7906,
+      "lon": 5.5106,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Ouargla",
+      "country": "Algeria",
+      "iso3": "DZA",
+      "lat": 31.9539,
+      "lon": 5.3258,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Ghardaïa",
+      "country": "Algeria",
+      "iso3": "DZA",
+      "lat": 32.49,
+      "lon": 3.67,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Tizi Ouzou",
+      "country": "Algeria",
+      "iso3": "DZA",
+      "lat": 36.7167,
+      "lon": 4.05,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Khouribga",
+      "country": "Morocco",
+      "iso3": "MAR",
+      "lat": 32.88,
+      "lon": -6.9063,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Beni Mellal",
+      "country": "Morocco",
+      "iso3": "MAR",
+      "lat": 32.3333,
+      "lon": -6.35,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Tetouan",
+      "country": "Morocco",
+      "iso3": "MAR",
+      "lat": 35.5889,
+      "lon": -5.3626,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Safi",
+      "country": "Morocco",
+      "iso3": "MAR",
+      "lat": 32.2994,
+      "lon": -9.2372,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Shubra El Kheima",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 30.1286,
+      "lon": 31.2422,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Atbara",
+      "country": "Sudan",
+      "iso3": "SDN",
+      "lat": 17.7001,
+      "lon": 33.9868,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Geneina",
+      "country": "Sudan",
+      "iso3": "SDN",
+      "lat": 13.45,
+      "lon": 22.4333,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Kinshasa",
+      "country": "DR Congo",
+      "iso3": "COD",
+      "lat": -4.3217,
+      "lon": 15.3222,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Luanda",
+      "country": "Angola",
+      "iso3": "AGO",
+      "lat": -8.8383,
+      "lon": 13.2344,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Yaoundé",
+      "country": "Cameroon",
+      "iso3": "CMR",
+      "lat": 3.8667,
+      "lon": 11.5167,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Douala",
+      "country": "Cameroon",
+      "iso3": "CMR",
+      "lat": 4.05,
+      "lon": 9.7,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Brazzaville",
+      "country": "Republic of Congo",
+      "iso3": "COG",
+      "lat": -4.2694,
+      "lon": 15.2716,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Bangui",
+      "country": "Central African Republic",
+      "iso3": "CAF",
+      "lat": 4.3612,
+      "lon": 18.555,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "N'Djamena",
+      "country": "Chad",
+      "iso3": "TCD",
+      "lat": 12.1048,
+      "lon": 15.0445,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Libreville",
+      "country": "Gabon",
+      "iso3": "GAB",
+      "lat": 0.3901,
+      "lon": 9.4544,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Malabo",
+      "country": "Equatorial Guinea",
+      "iso3": "GNQ",
+      "lat": 3.75,
+      "lon": 8.7833,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Lubumbashi",
+      "country": "DR Congo",
+      "iso3": "COD",
+      "lat": -11.6609,
+      "lon": 27.4794,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Mbuji-Mayi",
+      "country": "DR Congo",
+      "iso3": "COD",
+      "lat": -6.15,
+      "lon": 23.6,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Kananga",
+      "country": "DR Congo",
+      "iso3": "COD",
+      "lat": -5.8959,
+      "lon": 22.4159,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Kisangani",
+      "country": "DR Congo",
+      "iso3": "COD",
+      "lat": 0.5167,
+      "lon": 25.19,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Bukavu",
+      "country": "DR Congo",
+      "iso3": "COD",
+      "lat": -2.5083,
+      "lon": 28.8608,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Goma",
+      "country": "DR Congo",
+      "iso3": "COD",
+      "lat": -1.6794,
+      "lon": 29.2228,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Bunia",
+      "country": "DR Congo",
+      "iso3": "COD",
+      "lat": 1.56,
+      "lon": 30.24,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Matadi",
+      "country": "DR Congo",
+      "iso3": "COD",
+      "lat": -5.8236,
+      "lon": 13.4597,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Mbandaka",
+      "country": "DR Congo",
+      "iso3": "COD",
+      "lat": 0.0478,
+      "lon": 18.2564,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Kolwezi",
+      "country": "DR Congo",
+      "iso3": "COD",
+      "lat": -10.7167,
+      "lon": 25.4667,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Likasi",
+      "country": "DR Congo",
+      "iso3": "COD",
+      "lat": -10.9804,
+      "lon": 26.7322,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Kalemie",
+      "country": "DR Congo",
+      "iso3": "COD",
+      "lat": -5.9333,
+      "lon": 29.1833,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Benguela",
+      "country": "Angola",
+      "iso3": "AGO",
+      "lat": -12.5763,
+      "lon": 13.4055,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Huambo",
+      "country": "Angola",
+      "iso3": "AGO",
+      "lat": -12.7761,
+      "lon": 15.7393,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Lobito",
+      "country": "Angola",
+      "iso3": "AGO",
+      "lat": -12.35,
+      "lon": 13.55,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Malanje",
+      "country": "Angola",
+      "iso3": "AGO",
+      "lat": -9.5333,
+      "lon": 16.35,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Cabinda",
+      "country": "Angola",
+      "iso3": "AGO",
+      "lat": -5.55,
+      "lon": 12.2,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Bafoussam",
+      "country": "Cameroon",
+      "iso3": "CMR",
+      "lat": 5.4736,
+      "lon": 10.4175,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Bamenda",
+      "country": "Cameroon",
+      "iso3": "CMR",
+      "lat": 5.9597,
+      "lon": 10.146,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Garoua",
+      "country": "Cameroon",
+      "iso3": "CMR",
+      "lat": 9.3015,
+      "lon": 13.3953,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Maroua",
+      "country": "Cameroon",
+      "iso3": "CMR",
+      "lat": 10.5955,
+      "lon": 14.3153,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Ngaoundéré",
+      "country": "Cameroon",
+      "iso3": "CMR",
+      "lat": 7.3167,
+      "lon": 13.5833,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Bertoua",
+      "country": "Cameroon",
+      "iso3": "CMR",
+      "lat": 4.5761,
+      "lon": 13.6847,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Pointe-Noire",
+      "country": "Republic of Congo",
+      "iso3": "COG",
+      "lat": -4.7692,
+      "lon": 11.866,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Port-Gentil",
+      "country": "Gabon",
+      "iso3": "GAB",
+      "lat": -0.7193,
+      "lon": 8.7815,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Franceville",
+      "country": "Gabon",
+      "iso3": "GAB",
+      "lat": -1.6333,
+      "lon": 13.5833,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Bata",
+      "country": "Equatorial Guinea",
+      "iso3": "GNQ",
+      "lat": 1.8639,
+      "lon": 9.769,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Moundou",
+      "country": "Chad",
+      "iso3": "TCD",
+      "lat": 8.5667,
+      "lon": 16.0833,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Sarh",
+      "country": "Chad",
+      "iso3": "TCD",
+      "lat": 9.15,
+      "lon": 18.3833,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Abéché",
+      "country": "Chad",
+      "iso3": "TCD",
+      "lat": 13.8279,
+      "lon": 20.8325,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Bangassou",
+      "country": "Central African Republic",
+      "iso3": "CAF",
+      "lat": 4.736,
+      "lon": 22.819,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Berbérati",
+      "country": "Central African Republic",
+      "iso3": "CAF",
+      "lat": 4.2611,
+      "lon": 15.7875,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Bambari",
+      "country": "Central African Republic",
+      "iso3": "CAF",
+      "lat": 5.7619,
+      "lon": 20.6722,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Bouar",
+      "country": "Central African Republic",
+      "iso3": "CAF",
+      "lat": 5.9367,
+      "lon": 15.5994,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Tshikapa",
+      "country": "DR Congo",
+      "iso3": "COD",
+      "lat": -6.4167,
+      "lon": 20.8,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Dolisie",
+      "country": "Republic of Congo",
+      "iso3": "COG",
+      "lat": -4.1992,
+      "lon": 12.6772,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Nola",
+      "country": "Central African Republic",
+      "iso3": "CAF",
+      "lat": 3.5264,
+      "lon": 16.0594,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Kelo",
+      "country": "Chad",
+      "iso3": "TCD",
+      "lat": 9.3167,
+      "lon": 15.8,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Oyem",
+      "country": "Gabon",
+      "iso3": "GAB",
+      "lat": 1.6174,
+      "lon": 11.5793,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Johannesburg",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -26.2041,
+      "lon": 28.0473,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Cape Town",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -33.9249,
+      "lon": 18.4241,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Durban",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -29.8587,
+      "lon": 31.0218,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Pretoria",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -25.7479,
+      "lon": 28.2293,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Port Elizabeth",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -33.9608,
+      "lon": 25.6022,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Bloemfontein",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -29.0852,
+      "lon": 26.1596,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "East London",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -33.0292,
+      "lon": 27.8546,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Maputo",
+      "country": "Mozambique",
+      "iso3": "MOZ",
+      "lat": -25.9653,
+      "lon": 32.5892,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Harare",
+      "country": "Zimbabwe",
+      "iso3": "ZWE",
+      "lat": -17.8252,
+      "lon": 31.0335,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Lusaka",
+      "country": "Zambia",
+      "iso3": "ZMB",
+      "lat": -15.4167,
+      "lon": 28.2833,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Gaborone",
+      "country": "Botswana",
+      "iso3": "BWA",
+      "lat": -24.657,
+      "lon": 25.9089,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Windhoek",
+      "country": "Namibia",
+      "iso3": "NAM",
+      "lat": -22.5597,
+      "lon": 17.0832,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Mbabane",
+      "country": "Eswatini",
+      "iso3": "SWZ",
+      "lat": -26.3186,
+      "lon": 31.141,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Maseru",
+      "country": "Lesotho",
+      "iso3": "LSO",
+      "lat": -29.3151,
+      "lon": 27.4869,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Antananarivo",
+      "country": "Madagascar",
+      "iso3": "MDG",
+      "lat": -18.9137,
+      "lon": 47.5361,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Bulawayo",
+      "country": "Zimbabwe",
+      "iso3": "ZWE",
+      "lat": -20.15,
+      "lon": 28.5833,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Chitungwiza",
+      "country": "Zimbabwe",
+      "iso3": "ZWE",
+      "lat": -18.0127,
+      "lon": 31.0748,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Mutare",
+      "country": "Zimbabwe",
+      "iso3": "ZWE",
+      "lat": -18.9667,
+      "lon": 32.6667,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Gweru",
+      "country": "Zimbabwe",
+      "iso3": "ZWE",
+      "lat": -19.45,
+      "lon": 29.8167,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Beira",
+      "country": "Mozambique",
+      "iso3": "MOZ",
+      "lat": -19.8436,
+      "lon": 34.8389,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Nampula",
+      "country": "Mozambique",
+      "iso3": "MOZ",
+      "lat": -15.1165,
+      "lon": 39.2666,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Matola",
+      "country": "Mozambique",
+      "iso3": "MOZ",
+      "lat": -25.9667,
+      "lon": 32.4667,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Quelimane",
+      "country": "Mozambique",
+      "iso3": "MOZ",
+      "lat": -17.8778,
+      "lon": 36.8878,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Chimoio",
+      "country": "Mozambique",
+      "iso3": "MOZ",
+      "lat": -19.1167,
+      "lon": 33.4667,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Tete",
+      "country": "Mozambique",
+      "iso3": "MOZ",
+      "lat": -16.1564,
+      "lon": 33.5872,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Kitwe",
+      "country": "Zambia",
+      "iso3": "ZMB",
+      "lat": -12.8167,
+      "lon": 28.2,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Ndola",
+      "country": "Zambia",
+      "iso3": "ZMB",
+      "lat": -12.9583,
+      "lon": 28.6369,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Kabwe",
+      "country": "Zambia",
+      "iso3": "ZMB",
+      "lat": -14.4469,
+      "lon": 28.4464,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Chingola",
+      "country": "Zambia",
+      "iso3": "ZMB",
+      "lat": -12.5333,
+      "lon": 27.8667,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Livingstone",
+      "country": "Zambia",
+      "iso3": "ZMB",
+      "lat": -17.8611,
+      "lon": 25.8544,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Solwezi",
+      "country": "Zambia",
+      "iso3": "ZMB",
+      "lat": -12.1869,
+      "lon": 26.3978,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Francistown",
+      "country": "Botswana",
+      "iso3": "BWA",
+      "lat": -21.1667,
+      "lon": 27.5,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Maun",
+      "country": "Botswana",
+      "iso3": "BWA",
+      "lat": -19.9833,
+      "lon": 23.4167,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Walvis Bay",
+      "country": "Namibia",
+      "iso3": "NAM",
+      "lat": -22.9576,
+      "lon": 14.5053,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Swakopmund",
+      "country": "Namibia",
+      "iso3": "NAM",
+      "lat": -22.6783,
+      "lon": 14.5258,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Rundu",
+      "country": "Namibia",
+      "iso3": "NAM",
+      "lat": -17.9333,
+      "lon": 19.7667,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Oshakati",
+      "country": "Namibia",
+      "iso3": "NAM",
+      "lat": -17.7967,
+      "lon": 15.6945,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Toamasina",
+      "country": "Madagascar",
+      "iso3": "MDG",
+      "lat": -18.1492,
+      "lon": 49.4022,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Antsirabe",
+      "country": "Madagascar",
+      "iso3": "MDG",
+      "lat": -19.8659,
+      "lon": 47.0333,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Mahajanga",
+      "country": "Madagascar",
+      "iso3": "MDG",
+      "lat": -15.7167,
+      "lon": 46.3167,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Fianarantsoa",
+      "country": "Madagascar",
+      "iso3": "MDG",
+      "lat": -21.45,
+      "lon": 47.0833,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Toliara",
+      "country": "Madagascar",
+      "iso3": "MDG",
+      "lat": -23.35,
+      "lon": 43.6667,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Pietermaritzburg",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -29.6167,
+      "lon": 30.3833,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Benoni",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -26.1839,
+      "lon": 28.3197,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Soweto",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -26.2677,
+      "lon": 27.8587,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Polokwane",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -23.9045,
+      "lon": 29.4688,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Vereeniging",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -26.6755,
+      "lon": 27.9306,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Nelspruit",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -25.4753,
+      "lon": 30.9694,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Rustenburg",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -25.6711,
+      "lon": 27.2423,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Kimberley",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -28.7282,
+      "lon": 24.7499,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "George",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -33.9608,
+      "lon": 22.4617,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Richards Bay",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -28.7774,
+      "lon": 32.0437,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Manzini",
+      "country": "Eswatini",
+      "iso3": "SWZ",
+      "lat": -26.4833,
+      "lon": 31.3833,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Mafeteng",
+      "country": "Lesotho",
+      "iso3": "LSO",
+      "lat": -29.8167,
+      "lon": 27.2333,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Leribe",
+      "country": "Lesotho",
+      "iso3": "LSO",
+      "lat": -28.8667,
+      "lon": 28.05,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Lubango",
+      "country": "Angola",
+      "iso3": "AGO",
+      "lat": -14.9177,
+      "lon": 13.4925,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Namibe",
+      "country": "Angola",
+      "iso3": "AGO",
+      "lat": -15.1961,
+      "lon": 12.1522,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Menongue",
+      "country": "Angola",
+      "iso3": "AGO",
+      "lat": -14.6583,
+      "lon": 17.6917,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Kuito",
+      "country": "Angola",
+      "iso3": "AGO",
+      "lat": -12.3833,
+      "lon": 16.9333,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Uíge",
+      "country": "Angola",
+      "iso3": "AGO",
+      "lat": -7.6167,
+      "lon": 15.0667,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Kasama",
+      "country": "Zambia",
+      "iso3": "ZMB",
+      "lat": -10.2167,
+      "lon": 31.1833,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Mufulira",
+      "country": "Zambia",
+      "iso3": "ZMB",
+      "lat": -12.55,
+      "lon": 28.2333,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Inhambane",
+      "country": "Mozambique",
+      "iso3": "MOZ",
+      "lat": -23.8667,
+      "lon": 35.3833,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Nacala",
+      "country": "Mozambique",
+      "iso3": "MOZ",
+      "lat": -14.5369,
+      "lon": 40.6728,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Selebi-Phikwe",
+      "country": "Botswana",
+      "iso3": "BWA",
+      "lat": -22.0,
+      "lon": 27.8333,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Serowe",
+      "country": "Botswana",
+      "iso3": "BWA",
+      "lat": -22.3833,
+      "lon": 26.7167,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Kwekwe",
+      "country": "Zimbabwe",
+      "iso3": "ZWE",
+      "lat": -18.9281,
+      "lon": 29.8148,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Masvingo",
+      "country": "Zimbabwe",
+      "iso3": "ZWE",
+      "lat": -20.0667,
+      "lon": 30.8333,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Antsiranana",
+      "country": "Madagascar",
+      "iso3": "MDG",
+      "lat": -12.35,
+      "lon": 49.3,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Addis Ababa",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 9.032,
+      "lon": 38.7469,
+      "region": "horn_of_africa",
+      "urban": true
+    },
+    {
+      "name": "Mogadishu",
+      "country": "Somalia",
+      "iso3": "SOM",
+      "lat": 2.0469,
+      "lon": 45.3182,
+      "region": "horn_of_africa",
+      "urban": true
+    },
+    {
+      "name": "Asmara",
+      "country": "Eritrea",
+      "iso3": "ERI",
+      "lat": 15.3229,
+      "lon": 38.9251,
+      "region": "horn_of_africa",
+      "urban": true
+    },
+    {
+      "name": "Djibouti City",
+      "country": "Djibouti",
+      "iso3": "DJI",
+      "lat": 11.572,
+      "lon": 43.1456,
+      "region": "horn_of_africa",
+      "urban": true
+    },
+    {
+      "name": "Dire Dawa",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 9.593,
+      "lon": 41.8661,
+      "region": "horn_of_africa",
+      "urban": true
+    },
+    {
+      "name": "Mekelle",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 13.4967,
+      "lon": 39.4767,
+      "region": "horn_of_africa",
+      "urban": true
+    },
+    {
+      "name": "Gondar",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 12.6,
+      "lon": 37.4667,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Hawassa",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 7.053,
+      "lon": 38.4627,
+      "region": "horn_of_africa",
+      "urban": true
+    },
+    {
+      "name": "Bahir Dar",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 11.5742,
+      "lon": 37.3614,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Jimma",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 7.6667,
+      "lon": 36.8333,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Dessie",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 11.1333,
+      "lon": 39.6333,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Jijiga",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 9.35,
+      "lon": 42.8,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Bishoftu",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 8.75,
+      "lon": 38.9833,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Arba Minch",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 6.0333,
+      "lon": 37.55,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Adama",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 8.54,
+      "lon": 39.27,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Sodo",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 6.85,
+      "lon": 37.75,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Nekemte",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 9.0833,
+      "lon": 36.55,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Debre Markos",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 10.35,
+      "lon": 37.7167,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Harar",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 9.3121,
+      "lon": 42.1197,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Axum",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 14.1167,
+      "lon": 38.7167,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Hargeisa",
+      "country": "Somaliland",
+      "iso3": "SOM",
+      "lat": 9.5597,
+      "lon": 44.065,
+      "region": "horn_of_africa",
+      "urban": true
+    },
+    {
+      "name": "Kismayo",
+      "country": "Somalia",
+      "iso3": "SOM",
+      "lat": -0.3583,
+      "lon": 42.5442,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Baidoa",
+      "country": "Somalia",
+      "iso3": "SOM",
+      "lat": 3.1231,
+      "lon": 43.6531,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Beledweyne",
+      "country": "Somalia",
+      "iso3": "SOM",
+      "lat": 4.7359,
+      "lon": 45.2038,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Galkayo",
+      "country": "Somalia",
+      "iso3": "SOM",
+      "lat": 6.7698,
+      "lon": 47.4306,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Bosaso",
+      "country": "Somalia",
+      "iso3": "SOM",
+      "lat": 11.2833,
+      "lon": 49.1833,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Garowe",
+      "country": "Somalia",
+      "iso3": "SOM",
+      "lat": 8.4059,
+      "lon": 48.4856,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Merca",
+      "country": "Somalia",
+      "iso3": "SOM",
+      "lat": 1.7122,
+      "lon": 44.7693,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Burao",
+      "country": "Somaliland",
+      "iso3": "SOM",
+      "lat": 9.5219,
+      "lon": 45.541,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Berbera",
+      "country": "Somaliland",
+      "iso3": "SOM",
+      "lat": 10.4386,
+      "lon": 45.0142,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Massawa",
+      "country": "Eritrea",
+      "iso3": "ERI",
+      "lat": 15.6096,
+      "lon": 39.4658,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Keren",
+      "country": "Eritrea",
+      "iso3": "ERI",
+      "lat": 15.7764,
+      "lon": 38.4592,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Mendefera",
+      "country": "Eritrea",
+      "iso3": "ERI",
+      "lat": 14.8833,
+      "lon": 38.8167,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Assab",
+      "country": "Eritrea",
+      "iso3": "ERI",
+      "lat": 13.0,
+      "lon": 42.7333,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Ali Sabieh",
+      "country": "Djibouti",
+      "iso3": "DJI",
+      "lat": 11.1556,
+      "lon": 42.7127,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Tadjourah",
+      "country": "Djibouti",
+      "iso3": "DJI",
+      "lat": 11.7897,
+      "lon": 42.8844,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Dikhil",
+      "country": "Djibouti",
+      "iso3": "DJI",
+      "lat": 11.1053,
+      "lon": 42.3697,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Gambela",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 8.25,
+      "lon": 34.5833,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Assosa",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 10.0667,
+      "lon": 34.5333,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Hosaena",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 7.55,
+      "lon": 37.85,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Shashamane",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 7.2,
+      "lon": 38.5833,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Debre Birhan",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 9.6833,
+      "lon": 39.5333,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Shire",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 14.1,
+      "lon": 38.2833,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Lalibela",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 12.0333,
+      "lon": 39.05,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Obock",
+      "country": "Djibouti",
+      "iso3": "DJI",
+      "lat": 11.96,
+      "lon": 43.29,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Dekemhare",
+      "country": "Eritrea",
+      "iso3": "ERI",
+      "lat": 15.0667,
+      "lon": 39.0333,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Adi Keyh",
+      "country": "Eritrea",
+      "iso3": "ERI",
+      "lat": 14.85,
+      "lon": 39.3667,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Camayenne",
+      "country": "Guinea",
+      "iso3": "GIN",
+      "lat": 9.535,
+      "lon": -13.6878,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Abobo",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 5.4161,
+      "lon": -4.0159,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Pikine",
+      "country": "Senegal",
+      "iso3": "SEN",
+      "lat": 14.7646,
+      "lon": -17.3907,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Oyo",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 7.8537,
+      "lon": 3.9324,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Bauchi",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 10.3103,
+      "lon": 9.8439,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Katsina",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 12.9908,
+      "lon": 7.6018,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Osogbo",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 7.771,
+      "lon": 4.557,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Ile-Ife",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 7.4824,
+      "lon": 4.5603,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Gombe",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 10.2897,
+      "lon": 11.1673,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Ajegunle",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 6.452,
+      "lon": 3.3312,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Owerri",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 5.4836,
+      "lon": 7.0332,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Ebute Ikorodu",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 6.6009,
+      "lon": 3.4882,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Okene",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 7.5512,
+      "lon": 6.2359,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Ikare",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 7.5259,
+      "lon": 5.7534,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Yola",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 9.2084,
+      "lon": 12.4815,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Ado-Ekiti",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 7.6233,
+      "lon": 5.2209,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Ogbomoso",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 8.1337,
+      "lon": 4.2401,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Minna",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 9.6152,
+      "lon": 6.5478,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Koumassi",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 5.2972,
+      "lon": -3.9675,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Lekki",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 6.4122,
+      "lon": 4.0947,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Bida",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 9.0804,
+      "lon": 6.0099,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Makurdi",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 7.7337,
+      "lon": 8.5214,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Takoradi",
+      "country": "Ghana",
+      "iso3": "GHA",
+      "lat": 4.8982,
+      "lon": -1.7603,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Abomey-Calavi",
+      "country": "Benin",
+      "iso3": "BEN",
+      "lat": 6.4485,
+      "lon": 2.3557,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Ondo",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 7.0932,
+      "lon": 4.8353,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Umuahia",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 5.5249,
+      "lon": 7.4946,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Iseyin",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 7.9702,
+      "lon": 3.5963,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Yenagoa",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 4.9268,
+      "lon": 6.2676,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Gboko",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 7.3228,
+      "lon": 9.0011,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Ijebu Ode",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 6.8194,
+      "lon": 3.9173,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Obalende",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 6.4469,
+      "lon": 3.4153,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Serekunda",
+      "country": "Gambia",
+      "iso3": "GMB",
+      "lat": 13.4383,
+      "lon": -16.6781,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Guédiawaye",
+      "country": "Senegal",
+      "iso3": "SEN",
+      "lat": 14.7745,
+      "lon": -17.4021,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Ilesa",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 7.6279,
+      "lon": 4.7416,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Ikeja",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 6.5965,
+      "lon": 3.342,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Akowonjo",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 6.6101,
+      "lon": 3.3097,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Alimosho",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 6.6066,
+      "lon": 3.3024,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Sapele",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 5.8941,
+      "lon": 5.6767,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Rufisque",
+      "country": "Senegal",
+      "iso3": "SEN",
+      "lat": 14.7154,
+      "lon": -17.2733,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Sekondi",
+      "country": "Ghana",
+      "iso3": "GHA",
+      "lat": 4.9342,
+      "lon": -1.7145,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Efon-Alaaye",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 7.6565,
+      "lon": 4.9223,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Owo",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 7.1962,
+      "lon": 5.5868,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Porto-Novo",
+      "country": "Benin",
+      "iso3": "BEN",
+      "lat": 6.4965,
+      "lon": 2.6036,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Ikot Ekpene",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 5.1819,
+      "lon": 7.7148,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Godomè",
+      "country": "Benin",
+      "iso3": "BEN",
+      "lat": 6.3895,
+      "lon": 2.3458,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Thiès Nones",
+      "country": "Senegal",
+      "iso3": "SEN",
+      "lat": 14.7833,
+      "lon": -16.9667,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Iwo",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 7.6353,
+      "lon": 4.1816,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Jimeta",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 9.2795,
+      "lon": 12.4582,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Sinfra",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 6.621,
+      "lon": -5.9114,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Atani",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 6.0128,
+      "lon": 6.7477,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Aliayabiagba",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 6.45,
+      "lon": 3.3333,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Gusau",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 12.1702,
+      "lon": 6.6641,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Mubi",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 10.2686,
+      "lon": 13.267,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Ikire",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 7.3698,
+      "lon": 4.1863,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Rufisque est",
+      "country": "Senegal",
+      "iso3": "SEN",
+      "lat": 14.7162,
+      "lon": -17.2728,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Shagamu",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 6.8485,
+      "lon": 3.6463,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Marcory",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 5.312,
+      "lon": -3.9936,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Atsiaman",
+      "country": "Ghana",
+      "iso3": "GHA",
+      "lat": 5.6978,
+      "lon": -0.3282,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Ugep",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 5.8087,
+      "lon": 8.081,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Chakwama",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 11.5596,
+      "lon": 9.6641,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Sikensi",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 5.6683,
+      "lon": -4.5737,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Guéoulé",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 7.5989,
+      "lon": -7.9007,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Gora",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 11.9129,
+      "lon": 7.6653,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Diébougou",
+      "country": "Burkina Faso",
+      "iso3": "BFA",
+      "lat": 10.9621,
+      "lon": -3.2497,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Canchungo",
+      "country": "Guinea-Bissau",
+      "iso3": "GNB",
+      "lat": 12.0672,
+      "lon": -16.0333,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Zaguiéta",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 6.7881,
+      "lon": -6.0629,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Farim",
+      "country": "Guinea-Bissau",
+      "iso3": "GNB",
+      "lat": 12.4839,
+      "lon": -15.2217,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Goniri",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 11.4845,
+      "lon": 12.3126,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Zaguinasso",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 10.0489,
+      "lon": -6.36,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Tékane",
+      "country": "Mauritania",
+      "iso3": "MRT",
+      "lat": 16.6017,
+      "lon": -15.3487,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Kétro",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 7.1826,
+      "lon": -6.643,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Ikang",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 4.7898,
+      "lon": 8.5316,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Madaoua",
+      "country": "Niger",
+      "iso3": "NER",
+      "lat": 14.073,
+      "lon": 5.96,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Rabah",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 13.1226,
+      "lon": 5.5076,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Gbabo",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 7.121,
+      "lon": -6.7638,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Damasak",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 13.1052,
+      "lon": 12.5085,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Petit Grabo",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 5.269,
+      "lon": -7.3142,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Anoumaba",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 6.3373,
+      "lon": -4.5163,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Dadiya",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 9.6195,
+      "lon": 11.4412,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Domaa-Ahenkro",
+      "country": "Ghana",
+      "iso3": "GHA",
+      "lat": 7.2739,
+      "lon": -2.8735,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Aliade",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 7.2963,
+      "lon": 8.4828,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Atebubu",
+      "country": "Ghana",
+      "iso3": "GHA",
+      "lat": 7.7554,
+      "lon": -0.9808,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Kong",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 9.1494,
+      "lon": -4.6098,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Sanyang",
+      "country": "Gambia",
+      "iso3": "GMB",
+      "lat": 13.2667,
+      "lon": -16.7606,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Gbétogo",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 8.1264,
+      "lon": -6.9436,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Ayamé",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 5.6052,
+      "lon": -3.1571,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Sokone",
+      "country": "Senegal",
+      "iso3": "SEN",
+      "lat": 13.8833,
+      "lon": -16.3667,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Ukata",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 10.8312,
+      "lon": 5.8249,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Mani",
+      "country": "Burkina Faso",
+      "iso3": "BFA",
+      "lat": 13.2583,
+      "lon": -0.2131,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Etinan",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 4.8426,
+      "lon": 7.8525,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Djibrosso",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 8.7697,
+      "lon": -6.9992,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Bani Bangou",
+      "country": "Niger",
+      "iso3": "NER",
+      "lat": 15.0416,
+      "lon": 2.7037,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Uba",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 10.4551,
+      "lon": 13.2223,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Isara",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 6.989,
+      "lon": 3.6824,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Old Yundum",
+      "country": "Gambia",
+      "iso3": "GMB",
+      "lat": 13.3625,
+      "lon": -16.6861,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Grand Berebi",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 4.651,
+      "lon": -6.9237,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Gogounou",
+      "country": "Benin",
+      "iso3": "BEN",
+      "lat": 10.8399,
+      "lon": 2.8317,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Lunsar",
+      "country": "Sierra Leone",
+      "iso3": "SLE",
+      "lat": 8.6844,
+      "lon": -12.535,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Mborou",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 5.5947,
+      "lon": -4.3633,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Bougadoum",
+      "country": "Mauritania",
+      "iso3": "MRT",
+      "lat": 15.867,
+      "lon": -7.3692,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Somone",
+      "country": "Senegal",
+      "iso3": "SEN",
+      "lat": 14.4865,
+      "lon": -17.0752,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Piébly Un",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 7.2512,
+      "lon": -7.083,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Bori",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 4.6763,
+      "lon": 7.3652,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Baléyara",
+      "country": "Niger",
+      "iso3": "NER",
+      "lat": 13.7838,
+      "lon": 2.9523,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Assinie-Mafia",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 5.1338,
+      "lon": -3.291,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Banté",
+      "country": "Benin",
+      "iso3": "BEN",
+      "lat": 8.4122,
+      "lon": 1.8897,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Kankara",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 11.9311,
+      "lon": 7.4112,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Bounafla",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 6.722,
+      "lon": -5.5181,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Massiogo",
+      "country": "Mali",
+      "iso3": "MLI",
+      "lat": 10.3064,
+      "lon": -6.1097,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Lalo",
+      "country": "Benin",
+      "iso3": "BEN",
+      "lat": 6.9287,
+      "lon": 1.8899,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Kaouara",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 10.0908,
+      "lon": -5.1948,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Nioro du Rip",
+      "country": "Senegal",
+      "iso3": "SEN",
+      "lat": 13.75,
+      "lon": -15.8,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Taifa",
+      "country": "Ghana",
+      "iso3": "GHA",
+      "lat": 5.6582,
+      "lon": -0.2522,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Sérigbangan",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 5.5278,
+      "lon": -6.7126,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Isanlu-Itedoijowa",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 8.2734,
+      "lon": 5.8353,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Djapadji",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 5.2911,
+      "lon": -6.8202,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Essau",
+      "country": "Gambia",
+      "iso3": "GMB",
+      "lat": 13.4839,
+      "lon": -16.5347,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Ore",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 6.7472,
+      "lon": 4.8761,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Abala",
+      "country": "Niger",
+      "iso3": "NER",
+      "lat": 14.9369,
+      "lon": 3.4336,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Valoua",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 5.9309,
+      "lon": -6.1007,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Adani",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 6.7397,
+      "lon": 7.0112,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Koréagui",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 5.543,
+      "lon": -6.6017,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Banoufla",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 7.12,
+      "lon": -6.3183,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Abalak",
+      "country": "Niger",
+      "iso3": "NER",
+      "lat": 15.4509,
+      "lon": 6.2793,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Tepa",
+      "country": "Ghana",
+      "iso3": "GHA",
+      "lat": 7.006,
+      "lon": -2.1659,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Badikaha",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 9.1917,
+      "lon": -5.165,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Lokossou",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 6.6012,
+      "lon": -7.3786,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Yanfolila",
+      "country": "Mali",
+      "iso3": "MLI",
+      "lat": 11.1833,
+      "lon": -8.15,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Huafla",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 6.5637,
+      "lon": -5.7997,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "New Yekepa",
+      "country": "Liberia",
+      "iso3": "LBR",
+      "lat": 7.5794,
+      "lon": -8.5378,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Gossas Village",
+      "country": "Senegal",
+      "iso3": "SEN",
+      "lat": 14.4841,
+      "lon": -16.1138,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Zikisso",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 6.064,
+      "lon": -5.7024,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "New Achimota",
+      "country": "Ghana",
+      "iso3": "GHA",
+      "lat": 5.6266,
+      "lon": -0.2581,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Mignouré",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 7.4875,
+      "lon": -6.7882,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Pitmoaga",
+      "country": "Burkina Faso",
+      "iso3": "BFA",
+      "lat": 12.2456,
+      "lon": -1.8815,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Boguédia",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 6.6343,
+      "lon": -6.5191,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Taobly",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 7.4139,
+      "lon": -7.1858,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Nouna",
+      "country": "Burkina Faso",
+      "iso3": "BFA",
+      "lat": 12.7294,
+      "lon": -3.863,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Rano",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 11.5568,
+      "lon": 8.5807,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Vaou",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 7.4436,
+      "lon": -6.992,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Kolondiéba",
+      "country": "Mali",
+      "iso3": "MLI",
+      "lat": 11.0894,
+      "lon": -6.8929,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Gabarin",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 11.1093,
+      "lon": 10.4441,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Agba-Mbayassou",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 7.1152,
+      "lon": -4.2682,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Dapchi",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 12.4954,
+      "lon": 11.4998,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Garango",
+      "country": "Burkina Faso",
+      "iso3": "BFA",
+      "lat": 11.8,
+      "lon": -0.5506,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Alosso-II",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 5.5644,
+      "lon": -3.5004,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Pogo",
+      "country": "Côte d'Ivoire",
+      "iso3": "CIV",
+      "lat": 10.4367,
+      "lon": -5.6306,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Rijau",
+      "country": "Nigeria",
+      "iso3": "NGA",
+      "lat": 11.1039,
+      "lon": 5.2556,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Kpozoun",
+      "country": "Benin",
+      "iso3": "BEN",
+      "lat": 7.2287,
+      "lon": 2.2132,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Lilongwe",
+      "country": "Malawi",
+      "iso3": "MWI",
+      "lat": -13.9669,
+      "lon": 33.7873,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Blantyre",
+      "country": "Malawi",
+      "iso3": "MWI",
+      "lat": -15.785,
+      "lon": 35.0085,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Zanzibar",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -6.1639,
+      "lon": 39.1979,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Nansana",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": 0.3639,
+      "lon": 32.5286,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Ruiru",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -1.1466,
+      "lon": 36.9609,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Kira",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": 0.4,
+      "lon": 32.6333,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Kahama",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -3.8333,
+      "lon": 32.6,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Bunamwaya",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": 0.2534,
+      "lon": 32.5572,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Chipata",
+      "country": "Zambia",
+      "iso3": "ZMB",
+      "lat": -13.6333,
+      "lon": 32.65,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Kikuyu",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -1.2463,
+      "lon": 36.6629,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Geita",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -2.8725,
+      "lon": 32.2325,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Sumbawanga",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -7.9667,
+      "lon": 31.6167,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Kyengera",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": 0.2952,
+      "lon": 32.5016,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Lichinga",
+      "country": "Mozambique",
+      "iso3": "MOZ",
+      "lat": -13.3128,
+      "lon": 35.2406,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Kibaha",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -6.7667,
+      "lon": 38.9167,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Bariadi",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -2.8,
+      "lon": 33.9833,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Mzuzu",
+      "country": "Malawi",
+      "iso3": "MWI",
+      "lat": -11.4656,
+      "lon": 34.0207,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Kasulu",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -4.5767,
+      "lon": 30.1025,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Pemba",
+      "country": "Mozambique",
+      "iso3": "MOZ",
+      "lat": -12.974,
+      "lon": 40.5177,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Tunduma",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -9.3,
+      "lon": 32.7667,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Kasangati",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": 0.438,
+      "lon": 32.6025,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Epworth",
+      "country": "Zimbabwe",
+      "iso3": "ZWE",
+      "lat": -17.89,
+      "lon": 31.1475,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Ifakara",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -8.1333,
+      "lon": 36.6833,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Mpanda",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -6.3438,
+      "lon": 31.0695,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Naivasha",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -0.7138,
+      "lon": 36.4326,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Mocuba",
+      "country": "Mozambique",
+      "iso3": "MOZ",
+      "lat": -16.8375,
+      "lon": 36.9856,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Karuri",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -1.1764,
+      "lon": 36.7564,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Karuri",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -0.7,
+      "lon": 37.1833,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Matuga",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -4.168,
+      "lon": 39.5707,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Luanshya",
+      "country": "Zambia",
+      "iso3": "ZMB",
+      "lat": -13.1367,
+      "lon": 28.4166,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Mukono",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": 0.3533,
+      "lon": 32.7553,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Bunda",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -2.0215,
+      "lon": 33.8711,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Mwala",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -1.3525,
+      "lon": 37.4548,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Njeru",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": 0.4417,
+      "lon": 33.1792,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Ongata Rongai",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -1.3953,
+      "lon": 36.764,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Lang'ata",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -1.3666,
+      "lon": 36.7332,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Mansa",
+      "country": "Zambia",
+      "iso3": "ZMB",
+      "lat": -11.1998,
+      "lon": 28.8943,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Gurúè",
+      "country": "Mozambique",
+      "iso3": "MOZ",
+      "lat": -15.4669,
+      "lon": 36.9778,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Jomvu",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -3.9862,
+      "lon": 39.6082,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Limuru",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -1.1136,
+      "lon": 36.642,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Juja",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -1.1015,
+      "lon": 37.0132,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Port Louis",
+      "country": "Mauritius",
+      "iso3": "MUS",
+      "lat": -20.1619,
+      "lon": 57.4989,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Kitengela",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -1.4761,
+      "lon": 36.9614,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Xai-Xai",
+      "country": "Mozambique",
+      "iso3": "MOZ",
+      "lat": -25.0519,
+      "lon": 33.6442,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Katabi",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": 0.0841,
+      "lon": 32.4697,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Musanze",
+      "country": "Rwanda",
+      "iso3": "RWA",
+      "lat": -1.4998,
+      "lon": 29.635,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Mlolongo",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -1.3964,
+      "lon": 36.9403,
+      "region": "east_africa",
+      "urban": true
+    },
+    {
+      "name": "Nkubu",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -0.0693,
+      "lon": 37.6662,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Mungwi",
+      "country": "Zambia",
+      "iso3": "ZMB",
+      "lat": -10.1732,
+      "lon": 31.3694,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Buhesi",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": 0.581,
+      "lon": 30.2101,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Ikungi",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -5.1333,
+      "lon": 34.7667,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Il",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -2.0976,
+      "lon": 36.7922,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Kinoni",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": -0.7011,
+      "lon": 30.4939,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Engineer",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -0.6054,
+      "lon": 36.5763,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Nanyamba",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -10.6833,
+      "lon": 39.8333,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Mai",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -0.9817,
+      "lon": 36.5864,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Gwanda",
+      "country": "Zimbabwe",
+      "iso3": "ZWE",
+      "lat": -20.9362,
+      "lon": 29.007,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Ruhuha",
+      "country": "Rwanda",
+      "iso3": "RWA",
+      "lat": -2.304,
+      "lon": 30.0513,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Amboanjo",
+      "country": "Madagascar",
+      "iso3": "MDG",
+      "lat": -22.0,
+      "lon": 47.85,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Isoka",
+      "country": "Zambia",
+      "iso3": "ZMB",
+      "lat": -10.1606,
+      "lon": 32.6335,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Olulung’a",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -1.0027,
+      "lon": 35.6634,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Chiungutwa",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -10.8833,
+      "lon": 38.9833,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Kisinga",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": 0.0768,
+      "lon": 29.8683,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Utete",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -7.986,
+      "lon": 38.758,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Sultan Hamud",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -2.0204,
+      "lon": 37.3721,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Anjozorobe",
+      "country": "Madagascar",
+      "iso3": "MDG",
+      "lat": -18.4,
+      "lon": 47.8667,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Ngudu",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -2.9667,
+      "lon": 33.3333,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Ambodifotatra",
+      "country": "Madagascar",
+      "iso3": "MDG",
+      "lat": -16.9833,
+      "lon": 49.85,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Xilembene",
+      "country": "Mozambique",
+      "iso3": "MOZ",
+      "lat": -24.6894,
+      "lon": 33.2584,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Koni-Djodjo",
+      "country": "Comoros",
+      "iso3": "COM",
+      "lat": -12.2297,
+      "lon": 44.4817,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Matunda",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": 0.8444,
+      "lon": 35.1372,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Lalmatie",
+      "country": "Mauritius",
+      "iso3": "MUS",
+      "lat": -20.1897,
+      "lon": 57.6611,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Malaba",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": 0.6351,
+      "lon": 34.2816,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Roches Noire",
+      "country": "Mauritius",
+      "iso3": "MUS",
+      "lat": -20.1111,
+      "lon": 57.7122,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Nzega",
+      "country": "Rwanda",
+      "iso3": "RWA",
+      "lat": -2.479,
+      "lon": 29.5564,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Butere",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": 0.2069,
+      "lon": 34.4901,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Karengera",
+      "country": "Rwanda",
+      "iso3": "RWA",
+      "lat": -2.5169,
+      "lon": 29.0326,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Vohibinany",
+      "country": "Madagascar",
+      "iso3": "MDG",
+      "lat": -17.35,
+      "lon": 49.0333,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Likoma",
+      "country": "Malawi",
+      "iso3": "MWI",
+      "lat": -12.0667,
+      "lon": 34.7333,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Mossuril",
+      "country": "Mozambique",
+      "iso3": "MOZ",
+      "lat": -14.9678,
+      "lon": 40.6639,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Kibungo",
+      "country": "Rwanda",
+      "iso3": "RWA",
+      "lat": -2.1597,
+      "lon": 30.5427,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Rulenge",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -2.7175,
+      "lon": 30.6325,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Kidatu",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -7.6992,
+      "lon": 36.9572,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Mayuge",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": 0.4597,
+      "lon": 33.4803,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Nyambunwa",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": -0.6778,
+      "lon": 34.7072,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Urambo",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -5.0667,
+      "lon": 32.05,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Kasaali",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": -0.6167,
+      "lon": 31.55,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Chanika",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -5.4167,
+      "lon": 38.0167,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Mahuta",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -10.8667,
+      "lon": 39.45,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Farafangana",
+      "country": "Madagascar",
+      "iso3": "MDG",
+      "lat": -22.8222,
+      "lon": 47.8261,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Tumbi",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -5.0667,
+      "lon": 32.7333,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Mutuáli",
+      "country": "Mozambique",
+      "iso3": "MOZ",
+      "lat": -14.8706,
+      "lon": 37.0044,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Namavundu",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": 0.364,
+      "lon": 33.8176,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Mwansabombwe",
+      "country": "Zambia",
+      "iso3": "ZMB",
+      "lat": -9.822,
+      "lon": 28.7604,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Maevatanana",
+      "country": "Madagascar",
+      "iso3": "MDG",
+      "lat": -16.95,
+      "lon": 46.8333,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Mlowo",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -9.0,
+      "lon": 32.9833,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Kaputa",
+      "country": "Zambia",
+      "iso3": "ZMB",
+      "lat": -8.4689,
+      "lon": 29.6619,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Budadiri",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": 1.1481,
+      "lon": 34.3261,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Kirimbi",
+      "country": "Rwanda",
+      "iso3": "RWA",
+      "lat": -2.2647,
+      "lon": 29.1964,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Manato",
+      "country": "Madagascar",
+      "iso3": "MDG",
+      "lat": -22.4,
+      "lon": 47.4833,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Mukamira",
+      "country": "Rwanda",
+      "iso3": "RWA",
+      "lat": -1.6111,
+      "lon": 29.4969,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Kihihi",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": -0.75,
+      "lon": 29.7,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Lusaka West",
+      "country": "Zambia",
+      "iso3": "ZMB",
+      "lat": -15.3186,
+      "lon": 28.1103,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Mwanga",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -4.8,
+      "lon": 38.2,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Kisesa",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -2.55,
+      "lon": 33.0333,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Kirundo",
+      "country": "Burundi",
+      "iso3": "BDI",
+      "lat": -2.5845,
+      "lon": 30.0959,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Kaoma",
+      "country": "Zambia",
+      "iso3": "ZMB",
+      "lat": -14.7833,
+      "lon": 24.8,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Lukulu",
+      "country": "Zambia",
+      "iso3": "ZMB",
+      "lat": -14.3707,
+      "lon": 23.242,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Nyahuka",
+      "country": "Uganda",
+      "iso3": "UGA",
+      "lat": 0.675,
+      "lon": 29.9926,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Kakonko",
+      "country": "Tanzania",
+      "iso3": "TZA",
+      "lat": -3.2828,
+      "lon": 30.9642,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Kayanza",
+      "country": "Burundi",
+      "iso3": "BDI",
+      "lat": -2.9221,
+      "lon": 29.6293,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Vyanda",
+      "country": "Burundi",
+      "iso3": "BDI",
+      "lat": -4.1024,
+      "lon": 29.606,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Shianda",
+      "country": "Kenya",
+      "iso3": "KEN",
+      "lat": 0.3194,
+      "lon": 34.5735,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Le Hochet",
+      "country": "Mauritius",
+      "iso3": "MUS",
+      "lat": -20.1386,
+      "lon": 57.5301,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Machipanda",
+      "country": "Mozambique",
+      "iso3": "MOZ",
+      "lat": -18.986,
+      "lon": 32.7355,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Mhangura",
+      "country": "Zimbabwe",
+      "iso3": "ZWE",
+      "lat": -16.8939,
+      "lon": 30.1683,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Luwingu",
+      "country": "Zambia",
+      "iso3": "ZMB",
+      "lat": -10.2621,
+      "lon": 29.9271,
+      "region": "east_africa",
+      "urban": false
+    },
+    {
+      "name": "Shubrā al Khaymah",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 30.1251,
+      "lon": 31.2505,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Fes",
+      "country": "Morocco",
+      "iso3": "MAR",
+      "lat": 34.0331,
+      "lon": -5.0003,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Khartoum North",
+      "country": "Sudan",
+      "iso3": "SDN",
+      "lat": 15.6493,
+      "lon": 32.5346,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Marrakesh",
+      "country": "Morocco",
+      "iso3": "MAR",
+      "lat": 31.6342,
+      "lon": -7.9999,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Salé",
+      "country": "Morocco",
+      "iso3": "MAR",
+      "lat": 34.0531,
+      "lon": -6.7985,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Madīnat an Naşr",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 30.0667,
+      "lon": 31.3,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Al Maḩallah al Kubrá",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 30.9706,
+      "lon": 31.1669,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Meknes",
+      "country": "Morocco",
+      "iso3": "MAR",
+      "lat": 33.8935,
+      "lon": -5.5473,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Assiut",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 27.181,
+      "lon": 31.1837,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Al Khuşūş",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 30.1529,
+      "lon": 31.315,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Esna",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 25.2934,
+      "lon": 32.554,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Tétouan",
+      "country": "Morocco",
+      "iso3": "MAR",
+      "lat": 35.5784,
+      "lon": -5.3684,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Kom Ombo",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 24.4767,
+      "lon": 32.9463,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Al Hoceïma",
+      "country": "Morocco",
+      "iso3": "MAR",
+      "lat": 35.2516,
+      "lon": -3.9372,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "6th of October City",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 29.8167,
+      "lon": 31.05,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Al Qadarif",
+      "country": "Sudan",
+      "iso3": "SDN",
+      "lat": 14.0349,
+      "lon": 35.3834,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Misratah",
+      "country": "Libya",
+      "iso3": "LBY",
+      "lat": 32.3753,
+      "lon": 15.0925,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Kosti",
+      "country": "Sudan",
+      "iso3": "SDN",
+      "lat": 13.1629,
+      "lon": 32.6635,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Temara",
+      "country": "Morocco",
+      "iso3": "MAR",
+      "lat": 33.9287,
+      "lon": -6.9066,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Ḩadā’iq al Qubbah",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 30.0884,
+      "lon": 31.2835,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "New Cairo",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 30.03,
+      "lon": 31.47,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Al Qāhirah al Jadīdah",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 30.0421,
+      "lon": 31.4445,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Damietta",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 31.4165,
+      "lon": 31.8133,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Rosetta",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 31.3995,
+      "lon": 30.4172,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Bab Ezzouar",
+      "country": "Algeria",
+      "iso3": "DZA",
+      "lat": 36.7261,
+      "lon": 3.1829,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Shibīn al Kawm",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 30.5526,
+      "lon": 31.009,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Djelfa",
+      "country": "Algeria",
+      "iso3": "DZA",
+      "lat": 34.6728,
+      "lon": 3.263,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "El Daein",
+      "country": "Sudan",
+      "iso3": "SDN",
+      "lat": 11.4619,
+      "lon": 26.1258,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Qina",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 26.1642,
+      "lon": 32.7267,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Singa",
+      "country": "Sudan",
+      "iso3": "SDN",
+      "lat": 13.1483,
+      "lon": 33.9312,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Al ‘Āshir min Ramaḑān",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 30.2964,
+      "lon": 31.7463,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Ḩalwān",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 29.8414,
+      "lon": 31.3008,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Mohammedia",
+      "country": "Morocco",
+      "iso3": "MAR",
+      "lat": 33.6861,
+      "lon": -7.383,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "El Jadida",
+      "country": "Morocco",
+      "iso3": "MAR",
+      "lat": 33.2568,
+      "lon": -8.5088,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Mallawī",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 27.7326,
+      "lon": 30.8413,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Sidi Bel Abbes",
+      "country": "Algeria",
+      "iso3": "DZA",
+      "lat": 35.1899,
+      "lon": -0.6309,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Hurghada",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 27.2574,
+      "lon": 33.8129,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Zliten",
+      "country": "Libya",
+      "iso3": "LBY",
+      "lat": 32.4674,
+      "lon": 14.5687,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Al Khums",
+      "country": "Libya",
+      "iso3": "LBY",
+      "lat": 32.6486,
+      "lon": 14.2619,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Az Zāwīyah",
+      "country": "Libya",
+      "iso3": "LBY",
+      "lat": 32.7571,
+      "lon": 12.7276,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Salé Al Jadida",
+      "country": "Morocco",
+      "iso3": "MAR",
+      "lat": 33.9972,
+      "lon": -6.7405,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Arīsh",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 31.1316,
+      "lon": 33.7984,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Laayoune",
+      "country": "Western Sahara",
+      "iso3": "ESH",
+      "lat": 27.1418,
+      "lon": -13.188,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Kafr ash Shaykh",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 31.1117,
+      "lon": 30.9399,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Tébessa",
+      "country": "Algeria",
+      "iso3": "DZA",
+      "lat": 35.4042,
+      "lon": 8.1242,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Ait Melloul",
+      "country": "Morocco",
+      "iso3": "MAR",
+      "lat": 30.3416,
+      "lon": -9.5036,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "El Oued",
+      "country": "Algeria",
+      "iso3": "DZA",
+      "lat": 33.3561,
+      "lon": 6.8632,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Zawiya",
+      "country": "Libya",
+      "iso3": "LBY",
+      "lat": 32.7522,
+      "lon": 12.7278,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Ad-Damazin",
+      "country": "Sudan",
+      "iso3": "SDN",
+      "lat": 11.7891,
+      "lon": 34.3592,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Bilbeis",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 30.4204,
+      "lon": 31.5622,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Skikda",
+      "country": "Algeria",
+      "iso3": "DZA",
+      "lat": 36.8762,
+      "lon": 6.9092,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Banhā",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 30.4598,
+      "lon": 31.1842,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Tiaret",
+      "country": "Algeria",
+      "iso3": "DZA",
+      "lat": 35.371,
+      "lon": 1.317,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Chlef",
+      "country": "Algeria",
+      "iso3": "DZA",
+      "lat": 36.1653,
+      "lon": 1.3345,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Idkū",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 31.3073,
+      "lon": 30.2981,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Nador",
+      "country": "Morocco",
+      "iso3": "MAR",
+      "lat": 35.1681,
+      "lon": -2.9335,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Marsá Maţrūḩ",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 31.3529,
+      "lon": 27.2372,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Dar Bouazza",
+      "country": "Morocco",
+      "iso3": "MAR",
+      "lat": 33.5153,
+      "lon": -7.8168,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Béchar",
+      "country": "Algeria",
+      "iso3": "DZA",
+      "lat": 31.6167,
+      "lon": -2.2167,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Al-Junaynah",
+      "country": "Sudan",
+      "iso3": "SDN",
+      "lat": 13.4526,
+      "lon": 22.4473,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Mostaganem",
+      "country": "Algeria",
+      "iso3": "DZA",
+      "lat": 35.9312,
+      "lon": 0.0892,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Taza",
+      "country": "Morocco",
+      "iso3": "MAR",
+      "lat": 34.21,
+      "lon": -4.01,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Al Maţarīyah",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 31.1829,
+      "lon": 32.0311,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Bordj Bou Arreridj",
+      "country": "Algeria",
+      "iso3": "DZA",
+      "lat": 36.0739,
+      "lon": 4.7614,
+      "region": "north_africa",
+      "urban": true
+    },
+    {
+      "name": "Maḩallat Damanah",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 31.0729,
+      "lon": 31.495,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Feidh el Botma",
+      "country": "Algeria",
+      "iso3": "DZA",
+      "lat": 34.5,
+      "lon": 3.7667,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Medjez el Bab",
+      "country": "Tunisia",
+      "iso3": "TUN",
+      "lat": 36.6496,
+      "lon": 9.6123,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Aklim",
+      "country": "Morocco",
+      "iso3": "MAR",
+      "lat": 34.92,
+      "lon": -2.43,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Missour",
+      "country": "Morocco",
+      "iso3": "MAR",
+      "lat": 33.0489,
+      "lon": -3.9895,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Robbah",
+      "country": "Algeria",
+      "iso3": "DZA",
+      "lat": 33.2797,
+      "lon": 6.9098,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Qaryat ‘Umar al Mukhtār",
+      "country": "Libya",
+      "iso3": "LBY",
+      "lat": 32.6298,
+      "lon": 21.6765,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Lakhdaria",
+      "country": "Algeria",
+      "iso3": "DZA",
+      "lat": 36.5646,
+      "lon": 3.5933,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Aga",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 30.9416,
+      "lon": 31.2904,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Berber",
+      "country": "Sudan",
+      "iso3": "SDN",
+      "lat": 18.0216,
+      "lon": 33.983,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Ad Dabbah",
+      "country": "Sudan",
+      "iso3": "SDN",
+      "lat": 18.05,
+      "lon": 30.95,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "La Sebala du Mornag",
+      "country": "Tunisia",
+      "iso3": "TUN",
+      "lat": 36.6793,
+      "lon": 10.2919,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Kābāw",
+      "country": "Libya",
+      "iso3": "LBY",
+      "lat": 31.8472,
+      "lon": 11.3306,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Ain Karma",
+      "country": "Morocco",
+      "iso3": "MAR",
+      "lat": 34.0066,
+      "lon": -5.6157,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Karia Ba Mohamed",
+      "country": "Morocco",
+      "iso3": "MAR",
+      "lat": 34.3709,
+      "lon": -5.2138,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Mahires",
+      "country": "Tunisia",
+      "iso3": "TUN",
+      "lat": 34.5275,
+      "lon": 10.5008,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Abu Jibeha",
+      "country": "Sudan",
+      "iso3": "SDN",
+      "lat": 11.4562,
+      "lon": 31.2285,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Bou Tlelis",
+      "country": "Algeria",
+      "iso3": "DZA",
+      "lat": 35.5727,
+      "lon": -0.8996,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Marabba",
+      "country": "Sudan",
+      "iso3": "SDN",
+      "lat": 12.35,
+      "lon": 32.1833,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Zaouiet Medien",
+      "country": "Tunisia",
+      "iso3": "TUN",
+      "lat": 36.7677,
+      "lon": 9.0889,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Zaafarana",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 29.1101,
+      "lon": 32.6601,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Shalātīn",
+      "country": "Egypt",
+      "iso3": "EGY",
+      "lat": 23.1391,
+      "lon": 35.5982,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "’Aïn Deheb",
+      "country": "Algeria",
+      "iso3": "DZA",
+      "lat": 34.8422,
+      "lon": 1.547,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Sidi ech Chahmi",
+      "country": "Algeria",
+      "iso3": "DZA",
+      "lat": 35.659,
+      "lon": -0.5217,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Bou Hadjar",
+      "country": "Tunisia",
+      "iso3": "TUN",
+      "lat": 35.6833,
+      "lon": 10.8667,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Daryānah",
+      "country": "Libya",
+      "iso3": "LBY",
+      "lat": 32.3475,
+      "lon": 20.3093,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "As Sūkī",
+      "country": "Sudan",
+      "iso3": "SDN",
+      "lat": 13.3167,
+      "lon": 33.8833,
+      "region": "north_africa",
+      "urban": false
+    },
+    {
+      "name": "Gqeberha",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -33.9611,
+      "lon": 25.6149,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Soshanguve",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -25.4729,
+      "lon": 28.0992,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Evaton",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -26.5333,
+      "lon": 27.85,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Thembisa",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -25.9964,
+      "lon": 28.2268,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Boksburg",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -26.212,
+      "lon": 28.2596,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Welkom",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -27.9774,
+      "lon": 26.7351,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Newcastle",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -27.758,
+      "lon": 29.9318,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Krugersdorp",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -26.0858,
+      "lon": 27.7752,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Emalahleni",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -25.8713,
+      "lon": 29.2332,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Diepsloot",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -25.9331,
+      "lon": 28.0121,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Randburg",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -26.0941,
+      "lon": 28.0012,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Roodepoort",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -26.1625,
+      "lon": 27.8725,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Botshabelo",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -29.2674,
+      "lon": 26.726,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Brakpan",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -26.2366,
+      "lon": 28.3694,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Kariega",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -33.7556,
+      "lon": 25.4007,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Germiston",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -26.2348,
+      "lon": 28.1766,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Vanderbijlpark",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -26.7117,
+      "lon": 27.8379,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Athlone",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -33.9672,
+      "lon": 18.5021,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Paarl",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -33.7338,
+      "lon": 18.9752,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Centurion",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -25.8589,
+      "lon": 28.1858,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Klerksdorp",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -26.8521,
+      "lon": 26.6667,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Somerset West",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -34.084,
+      "lon": 18.8211,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Mdantsane",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -32.9332,
+      "lon": 27.7766,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Middelburg",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -25.7751,
+      "lon": 29.4648,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Springs",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -26.25,
+      "lon": 28.4,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Ivory Park",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -25.9957,
+      "lon": 28.1971,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Carletonville",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -26.3609,
+      "lon": 27.3977,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Alexandra",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -26.1053,
+      "lon": 28.0988,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Potchefstroom",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -26.7167,
+      "lon": 27.1,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Mthatha",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -31.5889,
+      "lon": 28.7844,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "KwaDukuza",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -29.3282,
+      "lon": 31.2895,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Westonaria",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -26.3191,
+      "lon": 27.6486,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Etwatwa",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -26.1252,
+      "lon": 28.4547,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Vryheid",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -27.7695,
+      "lon": 30.7917,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Pinetown",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -29.8207,
+      "lon": 30.8867,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Ladysmith",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -28.5587,
+      "lon": 29.779,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "eMbalenhle",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -26.5333,
+      "lon": 29.0667,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Nigel",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -26.4314,
+      "lon": 28.4771,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Mpumalanga",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -29.8129,
+      "lon": 30.6365,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Bhisho",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -32.8472,
+      "lon": 27.4422,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Sasolburg",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -26.8136,
+      "lon": 27.8169,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Randfontein",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -26.1844,
+      "lon": 27.702,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Worcester",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -33.6465,
+      "lon": 19.4485,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Ntuzuma",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -29.739,
+      "lon": 30.949,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Virginia",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -28.1039,
+      "lon": 26.8659,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Brits",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -25.6347,
+      "lon": 27.7802,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Alberton",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -26.2679,
+      "lon": 28.1223,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Queenstown",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -31.8976,
+      "lon": 26.8753,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Kroonstad",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -27.6504,
+      "lon": 27.2349,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Somaroboro",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -25.346,
+      "lon": 28.8343,
+      "region": "southern_africa",
+      "urban": true
+    },
+    {
+      "name": "Darnall",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -29.2668,
+      "lon": 31.3575,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Godide",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -24.729,
+      "lon": 31.237,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Malamulele",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -22.9711,
+      "lon": 30.6736,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Vaalbank",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -25.1523,
+      "lon": 28.8556,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Rosebank",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -33.9556,
+      "lon": 18.4742,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Lebowakgomo",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -24.3146,
+      "lon": 29.5008,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Nthabalala",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -23.2196,
+      "lon": 29.9927,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Sannieshof",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -26.5295,
+      "lon": 25.8089,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Wepener",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -29.7287,
+      "lon": 27.038,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Glencoe",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -28.1783,
+      "lon": 30.147,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Reitz",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -27.8014,
+      "lon": 28.4273,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Cofimvaba",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -32.0012,
+      "lon": 27.5804,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Vredendal",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -31.6683,
+      "lon": 18.5012,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Opuwo",
+      "country": "Namibia",
+      "iso3": "NAM",
+      "lat": -18.0607,
+      "lon": 13.84,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Velddrif",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -32.7852,
+      "lon": 18.1786,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Omaruru",
+      "country": "Namibia",
+      "iso3": "NAM",
+      "lat": -21.424,
+      "lon": 15.9461,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Babirwa",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -23.4297,
+      "lon": 28.609,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Howick",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -29.4779,
+      "lon": 30.2306,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "eManzana",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -25.9541,
+      "lon": 30.5627,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Semonkong",
+      "country": "Lesotho",
+      "iso3": "LSO",
+      "lat": -29.8433,
+      "lon": 28.0504,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Citrusdal",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -32.5921,
+      "lon": 19.0152,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "James Calata",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -31.1214,
+      "lon": 26.8067,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Mariental",
+      "country": "Namibia",
+      "iso3": "NAM",
+      "lat": -24.6271,
+      "lon": 17.9647,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Vredefort",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -27.0081,
+      "lon": 27.3646,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Sedgefield",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -34.0211,
+      "lon": 22.8055,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Wesselsbron",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -27.8549,
+      "lon": 26.3658,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Clanwilliam",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -32.1817,
+      "lon": 18.8922,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Darling",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -33.3782,
+      "lon": 18.3794,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Pitseng",
+      "country": "Lesotho",
+      "iso3": "LSO",
+      "lat": -29.007,
+      "lon": 28.2133,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Ka-Mhinga",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -22.7577,
+      "lon": 30.8998,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Swartruggens",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -25.6502,
+      "lon": 26.6886,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Janeng",
+      "country": "Botswana",
+      "iso3": "BWA",
+      "lat": -25.4167,
+      "lon": 25.55,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Theunissen",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -28.411,
+      "lon": 26.7011,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Newlands",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -33.9785,
+      "lon": 18.4481,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Hankey",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -33.8331,
+      "lon": 24.8836,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "eMkhomazi",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -30.2067,
+      "lon": 30.7964,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Breyten",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -26.3018,
+      "lon": 29.987,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Outjo",
+      "country": "Namibia",
+      "iso3": "NAM",
+      "lat": -20.1069,
+      "lon": 16.1542,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Bonnievale",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -33.9322,
+      "lon": 20.0992,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Praktiseer",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -24.584,
+      "lon": 30.3168,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Whittlesea",
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "lat": -32.1759,
+      "lon": 26.8244,
+      "region": "southern_africa",
+      "urban": false
+    },
+    {
+      "name": "Kikwit",
+      "country": "Democratic Republic of the Congo",
+      "iso3": "COD",
+      "lat": -5.041,
+      "lon": 18.8162,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Talatona",
+      "country": "Angola",
+      "iso3": "AGO",
+      "lat": -8.9178,
+      "lon": 13.1856,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Masina",
+      "country": "Democratic Republic of the Congo",
+      "iso3": "COD",
+      "lat": -4.3836,
+      "lon": 15.3914,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Cazenga",
+      "country": "Angola",
+      "iso3": "AGO",
+      "lat": -8.838,
+      "lon": 13.284,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Uvira",
+      "country": "Democratic Republic of the Congo",
+      "iso3": "COD",
+      "lat": -3.3953,
+      "lon": 29.1378,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Saurimo",
+      "country": "Angola",
+      "iso3": "AGO",
+      "lat": -9.6608,
+      "lon": 20.3915,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Ingombota",
+      "country": "Angola",
+      "iso3": "AGO",
+      "lat": -8.8181,
+      "lon": 13.2289,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Bimbo",
+      "country": "Central African Republic",
+      "iso3": "CAF",
+      "lat": 4.2567,
+      "lon": 18.4158,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Maianga",
+      "country": "Angola",
+      "iso3": "AGO",
+      "lat": -8.8469,
+      "lon": 13.237,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Boma",
+      "country": "Democratic Republic of the Congo",
+      "iso3": "COD",
+      "lat": -5.851,
+      "lon": 13.0536,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Mwene",
+      "country": "Democratic Republic of the Congo",
+      "iso3": "COD",
+      "lat": -9.817,
+      "lon": 22.8702,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Butembo",
+      "country": "Democratic Republic of the Congo",
+      "iso3": "COD",
+      "lat": 0.1416,
+      "lon": 29.2912,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Luena",
+      "country": "Angola",
+      "iso3": "AGO",
+      "lat": -11.7833,
+      "lon": 19.9167,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Bégoua",
+      "country": "Central African Republic",
+      "iso3": "CAF",
+      "lat": 4.4544,
+      "lon": 18.5347,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Rangel",
+      "country": "Angola",
+      "iso3": "AGO",
+      "lat": -8.8264,
+      "lon": 13.2629,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Isiro",
+      "country": "Democratic Republic of the Congo",
+      "iso3": "COD",
+      "lat": 2.7739,
+      "lon": 27.616,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Chitato",
+      "country": "Angola",
+      "iso3": "AGO",
+      "lat": -7.3,
+      "lon": 20.7333,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Sambizanga",
+      "country": "Angola",
+      "iso3": "AGO",
+      "lat": -8.7888,
+      "lon": 13.2751,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Kindu",
+      "country": "Democratic Republic of the Congo",
+      "iso3": "COD",
+      "lat": -2.9437,
+      "lon": 25.9224,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Kumba",
+      "country": "Cameroon",
+      "iso3": "CMR",
+      "lat": 4.6363,
+      "lon": 9.4469,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Kabinda",
+      "country": "Democratic Republic of the Congo",
+      "iso3": "COD",
+      "lat": -6.1379,
+      "lon": 24.4818,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Gandajika",
+      "country": "Democratic Republic of the Congo",
+      "iso3": "COD",
+      "lat": -6.745,
+      "lon": 23.9533,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Sumbe",
+      "country": "Angola",
+      "iso3": "AGO",
+      "lat": -11.206,
+      "lon": 13.8437,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Bandundu Province",
+      "country": "Democratic Republic of the Congo",
+      "iso3": "COD",
+      "lat": -3.3169,
+      "lon": 17.3806,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Soyo",
+      "country": "Angola",
+      "iso3": "AGO",
+      "lat": -6.1349,
+      "lon": 12.3689,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Kamina",
+      "country": "Democratic Republic of the Congo",
+      "iso3": "COD",
+      "lat": -8.7351,
+      "lon": 24.998,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Gemena",
+      "country": "Democratic Republic of the Congo",
+      "iso3": "COD",
+      "lat": 3.2565,
+      "lon": 19.7723,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Mwene-Ditu",
+      "country": "Democratic Republic of the Congo",
+      "iso3": "COD",
+      "lat": -7.0091,
+      "lon": 23.4528,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Dundo",
+      "country": "Angola",
+      "iso3": "AGO",
+      "lat": -7.3664,
+      "lon": 20.8156,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Kipushi",
+      "country": "Democratic Republic of the Congo",
+      "iso3": "COD",
+      "lat": -11.761,
+      "lon": 27.2513,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Nkongsamba",
+      "country": "Cameroon",
+      "iso3": "CMR",
+      "lat": 4.9547,
+      "lon": 9.9404,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "N'dalatando",
+      "country": "Angola",
+      "iso3": "AGO",
+      "lat": -9.2978,
+      "lon": 14.9116,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Bumba",
+      "country": "Democratic Republic of the Congo",
+      "iso3": "COD",
+      "lat": 2.1877,
+      "lon": 22.4683,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Mbanza Kongo",
+      "country": "Angola",
+      "iso3": "AGO",
+      "lat": -6.2667,
+      "lon": 14.2383,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Mbanza-Ngungu",
+      "country": "Democratic Republic of the Congo",
+      "iso3": "COD",
+      "lat": -5.2584,
+      "lon": 14.8584,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Beni",
+      "country": "Democratic Republic of the Congo",
+      "iso3": "COD",
+      "lat": 0.4911,
+      "lon": 29.4731,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Buea",
+      "country": "Cameroon",
+      "iso3": "CMR",
+      "lat": 4.1534,
+      "lon": 9.2423,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Kousséri",
+      "country": "Cameroon",
+      "iso3": "CMR",
+      "lat": 12.0769,
+      "lon": 15.0306,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Limbe",
+      "country": "Cameroon",
+      "iso3": "CMR",
+      "lat": 4.0236,
+      "lon": 9.2061,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Foumban",
+      "country": "Cameroon",
+      "iso3": "CMR",
+      "lat": 5.7266,
+      "lon": 10.8986,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Caála",
+      "country": "Angola",
+      "iso3": "AGO",
+      "lat": -12.8525,
+      "lon": 15.5606,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Tchéboa",
+      "country": "Cameroon",
+      "iso3": "CMR",
+      "lat": 9.0287,
+      "lon": 13.1848,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Aru",
+      "country": "Democratic Republic of the Congo",
+      "iso3": "COD",
+      "lat": 2.8622,
+      "lon": 30.8414,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Massaguet",
+      "country": "Chad",
+      "iso3": "TCD",
+      "lat": 12.4755,
+      "lon": 15.4365,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Bonabéri",
+      "country": "Cameroon",
+      "iso3": "CMR",
+      "lat": 4.0714,
+      "lon": 9.6818,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Biltine",
+      "country": "Chad",
+      "iso3": "TCD",
+      "lat": 14.5273,
+      "lon": 20.926,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Souza Gare",
+      "country": "Cameroon",
+      "iso3": "CMR",
+      "lat": 4.2344,
+      "lon": 9.6164,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Okola",
+      "country": "Cameroon",
+      "iso3": "CMR",
+      "lat": 4.0167,
+      "lon": 11.3833,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Loutété",
+      "country": "Republic of Congo",
+      "iso3": "COG",
+      "lat": -4.2961,
+      "lon": 13.8508,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Chibia",
+      "country": "Angola",
+      "iso3": "AGO",
+      "lat": -15.1831,
+      "lon": 13.6991,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Kabeya-Kamwanga",
+      "country": "Democratic Republic of the Congo",
+      "iso3": "COD",
+      "lat": -5.9988,
+      "lon": 23.2539,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Yoko",
+      "country": "Cameroon",
+      "iso3": "CMR",
+      "lat": 5.5333,
+      "lon": 12.3167,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Ebo",
+      "country": "Angola",
+      "iso3": "AGO",
+      "lat": -11.05,
+      "lon": 14.7167,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Lusambo",
+      "country": "Democratic Republic of the Congo",
+      "iso3": "COD",
+      "lat": -4.975,
+      "lon": 23.4439,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Benoy",
+      "country": "Chad",
+      "iso3": "TCD",
+      "lat": 8.9833,
+      "lon": 16.3199,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Lagdo",
+      "country": "Cameroon",
+      "iso3": "CMR",
+      "lat": 9.0583,
+      "lon": 13.6661,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Nokou",
+      "country": "Chad",
+      "iso3": "TCD",
+      "lat": 14.579,
+      "lon": 14.7793,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Kasongo-Lunda",
+      "country": "Democratic Republic of the Congo",
+      "iso3": "COD",
+      "lat": -6.4783,
+      "lon": 16.8174,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Pokola",
+      "country": "Republic of Congo",
+      "iso3": "COG",
+      "lat": 1.405,
+      "lon": 16.3183,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Tcholliré",
+      "country": "Cameroon",
+      "iso3": "CMR",
+      "lat": 8.4022,
+      "lon": 14.1698,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Guelendeng",
+      "country": "Chad",
+      "iso3": "TCD",
+      "lat": 10.9176,
+      "lon": 15.5501,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Makary",
+      "country": "Cameroon",
+      "iso3": "CMR",
+      "lat": 12.5754,
+      "lon": 14.4548,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Bélabo",
+      "country": "Cameroon",
+      "iso3": "CMR",
+      "lat": 4.9333,
+      "lon": 13.3,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Ndop",
+      "country": "Cameroon",
+      "iso3": "CMR",
+      "lat": 5.9884,
+      "lon": 10.4386,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Mouila",
+      "country": "Gabon",
+      "iso3": "GAB",
+      "lat": -1.8685,
+      "lon": 11.0559,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Bekondo",
+      "country": "Cameroon",
+      "iso3": "CMR",
+      "lat": 4.6819,
+      "lon": 9.3214,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Ambriz",
+      "country": "Angola",
+      "iso3": "AGO",
+      "lat": -7.8463,
+      "lon": 13.1078,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Dala",
+      "country": "Angola",
+      "iso3": "AGO",
+      "lat": -13.7833,
+      "lon": 16.7167,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Mandelia",
+      "country": "Chad",
+      "iso3": "TCD",
+      "lat": 11.7302,
+      "lon": 15.2447,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Lukolela",
+      "country": "Democratic Republic of the Congo",
+      "iso3": "COD",
+      "lat": -1.0605,
+      "lon": 17.1821,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Bosobolo",
+      "country": "Democratic Republic of the Congo",
+      "iso3": "COD",
+      "lat": 4.1898,
+      "lon": 19.8833,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Camboio",
+      "country": "Angola",
+      "iso3": "AGO",
+      "lat": -12.9265,
+      "lon": 14.0989,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Lastoursville",
+      "country": "Gabon",
+      "iso3": "GAB",
+      "lat": -0.8174,
+      "lon": 12.7082,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Pepa",
+      "country": "Democratic Republic of the Congo",
+      "iso3": "COD",
+      "lat": -7.6981,
+      "lon": 29.7772,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Pweto",
+      "country": "Democratic Republic of the Congo",
+      "iso3": "COD",
+      "lat": -8.466,
+      "lon": 28.9008,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Saa",
+      "country": "Cameroon",
+      "iso3": "CMR",
+      "lat": 4.3667,
+      "lon": 11.45,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Quipungo",
+      "country": "Angola",
+      "iso3": "AGO",
+      "lat": -14.8191,
+      "lon": 14.535,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Cacuso",
+      "country": "Angola",
+      "iso3": "AGO",
+      "lat": -9.421,
+      "lon": 15.7467,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Mobaye",
+      "country": "Central African Republic",
+      "iso3": "CAF",
+      "lat": 4.319,
+      "lon": 21.1786,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Calucinga",
+      "country": "Angola",
+      "iso3": "AGO",
+      "lat": -11.3228,
+      "lon": 16.1959,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Cambundi",
+      "country": "Angola",
+      "iso3": "AGO",
+      "lat": -10.8948,
+      "lon": 17.764,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Bamendjou",
+      "country": "Cameroon",
+      "iso3": "CMR",
+      "lat": 5.3899,
+      "lon": 10.3301,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Bossemtele I",
+      "country": "Central African Republic",
+      "iso3": "CAF",
+      "lat": 5.7969,
+      "lon": 16.5179,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Bélel",
+      "country": "Cameroon",
+      "iso3": "CMR",
+      "lat": 7.05,
+      "lon": 14.4333,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Fianga",
+      "country": "Chad",
+      "iso3": "TCD",
+      "lat": 9.9146,
+      "lon": 15.1399,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Bangangté",
+      "country": "Cameroon",
+      "iso3": "CMR",
+      "lat": 5.1408,
+      "lon": 10.5253,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Mossendjo",
+      "country": "Republic of Congo",
+      "iso3": "COG",
+      "lat": -2.9497,
+      "lon": 12.7042,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Tsogni",
+      "country": "Gabon",
+      "iso3": "GAB",
+      "lat": -2.8037,
+      "lon": 10.1606,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Wamba",
+      "country": "Democratic Republic of the Congo",
+      "iso3": "COD",
+      "lat": 2.1484,
+      "lon": 27.9947,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Bozoum",
+      "country": "Central African Republic",
+      "iso3": "CAF",
+      "lat": 6.3193,
+      "lon": 16.3799,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Gamboma",
+      "country": "Republic of Congo",
+      "iso3": "COG",
+      "lat": -1.8764,
+      "lon": 15.8644,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Etoumbi",
+      "country": "Republic of Congo",
+      "iso3": "COG",
+      "lat": 0.0289,
+      "lon": 14.9056,
+      "region": "central_africa",
+      "urban": false
+    },
+    {
+      "name": "Djibouti",
+      "country": "Djibouti",
+      "iso3": "DJI",
+      "lat": 11.589,
+      "lon": 43.145,
+      "region": "horn_of_africa",
+      "urban": true
+    },
+    {
+      "name": "Borama",
+      "country": "Somalia",
+      "iso3": "SOM",
+      "lat": 9.9361,
+      "lon": 43.1828,
+      "region": "horn_of_africa",
+      "urban": true
+    },
+    {
+      "name": "Nazrēt",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 8.55,
+      "lon": 39.2667,
+      "region": "horn_of_africa",
+      "urban": true
+    },
+    {
+      "name": "Warder",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 6.9744,
+      "lon": 45.3408,
+      "region": "horn_of_africa",
+      "urban": true
+    },
+    {
+      "name": "Juba",
+      "country": "South Sudan",
+      "iso3": "SSD",
+      "lat": 4.8517,
+      "lon": 31.5825,
+      "region": "horn_of_africa",
+      "urban": true
+    },
+    {
+      "name": "Awasa",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 7.0621,
+      "lon": 38.4763,
+      "region": "horn_of_africa",
+      "urban": true
+    },
+    {
+      "name": "Winejok",
+      "country": "South Sudan",
+      "iso3": "SSD",
+      "lat": 9.0122,
+      "lon": 27.5708,
+      "region": "horn_of_africa",
+      "urban": true
+    },
+    {
+      "name": "Yei",
+      "country": "South Sudan",
+      "iso3": "SSD",
+      "lat": 4.0944,
+      "lon": 30.6764,
+      "region": "horn_of_africa",
+      "urban": true
+    },
+    {
+      "name": "Marka",
+      "country": "Somalia",
+      "iso3": "SOM",
+      "lat": 1.7159,
+      "lon": 44.7717,
+      "region": "horn_of_africa",
+      "urban": true
+    },
+    {
+      "name": "El Dibir",
+      "country": "Somalia",
+      "iso3": "SOM",
+      "lat": 11.7667,
+      "lon": 51.2167,
+      "region": "horn_of_africa",
+      "urban": true
+    },
+    {
+      "name": "Malakal",
+      "country": "South Sudan",
+      "iso3": "SSD",
+      "lat": 9.5334,
+      "lon": 31.6605,
+      "region": "horn_of_africa",
+      "urban": true
+    },
+    {
+      "name": "Dīla",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 6.4167,
+      "lon": 38.3167,
+      "region": "horn_of_africa",
+      "urban": true
+    },
+    {
+      "name": "Ārabī",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 9.9628,
+      "lon": 42.4928,
+      "region": "horn_of_africa",
+      "urban": true
+    },
+    {
+      "name": "Ruqi",
+      "country": "Somalia",
+      "iso3": "SOM",
+      "lat": 9.9729,
+      "lon": 43.4276,
+      "region": "horn_of_africa",
+      "urban": true
+    },
+    {
+      "name": "Debre Mark’os",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 10.35,
+      "lon": 37.7333,
+      "region": "horn_of_africa",
+      "urban": true
+    },
+    {
+      "name": "Āsela",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 7.95,
+      "lon": 39.1333,
+      "region": "horn_of_africa",
+      "urban": true
+    },
+    {
+      "name": "Kombolcha",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 11.0816,
+      "lon": 39.7434,
+      "region": "horn_of_africa",
+      "urban": true
+    },
+    {
+      "name": "Wau",
+      "country": "South Sudan",
+      "iso3": "SSD",
+      "lat": 7.7011,
+      "lon": 27.9897,
+      "region": "horn_of_africa",
+      "urban": true
+    },
+    {
+      "name": "Debre Tabor",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 11.85,
+      "lon": 38.0167,
+      "region": "horn_of_africa",
+      "urban": true
+    },
+    {
+      "name": "Ādīgrat",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 14.277,
+      "lon": 39.462,
+      "region": "horn_of_africa",
+      "urban": true
+    },
+    {
+      "name": "Chelenko",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 9.3975,
+      "lon": 41.561,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Ceeldheer",
+      "country": "Somalia",
+      "iso3": "SOM",
+      "lat": 3.8488,
+      "lon": 47.1806,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Fadhigaradle",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 6.1756,
+      "lon": 45.2987,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Bombe",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 7.138,
+      "lon": 37.5819,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Logīya",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 11.7262,
+      "lon": 40.9797,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Tog Wajaale",
+      "country": "Somalia",
+      "iso3": "SOM",
+      "lat": 9.5997,
+      "lon": 43.335,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Dembech’a",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 10.55,
+      "lon": 37.4833,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Komtikas",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 6.9577,
+      "lon": 35.5575,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Garbahaarrey",
+      "country": "Somalia",
+      "iso3": "SOM",
+      "lat": 3.3289,
+      "lon": 42.2209,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Qandala",
+      "country": "Somalia",
+      "iso3": "SOM",
+      "lat": 11.472,
+      "lon": 49.8728,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Wacha",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 7.1511,
+      "lon": 35.817,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Shakiso",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 5.7649,
+      "lon": 38.9101,
+      "region": "horn_of_africa",
+      "urban": false
+    },
+    {
+      "name": "Debark’",
+      "country": "Ethiopia",
+      "iso3": "ETH",
+      "lat": 13.1561,
+      "lon": 37.8981,
+      "region": "horn_of_africa",
+      "urban": false
+    }
+  ]
+}

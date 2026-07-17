@@ -1,36 +1,56 @@
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
+const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
+
 // https://vitejs.dev/config/
 export default defineConfig({
+  envDir: repoRoot,
   plugins: [
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'icons/apple-touch-icon.png'],
+      includeAssets: ['favicon.svg', 'icons/*.png', 'splash/*.png', 'city-packs/top-cities.v1.json'],
       manifest: {
-        name: 'Mframapa AI Air Quality',
+        id: '/',
+        name: 'Mframapa Air Quality',
         short_name: 'Mframapa',
-        description: 'Satellite-based air quality monitoring and prediction for Africa.',
-        theme_color: '#0f172a',
-        background_color: '#0f172a',
+        description: 'Satellite-powered PM2.5 air quality for any city in Africa. Free, offline-ready, 27 languages.',
+        theme_color: '#06080d',
+        background_color: '#06080d',
+        start_url: '/',
+        scope: '/',
         display: 'standalone',
+        orientation: 'portrait-primary',
+        categories: ['health', 'weather', 'utilities'],
+        lang: 'en',
+        dir: 'ltr',
         icons: [
-          {
-            src: 'icons/icon-192x192.png',
-            sizes: '192x192',
-            type: 'image/png'
-          },
-          {
-            src: 'icons/icon-512x512.png',
-            sizes: '512x512',
-            type: 'image/png'
-          }
+          { src: 'icons/icon-72.png',  sizes: '72x72',   type: 'image/png', purpose: 'any' },
+          { src: 'icons/icon-96.png',  sizes: '96x96',   type: 'image/png', purpose: 'any' },
+          { src: 'icons/icon-128.png', sizes: '128x128', type: 'image/png', purpose: 'any' },
+          { src: 'icons/icon-144.png', sizes: '144x144', type: 'image/png', purpose: 'any' },
+          { src: 'icons/icon-152.png', sizes: '152x152', type: 'image/png', purpose: 'any' },
+          { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+          { src: 'icons/icon-384.png', sizes: '384x384', type: 'image/png', purpose: 'any' },
+          { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+          { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+        ],
+        screenshots: [
+          { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png', form_factor: 'narrow' }
         ]
       },
+      devOptions: {
+        enabled: true,
+        type: 'module',
+      },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,json}'],
+        navigateFallback: '/index.html',
+        cleanupOutdatedCaches: true,
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
@@ -61,12 +81,35 @@ export default defineConfig({
             }
           },
           {
+            urlPattern: /\/city-packs\/.*\.json$/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'city-pack-cache',
+              expiration: {
+                maxEntries: 8,
+                maxAgeSeconds: 60 * 60 * 24 * 30
+              },
+              cacheableResponse: {
+                statuses: [0, 200]
+              }
+            }
+          },
+          {
             urlPattern: /\/api\//,
             handler: 'NetworkFirst',
             options: {
               cacheName: 'api-cache',
               networkTimeoutSeconds: 10,
               expiration: { maxEntries: 50, maxAgeSeconds: 60 * 60 * 6 },
+              cacheableResponse: { statuses: [0, 200] }
+            }
+          },
+          {
+            urlPattern: /^https:\/\/api\.mapbox\.com\/.*/i,
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'mapbox-api-cache',
+              expiration: { maxEntries: 150, maxAgeSeconds: 60 * 60 * 24 * 7 },
               cacheableResponse: { statuses: [0, 200] }
             }
           }

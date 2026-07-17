@@ -106,7 +106,8 @@
 }
 
 body {
-  @apply bg-gray-50 dark:bg-[#0A0F1C] text-gray-900 dark:text-white transition-colors duration-300;
+  background-color: transparent;
+  @apply text-gray-900 dark:text-white transition-colors duration-300;
 }
 
 /* Smooth scrolling */
@@ -117,6 +118,11 @@ html {
 /* Prevent horizontal scroll */
 html, body {
   overflow-x: hidden;
+}
+
+:focus-visible {
+  outline: 2px solid #34d399;
+  outline-offset: 2px;
 }
 
 /* Custom Scrollbar - Dark Mode */

@@ -1,12 +1,15 @@
 {
-  "name": "Mframapa - Air Quality for Africa",
+  "id": "/",
+  "name": "Mframapa Air Quality",
   "short_name": "Mframapa",
-  "description": "Real-time satellite-based air quality monitoring and prediction for Africa.",
+  "description": "Mobile-first air quality checks across African cities.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#10b981",
   "orientation": "portrait-primary",
+  "categories": ["health", "weather", "utilities"],
   "icons": [
     {
       "src": "/icons/icon-192x192.png",
@@ -24,7 +27,7 @@
       "src": "/icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     }
   ]
 }

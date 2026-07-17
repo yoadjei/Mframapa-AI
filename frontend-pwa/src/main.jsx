@@ -1,16 +1,19 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.jsx'
-import { LanguageProvider } from './context/LanguageContext';
-import { registerSW } from './sw-register.js';
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { App } from "./app/App.jsx";
+import { AppStateProvider } from "./state/appState.jsx";
+import { I18nProvider } from "./i18n/I18nProvider.jsx";
+import { registerServiceWorker } from "./pwa/registerServiceWorker.js";
+import "./index.css";
 
-createRoot(document.getElementById('root')).render(
+createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <LanguageProvider>
-      <App />
-    </LanguageProvider>
-  </StrictMode>,
-)
+    <AppStateProvider>
+      <I18nProvider>
+        <App />
+      </I18nProvider>
+    </AppStateProvider>
+  </StrictMode>
+);
 
-registerSW();
+registerServiceWorker();

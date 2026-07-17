@@ -1,7 +1,9 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import { getHealthAdvice, getAQIColorFromCategory } from '../utils/aqi';
+import { getAQIColorFromCategory } from '../utils/aqi';
 import { getColors, spacing, borderRadius, fontSize } from '../theme';
+import { useTranslation } from '../hooks/useTranslation';
+import { healthAdviceKey } from '../utils/i18nHelpers';
 
 interface HealthAdviceProps {
   category: string;
@@ -26,9 +28,10 @@ function getIcon(category: string): string {
 }
 
 export function HealthAdvice({ category, isDark }: HealthAdviceProps) {
+  const { t } = useTranslation();
   const colors = getColors(isDark);
   const color = getAQIColorFromCategory(category);
-  const advice = getHealthAdvice(category);
+  const advice = t(healthAdviceKey(category));
   const icon = getIcon(category);
 
   return (
@@ -46,11 +49,9 @@ export function HealthAdvice({ category, isDark }: HealthAdviceProps) {
       <Text style={{ fontSize: fontSize.xl, marginRight: spacing.sm }}>{icon}</Text>
       <View style={{ flex: 1 }}>
         <Text style={{ color, fontSize: fontSize.sm, fontWeight: '700', marginBottom: 2 }}>
-          Health Guidance
+          {t('card.health_guidance')}
         </Text>
-        <Text style={{ color: colors.text, fontSize: fontSize.sm, lineHeight: 18 }}>
-          {advice}
-        </Text>
+        <Text style={{ color: colors.text, fontSize: fontSize.sm, lineHeight: 18 }}>{advice}</Text>
       </View>
     </View>
   );

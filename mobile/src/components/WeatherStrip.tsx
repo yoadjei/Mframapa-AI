@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text } from 'react-native';
 import { getColors, spacing, borderRadius, fontSize } from '../theme';
 import { formatTemperature, formatHumidity, formatWindSpeed } from '../utils/formatters';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface WeatherData {
   temp: number | null;
@@ -44,24 +45,25 @@ function WeatherItem({ icon, label, value, colors }: ItemProps) {
 
 export function WeatherStrip({ weather, isDark }: WeatherStripProps) {
   const colors = getColors(isDark);
+  const { t } = useTranslation();
 
   return (
     <View style={{ flexDirection: 'row', marginHorizontal: -3 }}>
       <WeatherItem
         icon="🌡"
-        label="Temp"
+        label={t('weather.temp')}
         value={formatTemperature(weather.temp)}
         colors={colors}
       />
       <WeatherItem
         icon="💧"
-        label="Humidity"
+        label={t('weather.humidity')}
         value={formatHumidity(weather.humidity)}
         colors={colors}
       />
       <WeatherItem
         icon="💨"
-        label="Wind"
+        label={t('weather.wind')}
         value={formatWindSpeed(weather.wind)}
         colors={colors}
       />

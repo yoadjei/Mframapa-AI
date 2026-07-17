@@ -1,100 +1,101 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  FlatList,
-  Modal,
-} from 'react-native';
-import { getColors, spacing, borderRadius, fontSize } from '../theme';
-import { SUPPORTED_LANGUAGES, LanguageCode } from '../utils/constants';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useStore } from '../store/useStore';
+import { SUPPORTED_LANGUAGES } from '../utils/constants';
+import { getColors, spacing, fontSize } from '../theme';
+import { useTheme } from '../hooks/useTheme';
 
-interface LanguagePickerProps {
-  current: string;
-  onSelect: (code: LanguageCode) => void;
-  isDark: boolean;
-}
-
-export function LanguagePicker({ current, onSelect, isDark }: LanguagePickerProps) {
+export function LanguagePicker() {
+  const { isDark } = useTheme();
+  const language = useStore((s) => s.language);
+  const setLanguage = useStore((s) => s.setLanguage);
   const colors = getColors(isDark);
-  const [visible, setVisible] = useState(false);
+  const [expanded, setExpanded] = useState(false);
 
-  const currentLabel =
-    SUPPORTED_LANGUAGES.find((l) => l.code === current)?.name ?? current.toUpperCase();
-
-  function handleSelect(code: LanguageCode) {
-    setVisible(false);
-    onSelect(code);
-  }
+  const selected =
+    SUPPORTED_LANGUAGES.find((l) => l.code === language) ?? SUPPORTED_LANGUAGES[0];
 
   return (
-    <>
+    <View>
       <TouchableOpacity
-        onPress={() => setVisible(true)}
-        style={{
-          backgroundColor: colors.inputBackground,
-          borderRadius: borderRadius.md,
-          paddingHorizontal: spacing.md,
-          paddingVertical: spacing.sm,
-          borderWidth: 1,
-          borderColor: colors.border,
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}
+        onPress={() => setExpanded((v) => !v)}
+        style={[styles.selector, { borderColor: colors.border }]}
+        accessibilityRole="button"
+        accessibilityState={{ expanded }}
       >
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Text style={{ fontSize: fontSize.lg, marginRight: spacing.sm }}>🌐</Text>
-          <Text style={{ color: colors.text, fontSize: fontSize.md }}>{currentLabel}</Text>
-        </View>
-        <Text style={{ color: colors.subtext }}>›</Text>
+        <Text style={styles.flag}>{selected.flag}</Text>
+        <Text style={[styles.label, { color: colors.text }]}>{selected.name}</Text>
+        <Ionicons
+          name={expanded ? 'chevron-up' : 'chevron-down'}
+          size={20}
+          color={colors.subtext}
+        />
       </TouchableOpacity>
 
-      <Modal visible={visible} animationType="slide" onRequestClose={() => setVisible(false)}>
-        <View style={{ flex: 1, backgroundColor: colors.background }}>
-          <View
-            style={{
-              padding: spacing.md,
-              borderBottomWidth: 1,
-              borderBottomColor: colors.border,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}
-          >
-            <Text style={{ color: colors.text, fontSize: fontSize.xl, fontWeight: '700' }}>
-              Language
-            </Text>
-            <TouchableOpacity onPress={() => setVisible(false)}>
-              <Text style={{ color: colors.subtext, fontSize: fontSize.md }}>✕</Text>
-            </TouchableOpacity>
-          </View>
-
-          <FlatList
-            data={SUPPORTED_LANGUAGES}
-            keyExtractor={(item) => item.code}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                onPress={() => handleSelect(item.code as LanguageCode)}
-                style={{
-                  paddingHorizontal: spacing.md,
-                  paddingVertical: spacing.md,
-                  borderBottomWidth: 1,
+      {expanded ? (
+        <View style={[styles.list, { borderColor: colors.border }]}>
+          {SUPPORTED_LANGUAGES.map((lang, index) => (
+            <TouchableOpacity
+              key={lang.code}
+              onPress={() => {
+                setLanguage(lang.code);
+                setExpanded(false);
+              }}
+              style={[
+                styles.option,
+                index < SUPPORTED_LANGUAGES.length - 1 && {
+                  borderBottomWidth: 0.5,
                   borderBottomColor: colors.border,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <Text style={{ color: colors.text, fontSize: fontSize.md }}>{item.name}</Text>
-                {item.code === current && (
-                  <Text style={{ color: colors.accent, fontSize: fontSize.md }}>✓</Text>
-                )}
-              </TouchableOpacity>
-            )}
-          />
+                }]}
+            >
+              <Text style={styles.flag}>{lang.flag}</Text>
+              <Text style={[styles.optionLabel, { color: colors.text }]}>{lang.name}</Text>
+              {language === lang.code ? (
+                <Ionicons name="checkmark" size={20} color={colors.accent} />
+              ) : (
+                <View style={{ width: 20 }} />
+              )}
+            </TouchableOpacity>
+          ))}
         </View>
-      </Modal>
-    </>
+      ) : null}
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  selector: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 14,
+    borderBottomWidth: 0.5,
+    gap: spacing.md,
+  },
+  flag: {
+    fontSize: 22,
+  },
+  label: {
+    flex: 1,
+    fontSize: fontSize.md,
+    fontWeight: '600',
+  },
+  list: {
+    borderWidth: 0.5,
+    borderRadius: 12,
+    marginTop: spacing.xs,
+    overflow: 'hidden',
+  },
+  option: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: spacing.sm,
+    gap: spacing.md,
+  },
+  optionLabel: {
+    flex: 1,
+    fontSize: fontSize.md,
+    fontWeight: '600',
+  },
+});
