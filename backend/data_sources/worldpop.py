@@ -1,20 +1,17 @@
 """
-WorldPop population density connector.
+WorldPop population-density connector (v1 stats API, no auth).
 
-Uses the WorldPop v2 REST API (free, no auth required) to fetch
-estimated population density (people/km²) for a given point.
+Fetches total population in a small bbox around the point via the synchronous
+stats endpoint (runasync=false returns the result inline in ~2s), then converts
+the count to people/km^2.
 
-API:  https://api.worldpop.org/v2/
-Data: WorldPop R2025A 2020 100m resolution mosaic
-
-How it works:
-    1. POST a small bbox GeoJSON to /v2/population (async task).
-    2. Poll /v2/tasks/{task_id}/result until status is not pending.
-    3. Extract population_density from the result.
+API:  https://api.worldpop.org/v1/services/stats
+Data: WorldPop wpgppop 2020 population-count mosaic
 """
 
+import json
 import logging
-import time
+import math
 from typing import Dict, Any, List, Optional
 
 import requests
@@ -23,14 +20,15 @@ from .base import DataSource
 
 logger = logging.getLogger(__name__)
 
-_BASE         = "https://api.worldpop.org/v2"
-_TIMEOUT      = 30
-_POLL_MAX     = 12
-_POLL_SLEEP   = 3
+_STATS_URL = "https://api.worldpop.org/v1/services/stats"
+_DATASET   = "wpgppop"   # population count mosaic; the old 'wpgp' alias 422s
+_YEAR      = "2020"
+_TIMEOUT   = 30
+_DELTA     = 0.01        # ~1.1 km half-box around the point
 
 
 class WorldPopDataSource(DataSource):
-    """WorldPop v2 REST API connector — no credentials required."""
+    """WorldPop v1 stats API connector — no credentials required."""
 
     @property
     def source_name(self) -> str:
@@ -46,89 +44,40 @@ class WorldPopDataSource(DataSource):
 
     def fetch_data(self, lat: float, lon: float, date: str) -> Dict[str, Any]:
         self._validate_inputs(lat, lon)
-        density = self._query(lat, lon)
-        return {"population_density": density}
+        return {"population_density": self._query(lat, lon)}
 
     def _query(self, lat: float, lon: float) -> Optional[float]:
-        delta = 0.01
-        payload = {
-            "year": 2020,
-            "geojson": {
-                "type": "Polygon",
-                "coordinates": [[
-                    [lon - delta, lat - delta],
-                    [lon + delta, lat - delta],
-                    [lon + delta, lat + delta],
-                    [lon - delta, lat + delta],
-                    [lon - delta, lat - delta],
-                ]],
-            },
+        geojson = {
+            "type": "Polygon",
+            "coordinates": [[
+                [lon - _DELTA, lat - _DELTA],
+                [lon + _DELTA, lat - _DELTA],
+                [lon + _DELTA, lat + _DELTA],
+                [lon - _DELTA, lat + _DELTA],
+                [lon - _DELTA, lat - _DELTA],
+            ]],
         }
-
         params = {
-            "dataset":  "wpgppop",       # population count mosaic; the old 'wpgp' alias 422s
-            "year":     "2020",
+            "dataset":  _DATASET,
+            "year":     _YEAR,
             "geojson":  json.dumps(geojson),
             "runasync": "false",
         }
-
         try:
             resp = requests.get(_STATS_URL, params=params, timeout=_TIMEOUT)
             if resp.status_code == 422:
-                logger.debug("WorldPop: 422 for (%.3f, %.3f), returning None", lat, lon)
                 return None
-
             resp.raise_for_status()
+            data = resp.json()
         except requests.RequestException as e:
-            raise ConnectionError(f"WorldPop: submit failed — {e}") from e
+            raise ConnectionError(f"WorldPop: request failed — {e}") from e
 
-        data = resp.json()
         total = self._extract_population(data)
-        if total is None:
-            taskid_url = data.get("data", {}).get("taskid")
-            if taskid_url:
-                total = self._poll_async(taskid_url)
         if total is None:
             logger.warning("WorldPop: no population in response: %s", str(data)[:200])
             return None
-        area = self._box_area_km2(lat, delta)   # total count -> people/km^2
+        area = self._box_area_km2(lat, _DELTA)
         return round(total / area, 2) if area > 0 else None
-
-    def _poll_async(self, taskid_url: str) -> Optional[float]:
-        """Poll a WorldPop async task URL until it finishes."""
-
-        for attempt in range(_POLL_MAX):
-            time.sleep(_POLL_SLEEP)
-            try:
-                resp = requests.get(url, timeout=_TIMEOUT)
-                if resp.status_code == 404:
-                    logger.debug("WorldPop: task not ready yet (attempt %d)", attempt + 1)
-                    continue
-                resp.raise_for_status()
-                data = resp.json()
-            except requests.RequestException as e:
-                logger.warning("WorldPop: poll error — %s", e)
-                continue
-
-        for attempt in range(_POLL_MAX):
-            time.sleep(_POLL_SLEEP)
-            try:
-                resp = requests.get(taskid_url, timeout=_TIMEOUT)
-                resp.raise_for_status()
-                data = resp.json()
-            except requests.RequestException as e:
-                logger.warning("WorldPop: poll error — %s", e)
-                continue
-
-            if data.get("status") == "finished":
-                return self._extract_population(data)
-
-            logger.debug(
-                "WorldPop: task still running (attempt %d/%d)", attempt + 1, _POLL_MAX
-            )
-
-        logger.warning("WorldPop: async task did not finish within %d polls", _POLL_MAX)
-        return None
 
     @staticmethod
     def _extract_population(data: dict) -> Optional[float]:
@@ -141,7 +90,6 @@ class WorldPopDataSource(DataSource):
     @staticmethod
     def _box_area_km2(lat: float, delta: float) -> float:
         """Area of the 2*delta-degree box around the point, in km^2."""
-        import math
         side_lat_km = 2 * delta * 111.32
         side_lon_km = 2 * delta * 111.32 * math.cos(math.radians(lat))
         return side_lat_km * side_lon_km
