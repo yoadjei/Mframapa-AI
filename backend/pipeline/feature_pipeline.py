@@ -35,8 +35,9 @@ from backend.data_sources.srtm import SRTMDataSource
 
 logger = logging.getLogger(__name__)
 
-_STATIC_TTL  = 30 * 24 * 3600   # population + elevation never change
-_DYNAMIC_TTL = 6 * 3600         # weather / air quality refresh intra-day
+_STATIC_TTL   = 30 * 24 * 3600   # population + elevation never change
+_DYNAMIC_TTL  = 6 * 3600         # weather / air quality refresh intra-day
+_NEGATIVE_TTL = 600              # empty/failed upstream result — retry after 10 min
 
 # Features the ML models expect — used for validation
 _REQUIRED_FEATURES = {
@@ -75,18 +76,17 @@ class FeaturePipeline:
             f_pop  = ex.submit(self._safe, self.worldpop, lat, lon, date, "population_density") if pop is None else None
             f_elev = ex.submit(self._safe, self.srtm, lat, lon, date, "elevation") if elev is None else None
 
+            # cache successes for their full ttl; cache empty/failed results briefly
+            # (negative cache) so a flaky upstream isn't re-hit on every request.
             if f_dyn is not None:
                 dyn = f_dyn.result()
-                if dyn.get("temperature_2m") is not None:
-                    self.cache.set(k_dyn, dyn, _DYNAMIC_TTL)
+                self.cache.set(k_dyn, dyn, _DYNAMIC_TTL if dyn.get("temperature_2m") is not None else _NEGATIVE_TTL)
             if f_pop is not None:
                 pop = f_pop.result()
-                if pop.get("population_density") is not None:
-                    self.cache.set(k_pop, pop, _STATIC_TTL)
+                self.cache.set(k_pop, pop, _STATIC_TTL if pop.get("population_density") is not None else _NEGATIVE_TTL)
             if f_elev is not None:
                 elev = f_elev.result()
-                if elev.get("elevation") is not None:
-                    self.cache.set(k_elev, elev, _STATIC_TTL)
+                self.cache.set(k_elev, elev, _STATIC_TTL if elev.get("elevation") is not None else _NEGATIVE_TTL)
 
         all_features = {**(dyn or {}), **(pop or {}), **(elev or {}), **self._temporal(date)}
         self._validate_features(all_features)
