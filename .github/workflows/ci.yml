@@ -1,32 +1,23 @@
-name: CI
+name: ci
 
 on:
-  pull_request:
   push:
-    branches:
-      - main
-      - master
-      - "codex/**"
+    branches: [v2]
+  pull_request:
+    branches: [v2]
 
 jobs:
-  backend-tests:
+  test:
     runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: ${{ github.workspace }}
+      PREWARM_ON_START: "0"
+      MFRAMAPA_INTERNAL_KEY: "test-internal-key"
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
-
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-
-      - name: API integration tests
-        env:
-          PYTHONPATH: ${{ github.workspace }}
-        run: pytest backend/tests/test_api.py -q
-
-      - name: Ingest to predict smoke tests
-        env:
-          PYTHONPATH: ${{ github.workspace }}
-        run: pytest backend/tests/test_pipeline.py -q
+          python-version: "3.13"
+          cache: pip
+      - run: pip install -r requirements-dev.txt
+      - run: pytest -q backend/tests/test_smoke.py
