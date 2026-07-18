@@ -90,6 +90,29 @@ def get_feature_pipeline() -> FeaturePipeline:
     return FeaturePipeline()
 
 
+# major african cities pre-warmed into the feature cache on startup so first user
+# hits are instant (name, lat, lon).
+_PREWARM_CITIES = [
+    ("Lagos", 6.52, 3.38), ("Cairo", 30.04, 31.24), ("Kinshasa", -4.32, 15.31),
+    ("Johannesburg", -26.20, 28.04), ("Nairobi", -1.29, 36.82), ("Accra", 5.60, -0.19),
+    ("Addis Ababa", 9.03, 38.74), ("Dar es Salaam", -6.79, 39.21), ("Abidjan", 5.36, -4.01),
+    ("Cape Town", -33.92, 18.42), ("Casablanca", 33.57, -7.59), ("Khartoum", 15.50, 32.56),
+    ("Dakar", 14.72, -17.47), ("Kampala", 0.35, 32.58), ("Luanda", -8.84, 13.23),
+]
+
+
+def _prewarm_cache() -> None:
+    """Best-effort: populate the redis feature cache for major cities (daemon thread)."""
+    today = dt_date.today().isoformat()
+    pipeline = FeaturePipeline()
+    for name, lat, lon in _PREWARM_CITIES:
+        try:
+            pipeline.get_features(lat, lon, today)
+        except Exception as e:
+            logger.debug("prewarm %s failed: %s", name, e)
+    logger.info("cache prewarm complete (%d cities)", len(_PREWARM_CITIES))
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Preload model bundles into app.state for fast inference
@@ -98,6 +121,9 @@ async def lifespan(app: FastAPI):
     except Exception:
         logger.exception("Failed to load model bundles at startup")
         app.state.models = {}
+    # warm the feature cache in the background — never blocks startup or requests
+    import threading
+    threading.Thread(target=_prewarm_cache, daemon=True).start()
     yield
     app.state.models = {}
 
