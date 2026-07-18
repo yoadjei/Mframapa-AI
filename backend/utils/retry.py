@@ -79,6 +79,11 @@ def with_retry(
                 except retryable_exceptions as e:
                     if use_alarm:
                         signal.alarm(0)
+                    # a 4xx client error is deterministic — retrying it just wastes
+                    # time (and backoff) on the request path. propagate immediately.
+                    status = getattr(getattr(e, "response", None), "status_code", None)
+                    if status is not None and 400 <= status < 500:
+                        raise
                     last_error = e
                     logger.warning(
                         "[%s] Attempt %d/%d failed: %s",
