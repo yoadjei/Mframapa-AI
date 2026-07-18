@@ -79,23 +79,8 @@ _FALLBACK_PLAN: Dict[str, list] = {
     "pm25_surface": [
         ("OpenMeteo", "pm25_surface"),
     ],
-    # ── Land proxies ──────────────────────────────────────────────────────
-    "ndvi": [
-        ("NDVI-Composite", "ndvi"),
-    ],
-    "night_lights": [
-        ("VIIRS-NightLights", "night_lights"),
-    ],
-    "road_density": [
-        ("OSM-Roads", "road_density"),
-    ],
-    # ── Ground Truth Calibration ──────────────────────────────────────────
-    "openaq_pm25": [
-        ("OpenAQ", "openaq_pm25"),
-    ],
-    "openaq_pm10": [
-        ("OpenAQ", "openaq_pm10"),
-    ],
+    # ndvi + night_lights come from the static grid at the router layer; road_density
+    # and openaq_* are not model features — none belong on the live request path.
 }
 
 _SOURCE_NAMES = ["ERA5", "Sentinel-5P", "VIIRS-MAIAC", "MODIS-MAIAC", "OpenMeteo", "NDVI-Composite", "VIIRS-NightLights", "OSM-Roads", "OpenAQ"]
