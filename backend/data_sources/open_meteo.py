@@ -72,7 +72,7 @@ class OpenMeteoDataSource(DataSource):
         params = {
             "latitude":   lat,
             "longitude":  lon,
-            "hourly":     "temperature_2m,relative_humidity_2m,wind_speed_10m,wind_direction_10m",
+            "hourly":     "boundary_layer_height,temperature_2m,relative_humidity_2m,wind_speed_10m,wind_direction_10m",
             "start_date": date,
             "end_date":   date,
             "timezone":   "UTC",
@@ -87,6 +87,7 @@ class OpenMeteoDataSource(DataSource):
         hourly = data.get("hourly", {})
         idx    = _MIDDAY_INDEX
 
+        pblh    = self._idx(hourly.get("boundary_layer_height"), idx)
         temp    = self._idx(hourly.get("temperature_2m"),        idx)
         rh      = self._idx(hourly.get("relative_humidity_2m"),  idx)
         wspd    = self._idx(hourly.get("wind_speed_10m"),         idx)
@@ -100,6 +101,7 @@ class OpenMeteoDataSource(DataSource):
             v = round(-wspd * math.cos(wdir_rad), 4)
 
         return {
+            "pblh":                    round(pblh, 2) if pblh is not None else None,
             "temperature_2m":          round(temp, 2) if temp is not None else None,
             "relative_humidity":       round(rh,   2) if rh   is not None else None,
             "u_component_of_wind_10m": u,
