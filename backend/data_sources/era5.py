@@ -49,7 +49,8 @@ class ERA5DataSource(DataSource):
             else:
                 self.client = cdsapi.Client(quiet=True)   # falls back to ~/.cdsapirc
         except ImportError:
-            logger.warning("ERA5: 'cdsapi' package not installed. Run: pip install cdsapi")
+            # expected in the lean serving image — openmeteo covers these features.
+            logger.debug("ERA5: 'cdsapi' not installed; source disabled")
             self.client = None
         except Exception as e:
             logger.warning("ERA5: could not initialise CDS client — %s", e)
