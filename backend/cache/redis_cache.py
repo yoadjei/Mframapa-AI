@@ -29,13 +29,23 @@ class RedisCache(BaseCache):
         url = os.environ.get("REDIS_URL") or os.environ.get("UPSTASH_REDIS_REST_URL")
         if url and redis is not None:
             try:
-                self._client = redis.from_url(url, decode_responses=True)
+                # short timeouts: a cache must never block the request path if redis
+                # is slow/unreachable — ops fail fast and the caller degrades to a live fetch.
+                self._client = redis.from_url(
+                    url, decode_responses=True,
+                    socket_connect_timeout=2, socket_timeout=2,
+                )
             except Exception as e:
                 logger.warning("Failed to connect to Redis: %s", e)
 
     @property
     def is_available(self) -> bool:
-        return self._client is not None
+        if self._client is None:
+            return False
+        try:
+            return bool(self._client.ping())   # actually verify reachability (2s-bounded)
+        except Exception:
+            return False
 
     def get(self, key: str) -> Optional[Dict[str, Any]]:
         if not self.is_available:
