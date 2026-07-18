@@ -1,5 +1,13 @@
 # mframapa backend stack: nginx -> api (uvicorn) -> redis.
 # tls is terminated upstream by cloudflare, so nginx serves plain http on :80.
+
+# capped json logs so container logs can't fill the disk on a small box.
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
 services:
   redis:
     image: redis:7-alpine
@@ -7,6 +15,7 @@ services:
     volumes:
       - redis-data:/data
     restart: unless-stopped
+    logging: *default-logging
 
   api:
     build: .
@@ -21,6 +30,7 @@ services:
     depends_on:
       - redis
     restart: unless-stopped
+    logging: *default-logging
 
   nginx:
     image: nginx:alpine
@@ -31,6 +41,7 @@ services:
     depends_on:
       - api
     restart: unless-stopped
+    logging: *default-logging
 
 volumes:
   redis-data:
