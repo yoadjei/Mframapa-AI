@@ -12,6 +12,7 @@ Usage:
 import functools
 import logging
 import signal
+import threading
 import time
 from typing import Tuple, Type
 
@@ -43,7 +44,8 @@ def with_retry(
     """
     Decorator factory: retries the wrapped function up to *max_attempts* times
     with exponential backoff.  Each attempt is bounded by *timeout* seconds
-    (implemented via SIGALRM on POSIX systems; silently skipped on Windows).
+    (implemented via SIGALRM in the main thread only; skipped on Windows and in
+    worker threads, where the callee's own network timeout applies).
 
     Args:
         max_attempts:         Maximum number of attempts (including the first).
@@ -60,8 +62,10 @@ def with_retry(
             func_name = func.__qualname__
 
             for attempt in range(1, max_attempts + 1):
-                # Install SIGALRM timeout (POSIX only)
-                use_alarm = hasattr(signal, "SIGALRM")
+                # SIGALRM timeout only works in the main thread; fastapi runs sync
+                # endpoints in a worker thread, so skip it there and rely on each
+                # connector's own network timeout.
+                use_alarm = hasattr(signal, "SIGALRM") and threading.current_thread() is threading.main_thread()
                 if use_alarm:
                     signal.signal(signal.SIGALRM, _timeout_handler)
                     signal.alarm(timeout)
