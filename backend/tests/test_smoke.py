@@ -1,0 +1,65 @@
+"""api smoke tests — auth, input validation, routing.
+
+these run without models, redis, or network: the rate limiter has an in-memory
+fallback, and every case here is rejected/handled before any upstream call.
+"""
+
+import os
+
+os.environ.setdefault("PREWARM_ON_START", "0")          # no live upstream calls in ci
+os.environ.setdefault("MFRAMAPA_INTERNAL_KEY", "test-internal-key")
+
+from fastapi.testclient import TestClient
+
+from backend.api.app import app
+
+client = TestClient(app)
+KEY = {"X-API-Key": "test-internal-key"}
+
+
+def test_legacy_health_is_open():
+    assert client.get("/api/health").status_code == 200
+
+
+def test_v1_health_requires_key():
+    assert client.get("/api/v1/health").status_code == 401
+
+
+def test_v1_health_rejects_wrong_key():
+    assert client.get("/api/v1/health", headers={"X-API-Key": "nope"}).status_code == 401
+
+
+def test_v1_health_with_key():
+    r = client.get("/api/v1/health", headers=KEY)
+    assert r.status_code == 200
+    assert r.json()["version"] == "v1"
+
+
+def test_predict_rejects_out_of_range_lat():
+    assert client.get("/api/v1/predict?lat=100&lon=0", headers=KEY).status_code == 422
+
+
+def test_predict_rejects_missing_param():
+    assert client.get("/api/v1/predict?lon=0", headers=KEY).status_code == 422
+
+
+def test_resolve_rejects_empty_city():
+    assert client.get("/api/v1/resolve-location?city=", headers=KEY).status_code == 422
+
+
+def test_generate_insight_ok():
+    r = client.post("/api/v1/generate-insight", headers=KEY, json={"pm25": 45, "language": "en"})
+    assert r.status_code == 200
+    assert "insight" in r.json()
+
+
+def test_generate_insight_rejects_negative():
+    assert client.post("/api/v1/generate-insight", headers=KEY, json={"pm25": -5}).status_code == 422
+
+
+def test_unknown_path_is_404():
+    assert client.get("/api/v1/does-not-exist", headers=KEY).status_code == 404
+
+
+def test_method_not_allowed():
+    assert client.post("/api/v1/predict?lat=5&lon=5", headers=KEY).status_code == 405
