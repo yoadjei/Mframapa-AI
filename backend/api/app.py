@@ -121,9 +121,11 @@ async def lifespan(app: FastAPI):
     except Exception:
         logger.exception("Failed to load model bundles at startup")
         app.state.models = {}
-    # warm the feature cache in the background — never blocks startup or requests
-    import threading
-    threading.Thread(target=_prewarm_cache, daemon=True).start()
+    # warm the feature cache in the background — never blocks startup or requests.
+    # disabled in ci/tests (PREWARM_ON_START=0) to avoid live upstream calls.
+    if os.getenv("PREWARM_ON_START", "1") == "1":
+        import threading
+        threading.Thread(target=_prewarm_cache, daemon=True).start()
     yield
     app.state.models = {}
 
