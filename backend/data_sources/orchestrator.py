@@ -33,6 +33,7 @@ _FALLBACK_PLAN: Dict[str, list] = {
     # ── Planetary boundary layer ──────────────────────────────────────────
     "pblh": [
         ("ERA5",    "pblh"),
+        ("OpenMeteo", "pblh"),
     ],
     # ── Meteorology ───────────────────────────────────────────────────────
     "temperature_2m": [
