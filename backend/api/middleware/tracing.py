@@ -9,6 +9,8 @@ from starlette.requests import Request
 
 logger = logging.getLogger("mframapa.access")
 
+_SLOW_MS = 3000.0   # log a warning for requests slower than this
+
 
 class TracingMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
@@ -18,8 +20,10 @@ class TracingMiddleware(BaseHTTPMiddleware):
         response = await call_next(request)
         elapsed_ms = (time.perf_counter() - start) * 1000.0
         response.headers["X-Request-ID"] = rid
-        logger.info(
-            "%s %s -> %d %.1fms [%s]",
+        response.headers["X-Response-Time-ms"] = f"{elapsed_ms:.1f}"
+        level = logging.WARNING if elapsed_ms > _SLOW_MS else logging.INFO
+        logger.log(
+            level, "%s %s -> %d %.1fms [%s]",
             request.method, request.url.path, response.status_code, elapsed_ms, rid,
         )
         return response
