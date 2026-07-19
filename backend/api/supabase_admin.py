@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import logging
 import os
-from typing import Any, Dict, Optional
+from typing import Dict, Optional
 
 import requests
 
@@ -41,25 +41,39 @@ def admin_configured() -> bool:
     return bool(_base()) and bool(_admin_headers())
 
 
+_PER_PAGE = 200
+_MAX_PAGES = 50          # 10k users; beyond that the id must come from metadata
+
+
 def find_user_id_by_email(email: str) -> Optional[str]:
-    """look up a supabase user id by email. used when the payment metadata
-    didn't carry the user id (older checkouts)."""
+    """look up a supabase user id by email, paging until found.
+
+    used when the payment metadata didn't carry the user id. paging matters:
+    a single-page scan silently stops matching once you pass one page of users.
+    """
     base, headers = _base(), _admin_headers()
     if not base or not headers:
         return None
-    try:
-        resp = requests.get(f"{base}/users", headers=headers,
-                            params={"page": 1, "per_page": 200}, timeout=_TIMEOUT)
-        resp.raise_for_status()
-        users = resp.json().get("users", [])
-    except (requests.RequestException, ValueError) as e:
-        logger.warning("supabase admin user lookup failed: %s", e)
-        return None
 
     target = email.strip().lower()
-    for user in users:
-        if str(user.get("email", "")).lower() == target:
-            return user.get("id")
+    for page in range(1, _MAX_PAGES + 1):
+        try:
+            resp = requests.get(f"{base}/users", headers=headers,
+                                params={"page": page, "per_page": _PER_PAGE},
+                                timeout=_TIMEOUT)
+            resp.raise_for_status()
+            users = resp.json().get("users", [])
+        except (requests.RequestException, ValueError) as e:
+            logger.warning("supabase admin user lookup failed on page %d: %s", page, e)
+            return None
+
+        for user in users:
+            if str(user.get("email", "")).lower() == target:
+                return user.get("id")
+        if len(users) < _PER_PAGE:
+            return None                      # last page, no match
+
+    logger.warning("user lookup for %s exceeded %d pages", email, _MAX_PAGES)
     return None
 
 
