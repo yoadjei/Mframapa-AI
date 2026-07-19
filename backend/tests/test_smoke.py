@@ -6,15 +6,13 @@ fallback, and every case here is rejected/handled before any upstream call.
 
 import os
 
-os.environ.setdefault("PREWARM_ON_START", "0")          # no live upstream calls in ci
-os.environ.setdefault("MFRAMAPA_INTERNAL_KEY", "test-internal-key")
-
 from fastapi.testclient import TestClient
 
 from backend.api.app import app
 
+# env (PREWARM_ON_START, MFRAMAPA_INTERNAL_KEY) is set by conftest.py
 client = TestClient(app)
-KEY = {"X-API-Key": "test-internal-key"}
+KEY = {"X-API-Key": os.environ["MFRAMAPA_INTERNAL_KEY"]}
 
 
 def test_legacy_health_is_open():
