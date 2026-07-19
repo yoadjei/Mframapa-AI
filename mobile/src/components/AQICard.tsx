@@ -67,11 +67,6 @@ export function AQICard({ prediction, isDark }: AQICardProps) {
             label={t('weather.wind')}
             value={`${prediction.weather.wind.toFixed(1)} m/s`}
           />
-          <WeatherChip
-            icon="pulse-outline"
-            label={t('weather.range')}
-            value={`${prediction.uncertainty.pm25_lower.toFixed(0)}-${prediction.uncertainty.pm25_upper.toFixed(0)}`}
-          />
         </View>
       </LinearGradient>
 

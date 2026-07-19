@@ -342,14 +342,6 @@ export function CityDetailScreen() {
           </View>
         ) : null}
 
-        {pred.model ? (
-          <View style={[styles.metaPill, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-            <Ionicons name="analytics-outline" size={14} color={colors.subtext} />
-            <Text style={[styles.metaText, { color: colors.subtext }]}>
-              {t('card.model_prefix', { model: pred.model })}
-            </Text>
-          </View>
-        ) : null}
 
         <View style={[styles.section, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <Text style={[styles.sectionTitle, { color: colors.subtext }]}>{t('card.health_guidance')}</Text>
