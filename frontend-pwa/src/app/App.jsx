@@ -67,26 +67,6 @@ const SavedLocationsScreen = React.lazy(() =>
     .then((m) => ({ default: m.SavedLocationsScreen }))
     .catch(fallback("Saved Locations"))
 );
-const PricingScreen = React.lazy(() =>
-  import("../features/pricing/PricingScreen.jsx")
-    .then((m) => ({ default: m.PricingScreen }))
-    .catch(fallback("Pricing"))
-);
-const SubscriptionScreen = React.lazy(() =>
-  import("../features/subscription/SubscriptionScreen.jsx")
-    .then((m) => ({ default: m.SubscriptionScreen }))
-    .catch(fallback("Subscription"))
-);
-const PaywallScreen = React.lazy(() =>
-  import("../features/paywall/PaywallScreen.jsx")
-    .then((m) => ({ default: m.PaywallScreen }))
-    .catch(fallback("Paywall"))
-);
-const PaystackCheckoutScreen = React.lazy(() =>
-  import("../features/paystack/PaystackCheckoutScreen.jsx")
-    .then((m) => ({ default: m.PaystackCheckoutScreen }))
-    .catch(fallback("Checkout"))
-);
 const LandingMarketingScreen = React.lazy(() =>
   import("../features/landing/LandingMarketingScreen.jsx")
     .then((m) => ({ default: m.LandingMarketingScreen }))
@@ -184,10 +164,6 @@ const STACK_SCREENS = {
   healthRisk:          HealthRiskScreen,
   languageSelector:    LanguageSelectorScreen,
   savedLocations:      SavedLocationsScreen,
-  pricing:             PricingScreen,
-  subscription:        SubscriptionScreen,
-  paywall:             PaywallScreen,
-  paystackCheckout:    PaystackCheckoutScreen,
   landing:             LandingMarketingScreen,
   aiInsights:          AIInsightsScreen,
   predictionDashboard: PredictionDashboardScreen,

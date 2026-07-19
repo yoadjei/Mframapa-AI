@@ -10,7 +10,7 @@ const initialState = {
     authenticated: false,
     token: null,
     user: null,
-    tier: "free", // free | researcher | institutional
+    tier: "free", // free (every individual) | institutional
   },
   profile: {
     fullName: "",

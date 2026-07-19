@@ -7,7 +7,6 @@ export type ProfileMenuItem = {
 
 /** Account-related links shown on the Profile tab (identity + tier live on the screen). */
 export const PROFILE_MENU_ITEMS: ProfileMenuItem[] = [
-  { id: 'pricing', labelKey: 'screen.profile.link_pricing', screen: 'Subscription' },
   { id: 'settings', labelKey: 'screen.profile.link_settings', screen: 'Settings' },
 ];
 

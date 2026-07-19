@@ -215,29 +215,12 @@ export function LandingMarketingScreen({ params, isOnline, isDark }) {
           }}
         >
           <h2 style={{ fontSize: 20, fontWeight: 800, color: colors.text, margin: 0 }}>
-            Free to start
+            Free for every individual, forever
           </h2>
           <p style={{ fontSize: 14, lineHeight: "20px", color: colors.subtext, margin: 0 }}>
-            Real-time AQI readings and city search are always free. Upgrade to Researcher for
-            historical data, predictions, and exports starting at $15/month.
+            Air quality estimates, health guidance and episode alerts are free for everyone,
+            always. Institutions fund it through API access and data partnerships.
           </p>
-          <button
-            type="button"
-            onClick={() => navigate("pricing")}
-            style={{
-              width: "100%",
-              borderRadius: 16,
-              border: `1.5px solid ${Colors.brandGreen}`,
-              backgroundColor: "transparent",
-              padding: "16px 0",
-              fontSize: 16,
-              fontWeight: 600,
-              color: Colors.brandGreen,
-              cursor: "pointer",
-            }}
-          >
-            View Pricing
-          </button>
         </div>
 
         {/* Footer */}

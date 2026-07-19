@@ -279,15 +279,12 @@ function CityCard({ city, prediction, color, loading, index, colors, t }) {
 
 export function CompareCitiesScreen({ isOnline, isDark, params }) {
   const { state } = useAppState();
-  const { goBack, navigate } = useNavigation();
+  const { goBack } = useNavigation();
   const { t } = useTranslation();
   const colors = getColors(isDark ?? true);
 
-  const isPremium =
-    state.session?.tier === "researcher" || state.session?.tier === "institutional";
-
-  // Max cities: 2 for free, 4 for premium
-  const maxCities = isPremium ? 4 : 2;
+  // no tiered limits for individuals — the product is free for everyone (scope §5)
+  const maxCities = 4;
 
   // Seed from predictionHistory (first two entries)
   const history = state.predictionHistory ?? [];
@@ -389,44 +386,6 @@ export function CompareCitiesScreen({ isOnline, isDark, params }) {
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 16, padding: "4px 16px 40px" }}>
-        {/* Tier notice for free users */}
-        {!isPremium && (
-          <div
-            style={{
-              borderRadius: 16,
-              border: `1px solid ${Colors.brandGreen}40`,
-              backgroundColor: Colors.brandGreen + "12",
-              padding: "14px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: 12,
-            }}
-          >
-            <p style={{ fontSize: 13, flex: 1, color: colors.subtext, margin: 0 }}>
-              <span style={{ fontWeight: 600, color: Colors.brandGreen }}>Researcher plan</span>{" "}
-              lets you compare up to 4 cities at once.
-            </p>
-            <button
-              type="button"
-              onClick={() => navigate("pricing")}
-              style={{
-                padding: "6px 12px",
-                borderRadius: 999,
-                fontSize: 12,
-                fontWeight: 700,
-                backgroundColor: Colors.brandGreen,
-                color: "#000",
-                border: "none",
-                cursor: "pointer",
-                flexShrink: 0,
-              }}
-            >
-              Upgrade
-            </button>
-          </div>
-        )}
-
         {/* City pickers */}
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {cities.map((city, i) => (
@@ -465,7 +424,7 @@ export function CompareCitiesScreen({ isOnline, isDark, params }) {
         </div>
 
         {/* Add city button (premium only) */}
-        {isPremium && cities.length < maxCities && (
+        {cities.length < maxCities && (
           <button
             type="button"
             onClick={addSlot}

@@ -17,7 +17,6 @@ import { PermissionsScreen } from '../screens/onboarding/PermissionsScreen';
 import { LoginScreen } from '../screens/onboarding/LoginScreen';
 import { SignUpScreen } from '../screens/onboarding/SignUpScreen';
 import { ForgotPasswordScreen } from '../screens/onboarding/ForgotPasswordScreen';
-import { PaywallScreen } from '../screens/PaywallScreen';
 
 // Core tab screens
 import { HomeScreen } from '../screens/HomeScreen';
@@ -34,8 +33,6 @@ import { HealthRiskScreen } from '../screens/HealthRiskScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
 import { SavedLocationsScreen } from '../screens/SavedLocationsScreen';
 import { ActivityFeedScreen } from '../screens/ActivityFeedScreen';
-import { PricingScreen } from '../screens/PricingScreen';
-import { SubscriptionScreen } from '../screens/SubscriptionScreen';
 import { AIInsightsScreen } from '../screens/AIInsightsScreen';
 import { PredictionDashboardScreen } from '../screens/PredictionDashboardScreen';
 import { LandingMarketingScreen } from '../screens/LandingMarketingScreen';
@@ -47,7 +44,6 @@ import { AnomalyAlertScreen } from '../screens/AnomalyAlertScreen';
 import { CommunityHubScreen } from '../screens/CommunityHubScreen';
 import { TrustTransparencyScreen } from '../screens/TrustTransparencyScreen';
 import { ExportCentreScreen } from '../screens/ExportCentreScreen';
-import { PaystackCheckoutScreen } from '../screens/PaystackCheckoutScreen';
 import { LanguageSelectorScreen } from '../screens/LanguageSelectorScreen';
 import { DeleteAccountScreen } from '../screens/DeleteAccountScreen';
 import { AboutLegalScreen } from '../screens/AboutLegalScreen';
@@ -120,9 +116,6 @@ function ProfileStack() {
       <Stack.Screen name="CityDetail" component={CityDetailScreen} />
       <Stack.Screen name="HealthRisk" component={HealthRiskScreen} />
       <Stack.Screen name="ActivityFeed" component={ActivityFeedScreen} />
-      <Stack.Screen name="Pricing" component={PricingScreen} />
-      <Stack.Screen name="Paywall" component={PaywallScreen} />
-      <Stack.Screen name="Subscription" component={SubscriptionScreen} />
       <Stack.Screen name="AIInsights" component={AIInsightsScreen} />
       <Stack.Screen name="PredictionDashboard" component={PredictionDashboardScreen} />
       <Stack.Screen name="LandingMarketing" component={LandingMarketingScreen} />
@@ -134,11 +127,6 @@ function ProfileStack() {
       <Stack.Screen name="CommunityHub" component={CommunityHubScreen} />
       <Stack.Screen name="TrustTransparency" component={TrustTransparencyScreen} />
       <Stack.Screen name="ExportCentre" component={ExportCentreScreen} />
-      <Stack.Screen
-        name="PaystackCheckout"
-        component={PaystackCheckoutScreen}
-        options={{ presentation: 'modal' }}
-      />
       <Stack.Screen name="LanguageSelector" component={LanguageSelectorScreen} />
       <Stack.Screen name="DeleteAccount" component={DeleteAccountScreen} />
       <Stack.Screen name="AboutLegal" component={AboutLegalScreen} />
@@ -188,7 +176,7 @@ function MainApp() {
 }
 
 // ─── Auth Stack (Login → SignUp / ForgotPassword) ────────────────────────────
-// Users land as Free after auth and can upgrade via Profile → Subscription.
+// Every individual gets the full product free, forever (scope §5).
 const AuthStack = createNativeStackNavigator();
 
 function AuthFlow() {

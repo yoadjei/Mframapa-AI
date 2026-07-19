@@ -11,7 +11,6 @@ import { AvatarPickerSheet, naviiUrl } from "../../components/ui/AvatarPickerShe
 
 // All profile menu items (PROFILE_MENU_ITEMS + MORE_MENU_ITEMS from mobile)
 const ALL_MENU_ITEMS = [
-  { id: "pricing",    labelKey: "screen.profile.link_pricing",        target: { type: "navigate", name: "pricing" } },
   { id: "settings",  labelKey: "screen.profile.link_settings",       target: { type: "navigate", name: "settings" } },
   { id: "saved",     labelKey: "screen.profile.link_saved_locations", target: { type: "navigate", name: "savedLocations" } },
   { id: "activity",  labelKey: "screen.profile.link_activity_feed",  target: { type: "navigate", name: "activity" } },
@@ -29,7 +28,6 @@ const ALL_MENU_ITEMS = [
 ];
 
 function getTierStyle(tier) {
-  if (tier === "researcher") return { bg: Colors.brandGreen + "26", text: Colors.brandGreen, label: "Researcher" };
   if (tier === "institutional") return { bg: "#F59E0B26", text: "#F59E0B", label: "Institutional" };
   return { bg: "#64718226", text: "#9AA7B5", label: "Free" };
 }
