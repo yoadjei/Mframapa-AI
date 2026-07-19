@@ -118,11 +118,13 @@ export default defineConfig({
     })
   ],
   server: {
+    // dev proxy: relative /api calls go to the deployed backend (same-origin to the
+    // browser, so no cors in dev). override with VITE_DEV_API_TARGET for a local api.
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:8000',
+        target: process.env.VITE_DEV_API_TARGET || 'https://api.mframapa.live',
         changeOrigin: true,
-        secure: false,
+        secure: true,
       }
     }
   }
