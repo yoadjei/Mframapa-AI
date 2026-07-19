@@ -103,3 +103,59 @@ def test_paid_tier_from_app_metadata_is_honoured(monkeypatch):
     identity = verify_supabase_jwt(_token(secret, app_metadata={"tier": "researcher"}))
     assert identity["tier"] == "researcher"
     assert identity["user_id"] == "user-123"
+
+
+# ── modern asymmetric (ES256 via JWKS) ────────────────────────────────────────
+
+def test_es256_token_verified_via_jwks(monkeypatch):
+    """modern supabase signs with ES256; we verify against the published public key."""
+    from cryptography.hazmat.primitives.asymmetric import ec
+    import backend.api.auth as auth_mod
+
+    private_key = ec.generate_private_key(ec.SECP256R1())
+    token = pyjwt.encode(
+        {"sub": "user-es256", "aud": "authenticated",
+         "exp": int(time.time()) + 3600, "app_metadata": {"tier": "researcher"}},
+        private_key, algorithm="ES256",
+    )
+
+    class _FakeKey:
+        key = private_key.public_key()
+
+    class _FakeClient:
+        def get_signing_key_from_jwt(self, _token):
+            return _FakeKey()
+
+    monkeypatch.setattr(auth_mod, "_get_jwks_client", lambda: _FakeClient())
+    identity = auth_mod.verify_supabase_jwt(token)
+    assert identity is not None
+    assert identity["user_id"] == "user-es256"
+    assert identity["tier"] == "researcher"
+
+
+def test_es256_token_with_wrong_key_rejected(monkeypatch):
+    from cryptography.hazmat.primitives.asymmetric import ec
+    import backend.api.auth as auth_mod
+
+    attacker_key = ec.generate_private_key(ec.SECP256R1())
+    real_key = ec.generate_private_key(ec.SECP256R1())
+    token = pyjwt.encode(
+        {"sub": "u", "aud": "authenticated", "exp": int(time.time()) + 3600},
+        attacker_key, algorithm="ES256",
+    )
+
+    class _FakeClient:
+        def get_signing_key_from_jwt(self, _token):
+            class K: key = real_key.public_key()
+            return K()
+
+    monkeypatch.setattr(auth_mod, "_get_jwks_client", lambda: _FakeClient())
+    monkeypatch.delenv("SUPABASE_JWT_SECRET", raising=False)
+    assert auth_mod.verify_supabase_jwt(token) is None
+
+
+def test_jwks_url_derived_from_supabase_url(monkeypatch):
+    import backend.api.auth as auth_mod
+    monkeypatch.setenv("SUPABASE_URL", "https://abc123.supabase.co")
+    monkeypatch.delenv("SUPABASE_JWKS_URL", raising=False)
+    assert auth_mod._jwks_url() == "https://abc123.supabase.co/auth/v1/.well-known/jwks.json"

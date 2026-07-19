@@ -3,9 +3,13 @@
 two ways to authenticate:
 
   app users        Authorization: Bearer <supabase access token>
-                   verified locally (HS256, SUPABASE_JWT_SECRET) — no network hop.
-                   tier comes from the token's app_metadata, set server-side by the
-                   billing webhook, so a client cannot grant itself a paid tier.
+                   verified against supabase's published public keys (ES256/RS256 via
+                   JWKS, fetched once and cached) — no shared secret lives on this
+                   server. legacy HS256 projects still work if SUPABASE_JWT_SECRET is
+                   set. tier comes from the token's app_metadata, set server-side by
+                   the billing webhook, so a client cannot grant itself a paid tier.
+
+                   configure with SUPABASE_URL (jwks url is derived from it).
 
   api customers    X-API-Key: <issued key>
                    looked up in a redis registry, so keys are revocable per client.
@@ -35,8 +39,62 @@ _DEFAULT_USER_TIER = "free"
 
 # ── supabase user tokens ──────────────────────────────────────────────────────
 
+_ASYMMETRIC_ALGS = ["ES256", "RS256"]
+_jwks_client = None
+
+
+def _jwks_url() -> Optional[str]:
+    explicit = os.getenv("SUPABASE_JWKS_URL")
+    if explicit:
+        return explicit
+    base = os.getenv("SUPABASE_URL", "").rstrip("/")
+    return f"{base}/auth/v1/.well-known/jwks.json" if base else None
+
+
+def _get_jwks_client():
+    """cached PyJWKClient — fetches supabase's public keys once, then reuses them."""
+    global _jwks_client
+    if _jwks_client is not None:
+        return _jwks_client
+    url = _jwks_url()
+    if not url or _jwt is None:
+        return None
+    try:
+        _jwks_client = _jwt.PyJWKClient(url, cache_keys=True, lifespan=3600)
+    except Exception as e:                            # pragma: no cover
+        logger.warning("could not build jwks client for %s: %s", url, e)
+        return None
+    return _jwks_client
+
+
 def jwt_auth_configured() -> bool:
-    return bool(os.getenv("SUPABASE_JWT_SECRET")) and _jwt is not None
+    if _jwt is None:
+        return False
+    return bool(_jwks_url()) or bool(os.getenv("SUPABASE_JWT_SECRET"))
+
+
+def _decode(token: str) -> Optional[Dict[str, Any]]:
+    """verify a supabase token: asymmetric (modern) first, shared secret (legacy) second."""
+    audience = os.getenv("SUPABASE_JWT_AUDIENCE", "authenticated")
+    require = {"require": ["exp", "sub"]}
+
+    client = _get_jwks_client()
+    if client is not None:
+        try:
+            key = client.get_signing_key_from_jwt(token).key
+            return _jwt.decode(token, key, algorithms=_ASYMMETRIC_ALGS,
+                               audience=audience, options=require)
+        except Exception as e:
+            logger.debug("asymmetric verification failed: %s", e)
+
+    secret = os.getenv("SUPABASE_JWT_SECRET")
+    if secret:
+        try:
+            return _jwt.decode(token, secret, algorithms=["HS256"],
+                               audience=audience, options=require)
+        except Exception as e:
+            logger.debug("hs256 verification failed: %s", e)
+    return None
 
 
 def verify_supabase_jwt(token: str) -> Optional[Dict[str, Any]]:
@@ -45,19 +103,10 @@ def verify_supabase_jwt(token: str) -> Optional[Dict[str, Any]]:
     the tier is read from app_metadata (server-controlled in supabase); user_metadata
     is client-writable and is deliberately ignored.
     """
-    secret = os.getenv("SUPABASE_JWT_SECRET")
-    if not secret or _jwt is None:
+    if _jwt is None:
         return None
-    try:
-        claims = _jwt.decode(
-            token,
-            secret,
-            algorithms=["HS256"],
-            audience=os.getenv("SUPABASE_JWT_AUDIENCE", "authenticated"),
-            options={"require": ["exp", "sub"]},
-        )
-    except Exception as e:                            # expired, bad signature, malformed
-        logger.debug("supabase jwt rejected: %s", e)
+    claims = _decode(token)
+    if claims is None:
         return None
 
     tier = (claims.get("app_metadata") or {}).get("tier", _DEFAULT_USER_TIER)
