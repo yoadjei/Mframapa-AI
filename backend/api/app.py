@@ -51,6 +51,7 @@ from ml.urban_rural import classify_from_population_density
 from backend.api.middleware.tracing import TracingMiddleware
 from backend.api.security import verify_and_rate_limit
 from backend.api.v1.batch import batch_router
+from backend.api.v1.payments import payments_router
 from backend.api.v1.router import router as v1_router
 from backend.ml.inference import load_bundles
 
@@ -151,6 +152,9 @@ app.include_router(
     batch_router, prefix="/api/v1", tags=["v1"],
     dependencies=[Depends(verify_and_rate_limit)],
 )
+# payments: paystack calls this itself, so it can't send one of our api keys —
+# it authenticates by signing the body with our paystack secret instead.
+app.include_router(payments_router, prefix="/api/v1", tags=["payments"])
 
 # Legacy support - keeping the old root paths but returning a hint to use v1.
 @app.get("/api/health")
