@@ -32,7 +32,7 @@ Children
 Mframapa is intended for general audiences. We do not knowingly collect personal information from children under 13.
 
 Contact
-Questions about privacy: privacy@mframapa.ai`,
+Questions about privacy: privacy@mframapa.live`,
   },
   {
     id: 'terms',
@@ -97,14 +97,14 @@ Full license texts for bundled libraries are available in the project repository
     body: `We welcome feedback from citizens, researchers, and organizations working on clean air in Africa.
 
 Report an issue
-• In-app: use Report Air Quality from the menu (web) or email support@mframapa.ai with your city, date, and what you observed (haze, smoke smell, etc.).
+• In-app: use Report Air Quality from the menu (web) or email support@mframapa.live with your city, date, and what you observed (haze, smoke smell, etc.).
 • Bugs: include your device model, Android version, and steps to reproduce.
 
 Feature requests
 Tell us which cities, languages, or alerts matter most to your community. We prioritize coverage for underserved regions.
 
 Partnerships
-Institutions interested in API access, bulk exports, or collaboration: partners@mframapa.ai
+Institutions interested in API access, bulk exports, or collaboration: partners@mframapa.live
 
 Community reports
 Optional ground-truth reports help improve future models. Reports are aggregated; do not include personal health records in free-text fields.

@@ -30,7 +30,7 @@ export function ForceUpdateScreen() {
       <View style={styles.buttons}>
         <PrimaryButton
           label={t('screen.force_update.cta')}
-          onPress={() => Linking.openURL('https://mframapa.ai')}
+          onPress={() => Linking.openURL('https://mframapa.live')}
           style={styles.btn}
         />
 

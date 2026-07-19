@@ -8,6 +8,11 @@ export default defineConfig([
   // generated build output — not source; pwa plugin emits the service worker here
   globalIgnores(['dist', 'dev-dist']),
   {
+    // config files run in node, not the browser
+    files: ['*.config.js'],
+    languageOptions: { globals: globals.node },
+  },
+  {
     files: ['**/*.{js,jsx}'],
     extends: [
       js.configs.recommended,

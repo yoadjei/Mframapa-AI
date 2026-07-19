@@ -4,11 +4,11 @@ import { useNavigation } from "../../hooks/useNavigation.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
 
 const LINK_KEYS = [
-  { key: "settings.about.privacy",  href: "https://mframapa.ai/privacy"  },
-  { key: "settings.about.terms",    href: "https://mframapa.ai/terms"    },
-  { key: "settings.about.licenses", href: "https://mframapa.ai/licenses" },
-  { key: "settings.about.contact",  href: "mailto:hello@mframapa.ai"     },
-  { key: "settings.about.credits",  href: "https://mframapa.ai/credits"  },
+  { key: "settings.about.privacy",  href: "https://mframapa.live/privacy"  },
+  { key: "settings.about.terms",    href: "https://mframapa.live/terms"    },
+  { key: "settings.about.licenses", href: "https://mframapa.live/licenses" },
+  { key: "settings.about.contact",  href: "mailto:hello@mframapa.live"     },
+  { key: "settings.about.credits",  href: "https://mframapa.live/credits"  },
 ];
 
 export function AboutLegalScreen({ params, isOnline, isDark }) {

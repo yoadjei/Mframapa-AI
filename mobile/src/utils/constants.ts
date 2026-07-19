@@ -5,7 +5,7 @@ export function resolveApiBaseUrl(): string {
   const extra = Constants.expoConfig?.extra as { apiUrl?: string } | undefined;
   if (extra?.apiUrl) return extra.apiUrl;
   return (
-    (process.env.EXPO_PUBLIC_API_URL as string | undefined) ?? 'https://mframapa.ai'
+    (process.env.EXPO_PUBLIC_API_URL as string | undefined) ?? 'https://api.mframapa.live'
   );
 }
 

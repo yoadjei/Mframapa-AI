@@ -31,7 +31,7 @@ export function ShareSheetScreen({
   const categoryLabel = t(aqiCategoryKey(category));
   const categoryColor = getAQIColor(category);
 
-  const shareText = `${cityName} air quality is ${categoryLabel}. PM2.5: ${pm25} μg/m³. Check real-time air quality across Africa on Mframapa: https://mframapa.ai`;
+  const shareText = `${cityName} air quality is ${categoryLabel}. PM2.5: ${pm25} μg/m³. Check real-time air quality across Africa on Mframapa: https://mframapa.live`;
 
   async function handleWhatsApp() {
     const url = `whatsapp://send?text=${encodeURIComponent(shareText)}`;
@@ -46,13 +46,13 @@ export function ShareSheetScreen({
 
   async function handleX() {
     const tweetText = `${cityName} air quality is ${categoryLabel}. PM2.5: ${pm25} μg/m³ #AirQuality #Africa`;
-    const url = `https://x.com/intent/tweet?text=${encodeURIComponent(tweetText)}&url=${encodeURIComponent('https://mframapa.ai')}`;
+    const url = `https://x.com/intent/tweet?text=${encodeURIComponent(tweetText)}&url=${encodeURIComponent('https://mframapa.live')}`;
     await Linking.openURL(url);
     onClose();
   }
 
   async function handleLinkedIn() {
-    const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://mframapa.ai')}`;
+    const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://mframapa.live')}`;
     const canOpen = await Linking.canOpenURL(url);
     if (canOpen) {
       await Linking.openURL(url);
