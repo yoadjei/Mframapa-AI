@@ -309,16 +309,6 @@ export function HomeScreen({ isOnline }) {
           </div>
         )}
 
-        {/* ── Uncertainty / confidence (when available) ── */}
-        {pred?.uncertainty && (
-          <div className="mx-4 mb-3 flex items-center gap-2 rounded-2xl border px-4 py-3"
-            style={{ backgroundColor: colors.cardAlt, borderColor: colors.border }}>
-            <Clock size={14} color={colors.muted} />
-            <p className="text-xs" style={{ color: colors.sub }}>
-              {t("card.uncertainty_range")}: {pred.uncertainty.pm25_lower.toFixed(1)}–{pred.uncertainty.pm25_upper.toFixed(1)} {t("card.unit")} · {t("card.confidence")}
-            </p>
-          </div>
-        )}
 
     </div>
   );

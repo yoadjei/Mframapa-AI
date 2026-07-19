@@ -108,7 +108,6 @@ export function CityDetailScreen({ isDark, params }) {
   const weather = prediction?.weather ?? { temp: 0, humidity: 0, wind: 0 };
   const uncertainty = prediction?.uncertainty ?? null;
   const factors = prediction?.factors ?? null;
-  const model = prediction?.model ?? null;
   const aqiColor = getAQIColor(category);
   const categoryLabel = t(aqiCategoryKey(category));
   const healthAdvice = t(healthAdviceKey(category));
@@ -457,23 +456,6 @@ export function CityDetailScreen({ isDark, params }) {
         </div>
       ) : null}
 
-      {/* ── Model pill ── */}
-      {model ? (
-        <div
-          className="mx-4 mb-3 flex items-center gap-2 rounded-full border px-4 py-2.5"
-          style={{ backgroundColor: colors.surface, borderColor: colors.border }}
-        >
-          <Cpu size={14} color={colors.subtext} />
-          <span className="flex-1 text-[12px] font-medium" style={{ color: colors.subtext }}>
-            {t("card.model_prefix", {
-              model:
-                typeof model === "string"
-                  ? model
-                  : `${(model.region_id ?? "").replace(/_/g, " ")} · ${model.segment ?? ""} · v${model.version ?? ""}`,
-            })}
-          </span>
-        </div>
-      ) : null}
 
       {/* ── Health guidance ── */}
       <div
