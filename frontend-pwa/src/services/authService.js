@@ -1,19 +1,19 @@
 import { supabase } from "./supabase.js";
 import { normalizeError } from "./httpClient.js";
 
-function buildLocalSession(email) {
-  return {
-    token: `local-${Date.now()}`,
-    user: {
-      id: email,
-      email,
-      fullName: email.split("@")[0],
-    },
-  };
+// auth must fail closed: a fabricated local session would look signed-in to the ui
+// but carries no valid token, so every api call 401s — and in a misconfigured
+// production build it would let anyone "log in".
+function requireSupabase() {
+  if (!supabase) {
+    throw new Error(
+      "Authentication is not configured. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.",
+    );
+  }
 }
 
 export async function login({ email, password }) {
-  if (!supabase) return buildLocalSession(email);
+  requireSupabase();
 
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) throw new Error(error.message);
@@ -29,7 +29,7 @@ export async function login({ email, password }) {
 }
 
 export async function signup({ fullName, email, password }) {
-  if (!supabase) return buildLocalSession(email);
+  requireSupabase();
 
   const { data, error } = await supabase.auth.signUp({
     email,
