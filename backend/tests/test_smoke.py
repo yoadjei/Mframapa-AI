@@ -19,8 +19,16 @@ def test_legacy_health_is_open():
     assert client.get("/api/health").status_code == 200
 
 
-def test_v1_health_requires_key():
-    assert client.get("/api/v1/health").status_code == 401
+def test_v1_health_is_public():
+    # core read endpoints are anonymous-accessible (rate-limited per ip)
+    assert client.get("/api/v1/health").status_code == 200
+
+
+def test_premium_endpoint_requires_auth():
+    # register-push-token is signed-in only — anonymous is rejected
+    r = client.post("/api/v1/register-push-token",
+                    json={"token": "t", "platform": "android", "lat": 5.6, "lon": -0.19})
+    assert r.status_code == 401
 
 
 def test_v1_health_rejects_wrong_key():

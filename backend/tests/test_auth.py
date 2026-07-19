@@ -40,8 +40,15 @@ def test_unregistered_institutional_prefix_is_rejected():
     assert r.status_code == 401
 
 
-def test_no_credentials_rejected():
-    assert client.get("/api/v1/health").status_code == 401
+def test_no_credentials_allowed_on_public_endpoint():
+    # anonymous access is permitted on core read endpoints
+    assert client.get("/api/v1/health").status_code == 200
+
+
+def test_no_credentials_rejected_on_premium_endpoint():
+    r = client.post("/api/v1/register-push-token",
+                    json={"token": "t", "platform": "android", "lat": 5.6, "lon": -0.19})
+    assert r.status_code == 401
 
 
 # ── supabase bearer tokens ────────────────────────────────────────────────────

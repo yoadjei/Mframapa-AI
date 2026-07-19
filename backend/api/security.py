@@ -16,7 +16,7 @@ import uuid
 from threading import Lock
 from typing import Dict, List, Optional, Tuple
 
-from fastapi import Depends, HTTPException, Security
+from fastapi import Depends, HTTPException, Request, Security
 from fastapi.security.api_key import APIKeyHeader, APIKeyQuery
 from fastapi.security.http import HTTPAuthorizationCredentials, HTTPBearer
 
@@ -28,6 +28,7 @@ _TIER_LIMITS: Dict[str, Tuple[int, int]] = {
     "institutional": (100, 1),   # 100/sec, plus burst below
     "researcher": (300, 60),     # 300/min — paid app users
     "free": (60, 60),            # 60/min — signed-in app users
+    "anonymous": (30, 60),       # 30/min per ip — no account; cloudflare is the real edge guard
 }
 _INSTITUTIONAL_BURST = 500       # token-bucket capacity for batch spikes
 
@@ -187,6 +188,37 @@ def verify_and_rate_limit(
         raise HTTPException(
             status_code=429,
             detail="Rate limit exceeded",
+            headers={"Retry-After": str(retry_after)},
+        )
+    return tier
+
+
+def _client_ip(request: Request) -> str:
+    # behind cloudflare -> nginx, the real client ip is in these headers.
+    return (
+        request.headers.get("cf-connecting-ip")
+        or request.headers.get("x-forwarded-for", "").split(",")[0].strip()
+        or (request.client.host if request.client else "unknown")
+    )
+
+
+def authenticate_or_anonymous(
+    request: Request,
+    bearer: Optional[HTTPAuthorizationCredentials] = Security(_bearer_scheme),
+    header_key: str = Security(_api_key_header),
+    query_key: str = Security(_api_key_query),
+) -> str:
+    """public access: identified callers get their tier, everyone else is limited
+    per-ip as 'anonymous'. an invalid credential is still rejected (never silently
+    downgraded), so client auth bugs surface instead of hiding."""
+    if (bearer and bearer.credentials) or header_key or query_key:
+        subject, tier = _identify(bearer, header_key, query_key)   # 401 on bad credential
+    else:
+        subject, tier = f"ip:{_client_ip(request)}", "anonymous"
+    allowed, retry_after = _limiter.check(subject, tier)
+    if not allowed:
+        raise HTTPException(
+            status_code=429, detail="Rate limit exceeded",
             headers={"Retry-After": str(retry_after)},
         )
     return tier
