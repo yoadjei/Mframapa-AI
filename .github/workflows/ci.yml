@@ -11,8 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PYTHONPATH: ${{ github.workspace }}
-      PREWARM_ON_START: "0"
-      MFRAMAPA_INTERNAL_KEY: "test-internal-key"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -20,4 +18,5 @@ jobs:
           python-version: "3.13"
           cache: pip
       - run: pip install -r requirements-dev.txt
-      - run: pytest -q backend/tests/test_smoke.py
+      # env (prewarm off, internal key) comes from backend/tests/conftest.py
+      - run: pytest -q backend/tests
