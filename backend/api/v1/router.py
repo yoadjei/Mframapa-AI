@@ -100,6 +100,15 @@ def _load_manifest(region_id: str, segment: str) -> Dict[str, Any]:
         return {}
 
 
+def _load_manifest_half_width(region_id: str, segment: str) -> Optional[float]:
+    """conformal half-width from the region/segment manifest, or None."""
+    width = (_load_manifest(region_id, segment).get("uncertainty") or {}).get("conformal_half_width")
+    try:
+        return float(width) if width is not None else None
+    except (TypeError, ValueError):
+        return None
+
+
 def _run_inference(request, feats, region_id, segment, om_pm25):
     """predict via the region/segment bundle; fall back to openmeteo, then a constant.
 
