@@ -1,6 +1,7 @@
 import axios, { AxiosError } from 'axios';
 import { PredictionResult } from '../store/useStore';
 import { API_BASE_URL, languageName } from '../utils/constants';
+import { getCurrentSession } from './supabase';
 
 const BASE_URL = API_BASE_URL;
 
@@ -13,8 +14,17 @@ const client = axios.create({
   timeout: 20000,
   headers: {
     'Content-Type': 'application/json',
-    'X-API-Key': 'mframapa-internal-dev-key',
   },
+});
+
+// the signed-in user's supabase token is the api credential — rate limits and
+// paid features are resolved from it server-side. no key is shipped in the app.
+client.interceptors.request.use(async (config) => {
+  const session = await getCurrentSession();
+  if (session?.access_token) {
+    config.headers.Authorization = `Bearer ${session.access_token}`;
+  }
+  return config;
 });
 
 // ── 429 Rate-limit state ───────────────────────────────────────────────────────
