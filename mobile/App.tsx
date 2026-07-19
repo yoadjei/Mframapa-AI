@@ -29,18 +29,20 @@ export default function App() {
     }
   }, []);
 
-  // Request push permissions and register token with backend on startup.
+  // Register for episode alerts once we know where the user is. The backend targets
+  // alerts by location and rejects a token without one, so registering on first launch
+  // (before any prediction exists) would silently fail — re-run when the location lands,
+  // and again if it changes. Registration upserts by token, so repeats are safe.
+  const alertLat = lastPrediction?.location.lat;
+  const alertLon = lastPrediction?.location.lon;
   useEffect(() => {
+    if (alertLat == null || alertLon == null) return;
     async function initPush() {
       const granted = await requestPermissions();
-      if (granted) {
-        const lat = lastPrediction?.location.lat;
-        const lon = lastPrediction?.location.lon;
-        await getAndRegisterPushToken(lat, lon);
-      }
+      if (granted) await getAndRegisterPushToken(alertLat, alertLon);
     }
     initPush().catch(() => undefined);
-  }, []);
+  }, [alertLat, alertLon]);
 
   // Background OTA translation sync — refreshes the server-side locale bundle
   // whenever the app language changes so strings stay current without blocking the UI.

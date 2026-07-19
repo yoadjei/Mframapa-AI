@@ -52,6 +52,8 @@ from backend.api.middleware.tracing import TracingMiddleware
 from backend.api.security import verify_and_rate_limit
 from backend.api.v1.batch import batch_router
 from backend.api.v1.payments import payments_router
+from backend.alerts.daily import alerts_enabled, alerts_hour, run_daily_job
+from backend.alerts.scheduler import build_scheduler
 from backend.api.v1.router import router as v1_router
 from backend.ml.inference import load_bundles
 
@@ -127,7 +129,24 @@ async def lifespan(app: FastAPI):
     if os.getenv("PREWARM_ON_START", "1") == "1":
         import threading
         threading.Thread(target=_prewarm_cache, daemon=True).start()
+
+    # daily episode scan -> push alerts -> radio bulletin (the core product loop).
+    # opt-in via ALERTS_ENABLED=1 so dev/ci never notify real devices.
+    app.state.scheduler = None
+    if alerts_enabled():
+        try:
+            app.state.scheduler = build_scheduler(
+                lambda: run_daily_job(_PREWARM_CITIES), hour=alerts_hour()
+            )
+            app.state.scheduler.start()
+            logger.info("alert scheduler started (daily at %02d:00 UTC)", alerts_hour())
+        except Exception:
+            logger.exception("could not start alert scheduler")
+
     yield
+
+    if getattr(app.state, "scheduler", None) is not None:
+        app.state.scheduler.shutdown(wait=False)
     app.state.models = {}
 
 
