@@ -31,7 +31,7 @@ export function ShareSheetScreen({
   const categoryLabel = t(aqiCategoryKey(category));
   const categoryColor = getAQIColor(category);
 
-  const shareText = `${cityName} air quality is ${categoryLabel}. PM2.5: ${pm25} μg/m³. Check real-time air quality across Africa on Mframapa: https://mframapa.live`;
+  const shareText = `${cityName} air quality is ${categoryLabel}. PM2.5: ${pm25} μg/m³. Check air quality across Africa on Mframapa: https://mframapa.live`;
 
   async function handleWhatsApp() {
     const url = `whatsapp://send?text=${encodeURIComponent(shareText)}`;

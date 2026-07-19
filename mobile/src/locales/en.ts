@@ -493,14 +493,14 @@ const base: Record<string, string> = {
   'screen.pricing.price_programme': '$20,000 – $150,000 / engagement',
 
   'screen.pricing.tier_free': 'Free',
-  'screen.pricing.tier_free_desc': 'Real-time AQI, city search, saved locations, 27-language guidance. The mission and the top of the funnel — never gated.',
+  'screen.pricing.tier_free_desc': 'Air quality estimates, health guidance and episode alerts — free for every individual, forever.',
   'screen.pricing.tier_researcher_desc': 'Historical playback, 7-day forecast, city comparison, CSV/GeoJSON export, rate-limited API. For verified African academics and journalists.',
   'screen.pricing.tier_institutional': 'Institutional API',
   'screen.pricing.tier_institutional_desc': 'Higher API throughput, batch prediction, Africa heatmap, anomaly alerts, country explorer, and data licensing. For NGOs, research consortia, and corporates.',
   'screen.pricing.tier_programme': 'Programme & Verification',
   'screen.pricing.tier_programme_desc': 'Bespoke impact measurement for air-quality programmes — before/after exposure analysis, source attribution, donor-grade reporting.',
 
-  'screen.pricing.feat.basic_aqi': 'Real-time AQI readings',
+  'screen.pricing.feat.basic_aqi': 'Daily AQI estimates',
   'screen.pricing.feat.search': 'City search',
   'screen.pricing.feat.saved_3': 'Up to 3 saved cities',
   'screen.pricing.feat.saved_unlimited': 'Unlimited saved cities',
@@ -519,7 +519,7 @@ const base: Record<string, string> = {
 
   'screen.landing.hero': 'Breathe\nInformed,\nAnywhere in\nAfrica.',
   'screen.landing.hero_sub': 'Satellite-powered air quality\nintelligence for 427+ cities.',
-  'screen.landing.feature1_label': 'Real-time\nAQI',
+  'screen.landing.feature1_label': 'Daily\nAQI',
   'screen.landing.feature1_desc': 'Satellite AQI quality user features.',
   'screen.landing.feature2_label': 'ML\nPredictions',
   'screen.landing.feature2_desc': 'Machine-learning air quality predictions.',
