@@ -45,10 +45,22 @@ def test_no_credentials_allowed_on_public_endpoint():
     assert client.get("/api/v1/health").status_code == 200
 
 
-def test_no_credentials_rejected_on_premium_endpoint():
-    r = client.post("/api/v1/register-push-token",
-                    json={"token": "t", "platform": "android", "lat": 5.6, "lon": -0.19})
+def test_no_credentials_rejected_on_institutional_endpoint():
+    r = client.post("/api/v1/batch-predict",
+                    json={"locations": [{"lat": 5.6, "lon": -0.19}]})
     assert r.status_code == 401
+
+
+def test_signed_in_individual_cannot_use_institutional_endpoint(monkeypatch):
+    """a free/individual account must not unlock institutional features."""
+    secret = "test-jwt-secret"
+    monkeypatch.setenv("SUPABASE_JWT_SECRET", secret)
+    r = client.post(
+        "/api/v1/batch-predict",
+        headers={"Authorization": f"Bearer {_token(secret)}"},   # tier defaults to free
+        json={"locations": [{"lat": 5.6, "lon": -0.19}]},
+    )
+    assert r.status_code == 403
 
 
 # ── supabase bearer tokens ────────────────────────────────────────────────────

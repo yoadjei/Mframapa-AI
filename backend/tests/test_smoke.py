@@ -24,11 +24,18 @@ def test_v1_health_is_public():
     assert client.get("/api/v1/health").status_code == 200
 
 
-def test_premium_endpoint_requires_auth():
-    # register-push-token is signed-in only — anonymous is rejected
+def test_institutional_endpoint_rejects_anonymous():
+    # batch-predict is an institutional feature (scope §5)
+    r = client.post("/api/v1/batch-predict",
+                    json={"locations": [{"lat": 5.6, "lon": -0.19}]})
+    assert r.status_code == 401
+
+
+def test_alert_registration_is_free_for_individuals():
+    # scope §3.2: alerts are the product and are never paywalled — no account needed
     r = client.post("/api/v1/register-push-token",
                     json={"token": "t", "platform": "android", "lat": 5.6, "lon": -0.19})
-    assert r.status_code == 401
+    assert r.status_code == 200
 
 
 def test_v1_health_rejects_wrong_key():

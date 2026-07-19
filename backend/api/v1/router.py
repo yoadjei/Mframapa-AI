@@ -8,7 +8,7 @@ from fastapi import APIRouter, Depends, Query, HTTPException, Response, Request
 from pydantic import BaseModel, Field
 
 from backend.api.aqi import aqi_category_from_pm25
-from backend.api.security import authenticate_or_anonymous, current_tier
+from backend.api.security import authenticate_or_anonymous, require_institutional
 from backend.services import gemini_client
 from backend.ml.inference import rectify_prediction, select_bundle
 from backend.pipeline.feature_pipeline import FeaturePipeline
@@ -360,7 +360,8 @@ class BatchPredictRequest(BaseModel):
     day: Optional[str] = Field(default=None)
 
 
-@router.post("/batch-predict", dependencies=[Depends(current_tier)])   # signed-in only
+# bulk prediction is an institutional feature (scope §5); individuals use /predict.
+@router.post("/batch-predict", dependencies=[Depends(require_institutional)])
 def batch_predict(
     body: BatchPredictRequest,
     pipeline: FeaturePipeline = Depends(get_feature_pipeline),
@@ -488,7 +489,9 @@ def get_push_store():
     from backend.alerts.storage import get_push_store as _default
     return _default()
 
-@router.post("/register-push-token", status_code=200, dependencies=[Depends(current_tier)])  # signed-in only
+# alerts are the product and are never paywalled for individuals (scope §5, §3.2),
+# so a device can register for alerts without an account.
+@router.post("/register-push-token", status_code=200)
 def register_push_token(body: PushTokenBody, store=Depends(get_push_store)) -> Dict[str, str]:
     """Register an Expo/Web Push token for AQI alert delivery using the configured store."""
     try:
