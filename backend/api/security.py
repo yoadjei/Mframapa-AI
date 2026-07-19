@@ -1,10 +1,13 @@
 """
-api key verification and tiered rate limiting.
+authentication and tiered rate limiting.
 
-sliding-window (redis zset) limits for the internal and public tiers, and a
-token-bucket burst for the institutional tier so batch jobs can spike. redis is
-primary with an in-memory fallback so local dev and tests run without it. keys
-come from the environment — never hardcoded.
+callers identify themselves either as a signed-in app user (supabase bearer token)
+or as an api customer (issued key). limits are applied per identity — per user id
+for app users, per key for api customers — so one shared credential can't throttle
+everybody. sliding-window (redis zset) for most tiers, token-bucket burst for
+institutional batch jobs. redis is primary with an in-memory fallback so local dev
+and tests run without it. credentials come from the environment or the key registry
+— never hardcoded, never accepted on prefix alone.
 """
 
 import os
@@ -15,21 +18,23 @@ from typing import Dict, List, Optional, Tuple
 
 from fastapi import Depends, HTTPException, Security
 from fastapi.security.api_key import APIKeyHeader, APIKeyQuery
+from fastapi.security.http import HTTPAuthorizationCredentials, HTTPBearer
 
-PUBLIC_KEY_PREFIX = "mframapa-pub-"
-INSTITUTIONAL_KEY_PREFIX = "mframapa-inst-"
+from backend.api.auth import tier_for_api_key, verify_supabase_jwt
 
 # tier -> (limit, window_seconds)
 _TIER_LIMITS: Dict[str, Tuple[int, int]] = {
     "internal": (1000, 60),      # 1000/min
     "institutional": (100, 1),   # 100/sec, plus burst below
-    "public": (10, 60),          # 10/min
+    "researcher": (300, 60),     # 300/min — paid app users
+    "free": (60, 60),            # 60/min — signed-in app users
 }
 _INSTITUTIONAL_BURST = 500       # token-bucket capacity for batch spikes
 
 API_KEY_NAME = "X-API-Key"
 _api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
 _api_key_query = APIKeyQuery(name="api_key", auto_error=False)
+_bearer_scheme = HTTPBearer(auto_error=False)
 
 # atomic token-bucket refill/consume (avoids read-modify-write races across workers).
 _BUCKET_LUA = """
@@ -54,14 +59,8 @@ def _internal_key() -> Optional[str]:
 
 
 def _tier_for(key: str) -> Optional[str]:
-    internal = _internal_key()
-    if internal and key == internal:
-        return "internal"
-    if key.startswith(INSTITUTIONAL_KEY_PREFIX):
-        return "institutional"
-    if key.startswith(PUBLIC_KEY_PREFIX):
-        return "public"
-    return None
+    # registry-backed: an unknown or revoked key is rejected, never accepted on prefix.
+    return tier_for_api_key(key)
 
 
 class RateLimiter:
@@ -151,12 +150,39 @@ def get_api_key(
     return key
 
 
-def verify_and_rate_limit(key: str = Security(get_api_key)) -> str:
-    # verify the key's tier and enforce its rate limit; returns the tier name.
+def _identify(
+    bearer: Optional[HTTPAuthorizationCredentials],
+    header_key: Optional[str],
+    query_key: Optional[str],
+) -> Tuple[str, str]:
+    """resolve the caller to (subject, tier).
+
+    subject is what rate limits are counted against: the user id for app users,
+    the key itself for api customers — so users never share one budget.
+    """
+    if bearer is not None and bearer.credentials:
+        identity = verify_supabase_jwt(bearer.credentials)
+        if identity is None:
+            raise HTTPException(status_code=401, detail="Invalid or expired session")
+        return f"user:{identity['user_id']}", identity["tier"]
+
+    key = header_key or query_key
+    if not key:
+        raise HTTPException(status_code=401, detail="Authentication required")
     tier = _tier_for(key)
     if tier is None:
         raise HTTPException(status_code=401, detail="Invalid API Key")
-    allowed, retry_after = _limiter.check(key, tier)
+    return f"key:{key}", tier
+
+
+def verify_and_rate_limit(
+    bearer: Optional[HTTPAuthorizationCredentials] = Security(_bearer_scheme),
+    header_key: str = Security(_api_key_header),
+    query_key: str = Security(_api_key_query),
+) -> str:
+    # authenticate, then enforce the tier's rate limit per identity; returns the tier.
+    subject, tier = _identify(bearer, header_key, query_key)
+    allowed, retry_after = _limiter.check(subject, tier)
     if not allowed:
         raise HTTPException(
             status_code=429,
@@ -166,11 +192,13 @@ def verify_and_rate_limit(key: str = Security(get_api_key)) -> str:
     return tier
 
 
-def current_tier(key: str = Security(get_api_key)) -> str:
+def current_tier(
+    bearer: Optional[HTTPAuthorizationCredentials] = Security(_bearer_scheme),
+    header_key: str = Security(_api_key_header),
+    query_key: str = Security(_api_key_query),
+) -> str:
     # resolve the tier for authz checks without consuming rate-limit budget.
-    tier = _tier_for(key)
-    if tier is None:
-        raise HTTPException(status_code=401, detail="Invalid API Key")
+    _, tier = _identify(bearer, header_key, query_key)
     return tier
 
 
