@@ -1,0 +1,44 @@
+name: clients
+
+on:
+  push:
+    branches: [v2]
+    paths: ["frontend-pwa/**", "mobile/**", ".github/workflows/clients.yml"]
+  pull_request:
+    branches: [v2]
+    paths: ["frontend-pwa/**", "mobile/**"]
+
+jobs:
+  pwa:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend-pwa
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend-pwa/package-lock.json
+      - run: npm install --no-audit --no-fund
+      - name: Build (fails on syntax/import errors)
+        run: npm run build
+      - name: Lint (fails on errors; warnings allowed)
+        run: npm run lint
+
+  mobile:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+      - run: npm install --no-audit --no-fund
+      - name: Typecheck (fails on any TypeScript error)
+        run: npx tsc --noEmit

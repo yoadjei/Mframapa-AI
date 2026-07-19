@@ -69,7 +69,7 @@ function InsightCard({ icon: IconComp, title, desc, source, colors }) {
   );
 }
 
-// eslint-disable-next-line no-unused-vars
+ 
 export function AIInsightsScreen({ isOnline, isDark, params }) {
   const { goBack, navigate } = useNavigation();
   const { t } = useTranslation();

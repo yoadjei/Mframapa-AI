@@ -113,7 +113,7 @@ const FACTORS_COLORS = [
   "#E53935",
 ];
 
-// eslint-disable-next-line no-unused-vars
+ 
 export function PredictionDashboardScreen({ isOnline, isDark, params }) {
   const { state } = useAppState();
   const { goBack, navigate } = useNavigation();

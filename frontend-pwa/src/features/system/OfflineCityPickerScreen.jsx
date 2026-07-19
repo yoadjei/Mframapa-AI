@@ -5,7 +5,6 @@ import { useAppState } from "../../state/appState.jsx";
 import { useNavigation } from "../../hooks/useNavigation.js";
 import {
   readCachedCityPack,
-  getCachedCities,
 } from "../../services/cityPackService.js";
 
 const BREADCRUMBS = ["Africa", "West Africa", "Ghana"];
@@ -20,7 +19,7 @@ const FALLBACK_CITIES = [
 
 export function OfflineCityPickerScreen({ params, isOnline, isDark }) {
   const colors = getColors(isDark ?? true);
-  const { state, dispatch } = useAppState();
+  const { dispatch } = useAppState();
   const { goBack } = useNavigation();
 
   const [cities, setCities] = useState(FALLBACK_CITIES);

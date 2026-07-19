@@ -265,16 +265,17 @@ export function App() {
     preloadCityPack().catch(() => undefined);
   }, [session.authenticated, isOnline]);
 
+  // hooks must run on every render before any early return (rules of hooks)
+  const ActiveTab = useMemo(
+    () => TAB_SCREENS[ui.activeScreen] ?? HomeScreen,
+    [ui.activeScreen]
+  );
+
   if (IS_PREVIEW) return <PreviewGallery isOnline={isOnline} />;
 
   // ── Top of screenStack overrides the tab view (no tab bar) ────────────────
   const stackTop = ui.screenStack[ui.screenStack.length - 1] ?? null;
   const StackScreen = stackTop ? (STACK_SCREENS[stackTop.name] ?? null) : null;
-
-  const ActiveTab = useMemo(
-    () => TAB_SCREENS[ui.activeScreen] ?? HomeScreen,
-    [ui.activeScreen]
-  );
 
   return (
     <>

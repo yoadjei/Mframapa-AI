@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { ArrowLeft, Leaf, FlaskConical, Building2, BarChart3, CreditCard, Smartphone, Banknote, Hash } from "lucide-react";
-import { useAppState } from "../../state/appState.jsx";
 import { useNavigation } from "../../hooks/useNavigation.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { getColors, Colors } from "../../utils/colors.js";
@@ -46,7 +45,6 @@ const CHANNELS = [
 ];
 
 export function PaywallScreen({ params, isOnline, isDark }) {
-  const { state } = useAppState();
   const { navigate, goBack } = useNavigation();
   const { t } = useTranslation();
   const colors = getColors(isDark ?? true);

@@ -6,7 +6,7 @@ import { useTranslation } from "../../hooks/useTranslation.js";
 import { getColors, Colors, liquidGlass } from "../../utils/colors.js";
 
 export function CommunityHubScreen({ isOnline, isDark, params }) {
-  const { state, dispatch } = useAppState();
+  const { state } = useAppState();
   const { t } = useTranslation();
   const { goBack } = useNavigation();
   const colors = getColors(isDark ?? true);

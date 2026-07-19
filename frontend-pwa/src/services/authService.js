@@ -1,5 +1,4 @@
 import { supabase } from "./supabase.js";
-import { normalizeError } from "./httpClient.js";
 
 // auth must fail closed: a fabricated local session would look signed-in to the ui
 // but carries no valid token, so every api call 401s — and in a misconfigured

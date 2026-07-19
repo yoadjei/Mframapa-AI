@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { ArrowLeft, CheckCircle2, ChevronDown, ChevronUp } from "lucide-react";
-import { useAppState } from "../../state/appState.jsx";
 import { useNavigation } from "../../hooks/useNavigation.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { getColors, Colors } from "../../utils/colors.js";
@@ -10,7 +9,6 @@ const SECTION_IDS = ["calc", "sources", "model", "disclaimers"];
 const DATA_SOURCES = ["ERA5", "Sentinel-5P", "MODIS"];
 
 export function TrustTransparencyScreen({ isOnline, isDark, params }) {
-  const { state, dispatch } = useAppState();
   const { goBack } = useNavigation();
   const { t } = useTranslation();
   const colors = getColors(isDark ?? true);

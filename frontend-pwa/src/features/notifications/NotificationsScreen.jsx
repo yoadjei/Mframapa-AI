@@ -266,7 +266,6 @@ export function NotificationsScreen({ isOnline, isDark }) {
             {notifications.map((item, idx) => {
               const isUnread = !item.read;
               const Icon = iconForType(item.type);
-              const isLast = idx === notifications.length - 1;
 
               // resolve display text (supports titleKey/subtitleKey pattern from mobile store)
               const title = item.title ?? "";
