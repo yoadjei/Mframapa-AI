@@ -1,9 +1,11 @@
 """issue and revoke api keys for api customers.
 
-run where redis is reachable — easiest is inside the api container:
+redis is only reachable from inside the compose network, so run this in the api
+container (it ships with the image):
 
-    docker compose exec api python scripts/api_key.py issue --tier institutional --label "acme corp"
-    docker compose exec api python scripts/api_key.py revoke mframapa-inst-xxxxx
+    docker compose exec api python -m backend.api.keys_cli issue --tier institutional --label "acme corp"
+    docker compose exec api python -m backend.api.keys_cli revoke mframapa-inst-xxxxx
+    docker compose exec api python -m backend.api.keys_cli check  mframapa-inst-xxxxx
 
 app users don't need keys — they authenticate with their supabase session.
 """
