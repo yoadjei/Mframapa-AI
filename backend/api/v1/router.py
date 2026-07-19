@@ -9,6 +9,7 @@ from pydantic import BaseModel, Field
 
 from backend.api.aqi import aqi_category_from_pm25
 from backend.api.security import authenticate_or_anonymous, require_institutional
+from backend.cache.redis_cache import RedisCache
 from backend.services import gemini_client
 from backend.ml.inference import rectify_prediction, select_bundle
 from backend.pipeline.feature_pipeline import FeaturePipeline
@@ -131,6 +132,8 @@ def _run_inference(request, feats, region_id, segment, om_pm25):
 def _cities() -> list:
     with CITIES_PATH.open(encoding="utf-8") as f:
         return json.load(f)["cities"]
+
+_INSIGHT_TTL = 30 * 24 * 3600   # guidance per category/language is effectively static
 
 _STUB_INSIGHTS_EN = {
     "good": "Satellite-based estimate suggests favorable dispersion today.",
@@ -447,32 +450,46 @@ def _insight_category_key(aqi_category: str, pm25: float) -> str:
 def generate_insight(body: InsightBody) -> Dict[str, str]:
     cat = body.aqi_category or aqi_category_from_pm25(body.pm25)
     key = _insight_category_key(cat, body.pm25)
+    language = (body.language or "en").lower()
 
-    # Try Gemini first (richer insights); fall back to bundled English stubs and optional translation
+    # health guidance varies only by category x language (~135 combinations), so it is
+    # generated once and cached rather than called per request. that keeps responses
+    # instant, stays well inside gemini's rate limits under real traffic, and means the
+    # app doesn't degrade if the api key lapses.
+    cache = RedisCache()
+    cache_key = f"insight:{key}:{language}"
+    hit = cache.get(cache_key)
+    if hit and hit.get("insight"):
+        return {"insight": hit["insight"]}
+
     if gemini_client.is_available():
         try:
+            # deliberately generic: a cached string must not claim today's weather
+            # weeks from now, so live conditions are left out of the prompt.
             text = gemini_client.generate_air_quality_insight(
                 pm25=body.pm25,
                 aqi_category=cat,
-                weather=body.weather,
-                language=body.language,
+                weather={},
+                language=language,
                 language_name=body.language_name or None,
             )
+            cache.set(cache_key, {"insight": text}, _INSIGHT_TTL)
             return {"insight": text}
         except Exception as exc:
             logger.warning("Gemini insight failed, using stub: %s", exc)
-            if body.language.lower() not in ("en", ""):
+            if language not in ("en", ""):
                 try:
                     translated = gemini_client.translate_strings(
                         {key: _STUB_INSIGHTS_EN[key]},
-                        target_language=body.language,
+                        target_language=language,
                         target_language_name=body.language_name or None,
                     )
+                    cache.set(cache_key, {"insight": translated[key]}, _INSIGHT_TTL)
                     return {"insight": translated[key]}
                 except Exception:
                     pass
 
-    # final fallback: bundled stub
+    # stub is intentionally not cached, so a later request retries gemini once it works
     return {"insight": _STUB_INSIGHTS_EN[key]}
 
 
