@@ -598,8 +598,11 @@ def translate_ui_strings(body: TranslateBody) -> Dict[str, Any]:
             target_language_name=body.target_language_name or None,
         )
     except Exception as exc:
+        # a quota trip or provider outage must never blank the interface: english
+        # copy is readable, a 502 is not. the caller sees fallback=True and can
+        # retry later, by which point the cache may be warm.
         logger.warning("Gemini translate failed: %s", exc)
-        raise HTTPException(status_code=502, detail="Translation service unavailable") from exc
+        return {"translations": body.strings, "fallback": True, "provider": "none"}
 
     cache.set(cache_key, {"translations": translations}, _I18N_TTL)
     return {"translations": translations, "fallback": False, "provider": "gemini"}
