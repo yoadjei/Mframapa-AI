@@ -6,3 +6,20 @@ import os
 os.environ.setdefault("PREWARM_ON_START", "0")
 # key the suites authenticate with (matches the client fixture in test_api.py)
 os.environ.setdefault("MFRAMAPA_INTERNAL_KEY", "mframapa-internal-dev-key")
+
+import pytest
+
+
+@pytest.fixture(autouse=True)
+def _reset_rate_limiter():
+    """Every test starts with a clean rate-limit window.
+
+    TestClient sends every request from the same host, so without this the whole
+    suite shares one anonymous window (30/min) and tests start 429ing purely
+    because earlier tests ran first. Isolating here keeps the real limits intact.
+    """
+    from backend.api.security import _limiter
+
+    _limiter._mem_windows.clear()
+    _limiter._mem_buckets.clear()
+    yield
