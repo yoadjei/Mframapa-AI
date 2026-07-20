@@ -1,23 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { SegmentedControl } from '../components/ui/SegmentedControl';
-import { PredictionWaveChart } from '../components/charts/PredictionWaveChart';
+import { LineChart } from '../components/charts/LineChart';
 import { getColors, Colors } from '../theme';
 import { useTheme } from '../hooks/useTheme';
 import { useTranslation } from '../hooks/useTranslation';
 import { useStore } from '../store/useStore';
+import { getForecast, ForecastDay } from '../services/api';
 
-const RANGE_KEYS = ['24h', '48h', '7d'] as const;
-// Confidence bands widen with horizon; values are rough multipliers applied
-// to the model's reported uncertainty.
-const RANGE_MULTIPLIERS: Record<(typeof RANGE_KEYS)[number], number> = {
-  '24h': 1.0,
-  '48h': 1.25,
-  '7d':  1.6,
-};
+/** the api caps the horizon to the days our inputs genuinely cover. */
+const FORECAST_DAYS = 4;
 
 export function PredictionDashboardScreen() {
   const { isDark } = useTheme();
@@ -26,24 +21,43 @@ export function PredictionDashboardScreen() {
   const navigation = useNavigation<any>();
   const { t } = useTranslation();
   const lastPrediction = useStore((s) => s.lastPrediction);
-  const [range, setRange] = useState<(typeof RANGE_KEYS)[number]>('24h');
+  // real multi-day outlook. nothing here is synthesised: the day tabs are the
+  // days the api could actually cover, and a day it could not is simply absent.
+  const [forecast, setForecast] = useState<ForecastDay[]>([]);
+  const [dayIndex, setDayIndex] = useState(0);
 
-  const rangeLabels = [
-    t('screen.prediction.range_24h'),
-    t('screen.prediction.range_48h'),
-    t('screen.prediction.range_7d')];
+  const lat = lastPrediction?.location.lat;
+  const lon = lastPrediction?.location.lon;
+  const locationName = lastPrediction?.location.name;
 
-  // Derive high/low for the chosen horizon from the model's confidence band.
-  // For longer horizons we widen the band; for the current reading we use it
-  // verbatim.
+  useEffect(() => {
+    if (lat == null || lon == null) { setForecast([]); return; }
+    let cancelled = false;
+    getForecast(lat, lon, locationName ?? 'Unknown', FORECAST_DAYS)
+      .then((days) => { if (!cancelled) { setForecast(days); setDayIndex(0); } })
+      .catch(() => { if (!cancelled) setForecast([]); });
+    return () => { cancelled = true; };
+  }, [lat, lon, locationName]);
+
+  const rangeLabels = forecast.map((d, i) =>
+    i === 0
+      ? t('common.today')
+      : new Date(d.date).toLocaleDateString(undefined, { weekday: 'short' })
+  );
+
+  const selectedIndex = Math.min(dayIndex, Math.max(0, forecast.length - 1));
+  const selected = forecast[selectedIndex];
+  const series = forecast.map((d) => Math.round(d.pm25));
+  const reducedConfidence = selected?.inputs === 'reduced';
+
+  // the band is the model's own interval for the selected day, used verbatim.
   const pred = (() => {
-    if (!lastPrediction) return null;
-    const mid = lastPrediction.pm25;
-    const halfBand = (lastPrediction.uncertainty.pm25_upper - lastPrediction.uncertainty.pm25_lower) / 2;
-    const m = RANGE_MULTIPLIERS[range];
+    const source = selected ?? lastPrediction;
+    if (!source) return null;
+    const u = source.uncertainty ?? {};
     return {
-      high: Math.max(0, +(mid + halfBand * m).toFixed(0)),
-      low:  Math.max(0, +(mid - halfBand * m).toFixed(0)),
+      high: Math.max(0, Math.round(u.pm25_upper ?? source.pm25)),
+      low:  Math.max(0, Math.round(u.pm25_lower ?? source.pm25)),
     };
   })();
 
@@ -87,21 +101,31 @@ export function PredictionDashboardScreen() {
               </Text>
             </View>
 
-            <View style={styles.toggleRow}>
-              <SegmentedControl
-                options={rangeLabels}
-                selected={rangeLabels[RANGE_KEYS.indexOf(range)]}
-                onSelect={(label) => {
-                  const idx = rangeLabels.indexOf(label);
-                  if (idx >= 0) setRange(RANGE_KEYS[idx]);
-                }}
-                isDark={isDark}
-              />
-            </View>
+            {rangeLabels.length > 1 ? (
+              <View style={styles.toggleRow}>
+                <SegmentedControl
+                  options={rangeLabels}
+                  selected={rangeLabels[selectedIndex]}
+                  onSelect={(label) => {
+                    const idx = rangeLabels.indexOf(label);
+                    if (idx >= 0) setDayIndex(idx);
+                  }}
+                  isDark={isDark}
+                />
+              </View>
+            ) : null}
 
-            <View style={styles.chartWrap}>
-              <PredictionWaveChart height={200} />
-            </View>
+            {reducedConfidence ? (
+              <Text style={[styles.note, { color: colors.subtext }]}>
+                {t('screen.prediction_dashboard.reduced_confidence')}.
+              </Text>
+            ) : null}
+
+            {series.length > 1 ? (
+              <View style={styles.chartWrap}>
+                <LineChart data={series} labels={rangeLabels} height={200} isDark={isDark} />
+              </View>
+            ) : null}
 
             <View style={styles.statRow}>
               <View style={[styles.statBox, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -143,6 +167,7 @@ const styles = StyleSheet.create({
   content: { paddingHorizontal: 16, gap: 24 },
   toggleRow: { alignItems: 'center' },
   chartWrap: { alignItems: 'center' },
+  note: { fontSize: 12, lineHeight: 17 },
   statRow: { flexDirection: 'row', gap: 12 },
   statBox: {
     flex: 1,
