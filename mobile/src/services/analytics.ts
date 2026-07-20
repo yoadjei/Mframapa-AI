@@ -1,61 +1,55 @@
 /**
- * Aggregate-only analytics — no raw GPS retention per EXECUTION_PLAN_4MONTHS.md §3.5.
- * Events are bucketed before transmission; individual coordinates are never logged.
+ * First-party analytics — anonymous and aggregate-only (per EXECUTION_PLAN §3.5).
+ *
+ * The device id is a random uuid generated on this device and kept in
+ * AsyncStorage; it is never a hardware id and is never tied to identity. We send
+ * coarse events (and at most a country code) so the team can measure installs,
+ * WAU and retention without ever logging coordinates. Sends are best-effort and
+ * never throw into the UI.
  */
 
-import { bucketCoordinates } from './location';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Platform } from 'react-native';
 
-interface AggregateEvent {
-  event: string;
-  region?: string;
-  aqi_bucket?: string;
-  timestamp_hour: number;
+import { postEvents } from './api';
+
+const DEVICE_KEY = 'mframapa:analytics:device-id';
+
+let _deviceId: string | null = null;
+
+function newId(): string {
+  const g = globalThis as { crypto?: { randomUUID?: () => string } };
+  return g.crypto?.randomUUID?.() ?? `dev-${Date.now()}-${Math.random().toString(36).slice(2)}`;
 }
 
-const _queue: AggregateEvent[] = [];
-let _enabled = false;
-
-export function enableAnalytics(): void {
-  _enabled = true;
+async function deviceId(): Promise<string> {
+  if (_deviceId) return _deviceId;
+  let id = await AsyncStorage.getItem(DEVICE_KEY);
+  if (!id) {
+    id = newId();
+    await AsyncStorage.setItem(DEVICE_KEY, id);
+  }
+  _deviceId = id;
+  return id;
 }
 
-export function disableAnalytics(): void {
-  _enabled = false;
+const platform: 'web' | 'android' | 'ios' =
+  Platform.OS === 'ios' ? 'ios' : Platform.OS === 'web' ? 'web' : 'android';
+
+export async function track(event: string, opts: { country?: string } = {}): Promise<void> {
+  try {
+    const device_id = await deviceId();
+    await postEvents([{ device_id, event, platform, country: opts.country }]);
+  } catch {
+    // analytics must never disrupt the app
+  }
 }
 
-function aqiBucket(pm25: number): string {
-  if (pm25 <= 12) return 'good';
-  if (pm25 <= 35) return 'moderate';
-  if (pm25 <= 55) return 'sensitive';
-  if (pm25 <= 150) return 'unhealthy';
-  return 'hazardous';
+/** Call once on app start — drives installs, WAU and retention. */
+export function trackAppOpen(): void {
+  void track('app_open');
 }
 
-export function trackSearch(lat: number, lon: number): void {
-  if (!_enabled) return;
-  _queue.push({
-    event: 'search',
-    region: bucketCoordinates(lat, lon, 0),
-    timestamp_hour: new Date().getHours(),
-  });
-}
-
-export function trackPredictionView(pm25: number): void {
-  if (!_enabled) return;
-  _queue.push({
-    event: 'prediction_view',
-    aqi_bucket: aqiBucket(pm25),
-    timestamp_hour: new Date().getHours(),
-  });
-}
-
-export function trackOfflineView(): void {
-  if (!_enabled) return;
-  _queue.push({ event: 'offline_view', timestamp_hour: new Date().getHours() });
-}
-
-export function flushQueue(): AggregateEvent[] {
-  const events = [..._queue];
-  _queue.length = 0;
-  return events;
+export function trackAlertOpened(): void {
+  void track('alert_opened');
 }

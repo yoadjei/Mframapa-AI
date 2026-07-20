@@ -11,6 +11,7 @@ import { AuthScreen } from "../features/auth/AuthScreen.jsx";
 import { HomeScreen } from "../features/home/HomeScreen.jsx";
 import { PreviewGallery } from "../features/preview/PreviewGallery.jsx";
 import { preloadCityPack } from "../services/cityPackService.js";
+import { trackAppOpen } from "../services/analytics.js";
 
 // ── Tab screens (loaded eagerly — they are the main experience) ─────────────
 // All screen files use named exports; .then() wraps them as the default export
@@ -235,6 +236,11 @@ export function App() {
   const isDark =
     preferences.theme === "dark" ||
     (preferences.theme === "system" && prefersDark);
+
+  // once per load, before auth — drives installs / WAU / retention
+  useEffect(() => {
+    trackAppOpen();
+  }, []);
 
   useEffect(() => {
     if (!session.authenticated || !isOnline) return;

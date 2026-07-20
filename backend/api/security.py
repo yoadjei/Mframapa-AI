@@ -239,3 +239,10 @@ def require_institutional(tier: str = Depends(current_tier)) -> str:
         raise HTTPException(status_code=403, detail="Institutional tier required")
     return tier
 
+
+def require_internal(tier: str = Depends(current_tier)) -> str:
+    # admin-only surface (e.g. metrics); only the internal key qualifies.
+    if tier != "internal":
+        raise HTTPException(status_code=403, detail="Internal access required")
+    return tier
+

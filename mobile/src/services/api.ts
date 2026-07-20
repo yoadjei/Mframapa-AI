@@ -169,6 +169,17 @@ export async function registerPushToken(
   await client.post('/api/v1/register-push-token', { token, platform, lat, lon });
 }
 
+export interface AnalyticsEvent {
+  device_id: string;
+  event: string;
+  platform?: 'web' | 'android' | 'ios';
+  country?: string;
+}
+
+export async function postEvents(events: AnalyticsEvent[]): Promise<void> {
+  await client.post('/api/v1/events', { events });
+}
+
 export async function syncTranslations(
   lang: string,
   langName?: string,

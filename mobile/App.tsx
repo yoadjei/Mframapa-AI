@@ -12,6 +12,7 @@ import { getAfricanCities } from './src/services/cities';
 import { saveCities } from './src/services/offline';
 import { requestPermissions, getAndRegisterPushToken } from './src/services/notifications';
 import { syncLocaleInBackground } from './src/services/translation';
+import { trackAppOpen } from './src/services/analytics';
 
 export default function App() {
   const { isDark } = useTheme();
@@ -22,6 +23,7 @@ export default function App() {
   const language = useStore((s) => s.language);
 
   useEffect(() => {
+    trackAppOpen();   // installs / WAU / retention
     if (offlineCities.length < 500) {
       const cities = getAfricanCities();
       setOfflineCities(cities);

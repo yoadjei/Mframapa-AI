@@ -52,6 +52,7 @@ from backend.api.middleware.tracing import TracingMiddleware
 from backend.api.security import verify_and_rate_limit
 from backend.api.v1.batch import batch_router
 from backend.api.v1.payments import payments_router
+from backend.api.v1.analytics import analytics_router
 from backend.alerts.daily import alerts_enabled, alerts_hour, run_daily_job
 from backend.alerts.scheduler import build_scheduler
 from backend.api.v1.router import router as v1_router
@@ -174,6 +175,8 @@ app.include_router(
 # payments: paystack calls this itself, so it can't send one of our api keys —
 # it authenticates by signing the body with our paystack secret instead.
 app.include_router(payments_router, prefix="/api/v1", tags=["payments"])
+# analytics: /events is anonymous (per-route), /metrics is internal-only (per-route).
+app.include_router(analytics_router, prefix="/api/v1", tags=["analytics"])
 
 # Legacy support - keeping the old root paths but returning a hint to use v1.
 @app.get("/api/health")
