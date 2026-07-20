@@ -11,18 +11,10 @@ import { useTheme } from '../hooks/useTheme';
 import { useTranslation } from '../hooks/useTranslation';
 import { useStore, City, PredictionResult } from '../store/useStore';
 import { fetchPredictionAtCoords } from '../services/prediction';
+import { getHistory } from '../services/api';
 
-// Synthesize a 7-point trend around a base reading. Used purely for the
-// comparison sparkline — actual values come from the API for the two cities.
-function synthSeries(mid: number, seed = 1): number[] {
-  const out: number[] = [];
-  const phase = seed * 0.7;
-  for (let i = 0; i < 7; i++) {
-    const wave = Math.sin(i * 0.9 + phase) * (mid * 0.25);
-    out.push(Math.max(0, Math.round(mid + wave)));
-  }
-  return out;
-}
+/** days of real history behind each sparkline */
+const TREND_DAYS = 7;
 
 export function CompareCitiesScreen() {
   const { isDark } = useTheme();
@@ -37,6 +29,9 @@ export function CompareCitiesScreen() {
   const [predA, setPredA] = useState<PredictionResult | null>(null);
   const [predB, setPredB] = useState<PredictionResult | null>(null);
   const [loading, setLoading] = useState(false);
+  // real last-week pm2.5 per city — the sparklines are measured, not drawn
+  const [seriesA, setSeriesA] = useState<number[]>([]);
+  const [seriesB, setSeriesB] = useState<number[]>([]);
 
   // Seed with the first two offline cities so the screen has something to
   // show on first open (user can change either via the picker).
@@ -70,8 +65,23 @@ export function CompareCitiesScreen() {
     return () => { cancelled = true; };
   }, [cityA, cityB, language, offlineCities]);
 
-  const seriesA = predA ? synthSeries(predA.pm25, 1) : [];
-  const seriesB = predB ? synthSeries(predB.pm25, 2) : [];
+  // trends are secondary to the readings, so they load separately and an empty
+  // result just hides the sparkline rather than blocking the comparison.
+  useEffect(() => {
+    let cancelled = false;
+    async function run() {
+      if (!cityA || !cityB) return;
+      const [a, b] = await Promise.all([
+        getHistory(cityA.lat, cityA.lon, cityA.name, TREND_DAYS).catch(() => []),
+        getHistory(cityB.lat, cityB.lon, cityB.name, TREND_DAYS).catch(() => []),
+      ]);
+      if (cancelled) return;
+      setSeriesA(a.map((d) => Math.round(d.pm25)));
+      setSeriesB(b.map((d) => Math.round(d.pm25)));
+    }
+    void run();
+    return () => { cancelled = true; };
+  }, [cityA, cityB]);
 
   return (
     <View style={[styles.root]}>
