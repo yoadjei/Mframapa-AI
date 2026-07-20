@@ -4,21 +4,13 @@ import { useTranslation } from "../../hooks/useTranslation.js";
 import { useNavigation } from "../../hooks/useNavigation.js";
 import { getColors, Colors, getAQIColor } from "../../utils/colors.js";
 import { MframapaLogo } from "../../components/brand/MframapaLogo.jsx";
-import { getHistory } from "../../services/api.js";
+import { getMapHistory } from "../../services/api.js";
 
 const MapCanvas = lazy(() =>
   import("../core/MapCanvas.jsx").then((m) => ({ default: m.MapCanvas }))
 );
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
-
-const PLAYBACK_CITIES = [
-  { name: "Accra", lat: 5.6, lon: -0.2 },
-  { name: "Lagos", lat: 6.5, lon: 3.4 },
-  { name: "Cairo", lat: 30.1, lon: 31.2 },
-  { name: "Nairobi", lat: -1.3, lon: 36.8 },
-  { name: "Kinshasa", lat: -4.3, lon: 15.3 },
-];
 
 /** how far back we replay. the api caps this to what the archives can rebuild. */
 const HISTORY_DAYS = 14;
@@ -41,7 +33,7 @@ export function HistoricalPlaybackScreen({ isDark }) {
 
   const [playing, setPlaying] = useState(false);
   const [frame, setFrame] = useState(0);
-  const [series, setSeries] = useState({});   // city name -> day rows, oldest first
+  const [cities, setCities] = useState([]);   // each with its own day rows
   const [dates, setDates] = useState([]);     // shared timeline
   const [loading, setLoading] = useState(true);
   // stored as a key, not a sentence, so it re-renders in the current language
@@ -59,25 +51,13 @@ export function HistoricalPlaybackScreen({ isDark }) {
   const load = useCallback(() => {
     setLoading(true);
     setErrorKey(null);
-    Promise.all(
-      PLAYBACK_CITIES.map((c) =>
-        getHistory(c.lat, c.lon, c.name, HISTORY_DAYS)
-          .then((days) => [c.name, days])
-          .catch(() => [c.name, []])       // one city failing must not blank the rest
-      )
-    )
-      .then((entries) => {
-        const byCity = Object.fromEntries(entries);
-        // the timeline is the longest run of days any city came back with; days a
-        // city is missing simply have no dot rather than an invented one.
-        const longest = entries.reduce(
-          (best, [, days]) => (days.length > best.length ? days : best),
-          []
-        );
-        setSeries(byCity);
-        setDates(longest.map((d) => d.date));
-        setFrame(Math.max(0, longest.length - 1));   // open on today
-        if (longest.length === 0) setErrorKey("screen.historical.empty");
+    getMapHistory(HISTORY_DAYS)
+      .then((payload) => {
+        const cities = payload.cities ?? [];
+        setCities(cities);
+        setDates(payload.dates ?? []);
+        setFrame(Math.max(0, (payload.dates ?? []).length - 1));   // open on today
+        if (cities.length === 0) setErrorKey("screen.historical.empty");
       })
       .catch(() => setErrorKey("screen.historical.load_failed"))
       .finally(() => setLoading(false));
@@ -88,9 +68,9 @@ export function HistoricalPlaybackScreen({ isDark }) {
   const markers = useMemo(() => {
     const day = dates[frame];
     if (!day) return [];
-    return PLAYBACK_CITIES.flatMap((city) => {
-      const row = (series[city.name] ?? []).find((d) => d.date === day);
-      if (!row) return [];
+    return cities.flatMap((city) => {
+      const row = city.days.find((d) => d.date === day);
+      if (!row) return [];                 // a day we could not rebuild shows no dot
       return [{
         name: city.name,
         lat: city.lat,
@@ -100,7 +80,7 @@ export function HistoricalPlaybackScreen({ isDark }) {
         label: `${city.name} — ${Math.round(row.pm25)} µg/m³`,
       }];
     });
-  }, [series, dates, frame]);
+  }, [cities, dates, frame]);
 
   useEffect(() => {
     if (!playing || dates.length === 0) return;

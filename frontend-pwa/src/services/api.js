@@ -116,3 +116,14 @@ export async function getHistory(lat, lon, name = "Unknown", days = 14) {
     throw new Error(normalizeError(error, "Could not load the history"));
   }
 }
+
+// the whole playback window for the playback cities, in one cached request.
+// asking per city would make every client rebuild the same fixed window.
+export async function getMapHistory(days = 14) {
+  try {
+    const response = await httpClient.get("/api/v1/map-history", { params: { days } });
+    return response.data ?? { dates: [], cities: [] };
+  } catch (error) {
+    throw new Error(normalizeError(error, "Could not load the history"));
+  }
+}
