@@ -83,3 +83,14 @@ export async function generateInsight({ pm25, aqi_category, weather = {}, langua
   });
   return response.data.insight;
 }
+
+// one cached request powering the continental map (avoids a per-city fan-out that
+// would exhaust the anonymous rate limit on a single screen).
+export async function getMapSummary() {
+  try {
+    const response = await httpClient.get("/api/v1/map-summary");
+    return response.data?.cities ?? [];
+  } catch (error) {
+    throw new Error(normalizeError(error, "Could not load the map"));
+  }
+}

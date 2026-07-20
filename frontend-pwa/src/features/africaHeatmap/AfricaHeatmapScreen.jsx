@@ -1,55 +1,16 @@
-import { useState, useMemo } from "react";
-import { ChevronLeft, MoreHorizontal } from "lucide-react";
+import { useState, useEffect, useMemo, lazy, Suspense } from "react";
+import { ChevronLeft, RefreshCw } from "lucide-react";
 import { useNavigation } from "../../hooks/useNavigation.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
-import { getColors } from "../../utils/colors.js";
+import { getColors, getAQIColor } from "../../utils/colors.js";
+import { getMapSummary } from "../../services/api.js";
 
-// Mirror mobile's AFRICAN_CITIES slice — first 280 entries represented as
-// an approximation using regional representative points.
-const AFRICAN_CITIES = [
-  { name: "Cairo", lat: 30.04, lon: 31.24 },
-  { name: "Alexandria", lat: 31.2, lon: 29.92 },
-  { name: "Khartoum", lat: 15.55, lon: 32.53 },
-  { name: "Lagos", lat: 6.52, lon: 3.38 },
-  { name: "Accra", lat: 5.6, lon: -0.19 },
-  { name: "Dakar", lat: 14.69, lon: -17.45 },
-  { name: "Abidjan", lat: 5.36, lon: -4.01 },
-  { name: "Kumasi", lat: 6.69, lon: -1.62 },
-  { name: "Bamako", lat: 12.65, lon: -8.0 },
-  { name: "Ouagadougou", lat: 12.37, lon: -1.52 },
-  { name: "Niamey", lat: 13.51, lon: 2.11 },
-  { name: "Kinshasa", lat: -4.32, lon: 15.32 },
-  { name: "Douala", lat: 4.05, lon: 9.77 },
-  { name: "Luanda", lat: -8.84, lon: 13.23 },
-  { name: "Nairobi", lat: -1.29, lon: 36.82 },
-  { name: "Dar es Salaam", lat: -6.79, lon: 39.21 },
-  { name: "Kampala", lat: 0.35, lon: 32.58 },
-  { name: "Kigali", lat: -1.94, lon: 30.06 },
-  { name: "Addis Ababa", lat: 9.02, lon: 38.75 },
-  { name: "Mogadishu", lat: 2.05, lon: 45.34 },
-  { name: "Johannesburg", lat: -26.2, lon: 28.05 },
-  { name: "Cape Town", lat: -33.92, lon: 18.42 },
-  { name: "Lusaka", lat: -15.42, lon: 28.28 },
-  { name: "Harare", lat: -17.83, lon: 31.05 },
-  { name: "Casablanca", lat: 33.57, lon: -7.59 },
-  { name: "Tunis", lat: 36.82, lon: 10.17 },
-  { name: "Tripoli", lat: 32.88, lon: 13.18 },
-  { name: "Algiers", lat: 36.74, lon: 3.06 },
-];
+// real mapbox canvas, shared with the map tab (lazy: mapbox-gl is a large chunk)
+const MapCanvas = lazy(() =>
+  import("../core/MapCanvas.jsx").then((m) => ({ default: m.MapCanvas }))
+);
 
-// Mirrors mobile's heatWeight()
-function heatWeight(lat, lon) {
-  if (lat > 22) return 0.92;
-  if (lat > 8 && lon > 28) return 0.78;
-  if (lat > 5 && lat < 18 && lon > -18 && lon < 25) return 0.55;
-  if (lat < -5) return 0.38;
-  return 0.48;
-}
-
-// Mirrors mobile's categoryFromWeight()
-function categoryFromWeight(w) {
-  return w >= 0.7 ? "unhealthy" : "good";
-}
+const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN ?? "";
 
 const FILTER_KEYS = [
   { key: "All", tKey: "screen.heatmap.filter_all" },
@@ -58,207 +19,195 @@ const FILTER_KEYS = [
 ];
 
 const LEGEND_STOPS = [
-  { tKey: "screen.heatmap.legend_cleaner", fallback: "Cleaner", color: "#00C896" },
-  { tKey: "screen.heatmap.legend_good", fallback: "Good", color: "#7DCE57" },
-  { tKey: "screen.heatmap.legend_moderate", fallback: "Moderate", color: "#F5C518" },
-  { tKey: "screen.heatmap.legend_sahel", fallback: "Sahel", color: "#FF8C00" },
-  { tKey: "screen.heatmap.legend_unhealthy", fallback: "Unhealthy", color: "#E53935" },
+  { label: "Good", color: getAQIColor("good") },
+  { label: "Moderate", color: getAQIColor("moderate") },
+  { label: "Sensitive", color: getAQIColor("sensitive") },
+  { label: "Unhealthy", color: getAQIColor("unhealthy") },
+  { label: "Hazardous", color: getAQIColor("hazardous") },
 ];
 
+// bigger dot = worse air, so severity reads at a glance on a continental view.
+function dotSize(pm25) {
+  if (pm25 >= 150) return 26;
+  if (pm25 >= 55) return 22;
+  if (pm25 >= 35) return 18;
+  if (pm25 >= 12) return 15;
+  return 12;
+}
+
+function isUnhealthy(category) {
+  const c = (category ?? "").toLowerCase();
+  return c.includes("unhealthy") || c.includes("hazardous");
+}
+
 export function AfricaHeatmapScreen({ isDark }) {
-  const { goBack } = useNavigation();
+  const { goBack, navigate } = useNavigation();
   const { t } = useTranslation();
   const colors = getColors(isDark ?? true);
 
   const [filter, setFilter] = useState("All");
+  const [cities, setCities] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [viewState, setViewState] = useState({ longitude: 18, latitude: 3, zoom: 2.2 });
 
-  const heatMarkers = useMemo(() => {
-    const base = AFRICAN_CITIES.map((city) => ({
-      ...city,
-      weight: heatWeight(city.lat, city.lon),
-    }));
-    if (filter === "All") return base;
-    return base.filter((m) => {
-      const cat = categoryFromWeight(m.weight);
-      return filter === "Good" ? cat === "good" : cat === "unhealthy";
+  async function load() {
+    setLoading(true); setError("");
+    try {
+      setCities(await getMapSummary());
+    } catch (e) {
+      setError(e?.message ?? "Could not load the map");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => { load(); }, []);
+
+  const markers = useMemo(() => {
+    const filtered = cities.filter((c) => {
+      if (filter === "Unhealthy") return isUnhealthy(c.aqi_category);
+      if (filter === "Good") return !isUnhealthy(c.aqi_category);
+      return true;
     });
-  }, [filter]);
+    return filtered.map((c) => ({
+      name: c.name,
+      lat: c.lat,
+      lon: c.lon,
+      color: getAQIColor(c.aqi_category),
+      size: dotSize(c.pm25),
+      label: `${c.name}: ${Math.round(c.pm25)} µg/m³`,
+      pm25: c.pm25,
+      aqi_category: c.aqi_category,
+    }));
+  }, [cities, filter]);
+
+  const worst = useMemo(
+    () => [...cities].sort((a, b) => b.pm25 - a.pm25).slice(0, 3),
+    [cities]
+  );
 
   return (
-    <div style={{ minHeight: "100dvh", display: "flex", flexDirection: "column" }}>
-      {/* Safe area top */}
-      <div style={{ height: "env(safe-area-inset-top)" }} />
-
-      {/* Header */}
-      <div
-        className="flex items-center"
-        style={{ paddingLeft: 8, paddingRight: 8, paddingTop: 6, paddingBottom: 6 }}
-      >
-        <button
-          type="button"
-          onClick={goBack}
-          className="flex items-center justify-center"
-          style={{ padding: 10 }}
-        >
-          <ChevronLeft size={24} color={colors.text} />
+    <div className="min-h-[100dvh] flex flex-col" style={{ backgroundColor: colors.bg }}>
+      {/* header */}
+      <div className="flex items-center gap-2 px-4" style={{ paddingTop: "calc(env(safe-area-inset-top) + 56px)" }}>
+        <button type="button" onClick={goBack} aria-label="Back" className="sr-only">
+          <ChevronLeft size={20} color={colors.text} />
         </button>
-        <span
-          className="font-bold text-center"
-          style={{ flex: 1, fontSize: 17, color: colors.text }}
-        >
-          {t("app.name") || "Mframapa"}
-        </span>
+        <div className="flex-1">
+          <p className="text-[20px] font-bold m-0" style={{ color: colors.text }}>
+            {t("screen.heatmap.title")}
+          </p>
+          <p className="text-[13px] m-0" style={{ color: colors.subtext }}>
+            {loading ? "Loading today's readings…" : `${cities.length} cities · today`}
+          </p>
+        </div>
         <button
-          type="button"
-          className="flex items-center justify-center"
-          style={{ padding: 10 }}
-          aria-label="More options"
+          type="button" onClick={load} aria-label="Refresh"
+          className="w-9 h-9 rounded-full flex items-center justify-center active:opacity-60"
+          style={{ backgroundColor: colors.surface, border: `1px solid ${colors.border}` }}
         >
-          <MoreHorizontal size={22} color={colors.subtext} />
+          <RefreshCw size={16} color={colors.subtext} />
         </button>
       </div>
 
-      {/* Filter tabs */}
-      <div className="flex" style={{ paddingLeft: 16, paddingRight: 16, gap: 8, marginBottom: 10 }}>
-        {FILTER_KEYS.map(({ key, tKey }) => (
-          <button
-            key={key}
-            type="button"
-            onClick={() => setFilter(key)}
-            className="transition-colors"
-            style={{
-              borderRadius: 999,
-              paddingLeft: 18,
-              paddingRight: 18,
-              paddingTop: 8,
-              paddingBottom: 8,
-              fontSize: 14,
-              fontWeight: 600,
-              backgroundColor: filter === key ? colors.text : "transparent",
-              color: filter === key ? colors.bg : colors.text,
-              border: filter === key ? "none" : `1px solid ${colors.border}`,
-              cursor: "pointer",
-            }}
-          >
-            {t(tKey)}
-          </button>
+      {/* filters */}
+      <div className="flex gap-2 px-4 mt-3">
+        {FILTER_KEYS.map((f) => {
+          const active = filter === f.key;
+          return (
+            <button
+              key={f.key}
+              type="button"
+              onClick={() => setFilter(f.key)}
+              className="px-3 py-1.5 rounded-full text-[13px] font-semibold active:opacity-70"
+              style={{
+                backgroundColor: active ? "#00C896" : colors.surface,
+                color: active ? "#00110B" : colors.subtext,
+                border: `1px solid ${active ? "#00C896" : colors.border}`,
+              }}
+            >
+              {t(f.tKey)}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* map */}
+      <div
+        className="mx-4 mt-3 rounded-2xl overflow-hidden relative"
+        style={{ flex: 1, minHeight: 340, border: `1px solid ${colors.border}`, backgroundColor: colors.surface }}
+      >
+        {error ? (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-6 text-center">
+            <p className="text-[14px] m-0" style={{ color: colors.subtext }}>{error}</p>
+            <button
+              type="button" onClick={load}
+              className="px-4 py-2 rounded-full text-[13px] font-semibold"
+              style={{ backgroundColor: "#00C896", color: "#00110B" }}
+            >
+              Try again
+            </button>
+          </div>
+        ) : !MAPBOX_TOKEN ? (
+          <div className="absolute inset-0 flex items-center justify-center px-6 text-center">
+            <p className="text-[13px] m-0" style={{ color: colors.subtext }}>
+              Map unavailable on this build.
+            </p>
+          </div>
+        ) : (
+          <Suspense fallback={<div className="absolute inset-0" style={{ backgroundColor: colors.surface }} />}>
+            <MapCanvas
+              viewState={viewState}
+              onMove={(e) => setViewState(e.viewState)}
+              mapboxToken={MAPBOX_TOKEN}
+              isDark={isDark ?? true}
+              cities={markers}
+              onMarkerClick={(city) =>
+                navigate("cityDetail", { city: { name: city.name, lat: city.lat, lon: city.lon } })
+              }
+            />
+          </Suspense>
+        )}
+      </div>
+
+      {/* legend */}
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 mt-3">
+        {LEGEND_STOPS.map((s) => (
+          <div key={s.label} className="flex items-center gap-1.5">
+            <span className="block w-2.5 h-2.5 rounded-full" style={{ backgroundColor: s.color }} />
+            <span className="text-[12px]" style={{ color: colors.subtext }}>{s.label}</span>
+          </div>
         ))}
       </div>
 
-      {/* Map placeholder — mirrors mobile AfricaMapView */}
-      <div
-        style={{
-          flex: 1,
-          marginLeft: 16,
-          marginRight: 16,
-          borderRadius: 16,
-          overflow: "hidden",
-          backgroundColor: isDark ? "#0e1420" : "#c8d6e0",
-          position: "relative",
-          minHeight: 320,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexDirection: "column",
-          gap: 8,
-        }}
-      >
-        {/* Dot grid representing heat markers */}
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            display: "flex",
-            flexWrap: "wrap",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 10,
-            padding: 24,
-            pointerEvents: "none",
-          }}
-        >
-          {heatMarkers.map((m) => {
-            const w = m.weight;
-            const r = 5 + w * 7;
-            const col = w >= 0.9
-              ? "#E53935"
-              : w >= 0.7
-              ? "#FF8C00"
-              : w >= 0.5
-              ? "#F5C518"
-              : "#00C896";
-            return (
-              <div
-                key={m.name}
-                title={m.name}
-                style={{
-                  width: r * 2,
-                  height: r * 2,
-                  borderRadius: "50%",
-                  backgroundColor: col,
-                  opacity: 0.75,
-                  boxShadow: `0 0 ${r * 2.5}px ${col}88`,
-                  flexShrink: 0,
-                }}
-              />
-            );
-          })}
+      {/* highest readings today — the actionable part of a continental view */}
+      {worst.length > 0 && (
+        <div className="px-4 mt-4 mb-6">
+          <p className="text-[13px] font-semibold mb-2" style={{ color: colors.subtext }}>
+            Highest today
+          </p>
+          <div className="flex flex-col gap-2">
+            {worst.map((c) => (
+              <button
+                key={c.name}
+                type="button"
+                onClick={() => navigate("cityDetail", { city: { name: c.name, lat: c.lat, lon: c.lon } })}
+                className="flex items-center justify-between rounded-xl px-4 py-3 active:opacity-70"
+                style={{ backgroundColor: colors.surface, border: `1px solid ${colors.border}` }}
+              >
+                <span className="flex items-center gap-2 text-[14px] font-medium" style={{ color: colors.text }}>
+                  <span className="block w-2.5 h-2.5 rounded-full" style={{ backgroundColor: getAQIColor(c.aqi_category) }} />
+                  {c.name}
+                </span>
+                <span className="text-[14px] font-semibold" style={{ color: getAQIColor(c.aqi_category) }}>
+                  {Math.round(c.pm25)} µg/m³
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
-        <span
-          className="text-[13px] font-semibold text-center"
-          style={{
-            color: "rgba(255,255,255,0.55)",
-            zIndex: 1,
-            backgroundColor: "rgba(0,0,0,0.35)",
-            borderRadius: 8,
-            padding: "4px 10px",
-          }}
-        >
-          Interactive map — requires Mapbox
-        </span>
-      </div>
-
-      {/* Legend */}
-      <div
-        style={{
-          backgroundColor: colors.card,
-          borderRadius: 16,
-          padding: 14,
-          gap: 8,
-          marginLeft: 16,
-          marginRight: 16,
-          marginBottom: "max(0.75rem, env(safe-area-inset-bottom))",
-          marginTop: 12,
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <span
-          className="text-[12px] font-semibold"
-          style={{ color: colors.subtext }}
-        >
-          {t("screen.heatmap.legend_title") || "Color Legend"}
-        </span>
-
-        {/* Gradient bar */}
-        <div
-          style={{
-            height: 14,
-            borderRadius: 7,
-            background: "linear-gradient(to right, #00C896, #7DCE57, #F5C518, #FF8C00, #E53935)",
-            width: "100%",
-          }}
-        />
-
-        {/* Labels */}
-        <div className="flex justify-between">
-          {LEGEND_STOPS.map(({ tKey, fallback }) => (
-            <span key={tKey} className="text-[10px]" style={{ color: colors.subtext }}>
-              {t(tKey) || fallback}
-            </span>
-          ))}
-        </div>
-      </div>
+      )}
     </div>
   );
 }

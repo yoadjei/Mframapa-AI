@@ -53,6 +53,7 @@ from backend.api.security import verify_and_rate_limit
 from backend.api.v1.batch import batch_router
 from backend.api.v1.payments import payments_router
 from backend.api.v1.analytics import analytics_router
+from backend.api.cities import MAJOR_CITIES as _PREWARM_CITIES
 from backend.alerts.daily import alerts_enabled, alerts_hour, run_daily_job
 from backend.alerts.scheduler import build_scheduler
 from backend.api.v1.router import router as v1_router
@@ -96,13 +97,6 @@ def get_feature_pipeline() -> FeaturePipeline:
 
 # major african cities pre-warmed into the feature cache on startup so first user
 # hits are instant (name, lat, lon).
-_PREWARM_CITIES = [
-    ("Lagos", 6.52, 3.38), ("Cairo", 30.04, 31.24), ("Kinshasa", -4.32, 15.31),
-    ("Johannesburg", -26.20, 28.04), ("Nairobi", -1.29, 36.82), ("Accra", 5.60, -0.19),
-    ("Addis Ababa", 9.03, 38.74), ("Dar es Salaam", -6.79, 39.21), ("Abidjan", 5.36, -4.01),
-    ("Cape Town", -33.92, 18.42), ("Casablanca", 33.57, -7.59), ("Khartoum", 15.50, 32.56),
-    ("Dakar", 14.72, -17.47), ("Kampala", 0.35, 32.58), ("Luanda", -8.84, 13.23),
-]
 
 
 def _prewarm_cache() -> None:

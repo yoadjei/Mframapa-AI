@@ -9,6 +9,7 @@ from fastapi import APIRouter, Depends, Query, HTTPException, Response, Request
 from pydantic import BaseModel, Field
 
 from backend.api.aqi import aqi_category_from_pm25
+from backend.api.cities import MAJOR_CITIES
 from backend.api.security import authenticate_or_anonymous, require_institutional
 from backend.cache.redis_cache import RedisCache
 from backend.services import gemini_client
@@ -136,6 +137,7 @@ def _cities() -> list:
 
 _INSIGHT_TTL = 30 * 24 * 3600   # guidance per category/language is effectively static
 _I18N_TTL = 60 * 24 * 3600      # a translated bundle only changes when we ship new copy
+_MAP_SUMMARY_TTL = 3 * 3600     # continental map refreshes a few times a day
 
 _STUB_INSIGHTS_EN = {
     "good": "Satellite-based estimate suggests favorable dispersion today.",
@@ -352,6 +354,43 @@ def predict(
     pipeline: FeaturePipeline = Depends(get_feature_pipeline),
 ) -> Dict[str, Any]:
     return compute_prediction(request, lat, lon, name, day, pipeline)
+
+
+@router.get("/map-summary")
+def map_summary(
+    request: Request,
+    pipeline: FeaturePipeline = Depends(get_feature_pipeline),
+) -> Dict[str, Any]:
+    """today's pm2.5 for the major cities, for the continental map.
+
+    one cached request instead of one per city: the client would otherwise burn its
+    whole anonymous rate-limit budget drawing a single screen. these cities are the
+    ones the startup pre-warm keeps hot, so this is served from cache.
+    """
+    day = dt_date.today().isoformat()
+    cache = RedisCache()
+    cache_key = f"map:summary:{day}"
+    hit = cache.get(cache_key)
+    if hit and hit.get("cities"):
+        return hit
+
+    cities: List[Dict[str, Any]] = []
+    for name, lat, lon in MAJOR_CITIES:
+        try:
+            prediction = compute_prediction(request, lat, lon, name, day, pipeline)
+        except Exception as e:                    # one bad city must not blank the map
+            logger.warning("map-summary: %s failed — %s", name, e)
+            continue
+        cities.append({
+            "name": name, "lat": lat, "lon": lon,
+            "pm25": prediction["pm25"],
+            "aqi_category": prediction["aqi_category"],
+        })
+
+    payload = {"day": day, "count": len(cities), "cities": cities}
+    if cities:
+        cache.set(cache_key, payload, _MAP_SUMMARY_TTL)
+    return payload
 
 
 class BatchLocation(BaseModel):

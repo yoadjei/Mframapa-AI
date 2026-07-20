@@ -11,6 +11,7 @@ export function MapCanvas({
   cities,
   selectedCity,
   liteMode,
+  onMarkerClick,
 }) {
   const markerLimit = liteMode ? 40 : 140;
   const markers = cities.slice(0, markerLimit);
@@ -35,8 +36,32 @@ export function MapCanvas({
       }}
     >
       {markers.map((city) => (
-        <Marker key={`${city.name}-${city.lat}`} longitude={city.lon} latitude={city.lat} anchor="center">
-          <span className="block h-2.5 w-2.5 rounded-full bg-emerald-400/90 shadow-[0_0_18px_rgba(16,185,129,0.7)]" />
+        <Marker
+          key={`${city.name}-${city.lat}`}
+          longitude={city.lon}
+          latitude={city.lat}
+          anchor="center"
+          onClick={onMarkerClick ? () => onMarkerClick(city) : undefined}
+        >
+          {/* a city carrying an aqi colour renders as a heat dot sized by severity;
+              otherwise it falls back to the plain locator dot used by the map tab. */}
+          {city.color ? (
+            <span
+              title={city.label ?? city.name}
+              style={{
+                display: "block",
+                width: city.size ?? 14,
+                height: city.size ?? 14,
+                borderRadius: "50%",
+                backgroundColor: city.color,
+                boxShadow: `0 0 18px ${city.color}`,
+                border: "1.5px solid rgba(255,255,255,0.65)",
+                cursor: onMarkerClick ? "pointer" : "default",
+              }}
+            />
+          ) : (
+            <span className="block h-2.5 w-2.5 rounded-full bg-emerald-400/90 shadow-[0_0_18px_rgba(16,185,129,0.7)]" />
+          )}
         </Marker>
       ))}
 
