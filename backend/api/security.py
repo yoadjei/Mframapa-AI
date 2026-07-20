@@ -23,14 +23,24 @@ from fastapi.security.http import HTTPAuthorizationCredentials, HTTPBearer
 from backend.api.auth import tier_for_api_key, verify_supabase_jwt
 
 # tier -> (limit, window_seconds)
+#
+# app screens fan out on mount (the playback and map screens fire several
+# requests at once), and in much of the continent a whole office, campus or
+# cafe shares one ip. a flat per-minute window turns both of those into 429s
+# for ordinary users. the user-facing tiers are therefore token buckets: the
+# limit below is the burst capacity, refilled at limit/window. bursts pass,
+# sustained scraping still stops, and the cost ceiling is the refill rate
+# rather than the burst.
 _TIER_LIMITS: Dict[str, Tuple[int, int]] = {
     "internal": (1000, 60),      # 1000/min
     "institutional": (100, 1),   # 100/sec, plus burst below
-    "researcher": (300, 60),     # 300/min — paid app users
-    "free": (60, 60),            # 60/min — signed-in app users
-    "anonymous": (30, 60),       # 30/min per ip — no account; cloudflare is the real edge guard
+    "researcher": (600, 60),     # burst 600, refills 600/min — paid app users
+    "free": (240, 60),           # burst 240, refills 240/min — signed-in app users
+    "anonymous": (120, 60),      # burst 120, refills 120/min per ip
 }
 _INSTITUTIONAL_BURST = 500       # token-bucket capacity for batch spikes
+# tiers whose traffic is human and bursty; the rest keep a strict window.
+_BURSTY_TIERS = ("anonymous", "free", "researcher")
 
 API_KEY_NAME = "X-API-Key"
 _api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
@@ -85,6 +95,8 @@ class RateLimiter:
         limit, window = _TIER_LIMITS[tier]
         if tier == "institutional":
             return self._token_bucket(key, _INSTITUTIONAL_BURST, limit / window)
+        if tier in _BURSTY_TIERS:
+            return self._token_bucket(key, limit, limit / window)
         return self._sliding_window(key, limit, window)
 
     def _sliding_window(self, key: str, limit: int, window: int) -> Tuple[bool, int]:
