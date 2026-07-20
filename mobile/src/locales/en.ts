@@ -59,6 +59,7 @@ const base: Record<string, string> = {
   'card.meta': '{{city}} · {{day}}, {{time}}',
 
   'search.title': 'Search',
+  'search.clear': 'Clear',
   'search.placeholder': 'Search African cities...',
   'search.city_placeholder': 'Search for a city',
   'search.locate': 'Use my location',
