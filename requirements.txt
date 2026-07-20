@@ -7,6 +7,10 @@
 requests>=2.31.0
 fastapi>=0.115.0
 uvicorn[standard]>=0.32.0
+# imported directly by our own modules, so pinned here rather than relied on as
+# a fastapi transitive that a future release could drop.
+pydantic>=2.0.0
+starlette>=0.40.0
 
 # ── Data I/O ──────────────────────────────────────────────────
 xarray>=2023.1.0
@@ -21,6 +25,12 @@ shapely>=2.0.0
 
 # ── Caching ───────────────────────────────────────────────────
 redis>=5.0.0            # Redis client (Upstash compatible)
+
+# ── Auth ──────────────────────────────────────────────────────
+# supabase token verification. the [crypto] extra pulls in cryptography, which
+# ES256/JWKS decoding needs. without this the api still starts and simply stops
+# recognising signed-in users, so it must stay declared.
+pyjwt[crypto]>=2.8.0
 
 # ── Environment ───────────────────────────────────────────────
 python-dotenv>=1.0.0
