@@ -9,7 +9,7 @@ from fastapi import APIRouter, Depends, Query, HTTPException, Response, Request
 from pydantic import BaseModel, Field
 
 from backend.api.aqi import aqi_category_from_pm25
-from backend.api.cities import MAJOR_CITIES
+from backend.api.cities import MAJOR_CITIES, PLAYBACK_CITIES
 from backend.api.security import authenticate_or_anonymous, require_institutional
 from backend.cache.redis_cache import RedisCache
 from backend.services import gemini_client
@@ -468,6 +468,49 @@ def history(
         "days": out,
     }
     if out:                                          # never cache a total outage
+        cache.set(cache_key, payload, _HISTORY_TTL)
+    return payload
+
+
+@router.get("/map-history")
+def map_history(
+    request: Request,
+    days: int = Query(_HISTORY_DAYS, ge=1, le=_MAX_HISTORY_DAYS),
+    pipeline: FeaturePipeline = Depends(get_feature_pipeline),
+) -> Dict[str, Any]:
+    """the whole playback window for the playback cities, in one cached payload.
+
+    the client would otherwise request each city separately, and every client
+    would pay to rebuild the same fixed window. the city set is fixed, so the
+    work is done once and the result is shared by everyone.
+    """
+    today = dt_date.today()
+    cache = RedisCache()
+    cache_key = f"map:history:{today.isoformat()}:{days}"
+    hit = cache.get(cache_key)
+    if hit and hit.get("cities"):
+        return hit
+
+    dates = [(today - timedelta(days=offset)).isoformat() for offset in range(days - 1, -1, -1)]
+    cities: List[Dict[str, Any]] = []
+    for name, lat, lon in PLAYBACK_CITIES:
+        rows: List[Dict[str, Any]] = []
+        for target in dates:
+            try:
+                prediction = compute_prediction(request, lat, lon, name, target, pipeline)
+            except Exception as e:
+                logger.warning("map-history: %s day=%s failed — %s", name, target, e)
+                continue
+            rows.append({
+                "date": target,
+                "pm25": prediction["pm25"],
+                "aqi_category": prediction["aqi_category"],
+            })
+        if rows:                    # a city we could not rebuild is left out entirely
+            cities.append({"name": name, "lat": lat, "lon": lon, "days": rows})
+
+    payload = {"start": dates[0], "end": dates[-1], "dates": dates, "cities": cities}
+    if cities:
         cache.set(cache_key, payload, _HISTORY_TTL)
     return payload
 
