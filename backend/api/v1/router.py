@@ -143,6 +143,11 @@ _MAP_SUMMARY_TTL = 3 * 3600     # continental map refreshes a few times a day
 _FORECAST_DAYS = 4
 _MAX_FORECAST_DAYS = 5
 _FORECAST_TTL = 3 * 3600
+# the archives behind the model are dependable for roughly the last month; beyond
+# that a 'playback' would have no inputs behind it, so the window stops there.
+_HISTORY_DAYS = 14
+_MAX_HISTORY_DAYS = 30
+_HISTORY_TTL = 6 * 3600         # past days only shift as archives settle
 
 _STUB_INSIGHTS_EN = {
     "good": "Satellite-based estimate suggests favorable dispersion today.",
@@ -413,6 +418,57 @@ def forecast(
     }
     if out:
         cache.set(cache_key, payload, _FORECAST_TTL)
+    return payload
+
+
+@router.get("/history")
+def history(
+    request: Request,
+    lat: float = Query(..., ge=-90, le=90),
+    lon: float = Query(..., ge=-180, le=180),
+    name: str = Query("Unknown"),
+    days: int = Query(_HISTORY_DAYS, ge=1, le=_MAX_HISTORY_DAYS),
+    pipeline: FeaturePipeline = Depends(get_feature_pipeline),
+) -> Dict[str, Any]:
+    """pm2.5 for the recent past, reconstructed by running the model on each day.
+
+    the satellite and reanalysis archives we depend on are reliable for the last
+    few weeks, so the window is capped there. going back further would mean
+    serving numbers with no inputs behind them. days we cannot reconstruct are
+    left out rather than interpolated, and the series runs oldest to newest so a
+    playback can scrub straight through it.
+    """
+    today = dt_date.today()
+    cache = RedisCache()
+    cache_key = f"history:{round(lat, 2)}:{round(lon, 2)}:{today.isoformat()}:{days}"
+    hit = cache.get(cache_key)
+    if hit and hit.get("days"):
+        return hit
+
+    out: List[Dict[str, Any]] = []
+    for offset in range(days - 1, -1, -1):          # oldest first, today last
+        target = (today - timedelta(days=offset)).isoformat()
+        try:
+            prediction = compute_prediction(request, lat, lon, name, target, pipeline)
+        except Exception as e:
+            logger.warning("history: %s day=%s failed — %s", name, target, e)
+            continue
+        out.append({
+            "date": target,
+            "days_ago": offset,
+            "pm25": prediction["pm25"],
+            "aqi_category": prediction["aqi_category"],
+            "uncertainty": prediction.get("uncertainty"),
+        })
+
+    payload = {
+        "location": {"name": name, "lat": lat, "lon": lon},
+        "start": (today - timedelta(days=days - 1)).isoformat(),
+        "end": today.isoformat(),
+        "days": out,
+    }
+    if out:                                          # never cache a total outage
+        cache.set(cache_key, payload, _HISTORY_TTL)
     return payload
 
 
