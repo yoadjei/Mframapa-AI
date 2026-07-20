@@ -30,7 +30,13 @@ logger = logging.getLogger(__name__)
 try:
     import jwt as _jwt
 except ImportError:                                  # pragma: no cover
+    # without this every token is ignored and signed-in users silently become
+    # anonymous — an outage that looks like working software, so say so loudly.
     _jwt = None
+    logging.getLogger(__name__).critical(
+        "PyJWT is not installed: supabase tokens cannot be verified and every "
+        "signed-in user will be treated as anonymous. install pyjwt[crypto]."
+    )
 
 _REGISTRY_PREFIX = "apikey:"
 _VALID_TIERS = {"free", "researcher", "institutional", "internal"}
