@@ -18,7 +18,7 @@ export default defineConfig({
         id: '/',
         name: 'Mframapa Air Quality',
         short_name: 'Mframapa',
-        description: 'Satellite-powered PM2.5 air quality for any city in Africa. Free, offline-ready, 27 languages.',
+        description: 'Daily air quality estimates and episode alerts for African cities. Free for everyone, works offline.',
         theme_color: '#06080d',
         background_color: '#06080d',
         start_url: '/',
