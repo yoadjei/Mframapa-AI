@@ -16,6 +16,7 @@ import { AfricaMapView, MapMarker } from '../components/AfricaMapView';
 import { getAQIColor } from '../theme/colors';
 import { useTranslation } from '../hooks/useTranslation';
 import { MframapaLogo } from '../components/MframapaLogo';
+import { getHistory, HistoryDay } from '../services/api';
 
 const PLAYBACK_CITIES = [
   { name: 'Accra', lat: 5.6, lon: -0.2 },
@@ -24,44 +25,13 @@ const PLAYBACK_CITIES = [
   { name: 'Nairobi', lat: -1.3, lon: 36.8 },
   { name: 'Kinshasa', lat: -4.3, lon: 15.3 }] as const;
 
-const AQI_CATEGORIES = [
-  'good',
-  'moderate',
-  'unhealthy for sensitive groups',
-  'unhealthy',
-  'very unhealthy'] as const;
+/** how far back we replay. the api caps this to what the archives can rebuild. */
+const HISTORY_DAYS = 14;
+/** one frame per day, slow enough to read the date as it changes. */
+const FRAME_MS = 700;
 
-const RANGE_START = new Date(2024, 0, 1);
-
-function endOfToday(): Date {
-  const now = new Date();
-  return new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
-}
-const PLAYBACK_DURATION_MS = 14_000;
-const TICK_MS = 80;
-/** Map marker updates are stepped to limit WebView reloads during playback. */
-const MARKER_STEPS = 36;
-
-function categoryAtProgress(cityIndex: number, progress: number): string {
-  const phase = cityIndex * 1.73 + 0.4;
-  const wave =
-    Math.sin(progress * Math.PI * 5 + phase) * 0.45 +
-    Math.cos(progress * Math.PI * 2.3 + phase * 0.6) * 0.35;
-  const normalized = (wave + 1) / 2;
-  const idx = Math.min(
-    AQI_CATEGORIES.length - 1,
-    Math.floor(normalized * AQI_CATEGORIES.length)
-  );
-  return AQI_CATEGORIES[idx];
-}
-
-function dateAtProgress(progress: number, rangeEnd: Date): Date {
-  const t = RANGE_START.getTime() + progress * (rangeEnd.getTime() - RANGE_START.getTime());
-  return new Date(t);
-}
-
-function formatPlaybackDate(date: Date, locale?: string): string {
-  return date.toLocaleDateString(locale, {
+function formatPlaybackDate(iso: string, locale?: string): string {
+  return new Date(iso).toLocaleDateString(locale, {
     month: 'long',
     day: 'numeric',
     year: 'numeric',
@@ -74,7 +44,10 @@ export function HistoricalPlaybackScreen() {
   const insets = useSafeAreaInsets();
   const { t, language } = useTranslation();
   const [playing, setPlaying] = useState(false);
-  const [progress, setProgress] = useState(0);
+  const [progress, setProgress] = useState(1);      // opens on today
+  const [series, setSeries] = useState<Record<string, HistoryDay[]>>({});
+  const [dates, setDates] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
   const trackWidthRef = useRef(0);
   const trackLeftRef = useRef(0);
   const trackRef = useRef<View>(null);
@@ -85,32 +58,26 @@ export function HistoricalPlaybackScreen() {
   playingRef.current = playing;
 
   const locale = language === 'en' ? undefined : language;
-  const rangeEnd = useMemo(() => endOfToday(), []);
 
-  const displayDate = useMemo(
-    () => formatPlaybackDate(dateAtProgress(progress, rangeEnd), locale),
-    [progress, locale, rangeEnd]
-  );
+  const lastIndex = Math.max(0, dates.length - 1);
+  const frame = Math.round(progress * lastIndex);
+  const displayDate = dates[frame] ? formatPlaybackDate(dates[frame], locale) : '—';
 
-  const markerProgress = useMemo(
-    () => Math.round(progress * MARKER_STEPS) / MARKER_STEPS,
-    [progress]
-  );
-
-  const markers: MapMarker[] = useMemo(
-    () =>
-      PLAYBACK_CITIES.map((city, i) => {
-        const category = categoryAtProgress(i, markerProgress);
-        return {
-          name: city.name,
-          lat: city.lat,
-          lon: city.lon,
-          color: getAQIColor(category),
-          weight: 0.25 + markerProgress * 0.5,
-        };
-      }),
-    [markerProgress]
-  );
+  const markers: MapMarker[] = useMemo(() => {
+    const day = dates[frame];
+    if (!day) return [];
+    return PLAYBACK_CITIES.flatMap((city) => {
+      const row = (series[city.name] ?? []).find((d) => d.date === day);
+      if (!row) return [];                 // a day we could not rebuild shows no dot
+      return [{
+        name: city.name,
+        lat: city.lat,
+        lon: city.lon,
+        color: getAQIColor(row.aqi_category),
+        weight: Math.max(0.2, Math.min(1, row.pm25 / 80)),
+      }];
+    });
+  }, [series, dates, frame]);
 
   const seekTo = useCallback((next: number) => {
     const clamped = Math.max(0, Math.min(1, next));
@@ -162,10 +129,33 @@ export function HistoricalPlaybackScreen() {
   ).current;
 
   useEffect(() => {
-    if (!playing) return;
+    let cancelled = false;
+    Promise.all(
+      PLAYBACK_CITIES.map((c) =>
+        getHistory(c.lat, c.lon, c.name, HISTORY_DAYS)
+          .then((days) => [c.name, days] as const)
+          .catch(() => [c.name, [] as HistoryDay[]] as const)   // one city must not blank the rest
+      )
+    ).then((entries) => {
+      if (cancelled) return;
+      // the timeline is the longest run any city returned; cities missing a day
+      // simply have no marker on it rather than an invented one.
+      const longest = entries.reduce<readonly HistoryDay[]>(
+        (best, [, days]) => (days.length > best.length ? days : best),
+        []
+      );
+      setSeries(Object.fromEntries(entries));
+      setDates(longest.map((d) => d.date));
+      setLoading(false);
+    });
+    return () => { cancelled = true; };
+  }, []);
+
+  useEffect(() => {
+    if (!playing || dates.length < 2) return;
 
     const interval = setInterval(() => {
-      const next = progressRef.current + TICK_MS / PLAYBACK_DURATION_MS;
+      const next = progressRef.current + 1 / lastIndex;
       if (next >= 1) {
         progressRef.current = 1;
         setProgress(1);
@@ -174,10 +164,10 @@ export function HistoricalPlaybackScreen() {
       }
       progressRef.current = next;
       setProgress(next);
-    }, TICK_MS);
+    }, FRAME_MS);
 
     return () => clearInterval(interval);
-  }, [playing]);
+  }, [playing, dates.length, lastIndex]);
 
   const togglePlay = useCallback(() => {
     if (playingRef.current) {
@@ -190,15 +180,8 @@ export function HistoricalPlaybackScreen() {
     setPlaying(true);
   }, [seekTo]);
 
-  const rangeStartLabel = useMemo(
-    () =>
-      RANGE_START.toLocaleDateString(locale, { month: 'short', year: 'numeric' }),
-    [locale]
-  );
-  const rangeEndLabel = useMemo(
-    () => rangeEnd.toLocaleDateString(locale, { month: 'short', year: 'numeric' }),
-    [locale, rangeEnd]
-  );
+  const rangeStartLabel = dates[0] ? formatPlaybackDate(dates[0], locale) : '';
+  const rangeEndLabel = dates[lastIndex] ? formatPlaybackDate(dates[lastIndex], locale) : '';
 
   return (
     <View style={[styles.root]}>
@@ -219,7 +202,9 @@ export function HistoricalPlaybackScreen() {
           styles.bottomPanel,
           { backgroundColor: isDark ? Colors.bgCard : '#fff', paddingBottom: insets.bottom + 16 }]}
       >
-        <Text style={[styles.dateText, { color: colors.text }]}>{displayDate}</Text>
+        <Text style={[styles.dateText, { color: colors.text }]}>
+          {loading ? t('common.loading') : displayDate}
+        </Text>
 
         <View
           ref={trackRef}
