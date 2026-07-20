@@ -1,14 +1,15 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import Svg, { Defs, LinearGradient as SvgLinear, Stop, Rect } from 'react-native-svg';
 import { useTheme } from '../hooks/useTheme';
-import { getColors } from '../theme';
+import { getColors, Colors } from '../theme';
 import { AfricaMapView, MapMarker } from '../components/AfricaMapView';
-import { AFRICAN_CITIES } from '../data/africanCities';
 import { useTranslation } from '../hooks/useTranslation';
+import { getMapSummary, MapSummaryCity } from '../services/api';
+import { getAQIColor } from '../theme/colors';
 
 const { width: W } = Dimensions.get('window');
 const MAP_W = W - 32;
@@ -16,17 +17,8 @@ const legendW = MAP_W - 24;
 
 type FilterType = 'All' | 'Good' | 'Unhealthy';
 
-function heatWeight(lat: number, lon: number): number {
-  if (lat > 22) return 0.92;
-  if (lat > 8 && lon > 28) return 0.78;
-  if (lat > 5 && lat < 18 && lon > -18 && lon < 25) return 0.55;
-  if (lat < -5) return 0.38;
-  return 0.48;
-}
-
-function categoryFromWeight(w: number): 'good' | 'unhealthy' {
-  return w >= 0.7 ? 'unhealthy' : 'good';
-}
+/** WHO's 24h guideline is 15 µg/m³; above the 'moderate' band we call it unhealthy. */
+const UNHEALTHY_PM25 = 35.4;
 
 export function AfricaHeatmapScreen() {
   const insets = useSafeAreaInsets();
@@ -35,6 +27,19 @@ export function AfricaHeatmapScreen() {
   const colors = getColors(isDark);
   const { t } = useTranslation();
   const [filter, setFilter] = useState<FilterType>('All');
+  const [cities, setCities] = useState<MapSummaryCity[]>([]);
+  const [error, setError] = useState<string | null>(null);
+
+  // one cached request for the whole continent — a per-city fan-out would burn
+  // the anonymous rate-limit budget on a single screen.
+  const load = useCallback(() => {
+    setError(null);
+    getMapSummary()
+      .then(setCities)
+      .catch(() => setError(t('map.load_failed')));
+  }, [t]);
+
+  useEffect(load, [load]);
 
   const filterKeys: Record<FilterType, string> = {
     All: 'screen.heatmap.filter_all',
@@ -43,16 +48,20 @@ export function AfricaHeatmapScreen() {
   };
 
   const heatMarkers: MapMarker[] = useMemo(() => {
-    const base = AFRICAN_CITIES.slice(0, 280).map((city) => {
-      const weight = heatWeight(city.lat, city.lon);
-      return { name: city.name, lat: city.lat, lon: city.lon, weight };
-    });
-    if (filter === 'All') return base;
-    return base.filter((m) => {
-      const cat = categoryFromWeight(m.weight ?? 0.4);
-      return filter === 'Good' ? cat === 'good' : cat === 'unhealthy';
-    });
-  }, [filter]);
+    const visible = cities.filter((c) =>
+      filter === 'All' ? true
+        : filter === 'Good' ? c.pm25 < UNHEALTHY_PM25
+        : c.pm25 >= UNHEALTHY_PM25
+    );
+    return visible.map((c) => ({
+      name: c.name,
+      lat: c.lat,
+      lon: c.lon,
+      color: getAQIColor(c.aqi_category),
+      // weight drives dot size, so it tracks the actual reading
+      weight: Math.max(0.2, Math.min(1, c.pm25 / 80)),
+    }));
+  }, [cities, filter]);
 
   const legendLabels = [
     'screen.heatmap.legend_cleaner',
@@ -88,7 +97,22 @@ export function AfricaHeatmapScreen() {
       </View>
 
       <View style={styles.mapWrap}>
-        <AfricaMapView variant="heatmap" markers={heatMarkers} isDark={isDark} liteMode onMapPress={() => {}} />
+        {error ? (
+          <View style={styles.mapMessage}>
+            <Text style={[styles.mapMessageText, { color: colors.subtext }]}>{error}</Text>
+            <TouchableOpacity onPress={load} style={styles.retryBtn}>
+              <Text style={styles.retryText}>{t('common.try_again')}</Text>
+            </TouchableOpacity>
+          </View>
+        ) : cities.length === 0 ? (
+          <View style={styles.mapMessage}>
+            <Text style={[styles.mapMessageText, { color: colors.subtext }]}>
+              {t('common.loading')}…
+            </Text>
+          </View>
+        ) : (
+          <AfricaMapView variant="heatmap" markers={heatMarkers} isDark={isDark} liteMode onMapPress={() => {}} />
+        )}
       </View>
 
       <View style={[styles.legend, { backgroundColor: colors.card, marginBottom: insets.bottom + 12 }]}>
@@ -129,4 +153,8 @@ const styles = StyleSheet.create({
   legendTitle: { fontSize: 12, fontWeight: '600' },
   legendLabels: { flexDirection: 'row', justifyContent: 'space-between' },
   legendLabel: { fontSize: 10 },
+  mapMessage: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12, paddingHorizontal: 24 },
+  mapMessageText: { fontSize: 13, textAlign: 'center' },
+  retryBtn: { backgroundColor: Colors.brandGreen, borderRadius: 999, paddingHorizontal: 16, paddingVertical: 8 },
+  retryText: { color: '#00110B', fontSize: 13, fontWeight: '600' },
 });
