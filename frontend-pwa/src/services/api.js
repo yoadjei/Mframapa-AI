@@ -105,3 +105,14 @@ export async function getForecast(lat, lon, name = "Unknown", days = 4) {
     throw new Error(normalizeError(error, "Could not load the forecast"));
   }
 }
+
+// recent past, oldest day first. the window is capped server-side to what the
+// archives can actually reconstruct — missing days come back omitted, not filled in.
+export async function getHistory(lat, lon, name = "Unknown", days = 14) {
+  try {
+    const response = await httpClient.get("/api/v1/history", { params: { lat, lon, name, days } });
+    return response.data?.days ?? [];
+  } catch (error) {
+    throw new Error(normalizeError(error, "Could not load the history"));
+  }
+}
