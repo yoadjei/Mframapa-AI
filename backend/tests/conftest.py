@@ -6,6 +6,9 @@ import os
 os.environ.setdefault("PREWARM_ON_START", "0")
 # key the suites authenticate with (matches the client fixture in test_api.py)
 os.environ.setdefault("MFRAMAPA_INTERNAL_KEY", "mframapa-internal-dev-key")
+# a real key in the developer's .env would otherwise make tests call gemini for
+# real — slow, billable, and it made the "no gemini" test depend on live quota.
+os.environ["GEMINI_API_KEY"] = ""
 
 import pytest
 
