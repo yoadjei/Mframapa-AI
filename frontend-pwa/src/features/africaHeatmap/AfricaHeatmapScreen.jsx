@@ -56,7 +56,7 @@ export function AfricaHeatmapScreen({ isDark }) {
     try {
       setCities(await getMapSummary());
     } catch (e) {
-      setError(e?.message ?? "Could not load the map");
+      setError(e?.message ?? t("map.load_failed"));
     } finally {
       setLoading(false);
     }
@@ -146,13 +146,13 @@ export function AfricaHeatmapScreen({ isDark }) {
               className="px-4 py-2 rounded-full text-[13px] font-semibold"
               style={{ backgroundColor: "#00C896", color: "#00110B" }}
             >
-              Try again
+              {t("common.try_again")}
             </button>
           </div>
         ) : !MAPBOX_TOKEN ? (
           <div className="absolute inset-0 flex items-center justify-center px-6 text-center">
             <p className="text-[13px] m-0" style={{ color: colors.subtext }}>
-              Map unavailable on this build.
+              {t("map.unavailable")}
             </p>
           </div>
         ) : (
@@ -185,7 +185,7 @@ export function AfricaHeatmapScreen({ isDark }) {
       {worst.length > 0 && (
         <div className="px-4 mt-4 mb-6">
           <p className="text-[13px] font-semibold mb-2" style={{ color: colors.subtext }}>
-            Highest today
+            {t("map.highest_today")}
           </p>
           <div className="flex flex-col gap-2">
             {worst.map((c) => (

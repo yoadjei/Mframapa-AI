@@ -44,7 +44,8 @@ export function HistoricalPlaybackScreen({ isDark }) {
   const [series, setSeries] = useState({});   // city name -> day rows, oldest first
   const [dates, setDates] = useState([]);     // shared timeline
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  // stored as a key, not a sentence, so it re-renders in the current language
+  const [errorKey, setErrorKey] = useState(null);
 
   const frameRef = useRef(0);
   const playingRef = useRef(false);
@@ -57,7 +58,7 @@ export function HistoricalPlaybackScreen({ isDark }) {
 
   const load = useCallback(() => {
     setLoading(true);
-    setError(null);
+    setErrorKey(null);
     Promise.all(
       PLAYBACK_CITIES.map((c) =>
         getHistory(c.lat, c.lon, c.name, HISTORY_DAYS)
@@ -76,9 +77,9 @@ export function HistoricalPlaybackScreen({ isDark }) {
         setSeries(byCity);
         setDates(longest.map((d) => d.date));
         setFrame(Math.max(0, longest.length - 1));   // open on today
-        if (longest.length === 0) setError("No history available right now.");
+        if (longest.length === 0) setErrorKey("screen.historical.empty");
       })
-      .catch(() => setError("Could not load the history."))
+      .catch(() => setErrorKey("screen.historical.load_failed"))
       .finally(() => setLoading(false));
   }, []);
 
@@ -162,21 +163,21 @@ export function HistoricalPlaybackScreen({ isDark }) {
           overflow: "hidden",
         }}
       >
-        {error ? (
+        {errorKey ? (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-6 text-center">
-            <p className="text-[14px] m-0" style={{ color: colors.subtext }}>{error}</p>
+            <p className="text-[14px] m-0" style={{ color: colors.subtext }}>{t(errorKey)}</p>
             <button
               type="button" onClick={load}
               className="px-4 py-2 rounded-full text-[13px] font-semibold"
               style={{ backgroundColor: Colors.brandGreen, color: "#00110B" }}
             >
-              Try again
+              {t("common.try_again")}
             </button>
           </div>
         ) : !MAPBOX_TOKEN ? (
           <div className="absolute inset-0 flex items-center justify-center px-6 text-center">
             <p className="text-[13px] m-0" style={{ color: colors.subtext }}>
-              Map unavailable on this build.
+              {t("map.unavailable")}
             </p>
           </div>
         ) : (
@@ -215,7 +216,7 @@ export function HistoricalPlaybackScreen({ isDark }) {
           className="font-extrabold text-center"
           style={{ fontSize: 24, color: colors.text, margin: 0 }}
         >
-          {loading ? "Loading history…" : displayDate}
+          {loading ? `${t("screen.historical.loading")}…` : displayDate}
         </p>
 
         <div style={{ width: "100%", paddingTop: 14, paddingBottom: 14 }}>

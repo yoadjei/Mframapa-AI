@@ -331,8 +331,7 @@ export function PredictionDashboardScreen({ isOnline, isDark, params }) {
             </div>
             {reducedConfidence && (
               <p style={{ fontSize: 12, color: colors.muted, marginTop: 8, marginBottom: 0 }}>
-                Air-quality inputs do not reach this far ahead, so this day is a
-                lower-confidence estimate.
+{t("screen.prediction_dashboard.reduced_confidence")}.
               </p>
             )}
 
