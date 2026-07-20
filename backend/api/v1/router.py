@@ -731,14 +731,13 @@ def register_push_token(body: PushTokenBody, store=Depends(get_push_store)) -> D
     """Register an Expo/Web Push token for AQI alert delivery using the configured store."""
     try:
         store.register(body.token, body.platform, body.lat, body.lon)
-    except Exception:
-        # fall back to an in-memory placeholder if the store fails
-        logger.exception("Push store failed, falling back to in-memory registration")
-        _push_tokens[body.token] = {
-            "platform": body.platform,
-            "lat": body.lat,
-            "lon": body.lon,
-            "registered_at": str(dt_date.today()),
-        }
+    except Exception as exc:
+        # telling the device it is registered when the token was not persisted is
+        # worse than failing: the user believes alerts are on and never hears from
+        # us again. a 503 lets the client retry on the next launch.
+        logger.exception("Push store failed for platform=%s", body.platform)
+        raise HTTPException(
+            status_code=503, detail="Could not register for alerts, please try again"
+        ) from exc
     logger.info("Push token registered: platform=%s lat=%s lon=%s", body.platform, body.lat, body.lon)
     return {"status": "registered"}
