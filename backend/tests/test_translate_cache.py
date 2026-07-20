@@ -75,3 +75,27 @@ def test_different_copy_gets_a_different_cache_key(monkeypatch):
     client.post("/api/v1/translate", json={**BODY, "strings": {"home.title": "New copy"}})
     keys = [k for k in cache.store if k.startswith("i18n:fr:")]
     assert len(keys) == 2                      # distinct bundles -> distinct keys
+
+
+def test_provider_failure_degrades_to_english_not_502(monkeypatch):
+    """a quota trip or outage must leave the ui readable, never break it.
+
+    the whole point of caching bundles is that a lapsed key or a traffic spike
+    cannot blank the interface, so this path returns source copy with
+    fallback=True rather than an error the client has to handle.
+    """
+    cache = FakeCache()
+    _patch(monkeypatch, cache)
+    monkeypatch.setattr(router.gemini_client, "is_available", lambda: True)
+
+    def rate_limited(*_a, **_k):
+        raise RuntimeError("429 Too Many Requests")
+
+    monkeypatch.setattr(router.gemini_client, "translate_strings", rate_limited)
+
+    r = client.post("/api/v1/translate", json=BODY)
+    assert r.status_code == 200
+    body = r.json()
+    assert body["fallback"] is True
+    assert body["translations"] == BODY["strings"]
+    assert cache.store == {}          # a failure must not poison the cache
