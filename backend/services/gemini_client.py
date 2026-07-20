@@ -84,9 +84,11 @@ def _generate_content(prompt: str, *, temperature: float = 0.2) -> str:
         "contents": [{"parts": [{"text": prompt}]}],
         "generationConfig": {"temperature": temperature},
     }
+    # the key goes in a header, not the query string: request errors quote the
+    # url, so a query-string key ends up in logs and sentry on every failure.
     resp = requests.post(
         url,
-        params={"key": _api_key()},
+        headers={"x-goog-api-key": _api_key()},
         json=payload,
         timeout=_TIMEOUT_SECONDS,
     )
