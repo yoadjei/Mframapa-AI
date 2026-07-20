@@ -175,11 +175,16 @@ def health(request: Request) -> Dict[str, Any]:
         redis_ok = RedisCache().is_available
     except Exception:
         redis_ok = False
+    # auth reports whether tokens can actually be verified. a missing jwt library
+    # does not crash anything, it just silently demotes every signed-in user to
+    # anonymous, so it has to be visible from outside the box.
+    from backend.api.auth import _jwt
     return {
         "status": "ok",
         "version": "v1",
         "models_loaded": len(models),
         "redis": bool(redis_ok),
+        "auth": _jwt is not None,
     }
 
 
