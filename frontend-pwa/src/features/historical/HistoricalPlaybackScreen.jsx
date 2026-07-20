@@ -1,9 +1,16 @@
-import { useState, useEffect, useRef, useMemo, useCallback } from "react";
-import { ArrowLeft, Info, Play, Pause } from "lucide-react";
+import { useState, useEffect, useRef, useMemo, useCallback, lazy, Suspense } from "react";
+import { ArrowLeft, Play, Pause } from "lucide-react";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { useNavigation } from "../../hooks/useNavigation.js";
 import { getColors, Colors, getAQIColor } from "../../utils/colors.js";
 import { MframapaLogo } from "../../components/brand/MframapaLogo.jsx";
+import { getHistory } from "../../services/api.js";
+
+const MapCanvas = lazy(() =>
+  import("../core/MapCanvas.jsx").then((m) => ({ default: m.MapCanvas }))
+);
+
+const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
 
 const PLAYBACK_CITIES = [
   { name: "Accra", lat: 5.6, lon: -0.2 },
@@ -13,45 +20,13 @@ const PLAYBACK_CITIES = [
   { name: "Kinshasa", lat: -4.3, lon: 15.3 },
 ];
 
-const AQI_CATEGORIES = [
-  "good",
-  "moderate",
-  "unhealthy for sensitive groups",
-  "unhealthy",
-  "very unhealthy",
-];
+/** how far back we replay. the api caps this to what the archives can rebuild. */
+const HISTORY_DAYS = 14;
+/** one frame per day, slow enough to read the date as it changes. */
+const FRAME_MS = 700;
 
-const RANGE_START = new Date(2024, 0, 1);
-const PLAYBACK_DURATION_MS = 14_000;
-const TICK_MS = 80;
-/** Map marker updates are stepped to limit redraws during playback. */
-const MARKER_STEPS = 36;
-
-function endOfToday() {
-  const now = new Date();
-  return new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
-}
-
-function categoryAtProgress(cityIndex, progress) {
-  const phase = cityIndex * 1.73 + 0.4;
-  const wave =
-    Math.sin(progress * Math.PI * 5 + phase) * 0.45 +
-    Math.cos(progress * Math.PI * 2.3 + phase * 0.6) * 0.35;
-  const normalized = (wave + 1) / 2;
-  const idx = Math.min(
-    AQI_CATEGORIES.length - 1,
-    Math.floor(normalized * AQI_CATEGORIES.length)
-  );
-  return AQI_CATEGORIES[idx];
-}
-
-function dateAtProgress(progress, rangeEnd) {
-  const t = RANGE_START.getTime() + progress * (rangeEnd.getTime() - RANGE_START.getTime());
-  return new Date(t);
-}
-
-function formatPlaybackDate(date, locale) {
-  return date.toLocaleDateString(locale, {
+function formatPlaybackDate(iso, locale) {
+  return new Date(iso).toLocaleDateString(locale, {
     month: "long",
     day: "numeric",
     year: "numeric",
@@ -60,98 +35,105 @@ function formatPlaybackDate(date, locale) {
 
 export function HistoricalPlaybackScreen({ isDark }) {
   const { t, language } = useTranslation();
-  const { goBack } = useNavigation();
+  const { goBack, navigate } = useNavigation();
   const colors = getColors(isDark ?? true);
+  const locale = language === "en" ? undefined : language;
 
   const [playing, setPlaying] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const progressRef = useRef(0);
-  const playingRef = useRef(false);
+  const [frame, setFrame] = useState(0);
+  const [series, setSeries] = useState({});   // city name -> day rows, oldest first
+  const [dates, setDates] = useState([]);     // shared timeline
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Keep refs in sync outside of render (avoids lint rule: no ref access during render)
-  useEffect(() => { progressRef.current = progress; });
+  const frameRef = useRef(0);
+  const playingRef = useRef(false);
+  useEffect(() => { frameRef.current = frame; });
   useEffect(() => { playingRef.current = playing; });
 
-  const locale = language === "en" ? undefined : language;
-  const rangeEnd = useMemo(() => endOfToday(), []);
+  const [viewState, setViewState] = useState({
+    longitude: 17, latitude: 3, zoom: 2.4,
+  });
 
-  const displayDate = useMemo(
-    () => formatPlaybackDate(dateAtProgress(progress, rangeEnd), locale),
-    [progress, locale, rangeEnd]
-  );
-
-  const markerProgress = useMemo(
-    () => Math.round(progress * MARKER_STEPS) / MARKER_STEPS,
-    [progress]
-  );
-
-  const markers = useMemo(
-    () =>
-      PLAYBACK_CITIES.map((city, i) => {
-        const category = categoryAtProgress(i, markerProgress);
-        return {
-          name: city.name,
-          lat: city.lat,
-          lon: city.lon,
-          color: getAQIColor(category),
-          weight: 0.25 + markerProgress * 0.5,
-        };
-      }),
-    [markerProgress]
-  );
-
-  const seekTo = useCallback((next) => {
-    const clamped = Math.max(0, Math.min(1, next));
-    progressRef.current = clamped;
-    setProgress(clamped);
+  const load = useCallback(() => {
+    setLoading(true);
+    setError(null);
+    Promise.all(
+      PLAYBACK_CITIES.map((c) =>
+        getHistory(c.lat, c.lon, c.name, HISTORY_DAYS)
+          .then((days) => [c.name, days])
+          .catch(() => [c.name, []])       // one city failing must not blank the rest
+      )
+    )
+      .then((entries) => {
+        const byCity = Object.fromEntries(entries);
+        // the timeline is the longest run of days any city came back with; days a
+        // city is missing simply have no dot rather than an invented one.
+        const longest = entries.reduce(
+          (best, [, days]) => (days.length > best.length ? days : best),
+          []
+        );
+        setSeries(byCity);
+        setDates(longest.map((d) => d.date));
+        setFrame(Math.max(0, longest.length - 1));   // open on today
+        if (longest.length === 0) setError("No history available right now.");
+      })
+      .catch(() => setError("Could not load the history."))
+      .finally(() => setLoading(false));
   }, []);
 
+  useEffect(load, [load]);
+
+  const markers = useMemo(() => {
+    const day = dates[frame];
+    if (!day) return [];
+    return PLAYBACK_CITIES.flatMap((city) => {
+      const row = (series[city.name] ?? []).find((d) => d.date === day);
+      if (!row) return [];
+      return [{
+        name: city.name,
+        lat: city.lat,
+        lon: city.lon,
+        color: getAQIColor(row.aqi_category),
+        size: Math.max(10, Math.min(34, 10 + row.pm25 * 0.35)),
+        label: `${city.name} — ${Math.round(row.pm25)} µg/m³`,
+      }];
+    });
+  }, [series, dates, frame]);
+
   useEffect(() => {
-    if (!playing) return;
+    if (!playing || dates.length === 0) return;
     const interval = setInterval(() => {
-      const next = progressRef.current + TICK_MS / PLAYBACK_DURATION_MS;
-      if (next >= 1) {
-        progressRef.current = 1;
-        setProgress(1);
+      const next = frameRef.current + 1;
+      if (next >= dates.length) {
         setPlaying(false);
         return;
       }
-      progressRef.current = next;
-      setProgress(next);
-    }, TICK_MS);
+      frameRef.current = next;
+      setFrame(next);
+    }, FRAME_MS);
     return () => clearInterval(interval);
-  }, [playing]);
+  }, [playing, dates.length]);
 
   const togglePlay = useCallback(() => {
-    if (playingRef.current) {
-      setPlaying(false);
-      return;
-    }
-    if (progressRef.current >= 1) seekTo(0);
+    if (playingRef.current) { setPlaying(false); return; }
+    if (frameRef.current >= dates.length - 1) setFrame(0);   // replay from the start
     setPlaying(true);
-  }, [seekTo]);
-
-  const rangeStartLabel = useMemo(
-    () => RANGE_START.toLocaleDateString(locale, { month: "short", year: "numeric" }),
-    [locale]
-  );
-  const rangeEndLabel = useMemo(
-    () => rangeEnd.toLocaleDateString(locale, { month: "short", year: "numeric" }),
-    [locale, rangeEnd]
-  );
+  }, [dates.length]);
 
   function handleScrubberInput(e) {
-    const val = parseFloat(e.target.value);
-    seekTo(val);
+    setFrame(parseInt(e.target.value, 10));
     if (playingRef.current) setPlaying(false);
   }
 
+  const lastIndex = Math.max(0, dates.length - 1);
+  const progress = lastIndex === 0 ? 1 : frame / lastIndex;
+  const displayDate = dates[frame] ? formatPlaybackDate(dates[frame], locale) : "—";
+
   return (
     <div style={{ minHeight: "100dvh", display: "flex", flexDirection: "column" }}>
-      {/* Safe area top */}
       <div style={{ height: "env(safe-area-inset-top)" }} />
 
-      {/* Header — back arrow left, logo centred, info icon right */}
       <div
         className="flex items-center justify-between"
         style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, zIndex: 2 }}
@@ -168,80 +150,51 @@ export function HistoricalPlaybackScreen({ isDark }) {
 
         <MframapaLogo size="sm" />
 
-        <button
-          type="button"
-          className="flex items-center justify-end"
-          style={{ width: 36 }}
-          aria-label={t("screen.historical.info") || "About historical playback"}
-        >
-          <Info size={22} color={colors.text} />
-        </button>
+        <div style={{ width: 36 }} />
       </div>
 
-      {/* Map area — mirrors mobile's flex:1 AfricaMapView area */}
       <div
         style={{
           flex: 1,
           position: "relative",
-          backgroundColor: isDark ? "#0e1420" : "#c8d6e0",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexDirection: "column",
+          backgroundColor: colors.surface,
           minHeight: 260,
           overflow: "hidden",
         }}
       >
-        {/* Animated marker dots — step-updated to match MARKER_STEPS */}
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            display: "flex",
-            flexWrap: "wrap",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 28,
-            padding: 32,
-            pointerEvents: "none",
-          }}
-        >
-          {markers.map((m) => {
-            const r = 8 + m.weight * 10;
-            return (
-              <div
-                key={m.name}
-                title={m.name}
-                style={{
-                  width: r * 2,
-                  height: r * 2,
-                  borderRadius: "50%",
-                  backgroundColor: m.color,
-                  opacity: 0.8,
-                  boxShadow: `0 0 ${r * 2.5}px ${m.color}99`,
-                  transition: "background-color 0.2s, box-shadow 0.2s",
-                  flexShrink: 0,
-                }}
-              />
-            );
-          })}
-        </div>
-        {/* Map overlay label */}
-        <span
-          className="text-[13px] font-semibold text-center"
-          style={{
-            color: "rgba(255,255,255,0.55)",
-            zIndex: 1,
-            backgroundColor: "rgba(0,0,0,0.35)",
-            borderRadius: 8,
-            padding: "4px 10px",
-          }}
-        >
-          Interactive map — requires Mapbox
-        </span>
+        {error ? (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-6 text-center">
+            <p className="text-[14px] m-0" style={{ color: colors.subtext }}>{error}</p>
+            <button
+              type="button" onClick={load}
+              className="px-4 py-2 rounded-full text-[13px] font-semibold"
+              style={{ backgroundColor: Colors.brandGreen, color: "#00110B" }}
+            >
+              Try again
+            </button>
+          </div>
+        ) : !MAPBOX_TOKEN ? (
+          <div className="absolute inset-0 flex items-center justify-center px-6 text-center">
+            <p className="text-[13px] m-0" style={{ color: colors.subtext }}>
+              Map unavailable on this build.
+            </p>
+          </div>
+        ) : (
+          <Suspense fallback={<div className="absolute inset-0" style={{ backgroundColor: colors.surface }} />}>
+            <MapCanvas
+              viewState={viewState}
+              onMove={(e) => setViewState(e.viewState)}
+              mapboxToken={MAPBOX_TOKEN}
+              isDark={isDark ?? true}
+              cities={markers}
+              onMarkerClick={(city) =>
+                navigate("cityDetail", { city: { name: city.name, lat: city.lat, lon: city.lon } })
+              }
+            />
+          </Suspense>
+        )}
       </div>
 
-      {/* Bottom panel — mirrors mobile's bottomPanel */}
       <div
         style={{
           backgroundColor: isDark ? "#171E28" : "#ffffff",
@@ -258,15 +211,13 @@ export function HistoricalPlaybackScreen({ isDark }) {
           alignItems: "center",
         }}
       >
-        {/* Date display */}
         <p
           className="font-extrabold text-center"
           style={{ fontSize: 24, color: colors.text, margin: 0 }}
         >
-          {displayDate}
+          {loading ? "Loading history…" : displayDate}
         </p>
 
-        {/* Scrubber — custom styled range input */}
         <div style={{ width: "100%", paddingTop: 14, paddingBottom: 14 }}>
           <div
             style={{
@@ -277,7 +228,6 @@ export function HistoricalPlaybackScreen({ isDark }) {
               backgroundColor: colors.border,
             }}
           >
-            {/* Fill */}
             <div
               style={{
                 position: "absolute",
@@ -289,7 +239,6 @@ export function HistoricalPlaybackScreen({ isDark }) {
                 borderRadius: 3,
               }}
             />
-            {/* Thumb — positioned via absolute left */}
             <div
               style={{
                 position: "absolute",
@@ -304,14 +253,14 @@ export function HistoricalPlaybackScreen({ isDark }) {
                 pointerEvents: "none",
               }}
             />
-            {/* Invisible range input on top for interaction */}
             <input
               type="range"
               min="0"
-              max="1"
-              step="0.001"
-              value={progress}
+              max={lastIndex}
+              step="1"
+              value={frame}
               onChange={handleScrubberInput}
+              disabled={dates.length === 0}
               aria-label={t("screen.historical.scrubber") || "Timeline position"}
               style={{
                 position: "absolute",
@@ -326,20 +275,19 @@ export function HistoricalPlaybackScreen({ isDark }) {
           </div>
         </div>
 
-        {/* Range labels */}
         <div className="flex justify-between" style={{ width: "100%" }}>
           <span className="text-[12px]" style={{ color: colors.subtext }}>
-            {rangeStartLabel}
+            {dates[0] ? formatPlaybackDate(dates[0], locale) : ""}
           </span>
           <span className="text-[12px]" style={{ color: colors.subtext }}>
-            {rangeEndLabel}
+            {dates[lastIndex] ? formatPlaybackDate(dates[lastIndex], locale) : ""}
           </span>
         </div>
 
-        {/* Play/Pause button */}
         <button
           type="button"
           onClick={togglePlay}
+          disabled={dates.length === 0}
           className="flex items-center justify-center transition-transform active:scale-90"
           style={{
             width: 56,
@@ -347,7 +295,8 @@ export function HistoricalPlaybackScreen({ isDark }) {
             borderRadius: 28,
             backgroundColor: Colors.brandGreen,
             border: "none",
-            cursor: "pointer",
+            cursor: dates.length === 0 ? "default" : "pointer",
+            opacity: dates.length === 0 ? 0.5 : 1,
           }}
           aria-label={playing ? t("screen.historical.pause") : t("screen.historical.play")}
         >
