@@ -1,25 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MapPin, BarChart3, TrendingUp, TrendingDown } from "lucide-react";
 import { useAppState } from "../../state/appState.jsx";
 import { useNavigation } from "../../hooks/useNavigation.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { getColors, Colors, getAQIColor } from "../../utils/colors.js";
+import { getForecast } from "../../services/api.js";
 
-const RANGE_KEYS = ["24h", "48h", "7d"];
-const RANGE_MULTIPLIERS = { "24h": 1.0, "48h": 1.25, "7d": 1.6 };
 
-// Synthesize a sparkline series around a base PM2.5 reading
-function synthSeries(mid, seed = 0, count = 12) {
-  const out = [];
-  for (let i = 0; i < count; i++) {
-    const phase = seed * 0.7;
-    const wave =
-      Math.sin(i * 0.8 + phase) * (mid * 0.22) +
-      Math.cos(i * 0.4 + phase * 1.3) * (mid * 0.12);
-    out.push(Math.max(0, Math.round(mid + wave)));
-  }
-  return out;
-}
 
 function SparklineBar({ values, color, height = 80 }) {
   if (!values || values.length === 0) return null;
@@ -120,7 +107,7 @@ export function PredictionDashboardScreen({ isOnline, isDark, params }) {
   const { t } = useTranslation();
   const colors = getColors(isDark ?? true);
 
-  const [range, setRange] = useState("24h");
+  const [range, setRange] = useState(0);
 
   // params.prediction is a PredictionResult passed when navigating here.
   // Fall back to homeSummary when no explicit prediction is provided.
@@ -146,28 +133,45 @@ export function PredictionDashboardScreen({ isOnline, isDark, params }) {
         }
       : null);
 
+  // real multi-day outlook from the api. the horizon is whatever our inputs
+  // genuinely cover, so there is nothing to synthesise here.
+  const [forecast, setForecast] = useState([]);
+  const lat = pred?.location?.lat;
+  const lon = pred?.location?.lon;
+
+  useEffect(() => {
+    if (lat == null || lon == null) { setForecast([]); return; }
+    let cancelled = false;
+    getForecast(lat, lon, pred?.location?.name ?? "Unknown")
+      .then((days) => { if (!cancelled) setForecast(days); })
+      .catch(() => { if (!cancelled) setForecast([]); });
+    return () => { cancelled = true; };
+  }, [lat, lon, pred?.location?.name]);
+
+  // the selected day drives the numbers; index 0 is today
+  const dayIndex = Math.min(range, Math.max(0, forecast.length - 1));
+  const selected = forecast[dayIndex] ?? null;
+
   const derivedBand = (() => {
-    if (!pred) return null;
-    const mid = pred.pm25;
-    const halfBand =
-      (pred.uncertainty.pm25_upper - pred.uncertainty.pm25_lower) / 2;
-    const m = RANGE_MULTIPLIERS[range];
+    const source = selected ?? pred;
+    if (!source) return null;
+    const u = source.uncertainty ?? {};
     return {
-      high: Math.max(0, Math.round(mid + halfBand * m)),
-      low: Math.max(0, Math.round(mid - halfBand * m)),
-      mid: Math.round(mid),
+      high: Math.max(0, Math.round(u.pm25_upper ?? source.pm25)),
+      low: Math.max(0, Math.round(u.pm25_lower ?? source.pm25)),
+      mid: Math.round(source.pm25),
     };
   })();
 
-  const series = pred ? synthSeries(pred.pm25, 1, 14) : [];
-  const aqiColor = pred ? getAQIColor(pred.aqi_category) : Colors.brandGreen;
+  const series = forecast.map((d) => Math.round(d.pm25));
+  const aqiColor = getAQIColor((selected ?? pred)?.aqi_category);
   const factors = pred?.factors ?? [];
 
-  const rangeLabels = [
-    t("screen.prediction.range_24h"),
-    t("screen.prediction.range_48h"),
-    t("screen.prediction.range_7d"),
-  ];
+  // labels reflect the real days we can forecast, not fixed 24h/48h/7d claims
+  const rangeLabels = forecast.map((d, i) =>
+    i === 0 ? t("common.today") : new Date(d.date).toLocaleDateString(undefined, { weekday: "short" })
+  );
+  const reducedConfidence = selected?.inputs === "reduced";
 
   return (
     <div style={{ minHeight: "100dvh" }}>
@@ -302,11 +306,11 @@ export function PredictionDashboardScreen({ isOnline, isDark, params }) {
                 backgroundColor: colors.surface,
               }}
             >
-              {RANGE_KEYS.map((key, i) => (
+              {rangeLabels.map((label, i) => (
                 <button
-                  key={key}
+                  key={label + i}
                   type="button"
-                  onClick={() => setRange(key)}
+                  onClick={() => setRange(i)}
                   style={{
                     flex: 1,
                     paddingTop: 8,
@@ -317,14 +321,20 @@ export function PredictionDashboardScreen({ isOnline, isDark, params }) {
                     border: "none",
                     cursor: "pointer",
                     backgroundColor:
-                      range === key ? Colors.brandGreen : "transparent",
-                    color: range === key ? "#000" : colors.subtext,
+                      dayIndex === i ? Colors.brandGreen : "transparent",
+                    color: dayIndex === i ? "#000" : colors.subtext,
                   }}
                 >
-                  {rangeLabels[i]}
+                  {label}
                 </button>
               ))}
             </div>
+            {reducedConfidence && (
+              <p style={{ fontSize: 12, color: colors.muted, marginTop: 8, marginBottom: 0 }}>
+                Air-quality inputs do not reach this far ahead, so this day is a
+                lower-confidence estimate.
+              </p>
+            )}
 
             {/* Sparkline chart */}
             <div
@@ -361,7 +371,7 @@ export function PredictionDashboardScreen({ isOnline, isDark, params }) {
                   color: colors.muted,
                 }}
               >
-                <span>–{series.length - 1}h</span>
+                <span>{series.length ? `${series.length} days` : ""}</span>
                 <span>now</span>
               </div>
             </div>
