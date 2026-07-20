@@ -172,6 +172,18 @@ export async function getHistory(
   return data?.days ?? [];
 }
 
+export type MapHistory = {
+  dates: string[];
+  cities: { name: string; lat: number; lon: number; days: HistoryDay[] }[];
+};
+
+// the whole playback window in one cached request — asking per city would make
+// every client pay to rebuild the same fixed window.
+export async function getMapHistory(days = 14): Promise<MapHistory> {
+  const { data } = await client.get('/api/v1/map-history', { params: { days } });
+  return { dates: data?.dates ?? [], cities: data?.cities ?? [] };
+}
+
 export async function generateInsight(body: {
   pm25: number;
   aqi_category: string;

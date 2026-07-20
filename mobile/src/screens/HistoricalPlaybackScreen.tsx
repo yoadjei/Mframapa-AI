@@ -16,14 +16,7 @@ import { AfricaMapView, MapMarker } from '../components/AfricaMapView';
 import { getAQIColor } from '../theme/colors';
 import { useTranslation } from '../hooks/useTranslation';
 import { MframapaLogo } from '../components/MframapaLogo';
-import { getHistory, HistoryDay } from '../services/api';
-
-const PLAYBACK_CITIES = [
-  { name: 'Accra', lat: 5.6, lon: -0.2 },
-  { name: 'Lagos', lat: 6.5, lon: 3.4 },
-  { name: 'Cairo', lat: 30.1, lon: 31.2 },
-  { name: 'Nairobi', lat: -1.3, lon: 36.8 },
-  { name: 'Kinshasa', lat: -4.3, lon: 15.3 }] as const;
+import { getMapHistory, MapHistory } from '../services/api';
 
 /** how far back we replay. the api caps this to what the archives can rebuild. */
 const HISTORY_DAYS = 14;
@@ -45,7 +38,7 @@ export function HistoricalPlaybackScreen() {
   const { t, language } = useTranslation();
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(1);      // opens on today
-  const [series, setSeries] = useState<Record<string, HistoryDay[]>>({});
+  const [cities, setCities] = useState<MapHistory['cities']>([]);
   const [dates, setDates] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const trackWidthRef = useRef(0);
@@ -66,8 +59,8 @@ export function HistoricalPlaybackScreen() {
   const markers: MapMarker[] = useMemo(() => {
     const day = dates[frame];
     if (!day) return [];
-    return PLAYBACK_CITIES.flatMap((city) => {
-      const row = (series[city.name] ?? []).find((d) => d.date === day);
+    return cities.flatMap((city) => {
+      const row = city.days.find((d) => d.date === day);
       if (!row) return [];                 // a day we could not rebuild shows no dot
       return [{
         name: city.name,
@@ -77,7 +70,7 @@ export function HistoricalPlaybackScreen() {
         weight: Math.max(0.2, Math.min(1, row.pm25 / 80)),
       }];
     });
-  }, [series, dates, frame]);
+  }, [cities, dates, frame]);
 
   const seekTo = useCallback((next: number) => {
     const clamped = Math.max(0, Math.min(1, next));
@@ -130,24 +123,14 @@ export function HistoricalPlaybackScreen() {
 
   useEffect(() => {
     let cancelled = false;
-    Promise.all(
-      PLAYBACK_CITIES.map((c) =>
-        getHistory(c.lat, c.lon, c.name, HISTORY_DAYS)
-          .then((days) => [c.name, days] as const)
-          .catch(() => [c.name, [] as HistoryDay[]] as const)   // one city must not blank the rest
-      )
-    ).then((entries) => {
-      if (cancelled) return;
-      // the timeline is the longest run any city returned; cities missing a day
-      // simply have no marker on it rather than an invented one.
-      const longest = entries.reduce<readonly HistoryDay[]>(
-        (best, [, days]) => (days.length > best.length ? days : best),
-        []
-      );
-      setSeries(Object.fromEntries(entries));
-      setDates(longest.map((d) => d.date));
-      setLoading(false);
-    });
+    getMapHistory(HISTORY_DAYS)
+      .then((payload) => {
+        if (cancelled) return;
+        setCities(payload.cities);
+        setDates(payload.dates);
+        setLoading(false);
+      })
+      .catch(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
   }, []);
 
