@@ -76,3 +76,23 @@ def test_unknown_path_is_404():
 
 def test_method_not_allowed():
     assert client.post("/api/v1/predict?lat=5&lon=5", headers=KEY).status_code == 405
+
+
+def test_push_registration_failure_is_reported_not_swallowed():
+    """a device told 'registered' when nothing was stored never hears from us again.
+
+    the user believes alerts are on, so a 503 they can retry beats a false success.
+    """
+    from backend.api.v1 import router as v1_router
+
+    class BrokenStore:
+        def register(self, *_a, **_k):
+            raise RuntimeError("store down")
+
+    app.dependency_overrides[v1_router.get_push_store] = lambda: BrokenStore()
+    try:
+        r = client.post("/api/v1/register-push-token",
+                        json={"token": "ExponentPushToken[x]", "platform": "android"})
+        assert r.status_code == 503
+    finally:
+        app.dependency_overrides.pop(v1_router.get_push_store, None)
