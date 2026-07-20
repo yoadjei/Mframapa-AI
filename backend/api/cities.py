@@ -2,41 +2,78 @@
 
 one list, used by both the startup cache pre-warm and the /map-summary endpoint,
 so every city shown on the continental map is already cached and answers instantly.
-spread across north, west, east, central and southern africa.
+
+the list is derived from backend/data/african_cities.json rather than hand-typed:
+every country contributes its largest city first, so no country is a blank space
+on the map, and the rest is filled round-robin across regions. a hand-kept list
+had drifted to 22 cities clustered in a few countries, which is exactly what the
+map showed.
 """
 
-from typing import List, Tuple
+import json
+from itertools import cycle
+from typing import Dict, List, Tuple
+
+from ml.paths import repository_root
+
+_CITIES_PATH = repository_root() / "backend" / "data" / "african_cities.json"
+
+# every extra city costs one prediction on the startup pre-warm and on each
+# map-summary rebuild (every 3h), so this trades map coverage against warm-up
+# time. ~120 keeps all 55 countries plus the largest cities in each region.
+MAP_CITY_TARGET = 120
+
+
+def _load() -> List[Dict]:
+    with _CITIES_PATH.open(encoding="utf-8") as f:
+        return json.load(f)["cities"]
+
+
+def _build_map_cities(target: int = MAP_CITY_TARGET) -> List[Tuple[str, float, float]]:
+    """largest city of every country first, then round-robin across regions.
+
+    the file is grouped by region and ordered by size within each, so the first
+    occurrence of a country is its primary city. filling in file order instead
+    would spend most of the budget on the first region in the file.
+    """
+    cities = _load()
+
+    chosen: List[Dict] = []
+    picked = set()                          # identity by (name, country)
+
+    def take(c: Dict) -> None:
+        key = (c["name"], c["country"])
+        if key not in picked:
+            picked.add(key)
+            chosen.append(c)
+
+    seen_countries = set()
+    for c in cities:                        # one per country: full continental coverage
+        if c["country"] not in seen_countries:
+            seen_countries.add(c["country"])
+            take(c)
+
+    # remaining candidates per region, still ordered by size
+    by_region: Dict[str, List[Dict]] = {}
+    for c in cities:
+        if (c["name"], c["country"]) not in picked:
+            by_region.setdefault(c["region"], []).append(c)
+
+    regions = cycle(sorted(by_region))
+    exhausted = 0
+    while len(chosen) < target and exhausted < len(by_region):
+        bucket = by_region[next(regions)]
+        if bucket:
+            take(bucket.pop(0))
+            exhausted = 0
+        else:
+            exhausted += 1
+
+    return [(c["name"], float(c["lat"]), float(c["lon"])) for c in chosen[:target]]
+
 
 # (name, lat, lon)
-MAJOR_CITIES: List[Tuple[str, float, float]] = [
-    # west
-    ("Lagos", 6.52, 3.38),
-    ("Accra", 5.60, -0.19),
-    ("Abidjan", 5.36, -4.01),
-    ("Dakar", 14.72, -17.47),
-    ("Kano", 12.00, 8.59),
-    ("Bamako", 12.64, -8.00),
-    # north
-    ("Cairo", 30.04, 31.24),
-    ("Casablanca", 33.57, -7.59),
-    ("Algiers", 36.75, 3.06),
-    ("Khartoum", 15.50, 32.56),
-    # east
-    ("Nairobi", -1.29, 36.82),
-    ("Addis Ababa", 9.03, 38.74),
-    ("Dar es Salaam", -6.79, 39.21),
-    ("Kampala", 0.35, 32.58),
-    ("Kigali", -1.94, 29.87),
-    # central
-    ("Kinshasa", -4.32, 15.31),
-    ("Douala", 4.05, 9.77),
-    ("Luanda", -8.84, 13.23),
-    # southern
-    ("Johannesburg", -26.20, 28.04),
-    ("Cape Town", -33.92, 18.42),
-    ("Harare", -17.83, 31.03),
-    ("Lusaka", -15.42, 28.28),
-]
+MAJOR_CITIES: List[Tuple[str, float, float]] = _build_map_cities()
 
 # the timeline playback replays a fixed handful of cities, one per region. the
 # set is fixed on purpose: it lets the server reconstruct the window once and
