@@ -116,6 +116,62 @@ export async function getPrediction(
   return mapPrediction(data, name, lat, lon, insight);
 }
 
+export type ForecastDay = {
+  date: string;
+  day_offset: number;
+  pm25: number;
+  aqi_category: string;
+  uncertainty?: { pm25_lower?: number; pm25_upper?: number };
+  inputs: 'full' | 'reduced';
+};
+
+export type HistoryDay = {
+  date: string;
+  days_ago: number;
+  pm25: number;
+  aqi_category: string;
+  uncertainty?: { pm25_lower?: number; pm25_upper?: number };
+};
+
+export type MapSummaryCity = {
+  name: string;
+  lat: number;
+  lon: number;
+  pm25: number;
+  aqi_category: string;
+};
+
+// one cached request powering the continental map — a per-city fan-out would
+// burn the whole anonymous rate-limit budget on a single screen.
+export async function getMapSummary(): Promise<MapSummaryCity[]> {
+  const { data } = await client.get('/api/v1/map-summary');
+  return data?.cities ?? [];
+}
+
+// multi-day outlook. the horizon is capped server-side to the days our weather
+// and air-quality inputs actually cover, so this never invents numbers.
+export async function getForecast(
+  lat: number,
+  lon: number,
+  name = 'Unknown',
+  days = 4
+): Promise<ForecastDay[]> {
+  const { data } = await client.get('/api/v1/forecast', { params: { lat, lon, name, days } });
+  return data?.days ?? [];
+}
+
+// recent past, oldest day first. days the archives cannot reconstruct come back
+// omitted rather than filled in.
+export async function getHistory(
+  lat: number,
+  lon: number,
+  name = 'Unknown',
+  days = 14
+): Promise<HistoryDay[]> {
+  const { data } = await client.get('/api/v1/history', { params: { lat, lon, name, days } });
+  return data?.days ?? [];
+}
+
 export async function generateInsight(body: {
   pm25: number;
   aqi_category: string;
