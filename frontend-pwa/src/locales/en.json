@@ -678,5 +678,15 @@
   "activity.checked": "Checked {{city}}: {{pm25}} µg/m³",
   "notification.reading_title": "New reading for {{city}}",
   "notification.reading_message": "PM2.5 is {{pm25}} µg/m³ ({{category}}).",
-  "home.offline_banner": "You're offline. Showing saved data."
+  "home.offline_banner": "You're offline. Showing saved data.",
+  "common.today": "Today",
+  "common.loading": "Loading",
+  "common.try_again": "Try again",
+  "map.unavailable": "Map unavailable on this build",
+  "map.load_failed": "Could not load the map",
+  "map.highest_today": "Highest today",
+  "screen.historical.loading": "Loading history",
+  "screen.historical.empty": "No history available right now",
+  "screen.historical.load_failed": "Could not load the history",
+  "screen.prediction_dashboard.reduced_confidence": "Air quality inputs do not reach this far ahead, so this day is a lower confidence estimate"
 }
