@@ -20,7 +20,10 @@ from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
-_DEFAULT_DB = os.path.join(os.path.expanduser("~"), ".mframapa_analytics.db")
+# persisted on a mounted volume in production (MFRAMAPA_DATA_DIR) so retention
+# history survives container recreation; falls back to home for local dev / tests.
+_DATA_DIR = os.getenv("MFRAMAPA_DATA_DIR", os.path.expanduser("~"))
+_DEFAULT_DB = os.path.join(_DATA_DIR, ".mframapa_analytics.db")
 _KNOWN_EVENTS = {
     "app_open", "prediction_view", "search",
     "alert_received", "alert_opened", "offline_view",

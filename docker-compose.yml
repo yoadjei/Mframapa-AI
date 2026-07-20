@@ -24,9 +24,13 @@ services:
       # overrides whatever REDIS_URL is in .env — points at the compose redis service.
       REDIS_URL: redis://redis:6379
       WORKERS: "2"
+      # durable sqlite (push subscriptions + analytics) lives on the mounted volume.
+      MFRAMAPA_DATA_DIR: /data
     volumes:
       # swap in new model bundles without rebuilding the image.
       - ./ml/exports:/app/ml/exports:ro
+      # survives container recreation / redeploys.
+      - mframapa-data:/data
     depends_on:
       - redis
     restart: unless-stopped
@@ -45,3 +49,4 @@ services:
 
 volumes:
   redis-data:
+  mframapa-data:

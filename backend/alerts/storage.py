@@ -15,7 +15,10 @@ from typing import Any, Dict, List
 
 logger = logging.getLogger(__name__)
 
-_DEFAULT_DB = os.path.join(os.path.expanduser("~"), ".mframapa_push.db")
+# MFRAMAPA_DATA_DIR points at a mounted volume in production so subscriptions
+# survive container recreation; falls back to home for local dev / tests.
+_DATA_DIR = os.getenv("MFRAMAPA_DATA_DIR", os.path.expanduser("~"))
+_DEFAULT_DB = os.path.join(_DATA_DIR, ".mframapa_push.db")
 
 
 class PushTokenStore:
