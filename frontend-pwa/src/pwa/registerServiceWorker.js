@@ -1,11 +1,16 @@
 export async function registerServiceWorker() {
   if (!("serviceWorker" in navigator)) return;
 
-  // Reload once when a new service worker takes control (new build deployed).
-  // Guard prevents infinite reload if controllerchange fires more than once.
+  // controllerchange fires in two very different situations: a new build taking
+  // over from an old one, and the very first worker claiming a page that never
+  // had one. reloading is right for the first and wrong for the second — on a
+  // first visit it throws the user back to the start mid-flow. the page only had
+  // a previous controller in the update case, so that is what we key on.
+  const hadController = Boolean(navigator.serviceWorker.controller);
   let reloading = false;
+
   navigator.serviceWorker.addEventListener("controllerchange", () => {
-    if (reloading) return;
+    if (!hadController || reloading) return;
     reloading = true;
     window.location.reload();
   });
