@@ -12,18 +12,10 @@ import { useAppState } from "../../state/appState.jsx";
 import { useNavigation } from "../../hooks/useNavigation.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { getColors, Colors, getAQIColor } from "../../utils/colors.js";
-import { getPrediction } from "../../services/api.js";
+import { getPrediction, getHistory } from "../../services/api.js";
 
-// Synthesize a 7-point trend around a base PM2.5 reading (sparkline only)
-function synthSeries(mid, seed = 1) {
-  const out = [];
-  const phase = seed * 0.7;
-  for (let i = 0; i < 7; i++) {
-    const wave = Math.sin(i * 0.9 + phase) * (mid * 0.25);
-    out.push(Math.max(0, Math.round(mid + wave)));
-  }
-  return out;
-}
+/** days of real history behind each sparkline */
+const TREND_DAYS = 7;
 
 const CITY_COLORS = [Colors.brandGreen, "#2196F3", "#F5C518", "#E53935"];
 
@@ -184,7 +176,7 @@ function CityPicker({ slot, colors, onSelect, onClear, placeholder }) {
   );
 }
 
-function CityCard({ city, prediction, color, loading, index, colors, t }) {
+function CityCard({ city, prediction, series, color, loading, index, colors, t }) {
   if (!city) {
     return (
       <div
@@ -212,7 +204,6 @@ function CityCard({ city, prediction, color, loading, index, colors, t }) {
   const pm25 = prediction?.pm25 ?? null;
   const cat = prediction?.aqi_category ?? "—";
   const aqiColor = prediction ? getAQIColor(cat) : color;
-  const series = prediction ? synthSeries(pm25, index + 1) : [];
   const lower = prediction?.uncertainty?.pm25_lower?.toFixed(0) ?? "—";
   const upper = prediction?.uncertainty?.pm25_upper?.toFixed(0) ?? "—";
 
@@ -297,7 +288,13 @@ export function CompareCitiesScreen({ isOnline, isDark, params }) {
 
   const [cities, setCities] = useState([seedA, seedB]);
   const [predictions, setPredictions] = useState([null, null]);
+  // real last-week pm2.5 per slot — the sparklines are measured, not drawn
+  const [trends, setTrends] = useState([[], []]);
   const [loadingSlots, setLoadingSlots] = useState([false, false]);
+
+  function replaceAt(setter, index, value) {
+    setter((prev) => { const next = [...prev]; next[index] = value; return next; });
+  }
 
   // Fetch predictions for any seeded cities on mount
   useEffect(() => {
@@ -316,28 +313,34 @@ export function CompareCitiesScreen({ isOnline, isDark, params }) {
     if (city) {
       fetchForSlot(index, city);
     } else {
-      setPredictions((prev) => {
-        const next = [...prev];
-        next[index] = null;
-        return next;
-      });
+      replaceAt(setPredictions, index, null);
+      replaceAt(setTrends, index, []);
     }
   }
 
   function clearCity(index) {
-    setCities((prev) => { const next = [...prev]; next[index] = null; return next; });
-    setPredictions((prev) => { const next = [...prev]; next[index] = null; return next; });
+    replaceAt(setCities, index, null);
+    replaceAt(setPredictions, index, null);
+    replaceAt(setTrends, index, []);
   }
 
   async function fetchForSlot(index, city) {
-    setLoadingSlots((prev) => { const next = [...prev]; next[index] = true; return next; });
+    replaceAt(setLoadingSlots, index, true);
     try {
       const data = await getPrediction(city.lat, city.lon, city.name);
-      setPredictions((prev) => { const next = [...prev]; next[index] = data; return next; });
+      replaceAt(setPredictions, index, data);
     } catch {
       // leave null on transient failure
     } finally {
-      setLoadingSlots((prev) => { const next = [...prev]; next[index] = false; return next; });
+      replaceAt(setLoadingSlots, index, false);
+    }
+    // the trend is secondary to the reading, so it loads separately and an
+    // empty result just hides the sparkline rather than blocking the card.
+    try {
+      const days = await getHistory(city.lat, city.lon, city.name, TREND_DAYS);
+      replaceAt(setTrends, index, days.map((d) => Math.round(d.pm25)));
+    } catch {
+      replaceAt(setTrends, index, []);
     }
   }
 
@@ -345,6 +348,7 @@ export function CompareCitiesScreen({ isOnline, isDark, params }) {
     if (cities.length >= maxCities) return;
     setCities((prev) => [...prev, null]);
     setPredictions((prev) => [...prev, null]);
+    setTrends((prev) => [...prev, []]);
     setLoadingSlots((prev) => [...prev, false]);
   }
 
@@ -352,6 +356,7 @@ export function CompareCitiesScreen({ isOnline, isDark, params }) {
     if (cities.length <= 2) return;
     setCities((prev) => prev.filter((_, i) => i !== index));
     setPredictions((prev) => prev.filter((_, i) => i !== index));
+    setTrends((prev) => prev.filter((_, i) => i !== index));
     setLoadingSlots((prev) => prev.filter((_, i) => i !== index));
   }
 
@@ -466,6 +471,7 @@ export function CompareCitiesScreen({ isOnline, isDark, params }) {
                 key={i}
                 city={city}
                 prediction={predictions[i]}
+                series={trends[i] ?? []}
                 color={CITY_COLORS[i % CITY_COLORS.length]}
                 loading={loadingSlots[i]}
                 index={i}
@@ -481,6 +487,7 @@ export function CompareCitiesScreen({ isOnline, isDark, params }) {
                 key={i}
                 city={city}
                 prediction={predictions[i]}
+                series={trends[i] ?? []}
                 color={CITY_COLORS[i % CITY_COLORS.length]}
                 loading={loadingSlots[i]}
                 index={i}
