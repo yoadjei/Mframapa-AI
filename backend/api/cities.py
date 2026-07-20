@@ -37,3 +37,14 @@ MAJOR_CITIES: List[Tuple[str, float, float]] = [
     ("Harare", -17.83, 31.03),
     ("Lusaka", -15.42, 28.28),
 ]
+
+# the timeline playback replays a fixed handful of cities, one per region. the
+# set is fixed on purpose: it lets the server reconstruct the window once and
+# serve the same payload to everyone, instead of every client reconstructing it.
+PLAYBACK_CITIES: List[Tuple[str, float, float]] = [
+    ("Accra", 5.60, -0.19),
+    ("Lagos", 6.52, 3.38),
+    ("Cairo", 30.04, 31.24),
+    ("Nairobi", -1.29, 36.82),
+    ("Kinshasa", -4.32, 15.31),
+]
