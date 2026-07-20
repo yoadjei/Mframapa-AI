@@ -1,5 +1,5 @@
 import axios from "axios";
-import { SESSION_KEY } from "../state/appState.jsx";
+import { supabase } from "./supabase.js";
 
 const baseURL = import.meta.env.VITE_API_URL || "";
 
@@ -17,10 +17,16 @@ export const httpClient = axios.create({
   },
 });
 
-httpClient.interceptors.request.use((config) => {
-  const token = sessionStorage.getItem(SESSION_KEY);
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+// take the token straight from supabase so it is always current (it refreshes
+// before expiry). anonymous visitors simply send no token — the api allows that
+// for core features, so nothing here should ever block an unauthenticated user.
+httpClient.interceptors.request.use(async (config) => {
+  try {
+    const { data } = (await supabase?.auth.getSession()) ?? { data: {} };
+    const token = data?.session?.access_token;
+    if (token) config.headers.Authorization = `Bearer ${token}`;
+  } catch {
+    /* not signed in — continue anonymously */
   }
   return config;
 });
@@ -32,7 +38,6 @@ httpClient.interceptors.response.use(
   (error) => {
     const original = error.config;
     if (error?.response?.status === 401 && original && !original._retriedAnon) {
-      sessionStorage.removeItem(SESSION_KEY);
       original._retriedAnon = true;
       if (original.headers) delete original.headers.Authorization;
       return httpClient(original);

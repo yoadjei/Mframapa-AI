@@ -10,6 +10,8 @@
 import { useState } from "react";
 import { ChevronLeft, Mail, Lock, User, Eye, EyeOff } from "lucide-react";
 import { useAppState } from "../../state/appState.jsx";
+import { login, signup } from "../../services/authService.js";
+import { normalizeError } from "../../services/httpClient.js";
 import { MframapaLogo } from "../../components/brand/MframapaLogo.jsx";
 import { PrimaryButton } from "../../components/ui/PrimaryButton.jsx";
 
@@ -99,9 +101,14 @@ function LoginView({ onAuth, onSignUp, onForgot }) {
     setError("");
     if (!email.trim() || !password) { setError("Please fill in all required fields."); return; }
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 600));
-    setLoading(false);
-    onAuth({ user: { fullName: email.split("@")[0], email }, token: "mock-token-" + Date.now(), tier: "free" });
+    try {
+      const result = await login({ email: email.trim(), password });
+      onAuth({ ...result, tier: "free" });
+    } catch (err) {
+      setError(normalizeError(err, "Could not sign in. Check your details and try again."));
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -176,15 +183,28 @@ function SignUpView({ onAuth, onBack }) {
   const [error, setError]                   = useState("");
   const [loading, setLoading]               = useState(false);
 
+  const [notice, setNotice] = useState("");
+
   async function handleSubmit(e) {
     e.preventDefault();
-    setError("");
+    setError(""); setNotice("");
     if (!fullName.trim() || !email.trim() || !password) { setError("Please fill in all required fields."); return; }
+    if (password.length < 6) { setError("Password must be at least 6 characters."); return; }
     if (password !== confirmPassword) { setError("Passwords do not match."); return; }
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 600));
-    setLoading(false);
-    onAuth({ user: { fullName: fullName.trim(), email }, token: "mock-token-" + Date.now(), tier: "free" });
+    try {
+      const result = await signup({ fullName: fullName.trim(), email: email.trim(), password });
+      if (result.pending) {
+        // email confirmation is on: do NOT pretend they're signed in
+        setNotice("Account created. Check your email to confirm, then sign in.");
+      } else {
+        onAuth({ ...result, tier: "free" });
+      }
+    } catch (err) {
+      setError(normalizeError(err, "Could not create your account. Please try again."));
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -228,6 +248,12 @@ function SignUpView({ onAuth, onBack }) {
           <p style={{ fontSize: 13, color: "#E53935", backgroundColor: "rgba(229,57,53,0.08)",
             borderRadius: 10, padding: "10px 14px", marginBottom: 12, marginTop: 0 }}>
             {error}
+          </p>
+        )}
+        {notice && (
+          <p style={{ fontSize: 13, color: GREEN, backgroundColor: "rgba(16,185,129,0.10)",
+            borderRadius: 10, padding: "10px 14px", marginBottom: 12, marginTop: 0 }}>
+            {notice}
           </p>
         )}
 

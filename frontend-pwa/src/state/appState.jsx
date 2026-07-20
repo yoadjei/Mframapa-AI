@@ -67,6 +67,23 @@ function appReducer(state, action) {
           email: action.payload.user?.email ?? state.profile.email,
         },
       };
+    case "RESTORE_SESSION":
+      // supabase restored a persisted session on load/refresh — sync app state so
+      // the user stays signed in across relaunches instead of bouncing to the start.
+      return {
+        ...state,
+        session: {
+          authenticated: true,
+          token: action.payload.token ?? null,
+          user: action.payload.user,
+          tier: action.payload.tier ?? state.session.tier ?? "free",
+        },
+        profile: {
+          ...state.profile,
+          fullName: action.payload.user?.fullName ?? state.profile.fullName,
+          email: action.payload.user?.email ?? state.profile.email,
+        },
+      };
     case "LOGOUT":
       return {
         ...state,

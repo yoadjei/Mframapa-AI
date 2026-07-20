@@ -37,17 +37,43 @@ export async function signup({ fullName, email, password }) {
   });
   if (error) throw new Error(error.message);
 
-  // Supabase returns a session immediately when email confirmation is disabled.
-  // If email confirmation is required, session is null — return a pending state.
-  const token = data.session?.access_token ?? `pending-${Date.now()}`;
+  // no session means email confirmation is required — the user is NOT signed in
+  // yet. never fabricate a token; surface a pending state so the ui asks them to
+  // confirm their email instead of pretending they're authenticated.
+  if (!data.session) {
+    return { pending: true, email: data.user?.email ?? email };
+  }
   return {
-    token,
+    token: data.session.access_token,
     user: {
       id: data.user.id,
       email: data.user.email,
-      fullName: fullName,
+      fullName,
     },
   };
+}
+
+// restore a persisted session on app start (supabase refreshes it if near expiry).
+export async function restoreSession() {
+  if (!supabase) return null;
+  const { data } = await supabase.auth.getSession();
+  const session = data.session;
+  if (!session) return null;
+  return {
+    token: session.access_token,
+    user: {
+      id: session.user.id,
+      email: session.user.email,
+      fullName: session.user.user_metadata?.full_name ?? session.user.email,
+    },
+  };
+}
+
+// notify on sign-in / sign-out (e.g. token refresh, logout in another tab).
+export function onAuthChange(handler) {
+  if (!supabase) return () => {};
+  const { data } = supabase.auth.onAuthStateChange((_event, session) => handler(session));
+  return () => data.subscription.unsubscribe();
 }
 
 export async function logout() {

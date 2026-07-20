@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { ChevronRight, Pencil, LogOut } from "lucide-react";
+import { ChevronRight, Pencil, LogOut, LogIn } from "lucide-react";
 import { useAppState } from "../../state/appState.jsx";
+import { logout } from "../../services/authService.js";
 import { useNavigation } from "../../hooks/useNavigation.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { getColors, Colors } from "../../utils/colors.js";
@@ -227,17 +228,30 @@ export function ProfileScreen({ isOnline, isDark }) {
           ))}
         </div>
 
-        {/* Sign out */}
+        {/* Sign in / sign out. air quality works without an account, so signing in
+            is an upgrade (saved places, alerts, sync) rather than a requirement. */}
         <div className="mt-8 mb-2 flex justify-center">
-          <button
-            type="button"
-            onClick={() => dispatch({ type: "LOGOUT" })}
-            className="flex items-center gap-2 text-[16px] font-medium active:opacity-60"
-            style={{ color: Colors.danger }}
-          >
-            <LogOut size={18} color={Colors.danger} />
-            {t("settings.sign_out")}
-          </button>
+          {state.session?.authenticated ? (
+            <button
+              type="button"
+              onClick={async () => { await logout().catch(() => undefined); dispatch({ type: "LOGOUT" }); }}
+              className="flex items-center gap-2 text-[16px] font-medium active:opacity-60"
+              style={{ color: Colors.danger }}
+            >
+              <LogOut size={18} color={Colors.danger} />
+              {t("settings.sign_out")}
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => navigate("auth")}
+              className="flex items-center gap-2 rounded-full px-5 py-2.5 text-[15px] font-semibold active:opacity-70"
+              style={{ backgroundColor: Colors.brandGreen, color: "#00110B" }}
+            >
+              <LogIn size={18} color="#00110B" />
+              Sign in to save places and get alerts
+            </button>
+          )}
         </div>
 
       </div>

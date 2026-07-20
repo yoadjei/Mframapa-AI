@@ -12,6 +12,7 @@ import { HomeScreen } from "../features/home/HomeScreen.jsx";
 import { PreviewGallery } from "../features/preview/PreviewGallery.jsx";
 import { preloadCityPack } from "../services/cityPackService.js";
 import { trackAppOpen } from "../services/analytics.js";
+import { restoreSession, onAuthChange } from "../services/authService.js";
 
 // ── Tab screens (loaded eagerly — they are the main experience) ─────────────
 // All screen files use named exports; .then() wraps them as the default export
@@ -161,6 +162,7 @@ const TAB_SCREENS = {
 };
 
 const STACK_SCREENS = {
+  auth:                AuthScreen,   // optional sign-in, opened from Profile
   cityDetail:          CityDetailScreen,
   healthRisk:          HealthRiskScreen,
   languageSelector:    LanguageSelectorScreen,
@@ -242,6 +244,36 @@ export function App() {
     trackAppOpen();
   }, []);
 
+  // supabase persists the session; restore it on load and follow sign-in/out so a
+  // signed-in user is not dropped back to the start screen on every relaunch.
+  useEffect(() => {
+    let cancelled = false;
+    restoreSession()
+      .then((restored) => {
+        if (!cancelled && restored) dispatch({ type: "RESTORE_SESSION", payload: restored });
+      })
+      .catch(() => undefined);
+
+    const unsubscribe = onAuthChange((s) => {
+      if (s?.access_token) {
+        dispatch({
+          type: "RESTORE_SESSION",
+          payload: {
+            token: s.access_token,
+            user: {
+              id: s.user?.id,
+              email: s.user?.email,
+              fullName: s.user?.user_metadata?.full_name ?? s.user?.email,
+            },
+          },
+        });
+      } else {
+        dispatch({ type: "LOGOUT" });
+      }
+    });
+    return () => { cancelled = true; unsubscribe(); };
+  }, [dispatch]);
+
   useEffect(() => {
     if (!session.authenticated || !isOnline) return;
     preloadCityPack().catch(() => undefined);
@@ -266,10 +298,11 @@ export function App() {
       <div style={{ position: "relative", zIndex: 1 }}>
         <NetworkBanner isOnline={isOnline} />
 
+        {/* air quality is free for everyone, so there is no sign-in wall: after
+            onboarding you land straight in the app. signing in is optional and
+            reached from Profile (it unlocks saved places, alerts and sync). */}
         {!onboardingComplete ? (
           <OnboardingScreen canInstall={canInstall} onInstall={promptInstall} />
-        ) : !session.authenticated ? (
-          <AuthScreen isOnline={isOnline} />
         ) : StackScreen ? (
           // Full-screen stack route — no tab bar, safe area insets handled by each screen
           <div style={{ minHeight: "100dvh", backgroundColor: isDark ? "#0A0D12" : "#F8FAFC" }}>
