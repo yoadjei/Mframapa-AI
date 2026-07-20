@@ -158,18 +158,24 @@ def _translate_chunk(
     target_language_name: Optional[str],
 ) -> Dict[str, str]:
     target_name = language_display_name(target_language, target_language_name)
-    source_name = language_display_name(source_language)
 
-    prompt = f"""Translate the following UI strings for a mobile air-quality app serving African users.
-Source language: {source_name} ({source_language})
-Target language: {target_name} ({target_language})
+    prompt = f"""You are a native {target_name} speaker localizing an air-quality health app used across Africa.
+Rewrite each English UI string in {target_name} ({target_language}) the way a fluent local speaker would actually say it.
 
-Rules:
-- Return ONLY valid JSON: an object with the exact same keys as the input.
-- Preserve placeholders like {{{{name}}}} unchanged.
-- Keep product name "Mframapa" untranslated.
-- Use natural, concise phrasing suitable for mobile UI.
-- Do not add or remove keys.
+Translate meaning, not words:
+- Sound natural and human, never like a literal machine translation. If a word-for-word version would feel stiff or foreign, rephrase it the way a local person would.
+- Use everyday, respectful register. Keep it short and clear for a small mobile screen.
+- Health guidance must stay accurate and actionable — a caregiver should immediately understand what to do.
+- Adapt phrasing to local usage where it helps comprehension, but do not invent facts or change numbers.
+
+Keep exactly as-is (do not translate):
+- Placeholders like {{{{name}}}}, {{{{pm25}}}}, {{{{category}}}}.
+- The product name "Mframapa".
+- Technical tokens: PM2.5, PM10, AQI, NO2, SO2, CO, µg/m³.
+
+Formatting:
+- Return ONLY valid JSON with the exact same keys as the input. Do not add, remove, or reorder keys.
+- Use simple punctuation. Do not use em dashes or en dashes; use a full stop or comma instead.
 
 Input JSON:
 {json.dumps(strings, ensure_ascii=False, indent=2)}

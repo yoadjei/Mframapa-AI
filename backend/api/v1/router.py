@@ -1,3 +1,4 @@
+import hashlib
 import json
 from datetime import date as dt_date
 from functools import lru_cache
@@ -134,6 +135,7 @@ def _cities() -> list:
         return json.load(f)["cities"]
 
 _INSIGHT_TTL = 30 * 24 * 3600   # guidance per category/language is effectively static
+_I18N_TTL = 60 * 24 * 3600      # a translated bundle only changes when we ship new copy
 
 _STUB_INSIGHTS_EN = {
     "good": "Satellite-based estimate suggests favorable dispersion today.",
@@ -412,9 +414,23 @@ class TranslateBody(BaseModel):
 
 @router.post("/translate")
 def translate_ui_strings(body: TranslateBody) -> Dict[str, Any]:
-    """Translate UI string bundles via Gemini (cached server-side when configured)."""
+    """Translate UI string bundles via Gemini, cached in redis by bundle+language.
+
+    the bundle changes only when we ship new copy, so each language is translated
+    once and then served from redis — persistent across restarts and cheap under
+    load, so a lapsed api key or a traffic spike never blocks the ui.
+    """
     if body.target_language.lower() == body.source_language.lower():
         return {"translations": body.strings, "fallback": False, "provider": "none"}
+
+    cache = RedisCache()
+    digest = hashlib.sha1(
+        json.dumps(body.strings, sort_keys=True, ensure_ascii=False).encode()
+    ).hexdigest()[:16]
+    cache_key = f"i18n:{body.target_language.lower()}:{digest}"
+    hit = cache.get(cache_key)
+    if hit and hit.get("translations"):
+        return {"translations": hit["translations"], "fallback": False, "provider": "cache"}
 
     if not gemini_client.is_available():
         return {"translations": body.strings, "fallback": True, "provider": "none"}
@@ -430,6 +446,7 @@ def translate_ui_strings(body: TranslateBody) -> Dict[str, Any]:
         logger.warning("Gemini translate failed: %s", exc)
         raise HTTPException(status_code=502, detail="Translation service unavailable") from exc
 
+    cache.set(cache_key, {"translations": translations}, _I18N_TTL)
     return {"translations": translations, "fallback": False, "provider": "gemini"}
 
 
