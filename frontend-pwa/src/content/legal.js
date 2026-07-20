@@ -7,7 +7,8 @@ export const LEGAL_SECTIONS = [
 What we collect
 • Location coordinates when you tap "Check now", search for a city, or interact with the map — used only to fetch air-quality estimates for that point.
 • App preferences such as theme, language, and notification settings — stored on your device.
-• Anonymous usage events (screen views, prediction requests) if analytics are enabled — never sold to third parties.
+• Anonymous usage events (screen views, prediction requests) tied only to a random device identifier, never to your name or account — never sold to third parties.
+• If you turn on air-quality alerts, a push notification token and the approximate area you want alerts for, so we can notify you about pollution episodes nearby. You can turn alerts off at any time.
 
 What we do not collect
 • We do not require an account for basic use.
