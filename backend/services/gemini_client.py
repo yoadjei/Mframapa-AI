@@ -176,6 +176,9 @@ Keep exactly as-is (do not translate):
 Formatting:
 - Return ONLY valid JSON with the exact same keys as the input. Do not add, remove, or reorder keys.
 - Use simple punctuation. Do not use em dashes or en dashes; use a full stop or comma instead.
+- Give ONLY the translated text. Never keep the English wording alongside it, and never add a
+  gloss, transliteration or explanation in brackets. "Lite mode (mapu achepetsedwa)" is wrong;
+  "mapu achepetsedwa" is right.
 
 Input JSON:
 {json.dumps(strings, ensure_ascii=False, indent=2)}
@@ -189,8 +192,24 @@ Input JSON:
     out: Dict[str, str] = {}
     for key, value in strings.items():
         translated = parsed.get(key)
-        out[key] = str(translated) if translated is not None else value
+        out[key] = _strip_source_echo(str(translated), value) if translated is not None else value
     return out
+
+
+def _strip_source_echo(translated: str, source: str) -> str:
+    """drop an english echo the model sometimes leaves in, e.g.
+    "Lite mode (mapu achepetsedwa)" -> "mapu achepetsedwa". only fires when one
+    side matches the source exactly, so real bracketed content is preserved."""
+    match = re.match(r"^\s*(.+?)\s*\(([^()]+)\)\s*\.?\s*$", translated)
+    if not match:
+        return translated
+    head, inner = match.group(1).strip(), match.group(2).strip()
+    src = source.strip().rstrip(".").casefold()
+    if head.rstrip(".").casefold() == src and inner:
+        return inner
+    if inner.rstrip(".").casefold() == src and head:
+        return head
+    return translated
 
 
 def translate_strings(

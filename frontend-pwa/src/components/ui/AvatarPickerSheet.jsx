@@ -11,6 +11,14 @@ export function naviiUrl(seed, size = 96) {
   return `https://api.navii.dev/avatar/${encodeURIComponent(seed)}.png?size=${size}&background=none`;
 }
 
+// everyone gets an avatar without having to pick one. the same key always maps to
+// the same face, so it stays stable across sessions and devices.
+export function defaultSeedFor(key = "") {
+  let hash = 0;
+  for (let i = 0; i < key.length; i++) hash = (hash * 31 + key.charCodeAt(i)) >>> 0;
+  return SEEDS[hash % SEEDS.length];
+}
+
 export function AvatarPickerSheet({ visible, selected, onSelect, onClose, isDark }) {
   const colors = getColors(isDark ?? true);
 

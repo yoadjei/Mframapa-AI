@@ -8,7 +8,7 @@ import { getColors, Colors } from "../../utils/colors.js";
 import { MframapaLogo } from "../../components/brand/MframapaLogo.jsx";
 import { InputField } from "../../components/ui/InputField.jsx";
 import { PrimaryButton } from "../../components/ui/PrimaryButton.jsx";
-import { AvatarPickerSheet, naviiUrl } from "../../components/ui/AvatarPickerSheet.jsx";
+import { AvatarPickerSheet, naviiUrl, defaultSeedFor } from "../../components/ui/AvatarPickerSheet.jsx";
 
 // All profile menu items (PROFILE_MENU_ITEMS + MORE_MENU_ITEMS from mobile)
 const ALL_MENU_ITEMS = [
@@ -62,6 +62,14 @@ export function ProfileScreen({ isOnline, isDark }) {
     setFullName(profile.fullName ?? "");
     setOrg(profile.organization ?? "");
   }, [profile.fullName, profile.organization]);
+
+  // give every user an avatar up front instead of bare initials; deterministic so
+  // it stays the same on every visit. they can still change it from the picker.
+  useEffect(() => {
+    if (profile.avatarSeed) return;
+    const key = profile.email || state.session?.user?.email || profile.fullName || "guest";
+    dispatch({ type: "UPDATE_PROFILE", payload: { avatarSeed: defaultSeedFor(key) } });
+  }, [profile.avatarSeed, profile.email, profile.fullName, state.session, dispatch]);
 
   const isDirty =
     fullName.trim() !== (profile.fullName ?? "").trim() ||
