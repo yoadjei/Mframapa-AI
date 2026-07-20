@@ -1,6 +1,6 @@
 import hashlib
 import json
-from datetime import date as dt_date
+from datetime import date as dt_date, timedelta
 from functools import lru_cache
 from typing import Any, Dict, List, Optional
 
@@ -138,6 +138,11 @@ def _cities() -> list:
 _INSIGHT_TTL = 30 * 24 * 3600   # guidance per category/language is effectively static
 _I18N_TTL = 60 * 24 * 3600      # a translated bundle only changes when we ship new copy
 _MAP_SUMMARY_TTL = 3 * 3600     # continental map refreshes a few times a day
+# CAMS air-quality forecast runs out around day 4; past that a 'forecast' would be
+# season and place only, so the horizon is capped instead of padded.
+_FORECAST_DAYS = 4
+_MAX_FORECAST_DAYS = 5
+_FORECAST_TTL = 3 * 3600
 
 _STUB_INSIGHTS_EN = {
     "good": "Satellite-based estimate suggests favorable dispersion today.",
@@ -354,6 +359,61 @@ def predict(
     pipeline: FeaturePipeline = Depends(get_feature_pipeline),
 ) -> Dict[str, Any]:
     return compute_prediction(request, lat, lon, name, day, pipeline)
+
+
+@router.get("/forecast")
+def forecast(
+    request: Request,
+    lat: float = Query(..., ge=-90, le=90),
+    lon: float = Query(..., ge=-180, le=180),
+    name: str = Query("Unknown"),
+    days: int = Query(_FORECAST_DAYS, ge=1, le=_MAX_FORECAST_DAYS),
+    pipeline: FeaturePipeline = Depends(get_feature_pipeline),
+) -> Dict[str, Any]:
+    """multi-day pm2.5 outlook, limited to the horizon our inputs actually cover.
+
+    the model needs forecast weather and CAMS air quality. weather runs further out
+    than CAMS, so beyond roughly four days a "forecast" would quietly become a
+    season-and-place guess. each day therefore reports the inputs it actually had,
+    and the horizon is capped rather than padded with numbers we cannot back.
+    """
+    today = dt_date.today()
+    cache = RedisCache()
+    cache_key = f"forecast:{round(lat, 2)}:{round(lon, 2)}:{today.isoformat()}:{days}"
+    hit = cache.get(cache_key)
+    if hit and hit.get("days"):
+        return hit
+
+    out: List[Dict[str, Any]] = []
+    for offset in range(days):
+        target = (today + timedelta(days=offset)).isoformat()
+        try:
+            prediction = compute_prediction(request, lat, lon, name, target, pipeline)
+        except Exception as e:
+            logger.warning("forecast: %s day=%s failed — %s", name, target, e)
+            continue
+        factors = prediction.get("factors") or {}
+        weather = prediction.get("weather") or {}
+        # full == the dynamic inputs the model was trained on were available
+        has_weather = weather.get("temp") is not None
+        has_air = "aerosol_optical_depth" in factors or "no2_tropospheric_column" in factors
+        out.append({
+            "date": target,
+            "day_offset": offset,
+            "pm25": prediction["pm25"],
+            "aqi_category": prediction["aqi_category"],
+            "uncertainty": prediction.get("uncertainty"),
+            "inputs": "full" if (has_weather and has_air) else "reduced",
+        })
+
+    payload = {
+        "location": {"name": name, "lat": lat, "lon": lon},
+        "issued": today.isoformat(),
+        "days": out,
+    }
+    if out:
+        cache.set(cache_key, payload, _FORECAST_TTL)
+    return payload
 
 
 @router.get("/map-summary")
