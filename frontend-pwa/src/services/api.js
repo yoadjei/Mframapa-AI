@@ -94,3 +94,14 @@ export async function getMapSummary() {
     throw new Error(normalizeError(error, "Could not load the map"));
   }
 }
+
+// real multi-day outlook. the horizon is capped server-side to the days our
+// weather + air-quality inputs actually cover, so this never invents numbers.
+export async function getForecast(lat, lon, name = "Unknown", days = 4) {
+  try {
+    const response = await httpClient.get("/api/v1/forecast", { params: { lat, lon, name, days } });
+    return response.data?.days ?? [];
+  } catch (error) {
+    throw new Error(normalizeError(error, "Could not load the forecast"));
+  }
+}
