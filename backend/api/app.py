@@ -18,6 +18,7 @@ from datetime import date as dt_date
 from functools import lru_cache
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+from concurrent.futures import ThreadPoolExecutor
 from contextlib import asynccontextmanager
 
 from fastapi import Depends, FastAPI, HTTPException, Query
@@ -65,6 +66,10 @@ REPO_ROOT = repository_root()
 CITIES_PATH = REPO_ROOT / "backend" / "data" / "african_cities.json"
 _EXPORTS_DIR = REPO_ROOT / "ml" / "exports"
 
+# small enough to stay polite to the upstream apis, large enough that warming the
+# continental list takes about a minute instead of ten.
+_PREWARM_WORKERS = 6
+
 
 def _default_conformal_half_width(pm25: float) -> float:
     """Fallback interval half-width when no trained manifest is present."""
@@ -100,14 +105,24 @@ def get_feature_pipeline() -> FeaturePipeline:
 
 
 def _prewarm_cache() -> None:
-    """Best-effort: populate the redis feature cache for major cities (daemon thread)."""
+    """Best-effort: populate the redis feature cache for major cities (daemon thread).
+
+    runs a few cities at a time. sequentially this took about six seconds each,
+    so the continental list would have needed ten minutes before the map could
+    answer from cache; the pool is small enough not to hammer the upstreams.
+    """
     today = dt_date.today().isoformat()
     pipeline = FeaturePipeline()
-    for name, lat, lon in _PREWARM_CITIES:
+
+    def warm(city) -> None:
+        name, lat, lon = city
         try:
             pipeline.get_features(lat, lon, today)
         except Exception as e:
             logger.debug("prewarm %s failed: %s", name, e)
+
+    with ThreadPoolExecutor(max_workers=_PREWARM_WORKERS) as pool:
+        list(pool.map(warm, _PREWARM_CITIES))
     logger.info("cache prewarm complete (%d cities)", len(_PREWARM_CITIES))
 
 
