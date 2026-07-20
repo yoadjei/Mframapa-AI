@@ -10,6 +10,7 @@ use ``synthetic_training_frame``.
 from __future__ import annotations
 
 import json
+import logging
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -27,6 +28,13 @@ from ml.model_registry import RegionalModelEntry, upsert_entry
 from ml.paths import repository_root
 
 _REPO_ROOT = repository_root()
+
+logger = logging.getLogger(__name__)
+
+# r2 <= 0 means the bundle does worse than always predicting the training mean.
+# such a model is not "weak but useful", it is actively harmful, so it never
+# reaches the registry and the region falls back to the continental bundle.
+_MIN_USEFUL_R2 = 0.0
 
 try:
     import xgboost as xgb
@@ -275,6 +283,18 @@ def train_regional_bundle(
     manifest_path = export_dir / "manifest.json"
     with manifest_path.open("w", encoding="utf-8") as f:
         json.dump(manifest, f, indent=2)
+
+    # a bundle with r2 <= 0 predicts worse than the mean of the training data, so
+    # serving it is worse than serving nothing: select_bundle falls back to the
+    # continental model, which is measurably better. registering it would quietly
+    # make that region's predictions worse than the fallback it displaced.
+    if update_registry and r2_e <= _MIN_USEFUL_R2:
+        logger.warning(
+            "%s/%s scored r2=%.3f (<= %.2f) — not registering; the region will "
+            "fall back to the continental bundle",
+            region_id, segment, r2_e, _MIN_USEFUL_R2,
+        )
+        update_registry = False
 
     if update_registry:
         upsert_entry(
