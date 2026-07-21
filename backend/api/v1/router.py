@@ -10,6 +10,7 @@ from pydantic import BaseModel, Field
 
 from backend.api.aqi import aqi_category_from_pm25
 from backend.api.cities import MAJOR_CITIES, PLAYBACK_CITIES
+from backend.api.facts import fact_for
 from backend.api.insights import DRY, season_for, variants
 from backend.api.security import _client_ip, authenticate_or_anonymous, require_institutional
 from backend.cache.redis_cache import RedisCache
@@ -550,6 +551,43 @@ def build_map_summary(request, pipeline: FeaturePipeline) -> Dict[str, Any]:
     if cities:
         cache.set(cache_key, payload, _MAP_SUMMARY_TTL)
     return payload
+
+
+@router.get("/daily-fact")
+def daily_fact(
+    language: str = Query("en", min_length=2, max_length=8),
+    language_name: str = Query(""),
+) -> Dict[str, str]:
+    """one short, reviewed fact a day, the same for everyone.
+
+    goes out as the daily notification as well as appearing in the app, so it
+    is translated once per language and then served from cache.
+    """
+    text = fact_for()
+    lang = (language or "en").lower()
+    if lang in ("en", ""):
+        return {"fact": text}
+
+    cache = RedisCache()
+    key = f"fact:{dt_date.today().isoformat()}:{lang}"
+    hit = (cache.get(key) or {}).get("fact")
+    if hit:
+        return {"fact": hit}
+
+    if gemini_client.is_available():
+        try:
+            out = gemini_client.translate_strings(
+                {"fact": text},
+                target_language=lang,
+                target_language_name=language_name or None,
+            )
+            translated = out.get("fact", text)
+            cache.set(key, {"fact": translated}, _INSIGHT_TTL)
+            return {"fact": translated}
+        except Exception as exc:
+            logger.warning("fact translation failed, serving english: %s", exc)
+
+    return {"fact": text}
 
 
 @router.get("/map-summary")
