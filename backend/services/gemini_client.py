@@ -248,6 +248,24 @@ def translate_strings(
     return out
 
 
+# distinct angles on the same guidance, so a category's pool reads like advice
+# from a person rather than one sentence reshuffled.
+_INSIGHT_ANGLES = [
+    "what to do outdoors right now",
+    "who should be most careful today",
+    "whether windows should be open or closed",
+    "exercise timing",
+    "protecting children",
+    "protecting older relatives",
+    "commuting and traffic fumes",
+    "cooking smoke indoors",
+    "when conditions usually improve during the day",
+    "whether a mask is worth wearing",
+    "signs to watch for in your breathing",
+    "a simple reassurance if conditions are fine",
+]
+
+
 def generate_air_quality_insight(
     *,
     pm25: float,
@@ -255,8 +273,13 @@ def generate_air_quality_insight(
     weather: Dict[str, Any],
     language: str = "en",
     language_name: Optional[str] = None,
+    variant: int = 0,
 ) -> str:
-    """One-sentence localized insight for the current reading."""
+    """One-sentence localized insight for the current reading.
+
+    ``variant`` asks for a different angle on the same advice so a pool of lines
+    for one category does not come back as twelve rewordings of one sentence.
+    """
     lang_name = language_display_name(language, language_name)
     weather_bits = []
     for k in ("temp", "humidity", "wind"):
@@ -271,6 +294,9 @@ PM2.5: {pm25:.1f} µg/m³
 AQI category: {aqi_category}
 Weather: {weather_summary}
 
-Be calm, specific, and actionable. Do not mention satellites, AI, or models. Output only the sentence in {lang_name}."""
+Be calm, specific, and actionable. Do not mention satellites, AI, or models.
+Take this angle: {_INSIGHT_ANGLES[variant % len(_INSIGHT_ANGLES)]}
+Do not start with the same word every time. Output only the sentence in {lang_name}."""
 
-    return _generate_content(prompt, temperature=0.4)
+    # higher temperature for later variants so the pool does not converge
+    return _generate_content(prompt, temperature=0.4 if variant == 0 else 0.9)
