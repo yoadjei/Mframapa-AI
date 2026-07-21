@@ -14,17 +14,32 @@ const esc = (s) =>
 
 // body is plain text with blank-line-separated blocks; bullets start with "•".
 function bodyToHtml(body) {
+  const isBullet = (l) => l.trim().startsWith("•");
+  const list = (lines) =>
+    "<ul>" + lines.map((l) => `<li>${esc(l.trim().replace(/^•\s*/, ""))}</li>`).join("") + "</ul>";
+
   const blocks = body.split(/\n\s*\n/);
   const out = [];
   for (const block of blocks) {
-    const lines = block.split("\n");
-    if (lines.every((l) => l.trim().startsWith("•"))) {
-      out.push("<ul>" + lines.map((l) => `<li>${esc(l.replace(/^•\s*/, ""))}</li>`).join("") + "</ul>");
+    const lines = block.split("\n").filter((l) => l.trim());
+    if (!lines.length) continue;
+
+    if (lines.every(isBullet)) {
+      out.push(list(lines));
     } else if (lines.length === 1) {
       out.push(`<p>${esc(lines[0])}</p>`);
+    } else if (lines.slice(1).every(isBullet)) {
+      // a heading followed by bullets. the old every() check failed on the
+      // heading line, so the block collapsed into one run-on paragraph with
+      // the bullet characters left inline.
+      out.push(`<h2>${esc(lines[0])}</h2>${list(lines.slice(1))}`);
     } else {
-      // first line acts as a subheading, rest as a paragraph
-      out.push(`<h2>${esc(lines[0])}</h2><p>${esc(lines.slice(1).join(" "))}</p>`);
+      const rest = lines.slice(1);
+      const bullets = rest.filter(isBullet);
+      const prose = rest.filter((l) => !isBullet(l));
+      out.push(`<h2>${esc(lines[0])}</h2>`);
+      if (prose.length) out.push(`<p>${esc(prose.join(" "))}</p>`);
+      if (bullets.length) out.push(list(bullets));
     }
   }
   return out.join("\n");
