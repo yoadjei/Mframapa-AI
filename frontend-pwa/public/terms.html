@@ -3,29 +3,64 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Terms of Service — Mframapa</title>
+<title>Terms of Service | Mframapa</title>
 <meta name="robots" content="index,follow" />
+<script>
+  // follow whatever theme the app is set to, so these do not read as a
+  // different product when someone taps through from settings.
+  (function () {
+    var mode = "system";
+    try {
+      var saved = JSON.parse(localStorage.getItem("mframapa:v2:pwa-state") || "{}");
+      mode = (saved.preferences && saved.preferences.theme) || "system";
+    } catch (e) { /* first visit, or storage blocked */ }
+    var dark = mode === "dark" ||
+      (mode === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    document.documentElement.dataset.theme = dark ? "dark" : "light";
+  })();
+</script>
 <style>
-  body { max-width: 720px; margin: 0 auto; padding: 32px 20px 64px; font: 16px/1.6 system-ui, sans-serif; color: #0f172a; background: #fff; }
-  h1 { font-size: 26px; margin: 0 0 4px; }
-  h2 { font-size: 17px; margin: 28px 0 6px; }
-  p, li { color: #334155; }
-  a { color: #0f766e; }
-  .updated { color: #64748b; font-size: 13px; margin-bottom: 24px; }
-  nav { margin-top: 40px; font-size: 14px; }
+  :root {
+    --bg: #FFFFFF; --text: #0F1419; --muted: #5C6B7A;
+    --dim: #7B8A99; --line: #D4DAE3; --accent: #00A47C;
+    color-scheme: light;
+  }
+  html[data-theme="dark"] {
+    --bg: #0A0D12; --text: #FFFFFF; --muted: #9AA7B5;
+    --dim: #647182; --line: #25303C; --accent: #00C896;
+    color-scheme: dark;
+  }
+  body {
+    max-width: 720px; margin: 0 auto; padding: 32px 20px 64px;
+    font: 16px/1.65 system-ui, -apple-system, "Segoe UI", sans-serif;
+    color: var(--text); background: var(--bg);
+    -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: 100%;
+  }
+  h1 { font-size: 26px; margin: 0 0 4px; color: var(--text); }
+  h2 { font-size: 17px; margin: 30px 0 8px; color: var(--text); }
+  p, li { color: var(--muted); }
+  ul { padding-left: 20px; margin: 8px 0; }
+  li { margin-bottom: 8px; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .updated { color: var(--dim); font-size: 13px; margin-bottom: 28px; }
+  nav {
+    margin-top: 44px; padding-top: 20px; font-size: 14px;
+    border-top: 1px solid var(--line);
+  }
 </style>
 </head>
 <body>
   <h1>Terms of Service</h1>
   <p class="updated">Mframapa · Last updated 2026-07-21</p>
   <p>By using Mframapa AI you agree to these terms. If you do not agree, please uninstall the app.</p>
-<h2>Service description</h2><p>Mframapa provides estimated PM2.5 and air-quality categories for locations across Africa, derived from satellite data and machine-learning models. Estimates are informational — not certified measurements for medical, legal, or regulatory decisions.</p>
+<h2>Service description</h2><p>Mframapa provides estimated PM2.5 and air-quality categories for locations across Africa, derived from satellite data and machine-learning models. Estimates are informational, not certified measurements for medical, legal, or regulatory decisions.</p>
 <h2>Acceptable use</h2><p>• Use the app for personal, educational, research, or advocacy purposes. • Do not scrape, reverse-engineer, or overload our APIs. • Do not misrepresent estimates as ground-truth monitor readings.</p>
 <h2>Accuracy &amp; limitations</h2><p>Cloud cover, sparse calibration stations, and model uncertainty can affect results. See Credits &amp; Attribution for data sources. We may change models or coverage without notice.</p>
 <h2>Availability</h2><p>We strive for high uptime but do not guarantee uninterrupted service. Features may differ between mobile and web versions.</p>
 <h2>Liability</h2><p>To the fullest extent permitted by law, Mframapa and its contributors are not liable for health or financial decisions made based on app outputs.</p>
 <h2>Changes</h2><p>We may update these terms. Continued use after updates constitutes acceptance.</p>
 <h2>Governing law</h2><p>These terms are governed by applicable law in the jurisdiction of the project maintainer unless local consumer law requires otherwise.</p>
-  <nav><a href="/privacy.html">Privacy Policy</a> · <a href="/terms.html">Terms of Service</a> · <a href="/">Back to app</a></nav>
+  <nav><a href="/privacy.html">Privacy Policy</a> · <a href="/terms.html">Terms of Service</a> · <a href="/licenses.html">Licenses</a> · <a href="/">Back to app</a></nav>
 </body>
 </html>

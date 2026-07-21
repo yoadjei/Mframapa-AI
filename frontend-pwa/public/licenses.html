@@ -6,6 +6,8 @@
 <title>Licenses and attribution | Mframapa</title>
 <meta name="robots" content="index,follow" />
 <script>
+  // follow whatever theme the app is set to, so these do not read as a
+  // different product when someone taps through from settings.
   (function () {
     var mode = "system";
     try {
@@ -52,28 +54,10 @@
   <h1>Licenses and attribution</h1>
   <p class="updated">Mframapa · Last updated 2026-07-21</p>
   <p>Mframapa is built on public research data and open source software. The providers below require attribution, and we are glad to give it.</p>
-
-  <h2>Air quality and weather data</h2>
-  <ul>
-    <li><strong>Copernicus Climate Data Store (ERA5)</strong>. Contains modified Copernicus Climate Change Service information. Neither the European Commission nor ECMWF is responsible for any use of this data.</li>
-    <li><strong>Copernicus Sentinel 5P</strong>. Contains modified Copernicus Sentinel data, processed by Mframapa.</li>
-    <li><strong>NASA MODIS</strong>. Aerosol products courtesy of NASA Earthdata.</li>
-    <li><strong>Open Meteo</strong>. Weather and air quality forecasts, used under their open licence.</li>
-    <li><strong>OpenAQ</strong>. Ground station measurements used to train and validate our model.</li>
-  </ul>
-
-  <h2>Maps</h2>
-  <ul>
-    <li><strong>Mapbox</strong>. Map rendering and tiles.</li>
-    <li><strong>OpenStreetMap contributors</strong>. Map data, available under the Open Database Licence.</li>
-  </ul>
-
-  <h2>Software</h2>
-  <p>The app and its backend are built with open source projects including React, Vite, FastAPI, XGBoost, LightGBM, scikit learn, pandas and NumPy, each used under its own licence. Full licence texts ship with the source of those projects.</p>
-
-  <h2>A note on the estimates</h2>
-  <p>The data above is used to produce estimates. None of these providers endorse Mframapa or are responsible for what we publish.</p>
-
-  <nav><a href="/privacy.html">Privacy Policy</a> · <a href="/terms.html">Terms of Service</a> · <a href="/">Back to app</a></nav>
+<h2>Air quality and weather data</h2><p>• Copernicus Climate Data Store (ERA5). Contains modified Copernicus Climate Change Service information. Neither the European Commission nor ECMWF is responsible for any use of this data. • Copernicus Sentinel 5P. Contains modified Copernicus Sentinel data, processed by Mframapa. • NASA Earthdata. Aerosol and land products courtesy of NASA. • Open Meteo. Weather and air quality forecasts, used under their open licence. • OpenAQ. Ground station measurements used to train and check our estimates. • WorldPop for population density, and SRTM for elevation.</p>
+<h2>Maps</h2><p>• Mapbox provides map rendering and tiles, under the Mapbox Terms of Service. • Map data is by OpenStreetMap contributors, available under the Open Database Licence.</p>
+<h2>Software</h2><p>The app and its backend are built with open source projects including React, Vite, FastAPI, XGBoost, LightGBM, scikit learn, pandas and NumPy, each used under its own licence. Full licence texts ship with the source of those projects.</p>
+<h2>A note on the estimates</h2><p>The data above is used to produce estimates. None of these providers endorse Mframapa or are responsible for what we publish.</p>
+  <nav><a href="/privacy.html">Privacy Policy</a> · <a href="/terms.html">Terms of Service</a> · <a href="/licenses.html">Licenses</a> · <a href="/">Back to app</a></nav>
 </body>
 </html>
