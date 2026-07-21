@@ -83,14 +83,6 @@ export function CountryExplorerScreen({ isDark }) {
           </button>
         </div>
         <div style={{ flex: 1 }} />
-        <button
-          type="button"
-          onClick={() => setPickerOpen(true)}
-          className="flex items-center justify-center rounded-full"
-          style={{ width: 40, height: 40, padding: 10 }}
-        >
-          <ChevronsUpDown size={22} color={colors.subtext} />
-        </button>
       </div>
 
       {/* Scrollable content */}
@@ -197,6 +189,7 @@ export function CountryExplorerScreen({ isDark }) {
         )}
 
         {/* Stats card */}
+        {selectedCountry && stats.cities > 0 && (
         <div
           style={{
             backgroundColor: colors.card,
@@ -228,6 +221,7 @@ export function CountryExplorerScreen({ isDark }) {
             ))}
           </div>
         </div>
+        )}
       </div>
 
       {/* Country picker bottom sheet overlay */}
