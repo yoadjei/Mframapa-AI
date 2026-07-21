@@ -110,7 +110,43 @@ def run_daily_job(
         return []
     episodes = run_daily_scan(records, digest_sink=lambda text: logger.info("radio bulletin:\n%s", text))
     logger.info("alert scan complete: %d cities, %d episode(s)", len(records), len(episodes))
+
+    # a quiet day still gets one useful notification, so the app does not go
+    # silent for the weeks between episodes and get forgotten.
+    if not episodes:
+        try:
+            send_daily_fact()
+        except Exception:
+            logger.exception('daily fact push failed')
     return episodes
+
+
+def send_daily_fact(*, sender=None) -> Dict[str, int]:
+    """push the day's fact to every registered device.
+
+    this is the quiet half of the notification loop. episode alerts only fire
+    when the air is genuinely bad, which in a good month is never, so without
+    this the app would go silent and people would forget it is there. the fact
+    is short, true and useful on its own, so it earns the interruption.
+    """
+    from backend.alerts.push import send_push
+    from backend.alerts.storage import get_push_store
+    from backend.api.facts import fact_for
+
+    tokens = [row["token"] for row in get_push_store().all() if row.get("token")]
+    if not tokens:
+        logger.info("daily fact: no registered devices")
+        return {"sent": 0, "batches": 0, "failed": 0}
+
+    result = send_push(
+        tokens,
+        title="Mframapa",
+        body=fact_for(),
+        data={"type": "daily_fact"},
+        post=sender,
+    )
+    logger.info("daily fact pushed to %d device(s)", result.get("sent", 0))
+    return result
 
 
 def alerts_enabled() -> bool:
