@@ -55,7 +55,6 @@ const base: Record<string, string> = {
   'card.insight_title': 'AI Insight',
   'card.factors_title': 'Contributing factors',
   'card.health_guidance': 'Health guidance',
-  'card.model_prefix': 'Model: {{model}}',
   'card.meta': '{{city}} · {{day}}, {{time}}',
 
   'search.title': 'Search',
@@ -181,7 +180,7 @@ const base: Record<string, string> = {
   'country.stats_title': 'Regional Stats',
   'screen.country.choose_country': 'Choose a country',
   'screen.country.tap_to_choose': 'Tap to choose a country',
-  'screen.country.no_cities': 'No cached cities for this country yet.',
+  'screen.country.no_cities': 'No cities saved for this country yet.',
   'screen.country.urban_cities': 'Urban',
   'screen.country.rural_cities': 'Rural',
   'country.stats.cities': 'Cities',
@@ -195,7 +194,7 @@ const base: Record<string, string> = {
   'delete.item.erase': 'All data permanently erased',
   'delete.item.saved_cities': 'Saved cities removed',
   'delete.item.subscriptions': 'Subscriptions cancelled',
-  'delete.item.api_keys': 'API keys revoked',
+  'delete.item.api_keys': 'Access keys removed',
   'delete.note_label': 'Note:',
   'delete.note_body': '30-day grace period will be available to restore your account.',
   'delete.placeholder': 'Type DELETE to confirm',
@@ -299,9 +298,7 @@ const base: Record<string, string> = {
   'screen.ai_insights.reading_explanation':
     "PM2.5 is {{pm25}} μg/m³, which is {{category}}. We're 90% confident the real value is between {{lower}} and {{upper}}.",
   'screen.ai_insights.what_drove_this': 'What drove this reading',
-  'screen.ai_insights.powered_by': 'Powered by {{model}}',
-  'screen.ai_insights.no_insights_yet':
-    'No insights yet. Check air quality for a city and the model\'s analysis will show up here.',
+  'screen.ai_insights.no_insights_yet': 'No advice yet. Check a city and guidance will appear here.',
   'screen.ai_insights.check_a_city': 'Check a city',
   'screen.ai_insights.seasonal_title': 'Seasonal Pattern',
   'screen.ai_insights.seasonal_desc': 'Harmattan dust usually pushes PM2.5 higher from December to February',
@@ -311,7 +308,6 @@ const base: Record<string, string> = {
   'screen.ai_insights.hotspot_title': 'Industrial Hotspot',
   'screen.ai_insights.hotspot_desc':
     'Industrial zones near Tema show 40% higher PM2.5 than residential areas',
-  'screen.ai_insights.hotspot_source': 'Source: Satellite Data',
   'screen.community.photo_in': 'Photo-in',
   'screen.city_detail.save': 'Save City',
   'screen.city_detail.saved': 'Saved to your locations',
@@ -387,32 +383,30 @@ const base: Record<string, string> = {
   'screen.feedback.privacy_note': 'For privacy concerns: privacy@mframapa.app',
 
   'screen.trust.calc_title': 'How We Calculate AQI',
-  'screen.trust.calc_body': 'Mframapa estimates PM2.5 from satellite observations and weather data using a machine learning model, then maps that estimate to an air quality category.',
+  'screen.trust.calc_body': 'We estimate how much fine dust and smoke is in the air where you are, then turn that into a simple rating you can act on.',
   'screen.trust.sources_title': 'Where the data comes from',
-  'screen.trust.model_title': 'How accurate is it',
-  'screen.trust.model_body': 'On stations the model had never seen, it puts a location in the right air quality band 63 percent of the time, and within one band 95 percent of the time. Every estimate carries a range showing how confident we are.',
   'screen.trust.disclaim_title': 'Disclaimers',
-  'screen.trust.disclaim_body': 'Mframapa gives estimates, not measurements. Readings come from satellites and weather models rather than a sensor on your street, so treat them as guidance. For regulatory or medical decisions, use official government monitoring.',
+  'screen.trust.disclaim_body': 'Mframapa gives estimates, not measurements. There is no sensor on your street, so treat this as guidance. For medical or official decisions, use government monitoring.',
 
 
 
 
   'screen.landing.hero': 'Breathe\nInformed,\nAnywhere in\nAfrica.',
-  'screen.landing.hero_sub': 'Satellite-powered air quality\nintelligence for 427+ cities.',
+  'screen.landing.hero_sub': 'Know the air where you are, anywhere in Africa.',
   'screen.landing.feature1_label': 'Daily\nAQI',
-  'screen.landing.feature1_desc': 'Satellite AQI quality user features.',
-  'screen.landing.feature2_label': 'ML\nPredictions',
-  'screen.landing.feature2_desc': 'Machine-learning air quality predictions.',
+  'screen.landing.feature1_desc': 'Air quality for cities across Africa.',
+  'screen.landing.feature2_label': 'Daily outlook',
+  'screen.landing.feature2_desc': 'See how the air is likely to change over the next few days.',
   'screen.landing.feature3_label': 'Works\nOffline',
-  'screen.landing.feature3_desc': 'Cached city packs work without a connection.',
+  'screen.landing.feature3_desc': 'Saved cities keep working without a connection.',
   'screen.landing.stats': '55 countries · free for everyone · works offline',
 
   'screen.onboarding.wordmark': 'MFRAMAPA',
   'screen.onboarding.slide1_title': 'Check air quality instantly',
   'screen.onboarding.slide1_sub':
     'Monitor pollution levels in your area and stay healthy everywhere in Africa.',
-  'screen.onboarding.slide2_title': 'Built on satellite data',
-  'screen.onboarding.slide2_sub': 'Satellite observations and weather data drive a four day air quality outlook for cities across Africa.',
+  'screen.onboarding.slide2_title': 'Covers every corner',
+  'screen.onboarding.slide2_sub': 'Air quality is measured from space, so we can tell you about places with no monitoring station nearby.',
   'screen.onboarding.slide3_title': 'Know before it gets bad',
   'screen.onboarding.slide3_sub': 'Get a daily alert when a pollution episode is likely near you. Works offline with saved cities.',
   'screen.onboarding.next': 'Next',
