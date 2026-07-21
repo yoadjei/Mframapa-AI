@@ -56,6 +56,10 @@ async function buildPrediction(city, response, language) {
   let insight;
   try {
     insight = await generateInsight({
+      // the server picks seasonal wording from these, so harmattan advice only
+      // appears where and when the harmattan actually blows
+      lat: city.lat,
+      lon: city.lon,
       pm25: response.pm25,
       aqi_category: response.aqi_category,
       weather: response.weather ?? {},

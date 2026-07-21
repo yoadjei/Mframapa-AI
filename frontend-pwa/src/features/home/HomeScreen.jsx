@@ -206,7 +206,7 @@ export function HomeScreen({ isOnline }) {
           >
             {/* PM2.5 label */}
             <p className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: colors.sub }}>
-              {t("card.pm25_label") ?? "PM2.5"}
+              {t("home.air_now")}
             </p>
 
             {/* Big number + badge */}
@@ -241,20 +241,21 @@ export function HomeScreen({ isOnline }) {
           </button>
         </div>
 
-        {/* ── Stat row ── */}
-        {pred && (
-          <div className="mx-4 mb-3 flex gap-2.5">
-            {[
-              { label: t("card.aqi_level") ?? "AQI Level", value: pred.pm25.toFixed(0), sub: t(aqiCategoryKey(pred.aqi_category ?? pred.category)), subColor: aqiColor },
-              { label: t("card.main_pollutant") ?? "Main Pollutant", value: "PM2.5", sub: `${t("card.unit") ?? "µg/m³"}` },
-            ].map((s, i) => (
-              <div key={i} className="flex-1 rounded-2xl border p-3.5"
-                style={{ backgroundColor: colors.card, borderColor: colors.border }}>
-                <p className="mb-1 text-[11px] font-medium uppercase tracking-[0.5px]" style={{ color: colors.sub }}>{s.label}</p>
-                <p className="text-[22px] font-black" style={{ color: colors.text }}>{s.value}</p>
-                <p className="text-xs font-medium" style={{ color: s.subColor ?? colors.sub }}>{s.sub}</p>
-              </div>
-            ))}
+        {/* ── What to do ── */}
+        {pred?.insight && (
+          <div
+            className="mx-4 mb-3 rounded-2xl border p-4"
+            style={{ backgroundColor: colors.card, borderColor: colors.border }}
+          >
+            <p
+              className="mb-1.5 text-[11px] font-semibold uppercase tracking-widest"
+              style={{ color: colors.sub }}
+            >
+              {t("home.advice_title")}
+            </p>
+            <p className="text-[15px] leading-[22px] m-0" style={{ color: colors.text }}>
+              {pred.insight}
+            </p>
           </div>
         )}
 

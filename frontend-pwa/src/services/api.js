@@ -73,13 +73,15 @@ export async function translateUiStrings(strings, targetLanguage, targetLanguage
   };
 }
 
-export async function generateInsight({ pm25, aqi_category, weather = {}, language = "en", language_name = "" }) {
+export async function generateInsight({ pm25, aqi_category, weather = {}, language = "en", language_name = "", lat, lon }) {
   const response = await httpClient.post("/api/v1/generate-insight", {
     pm25,
     aqi_category,
     weather,
     language,
     language_name,
+    lat,
+    lon,
   });
   return response.data.insight;
 }
