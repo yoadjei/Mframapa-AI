@@ -5,24 +5,46 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Licenses and attribution | Mframapa</title>
 <meta name="robots" content="index,follow" />
+<script>
+  (function () {
+    var mode = "system";
+    try {
+      var saved = JSON.parse(localStorage.getItem("mframapa:v2:pwa-state") || "{}");
+      mode = (saved.preferences && saved.preferences.theme) || "system";
+    } catch (e) { /* first visit, or storage blocked */ }
+    var dark = mode === "dark" ||
+      (mode === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    document.documentElement.dataset.theme = dark ? "dark" : "light";
+  })();
+</script>
 <style>
-  :root { color-scheme: dark; }
+  :root {
+    --bg: #FFFFFF; --text: #0F1419; --muted: #5C6B7A;
+    --dim: #7B8A99; --line: #D4DAE3; --accent: #00A47C;
+    color-scheme: light;
+  }
+  html[data-theme="dark"] {
+    --bg: #0A0D12; --text: #FFFFFF; --muted: #9AA7B5;
+    --dim: #647182; --line: #25303C; --accent: #00C896;
+    color-scheme: dark;
+  }
   body {
     max-width: 720px; margin: 0 auto; padding: 32px 20px 64px;
     font: 16px/1.65 system-ui, -apple-system, "Segoe UI", sans-serif;
-    color: #FFFFFF; background: #0A0D12;
+    color: var(--text); background: var(--bg);
+    -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: 100%;
   }
-  h1 { font-size: 26px; margin: 0 0 4px; color: #FFFFFF; }
-  h2 { font-size: 17px; margin: 30px 0 8px; color: #FFFFFF; }
-  p, li { color: #9AA7B5; }
+  h1 { font-size: 26px; margin: 0 0 4px; color: var(--text); }
+  h2 { font-size: 17px; margin: 30px 0 8px; color: var(--text); }
+  p, li { color: var(--muted); }
   ul { padding-left: 20px; margin: 8px 0; }
   li { margin-bottom: 8px; }
-  a { color: #00C896; text-decoration: none; }
+  a { color: var(--accent); text-decoration: none; }
   a:hover { text-decoration: underline; }
-  .updated { color: #647182; font-size: 13px; margin-bottom: 28px; }
+  .updated { color: var(--dim); font-size: 13px; margin-bottom: 28px; }
   nav {
     margin-top: 44px; padding-top: 20px; font-size: 14px;
-    border-top: 1px solid #25303C;
+    border-top: 1px solid var(--line);
   }
 </style>
 </head>
