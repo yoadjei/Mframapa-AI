@@ -145,9 +145,6 @@ export function TrustTransparencyScreen({ isOnline, isDark, params }) {
                           {src}
                         </span>
                         <CheckCircle2 size={14} color={Colors.brandGreen} />
-                        <span style={{ fontSize: 14, color: Colors.brandGreen }}>
-                          {t("screen.trust.source_active")}
-                        </span>
                       </div>
                     ))}
                   </div>
