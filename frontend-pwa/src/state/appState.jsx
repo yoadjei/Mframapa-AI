@@ -32,7 +32,9 @@ const initialState = {
     selectedCity: null,
   },
   homeSummary: {
-    city: "Accra",
+    // no default city: the app asks the device where it is on first run. a
+    // hardcoded city meant someone in kumasi was shown accra's air.
+    city: null,
     aqiCategory: "Unknown",
     pm25: null,
     lastUpdated: null,

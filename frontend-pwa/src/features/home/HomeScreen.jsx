@@ -2,7 +2,7 @@ import { Bell, ChevronDown, MapPin, Navigation, Search, AlertTriangle, Clock, Dr
 import { useEffect, useRef, useState } from "react";
 import { useAppState } from "../../state/appState.jsx";
 import { useTranslation } from "../../hooks/useTranslation.js";
-import { fetchCityPrediction } from "../../services/predictionService.js";
+import { fetchCityPrediction, fetchPredictionAtCoords } from "../../services/predictionService.js";
 import { MframapaLogo } from "../../components/brand/MframapaLogo.jsx";
 
 // ── AQI helpers ───────────────────────────────────────────────────────────────
@@ -72,10 +72,16 @@ export function HomeScreen({ isOnline }) {
 
   // Auto-fetch on mount if city is known
   useEffect(() => {
-    if (!isOnline || !state.homeSummary?.city) return;
+    if (!isOnline) return;
+    const { city, lat, lon } = state.homeSummary ?? {};
+    if (!city && lat == null) { handleLocate(); return; }   // first run: ask the device
     let active = true;
     setLoading(true);
-    fetchCityPrediction(state.homeSummary.city, state.preferences.language ?? "en")
+    const language = state.preferences.language ?? "en";
+    const request = lat != null && lon != null
+      ? fetchPredictionAtCoords(lat, lon, language)
+      : fetchCityPrediction(city, language);
+    request
       .then((r) => { if (active) { setPrediction(r); updateSummary(r); } })
       .catch(() => {})
       .finally(() => { if (active) setLoading(false); });
@@ -86,7 +92,15 @@ export function HomeScreen({ isOnline }) {
   function updateSummary(r) {
     dispatch({
       type: "SET_HOME_SUMMARY",
-      payload: { city: r.city?.name, pm25: r.pm25, aqiCategory: r.category, degraded: r.degraded, lastUpdated: r.timestamp },
+      payload: {
+        city: r.city?.name,
+        lat: r.city?.lat,
+        lon: r.city?.lon,
+        pm25: r.pm25,
+        aqiCategory: r.category,
+        degraded: r.degraded,
+        lastUpdated: r.timestamp,
+      },
     });
   }
 
@@ -98,9 +112,12 @@ export function HomeScreen({ isOnline }) {
       async ({ coords }) => {
         try {
           const { latitude, longitude } = coords;
-          const name = `${latitude.toFixed(2)}, ${longitude.toFixed(2)}`;
           setLoading(true);
-          const r = await fetchCityPrediction(name, state.preferences.language ?? "en", latitude, longitude);
+          // fetchCityPrediction only ever accepted (name, language): the extra
+          // coordinates were silently dropped and the coordinate string was then
+          // looked up as a city name, which always failed. that is why granting
+          // location changed nothing and the default city stayed on screen.
+          const r = await fetchPredictionAtCoords(latitude, longitude, state.preferences.language ?? "en");
           setPrediction(r);
           updateSummary(r);
         } catch {

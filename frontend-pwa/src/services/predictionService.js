@@ -16,11 +16,42 @@ export function findCity(query) {
   );
 }
 
+/** nearest known city to a coordinate, so a device fix gets a human name.
+ *  equirectangular distance is plenty at city scale and needs no network call. */
+export function nearestCity(lat, lon) {
+  const pool = getCachedCities()?.length ? getCachedCities() : africanCities;
+  let best = null;
+  let bestD = Infinity;
+  for (const c of pool) {
+    const dx = (c.lon - lon) * Math.cos((lat * Math.PI) / 180);
+    const dy = c.lat - lat;
+    const d = dx * dx + dy * dy;
+    if (d < bestD) { bestD = d; best = c; }
+  }
+  return best;
+}
+
+/** predict at an exact coordinate. the device fix is the truth here, so the
+ *  nearest city is used only to label it, never to move the reading. */
+export async function fetchPredictionAtCoords(lat, lon, language = "en") {
+  const near = nearestCity(lat, lon);
+  const label = near?.name ?? `${lat.toFixed(2)}, ${lon.toFixed(2)}`;
+  return buildPrediction(
+    { name: label, country: near?.country ?? "", lat, lon },
+    await getPrediction(lat, lon, label),
+    language
+  );
+}
+
 export async function fetchCityPrediction(cityName, language = "en") {
   const city = findCity(cityName);
   if (!city) throw new Error("error.city_not_found");
 
   const response = await getPrediction(city.lat, city.lon, city.name);
+  return buildPrediction(city, response, language);
+}
+
+async function buildPrediction(city, response, language) {
 
   let insight;
   try {
