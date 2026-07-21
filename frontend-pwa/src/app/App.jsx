@@ -104,11 +104,6 @@ const CompareCitiesScreen = React.lazy(() =>
     .then((m) => ({ default: m.CompareCitiesScreen }))
     .catch(fallback("Compare Cities"))
 );
-const CommunityHubScreen = React.lazy(() =>
-  import("../features/community/CommunityHubScreen.jsx")
-    .then((m) => ({ default: m.CommunityHubScreen }))
-    .catch(fallback("Community"))
-);
 const TrustTransparencyScreen = React.lazy(() =>
   import("../features/trust/TrustTransparencyScreen.jsx")
     .then((m) => ({ default: m.TrustTransparencyScreen }))
@@ -175,8 +170,6 @@ const STACK_SCREENS = {
   historical:          HistoricalPlaybackScreen,
   historicalPlayback:  HistoricalPlaybackScreen,
   compareCities:       CompareCitiesScreen,
-  community:           CommunityHubScreen,
-  communityHub:        CommunityHubScreen,
   trust:               TrustTransparencyScreen,
   trustTransparency:   TrustTransparencyScreen,
   exportCentre:        ExportCentreScreen,

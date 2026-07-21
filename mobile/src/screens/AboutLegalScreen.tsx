@@ -13,7 +13,7 @@ const LINK_KEYS = [
   'settings.about.terms',
   'settings.about.licenses',
   'settings.about.contact',
-  'settings.about.credits'];
+];
 
 export function AboutLegalScreen() {
   const insets = useSafeAreaInsets();
@@ -48,7 +48,6 @@ export function AboutLegalScreen() {
           ))}
         </View>
 
-        <Text style={[styles.footer, { color: colors.muted }]}>{t('settings.made_with')}</Text>
       </ScrollView>
     </View>
   );

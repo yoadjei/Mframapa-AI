@@ -21,7 +21,6 @@ const ALL_MENU_ITEMS = [
   { id: "heatmap",   labelKey: "screen.profile.link_heatmap",        target: { type: "navigate", name: "africaHeatmap" } },
   { id: "historical",labelKey: "screen.profile.link_historical",     target: { type: "navigate", name: "historicalPlayback" } },
   { id: "compare",   labelKey: "screen.profile.link_compare",        target: { type: "navigate", name: "compareCities" } },
-  { id: "community", labelKey: "screen.profile.link_community",      target: { type: "navigate", name: "communityHub" } },
   { id: "trust",     labelKey: "screen.profile.link_trust",          target: { type: "navigate", name: "trustTransparency" } },
   { id: "export",    labelKey: "screen.profile.link_export",         target: { type: "navigate", name: "exportCentre" } },
   { id: "about",     labelKey: "screen.profile.link_about",          target: { type: "navigate", name: "aboutLegal" } },

@@ -196,9 +196,6 @@ interface AppState {
   setOfflineCities: (cities: City[]) => void;
 
   // Community feed (populated when real backend is wired; empty otherwise).
-  communityPosts: CommunityPost[];
-  addCommunityPost: (post: CommunityPost) => void;
-  setCommunityPosts: (posts: CommunityPost[]) => void;
 
   // Settings
   alertsEnabled: boolean;
@@ -674,10 +671,6 @@ export const useStore = create<AppState>()(
       offlineCities: [],
       setOfflineCities: (cities) => set({ offlineCities: cities }),
 
-      communityPosts: [],
-      addCommunityPost: (post) =>
-        set((s) => ({ communityPosts: [post, ...s.communityPosts].slice(0, 200) })),
-      setCommunityPosts: (posts) => set({ communityPosts: posts }),
 
       alertsEnabled: true,
       setAlertsEnabled: (v) => set({ alertsEnabled: v }),
@@ -717,7 +710,6 @@ export const useStore = create<AppState>()(
         notifications: state.notifications,
         activityFeed: state.activityFeed,
         offlineCities: state.offlineCities,
-        communityPosts: state.communityPosts,
         alertsEnabled: state.alertsEnabled,
         notifPrefs: state.notifPrefs,
         paymentCurrency: state.paymentCurrency,

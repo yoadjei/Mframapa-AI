@@ -41,7 +41,6 @@ import { AfricaHeatmapScreen } from '../screens/AfricaHeatmapScreen';
 import { HistoricalPlaybackScreen } from '../screens/HistoricalPlaybackScreen';
 import { CompareCitiesScreen } from '../screens/CompareCitiesScreen';
 import { AnomalyAlertScreen } from '../screens/AnomalyAlertScreen';
-import { CommunityHubScreen } from '../screens/CommunityHubScreen';
 import { TrustTransparencyScreen } from '../screens/TrustTransparencyScreen';
 import { ExportCentreScreen } from '../screens/ExportCentreScreen';
 import { LanguageSelectorScreen } from '../screens/LanguageSelectorScreen';
@@ -124,7 +123,6 @@ function ProfileStack() {
       <Stack.Screen name="HistoricalPlayback" component={HistoricalPlaybackScreen} />
       <Stack.Screen name="CompareCities" component={CompareCitiesScreen} />
       <Stack.Screen name="AnomalyAlert" component={AnomalyAlertScreen} />
-      <Stack.Screen name="CommunityHub" component={CommunityHubScreen} />
       <Stack.Screen name="TrustTransparency" component={TrustTransparencyScreen} />
       <Stack.Screen name="ExportCentre" component={ExportCentreScreen} />
       <Stack.Screen name="LanguageSelector" component={LanguageSelectorScreen} />

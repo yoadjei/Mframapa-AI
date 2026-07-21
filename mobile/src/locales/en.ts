@@ -308,7 +308,6 @@ const base: Record<string, string> = {
   'screen.ai_insights.hotspot_title': 'Industrial Hotspot',
   'screen.ai_insights.hotspot_desc':
     'Industrial zones near Tema show 40% higher PM2.5 than residential areas',
-  'screen.community.photo_in': 'Photo-in',
   'screen.city_detail.save': 'Save City',
   'screen.city_detail.saved': 'Saved to your locations',
   'screen.city_detail.save_success_title': 'City saved',
@@ -449,26 +448,6 @@ const base: Record<string, string> = {
   'screen.anomaly.item4_label': 'PM2.5 Anomaly',
   'screen.anomaly.item4_info': 'Severity severity',
 
-  'screen.community.verified': 'Verified',
-  'screen.community.pending': 'Pending',
-  'screen.community.post_sample': 'Heavy smoke from nearby factory.',
-  'screen.community.title': 'Community',
-  'screen.community.share': 'Share',
-  'screen.community.share_an_update': 'Share an update',
-  'screen.community.no_posts_yet': 'No community posts yet',
-  'screen.community.first_to_share':
-    "Be the first to share what's happening with the air around you.",
-  'screen.community.post': 'Post',
-  'screen.community.body_placeholder':
-    "Heavy smoke nearby? Clear blue sky? Tell the community what you're seeing.",
-  'screen.community.body_required': 'Write something to share before posting.',
-  'screen.community.location_label': 'Location',
-  'screen.community.location_placeholder': 'e.g. Accra, Kaneshie',
-  'screen.community.unknown_location': 'Unknown location',
-  'screen.community.posting_as': 'Posting as {{name}}',
-  'screen.community.not_signed_in': 'Guest',
-  'screen.community.profile_required':
-    'Sign in or update your profile name before posting.',
 
   'screen.heatmap.filter_all': 'All',
   'screen.heatmap.filter_good': 'Good',
@@ -526,7 +505,6 @@ const base: Record<string, string> = {
   'screen.profile.link_heatmap': 'Africa Heatmap',
   'screen.profile.link_historical': 'Historical Playback',
   'screen.profile.link_compare': 'Compare Cities',
-  'screen.profile.link_community': 'Community Hub',
   'screen.profile.link_trust': 'Trust & Transparency',
   'screen.profile.link_export': 'Export Centre',
   'screen.profile.link_language': 'Language',
