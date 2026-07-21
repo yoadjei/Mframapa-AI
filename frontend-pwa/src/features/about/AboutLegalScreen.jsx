@@ -4,11 +4,10 @@ import { useNavigation } from "../../hooks/useNavigation.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
 
 const LINK_KEYS = [
-  { key: "settings.about.privacy",  href: "https://mframapa.live/privacy"  },
-  { key: "settings.about.terms",    href: "https://mframapa.live/terms"    },
-  { key: "settings.about.licenses", href: "https://mframapa.live/licenses" },
+  { key: "settings.about.privacy",  href: "/privacy.html"  },
+  { key: "settings.about.terms",    href: "/terms.html"    },
+  { key: "settings.about.licenses", href: "/licenses.html" },
   { key: "settings.about.contact",  href: "mailto:hello@mframapa.live"     },
-  { key: "settings.about.credits",  href: "https://mframapa.live/credits"  },
 ];
 
 export function AboutLegalScreen({ params, isOnline, isDark }) {
@@ -17,7 +16,7 @@ export function AboutLegalScreen({ params, isOnline, isDark }) {
   const { t } = useTranslation();
 
   function handleLinkClick(href) {
-    if (href.startsWith("http") || href.startsWith("mailto")) {
+    if (href.startsWith("http") || href.startsWith("mailto") || href.startsWith("/")) {
       window.open(href, "_blank", "noopener noreferrer");
     }
   }
@@ -125,7 +124,6 @@ export function AboutLegalScreen({ params, isOnline, isDark }) {
         </div>
 
         <p style={{ fontSize: 13, marginTop: 32, color: colors.muted }}>
-          {t("settings.made_with")}
         </p>
       </div>
     </div>
