@@ -120,11 +120,6 @@ export function AQICard({ prediction, isDark }: AQICardProps) {
         <Text style={[styles.healthBody, { color: colors.text }]}>{healthAdvice}</Text>
       </View>
 
-      {prediction.model ? (
-        <Text style={[styles.modelText, { color: colors.subtext }]}>
-          {t('card.model_prefix', { model: prediction.model })}
-        </Text>
-      ) : null}
     </View>
   );
 }

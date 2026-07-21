@@ -52,7 +52,6 @@ const CONTEXT_INSIGHT_KEYS = [
     icon: 'warning-outline' as const,
     titleKey: 'screen.ai_insights.hotspot_title',
     descKey: 'screen.ai_insights.hotspot_desc',
-    sourceKey: 'screen.ai_insights.hotspot_source',
   }];
 
 function locationId(lat: number, lon: number): string {

@@ -47,7 +47,6 @@ const CONTEXT_INSIGHTS = [
     Icon: AlertTriangle,
     titleKey: "screen.ai_insights.hotspot_title",
     descKey: "screen.ai_insights.hotspot_desc",
-    sourceKey: "screen.ai_insights.hotspot_source",
   },
 ];
 

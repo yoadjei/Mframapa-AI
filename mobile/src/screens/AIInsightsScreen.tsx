@@ -34,9 +34,6 @@ export function AIInsightsScreen() {
         icon: 'sparkles-outline',
         title: t('screen.ai_insights.headline', { city: lastPrediction.location.name }),
         desc: lastPrediction.insight,
-        source: lastPrediction.model
-          ? t('screen.ai_insights.powered_by', { model: lastPrediction.model })
-          : undefined,
       });
     }
 
