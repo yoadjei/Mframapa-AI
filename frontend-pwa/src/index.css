@@ -162,6 +162,13 @@ input, textarea, select {
   backface-visibility: hidden;
 }
 
+/* clearance for the floating tab bar: it sits 16px above the safe area and is
+   about 80px tall, so tab screens need that plus breathing room or their last
+   row ends up underneath it. */
+.mf-tab-gap {
+  padding-bottom: calc(120px + env(safe-area-inset-bottom));
+}
+
 /* every tappable thing gives way slightly under the finger */
 .mf-press {
   transition: transform 140ms var(--mf-ease), opacity 140ms var(--mf-ease);

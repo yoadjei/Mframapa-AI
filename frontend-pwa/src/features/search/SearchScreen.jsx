@@ -138,7 +138,7 @@ export function SearchScreen({ isOnline, isDark }) {
 
   return (
     <div
-      className="min-h-[100dvh] overflow-y-auto pb-36"
+      className="min-h-[100dvh] overflow-y-auto mf-tab-gap"
       style={{ backgroundColor: colors.bg }}
     >
       {/* ── Search bar ── */}

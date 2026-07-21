@@ -118,7 +118,7 @@ export function SettingsScreen({ isOnline, isDark }) {
 
   return (
     <div
-      className="min-h-[100dvh] overflow-y-auto pb-36 px-4"
+      className="min-h-[100dvh] overflow-y-auto mf-tab-gap px-4"
       style={{ backgroundColor: colors.bg }}
     >
       <div style={{ paddingTop: "calc(env(safe-area-inset-top) + 12px)" }}>
