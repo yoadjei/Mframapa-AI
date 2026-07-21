@@ -37,8 +37,6 @@ import { AIInsightsScreen } from '../screens/AIInsightsScreen';
 import { PredictionDashboardScreen } from '../screens/PredictionDashboardScreen';
 import { LandingMarketingScreen } from '../screens/LandingMarketingScreen';
 import { CountryExplorerScreen } from '../screens/CountryExplorerScreen';
-import { AfricaHeatmapScreen } from '../screens/AfricaHeatmapScreen';
-import { HistoricalPlaybackScreen } from '../screens/HistoricalPlaybackScreen';
 import { CompareCitiesScreen } from '../screens/CompareCitiesScreen';
 import { AnomalyAlertScreen } from '../screens/AnomalyAlertScreen';
 import { TrustTransparencyScreen } from '../screens/TrustTransparencyScreen';
@@ -71,7 +69,6 @@ function HomeStack() {
       <Stack.Screen name="AIInsights" component={AIInsightsScreen} />
       <Stack.Screen name="PredictionDashboard" component={PredictionDashboardScreen} />
       <Stack.Screen name="AnomalyAlert" component={AnomalyAlertScreen} />
-      <Stack.Screen name="HistoricalPlayback" component={HistoricalPlaybackScreen} />
     </Stack.Navigator>
   );
 }
@@ -119,8 +116,6 @@ function ProfileStack() {
       <Stack.Screen name="PredictionDashboard" component={PredictionDashboardScreen} />
       <Stack.Screen name="LandingMarketing" component={LandingMarketingScreen} />
       <Stack.Screen name="CountryExplorer" component={CountryExplorerScreen} />
-      <Stack.Screen name="AfricaHeatmap" component={AfricaHeatmapScreen} />
-      <Stack.Screen name="HistoricalPlayback" component={HistoricalPlaybackScreen} />
       <Stack.Screen name="CompareCities" component={CompareCitiesScreen} />
       <Stack.Screen name="AnomalyAlert" component={AnomalyAlertScreen} />
       <Stack.Screen name="TrustTransparency" component={TrustTransparencyScreen} />

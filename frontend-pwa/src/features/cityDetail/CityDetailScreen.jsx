@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   AlertTriangle,
   CheckCircle2,
@@ -17,7 +17,7 @@ import { useTranslation } from "../../hooks/useTranslation.js";
 import { useNavigation } from "../../hooks/useNavigation.js";
 import { getColors, Colors, getAQIColor } from "../../utils/colors.js";
 import { aqiCategoryKey } from "../../utils/i18nHelpers.js";
-import { generateInsight } from "../../services/api.js";
+import { generateInsight, getHistory } from "../../services/api.js";
 import { PrimaryButton } from "../../components/ui/PrimaryButton.jsx";
 
 const TREND_DAY_KEYS = [
@@ -29,32 +29,6 @@ const TREND_DAY_KEYS = [
   "screen.city_detail.day_sat",
   "screen.city_detail.day_sun",
 ];
-
-const CONTEXT_INSIGHTS = [
-  {
-    Icon: Cpu,
-    titleKey: "screen.ai_insights.seasonal_title",
-    descKey: "screen.ai_insights.seasonal_desc",
-    sourceKey: "screen.ai_insights.seasonal_source",
-  },
-  {
-    Icon: TrendingUp,
-    titleKey: "screen.ai_insights.trend_title",
-    descKey: "screen.ai_insights.trend_desc",
-    sourceKey: null,
-  },
-  {
-    Icon: AlertTriangle,
-    titleKey: "screen.ai_insights.hotspot_title",
-    descKey: "screen.ai_insights.hotspot_desc",
-  },
-];
-
-function buildTrend(pm25) {
-  return [0.92, 1.08, 0.96, 1.14, 1.02, 0.88, 1.0].map((m) =>
-    Math.max(1, Math.round(pm25 * m))
-  );
-}
 
 function healthAdviceKey(category) {
   const lower = (category || "").toLowerCase();
@@ -111,7 +85,17 @@ export function CityDetailScreen({ isDark, params }) {
   const categoryLabel = t(aqiCategoryKey(category));
   const healthAdvice = t(healthAdviceKey(category));
   const trendLabels = TREND_DAY_KEYS.map((key) => t(key));
-  const trendData = useMemo(() => buildTrend(pm25 || 22), [pm25]);
+  // real recent days rather than multipliers applied to today's number
+  const [trendData, setTrendData] = useState([]);
+  useEffect(() => {
+    const lat = city?.lat, lon = city?.lon;
+    if (lat == null || lon == null) { setTrendData([]); return; }
+    let cancelled = false;
+    getHistory(lat, lon, city?.name ?? "Unknown", 7)
+      .then((days) => { if (!cancelled) setTrendData(days.map((d) => Math.round(d.pm25))); })
+      .catch(() => { if (!cancelled) setTrendData([]); });
+    return () => { cancelled = true; };
+  }, [city?.lat, city?.lon, city?.name]);
   const cityName = city?.name ?? "";
   const displayName = cityName.split(",")[0].trim();
 
@@ -385,36 +369,6 @@ export function CityDetailScreen({ isDark, params }) {
           </p>
         )}
       </div>
-
-      {/* ── Context insight cards (mirrors CONTEXT_INSIGHT_KEYS) ── */}
-      {CONTEXT_INSIGHTS.map((item, i) => (
-        <div
-          key={i}
-          className="mx-4 mb-3 flex flex-col gap-2 rounded-2xl border p-4"
-          style={{ backgroundColor: colors.card, borderColor: colors.border }}
-        >
-          <div
-            className="flex h-11 w-11 items-center justify-center rounded-xl"
-            style={{ backgroundColor: Colors.brandGreen + "22" }}
-          >
-            <item.Icon size={22} color={Colors.brandGreen} />
-          </div>
-          <p className="text-[16px] font-bold" style={{ color: colors.text }}>
-            {t(item.titleKey)}
-          </p>
-          <p className="text-[14px] leading-snug" style={{ color: colors.subtext }}>
-            {t(item.descKey)}
-          </p>
-          {item.sourceKey ? (
-            <span
-              className="self-start rounded-full px-3 py-1.5 text-[12px] font-medium"
-              style={{ backgroundColor: colors.surface, color: colors.subtext }}
-            >
-              {t(item.sourceKey)}
-            </span>
-          ) : null}
-        </div>
-      ))}
 
       {/* ── 7-day trend (mirrors mobile LineChart section) ── */}
       <div

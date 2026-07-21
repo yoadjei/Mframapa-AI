@@ -1,5 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useReducer } from "react";
 
+import { detectDeviceLanguage } from "../i18n/languages.js";
+
 const PERSISTENCE_KEY = "mframapa:v2:pwa-state";
 export const SESSION_KEY = "mframapa:v2:session-token";
 
@@ -20,7 +22,8 @@ const initialState = {
   },
   preferences: {
     theme: "system",
-    language: "en",
+    // first run follows the device; a stored choice overrides it below
+    language: detectDeviceLanguage(),
     notificationsEnabled: true,
     privacyMode: "balanced",
     liteMode: false,

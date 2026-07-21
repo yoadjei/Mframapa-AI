@@ -32,3 +32,21 @@ export const SUPPORTED_LANGUAGES = [
 export function languageName(code) {
   return SUPPORTED_LANGUAGES.find((l) => l.code === code)?.name ?? code;
 }
+
+/** the device's language, when we support it, else english.
+ *
+ * someone whose phone is set to Swahili should not have to find a language
+ * picker before the app speaks to them. only used for the first run; once a
+ * choice is stored it wins.
+ */
+export function detectDeviceLanguage() {
+  const codes = typeof navigator !== "undefined"
+    ? [navigator.language, ...(navigator.languages ?? [])].filter(Boolean)
+    : [];
+  const supported = new Set(SUPPORTED_LANGUAGES.map((l) => l.code));
+  for (const tag of codes) {
+    const base = String(tag).toLowerCase().split("-")[0];
+    if (supported.has(base)) return base;
+  }
+  return "en";
+}

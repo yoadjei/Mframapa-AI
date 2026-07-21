@@ -18,8 +18,6 @@ const ALL_MENU_ITEMS = [
   { id: "ai",        labelKey: "screen.profile.link_ai_insights",    target: { type: "navigate", name: "aiInsights" } },
   { id: "prediction",labelKey: "screen.profile.link_prediction",     target: { type: "navigate", name: "predictionDashboard" } },
   { id: "country",   labelKey: "screen.profile.link_country",        target: { type: "navigate", name: "countryExplorer" } },
-  { id: "heatmap",   labelKey: "screen.profile.link_heatmap",        target: { type: "navigate", name: "africaHeatmap" } },
-  { id: "historical",labelKey: "screen.profile.link_historical",     target: { type: "navigate", name: "historicalPlayback" } },
   { id: "compare",   labelKey: "screen.profile.link_compare",        target: { type: "navigate", name: "compareCities" } },
   { id: "trust",     labelKey: "screen.profile.link_trust",          target: { type: "navigate", name: "trustTransparency" } },
   { id: "export",    labelKey: "screen.profile.link_export",         target: { type: "navigate", name: "exportCentre" } },

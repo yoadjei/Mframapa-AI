@@ -89,16 +89,6 @@ const CountryExplorerScreen = React.lazy(() =>
     .then((m) => ({ default: m.CountryExplorerScreen }))
     .catch(fallback("Country Explorer"))
 );
-const AfricaHeatmapScreen = React.lazy(() =>
-  import("../features/africaHeatmap/AfricaHeatmapScreen.jsx")
-    .then((m) => ({ default: m.AfricaHeatmapScreen }))
-    .catch(fallback("Africa Heatmap"))
-);
-const HistoricalPlaybackScreen = React.lazy(() =>
-  import("../features/historical/HistoricalPlaybackScreen.jsx")
-    .then((m) => ({ default: m.HistoricalPlaybackScreen }))
-    .catch(fallback("Historical"))
-);
 const CompareCitiesScreen = React.lazy(() =>
   import("../features/compareCities/CompareCitiesScreen.jsx")
     .then((m) => ({ default: m.CompareCitiesScreen }))
@@ -166,9 +156,6 @@ const STACK_SCREENS = {
   aiInsights:          AIInsightsScreen,
   predictionDashboard: PredictionDashboardScreen,
   countryExplorer:     CountryExplorerScreen,
-  africaHeatmap:       AfricaHeatmapScreen,
-  historical:          HistoricalPlaybackScreen,
-  historicalPlayback:  HistoricalPlaybackScreen,
   compareCities:       CompareCitiesScreen,
   trust:               TrustTransparencyScreen,
   trustTransparency:   TrustTransparencyScreen,
