@@ -4,6 +4,7 @@ import { useNavigation } from "../../hooks/useNavigation.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { getColors, getAQIColor } from "../../utils/colors.js";
 import { getMapSummary } from "../../services/api.js";
+import { MapBoundary } from "../../components/map/MapBoundary.jsx";
 
 // real mapbox canvas, shared with the map tab (lazy: mapbox-gl is a large chunk)
 const MapCanvas = lazy(() =>
@@ -156,7 +157,23 @@ export function AfricaHeatmapScreen({ isDark }) {
             </p>
           </div>
         ) : (
-          <Suspense fallback={<div className="absolute inset-0" style={{ backgroundColor: colors.surface }} />}>
+          <MapBoundary fallback={(retry) => (
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-6 text-center">
+                <p className="text-[14px] m-0" style={{ color: colors.subtext }}>{t("map.load_failed")}</p>
+                <button
+                  type="button" onClick={retry}
+                  className="px-4 py-2 rounded-full text-[13px] font-semibold"
+                  style={{ backgroundColor: "#00C896", color: "#00110B" }}
+                >
+                  {t("common.try_again")}
+                </button>
+              </div>
+            )}>
+          <Suspense fallback={
+            <div className="absolute inset-0 flex items-center justify-center" style={{ backgroundColor: colors.surface }}>
+              <p className="text-[13px] m-0" style={{ color: colors.subtext }}>{t("map.loading")}…</p>
+            </div>
+          }>
             <MapCanvas
               viewState={viewState}
               onMove={(e) => setViewState(e.viewState)}
@@ -168,6 +185,7 @@ export function AfricaHeatmapScreen({ isDark }) {
               }
             />
           </Suspense>
+          </MapBoundary>
         )}
       </div>
 
