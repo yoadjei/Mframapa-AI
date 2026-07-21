@@ -387,16 +387,12 @@ const base: Record<string, string> = {
   'screen.feedback.privacy_note': 'For privacy concerns: privacy@mframapa.app',
 
   'screen.trust.calc_title': 'How We Calculate AQI',
-  'screen.trust.calc_body':
-    'Mframapa combines satellite observations, weather data, and regional machine-learning models to estimate PM2.5 and AQI categories for locations across Africa.',
-  'screen.trust.sources_title': 'Data Sources',
-  'screen.trust.source_active': 'Active',
-  'screen.trust.model_title': 'Model Information',
-  'screen.trust.model_body':
-    '12 regional XGBoost + LightGBM ensemble models, trained on 6 African regions × urban/rural splits.',
+  'screen.trust.calc_body': 'Mframapa estimates PM2.5 from satellite observations and weather data using a machine learning model, then maps that estimate to an air quality category.',
+  'screen.trust.sources_title': 'Where the data comes from',
+  'screen.trust.model_title': 'How accurate is it',
+  'screen.trust.model_body': 'On stations the model had never seen, it puts a location in the right air quality band 63 percent of the time, and within one band 95 percent of the time. Every estimate carries a range showing how confident we are.',
   'screen.trust.disclaim_title': 'Disclaimers',
-  'screen.trust.disclaim_body':
-    'Mframapa provides air quality estimates for informational purposes. Data should not be used as a substitute for official government air quality measurements.',
+  'screen.trust.disclaim_body': 'Mframapa gives estimates, not measurements. Readings come from satellites and weather models rather than a sensor on your street, so treat them as guidance. For regulatory or medical decisions, use official government monitoring.',
 
 
 
@@ -409,18 +405,16 @@ const base: Record<string, string> = {
   'screen.landing.feature2_desc': 'Machine-learning air quality predictions.',
   'screen.landing.feature3_label': 'Works\nOffline',
   'screen.landing.feature3_desc': 'Cached city packs work without a connection.',
-  'screen.landing.stats': '427 Cities · 12 ML Models · 6 Satellites',
+  'screen.landing.stats': '55 countries · free for everyone · works offline',
 
   'screen.onboarding.wordmark': 'MFRAMAPA',
   'screen.onboarding.slide1_title': 'Check air quality instantly',
   'screen.onboarding.slide1_sub':
     'Monitor pollution levels in your area and stay healthy everywhere in Africa.',
-  'screen.onboarding.slide2_title': 'AI-Powered Predictions',
-  'screen.onboarding.slide2_sub':
-    'Satellite data and 12 ML models give you accurate 7-day air quality forecasts.',
-  'screen.onboarding.slide3_title': 'Stay Protected Anywhere',
-  'screen.onboarding.slide3_sub':
-    'Get instant alerts when air quality changes. Works offline with cached city data.',
+  'screen.onboarding.slide2_title': 'Built on satellite data',
+  'screen.onboarding.slide2_sub': 'Satellite observations and weather data drive a four day air quality outlook for cities across Africa.',
+  'screen.onboarding.slide3_title': 'Know before it gets bad',
+  'screen.onboarding.slide3_sub': 'Get a daily alert when a pollution episode is likely near you. Works offline with saved cities.',
   'screen.onboarding.next': 'Next',
   'screen.onboarding.get_started': 'Get Started',
 
