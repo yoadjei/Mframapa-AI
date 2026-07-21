@@ -84,7 +84,7 @@ export function SavedLocationsScreen({ isDark, isOnline, params }) {
           </div>
         ) : (
           savedLocations.map((item) => {
-            const aqiColor = getAQIColor(item.lastAqiCategory ?? "moderate");
+            const aqiColor = getAQIColor(item.lastAqiCategory ?? "moderate", isDark);
             return (
               <div
                 key={item.id}

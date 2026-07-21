@@ -566,7 +566,7 @@ export function CompareCitiesScreen({ isOnline, isDark, params }) {
             </div>
             {ranked.map((item, rank) => {
               const color = CITY_COLORS[item.index % CITY_COLORS.length];
-              const aqiColor = getAQIColor(item.pred.aqi_category);
+              const aqiColor = getAQIColor(item.pred.aqi_category, isDark);
               const barWidth = Math.max(5, Math.min(100, (1 - item.pred.pm25 / 200) * 100));
               return (
                 <div key={item.city.name} style={{ display: "flex", alignItems: "center", gap: 12 }}>

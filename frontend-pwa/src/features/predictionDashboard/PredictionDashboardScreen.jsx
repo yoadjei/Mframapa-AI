@@ -164,7 +164,7 @@ export function PredictionDashboardScreen({ isOnline, isDark, params }) {
   })();
 
   const series = forecast.map((d) => Math.round(d.pm25));
-  const aqiColor = getAQIColor((selected ?? pred)?.aqi_category);
+  const aqiColor = getAQIColor((selected ?? pred)?.aqi_category, isDark);
   const factors = pred?.factors ?? [];
 
   // labels reflect the real days we can forecast, not fixed 24h/48h/7d claims

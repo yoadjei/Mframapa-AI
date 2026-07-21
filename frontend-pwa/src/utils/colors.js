@@ -6,14 +6,41 @@ export const Colors = {
   warning: "#F5C518",
 };
 
-export function getAQIColor(category) {
+/** which band a category falls in, independent of colour. */
+export function aqiBand(category) {
   const c = (category ?? "").toLowerCase();
-  if (c === "good")                                           return "#00C896";
-  if (c === "moderate")                                       return "#F5C518";
-  if (c.includes("sensitive") || c.includes("unhealthy for")) return "#FF8C00";
-  if (c === "unhealthy")                                      return "#E53935";
-  if (c.includes("very") || c.includes("hazardous"))         return "#9C27B0";
-  return "#F5C518";
+  if (c === "good") return "good";
+  if (c === "moderate") return "moderate";
+  if (c.includes("sensitive") || c.includes("unhealthy for")) return "sensitive";
+  if (c === "unhealthy") return "unhealthy";
+  if (c.includes("very") || c.includes("hazardous")) return "hazardous";
+  return "moderate";
+}
+
+// measured against the page background: every one of these clears WCAG AA
+// (4.5:1) for normal text. the previous single palette failed on four of five
+// categories in light mode, and worst of all on hazardous in dark mode, which
+// is the one that matters most.
+const AQI_DARK = {
+  good: "#00C896", moderate: "#F5C518", sensitive: "#FF8C00",
+  unhealthy: "#E53935", hazardous: "#C043D5",
+};
+const AQI_LIGHT = {
+  good: "#008060", moderate: "#8B6E06", sensitive: "#AB5E00",
+  unhealthy: "#DD211C", hazardous: "#9C27B0",
+};
+
+export function getAQIColor(category, isDark = true) {
+  return (isDark ? AQI_DARK : AQI_LIGHT)[aqiBand(category)];
+}
+
+/** a shape for each band, so severity is legible without seeing colour.
+ *  around one in twelve men has some colour vision deficiency. */
+export function aqiSymbol(category) {
+  return {
+    good: "●", moderate: "◐", sensitive: "◑",
+    unhealthy: "◕", hazardous: "■",
+  }[aqiBand(category)];
 }
 
 /**

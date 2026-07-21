@@ -27,8 +27,8 @@ const RISK_KEYS = [
   },
 ];
 
-function AQIBadge({ category, label }) {
-  const color = getAQIColor(category);
+function AQIBadge({ category, label, isDark }) {
+  const color = getAQIColor(category, isDark);
   return (
     <span
       className="flex-shrink-0 rounded-full px-3 py-1 text-[12px] font-bold text-white"
@@ -89,7 +89,7 @@ export function HealthRiskScreen({ isDark, isOnline, params }) {
               <span className="text-[16px] font-bold" style={{ color: colors.text }}>
                 {t(risk.nameKey)}
               </span>
-              <AQIBadge
+              <AQIBadge isDark={isDark}
                 category={risk.category}
                 label={t(aqiCategoryKey(risk.category))}
               />

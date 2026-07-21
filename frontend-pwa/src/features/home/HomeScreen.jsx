@@ -133,7 +133,7 @@ export function HomeScreen({ isOnline }) {
   }
 
   const pred = prediction;
-  const aqiColor = pred ? getAQIColor(pred.aqi_category ?? pred.category) : "#00C896";
+  const aqiColor = pred ? getAQIColor(pred.aqi_category ?? pred.category, isDark) : "#00C896";
   const unreadCount = state.notifications?.filter((n) => !n.read).length ?? 0;
 
   return (

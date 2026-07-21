@@ -8,8 +8,8 @@ import { getPrediction, generateInsight } from "../../services/api.js";
 import { getAQIColor } from "../../utils/colors.js";
 
 // ── AQI dot indicator ────────────────────────────────────────────
-function StatusDot({ category, size = 10 }) {
-  const color = getAQIColor(category);
+function StatusDot({ category, size = 10, isDark }) {
+  const color = getAQIColor(category, isDark);
   return (
     <span
       style={{
@@ -265,7 +265,7 @@ export function SearchScreen({ isOnline, isDark }) {
                         ) : null}
                       </div>
                       {item.category ? (
-                        <StatusDot category={item.category} size={12} />
+                        <StatusDot isDark={isDark} category={item.category} size={12} />
                       ) : null}
                     </button>
                   </li>

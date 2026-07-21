@@ -81,7 +81,7 @@ export function CityDetailScreen({ isDark, params }) {
   const weather = prediction?.weather ?? { temp: 0, humidity: 0, wind: 0 };
   const uncertainty = prediction?.uncertainty ?? null;
   const factors = prediction?.factors ?? null;
-  const aqiColor = getAQIColor(category);
+  const aqiColor = getAQIColor(category, isDark);
   const categoryLabel = t(aqiCategoryKey(category));
   const healthAdvice = t(healthAdviceKey(category));
   const trendLabels = TREND_DAY_KEYS.map((key) => t(key));
