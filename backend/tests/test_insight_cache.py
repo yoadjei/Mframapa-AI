@@ -1,4 +1,8 @@
-"""insight caching — keeps gemini calls off the request path and out of rate limits."""
+"""insight caching — keeps gemini calls off the request path and out of rate limits.
+
+guidance is served from a per category/language pool (see test_insight_variety);
+these tests cover the caching properties of that pool.
+"""
 
 import backend.api.v1.router as router
 from fastapi.testclient import TestClient
@@ -26,16 +30,17 @@ def _patch_cache(monkeypatch, cache):
     monkeypatch.setattr(router, "RedisCache", lambda: cache)
 
 
-def test_cache_hit_skips_gemini_entirely(monkeypatch):
+def test_full_pool_skips_gemini_entirely(monkeypatch):
     """the whole point: real traffic must not hit the model per request."""
-    cache = FakeCache({"insight:unhealthy:en": {"insight": "cached guidance"}})
+    full = [f"cached guidance {i}" for i in range(router._INSIGHT_POOL_TARGET)]
+    cache = FakeCache({"insight:pool:unhealthy:en": {"variants": full}})
     _patch_cache(monkeypatch, cache)
     called = []
     monkeypatch.setattr(router.gemini_client, "is_available", lambda: called.append(1) or True)
 
     r = client.post("/api/v1/generate-insight", json=BODY)
     assert r.status_code == 200
-    assert r.json()["insight"] == "cached guidance"
+    assert r.json()["insight"] in full
     assert called == []          # never even checked availability
 
 
@@ -48,7 +53,7 @@ def test_generated_insight_is_cached(monkeypatch):
 
     r = client.post("/api/v1/generate-insight", json=BODY)
     assert r.json()["insight"] == "fresh guidance"
-    assert cache.store["insight:unhealthy:en"] == {"insight": "fresh guidance"}
+    assert cache.store["insight:pool:unhealthy:en"] == {"variants": ["fresh guidance"]}
     assert cache.sets[0][2] == router._INSIGHT_TTL
 
 
@@ -66,7 +71,7 @@ def test_live_weather_is_not_baked_into_a_cached_string(monkeypatch):
 
 
 def test_language_gets_its_own_cache_entry(monkeypatch):
-    cache = FakeCache({"insight:unhealthy:en": {"insight": "english"}})
+    cache = FakeCache({"insight:pool:unhealthy:en": {"variants": ["english"]}})
     _patch_cache(monkeypatch, cache)
     monkeypatch.setattr(router.gemini_client, "is_available", lambda: True)
     monkeypatch.setattr(router.gemini_client, "generate_air_quality_insight",
@@ -74,7 +79,8 @@ def test_language_gets_its_own_cache_entry(monkeypatch):
 
     r = client.post("/api/v1/generate-insight", json={**BODY, "language": "fr"})
     assert r.json()["insight"] == "conseil francais"
-    assert "insight:unhealthy:fr" in cache.store
+    assert "insight:pool:unhealthy:fr" in cache.store
+    assert cache.store["insight:pool:unhealthy:en"] == {"variants": ["english"]}
 
 
 def test_stub_fallback_is_not_cached(monkeypatch):
