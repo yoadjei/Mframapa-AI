@@ -136,6 +136,11 @@ def _cities() -> list:
         return json.load(f)["cities"]
 
 _INSIGHT_TTL = 30 * 24 * 3600   # guidance per category/language is effectively static
+# guidance for a category is stable, but one identical sentence forever reads like
+# a canned string. we build a small pool per category and language, then rotate
+# through it: the wording changes every view, and gemini is called at most
+# _INSIGHT_POOL_TARGET times per combination, ever.
+_INSIGHT_POOL_TARGET = 12
 _I18N_TTL = 60 * 24 * 3600      # a translated bundle only changes when we ship new copy
 _MAP_SUMMARY_TTL = 3 * 3600     # continental map refreshes a few times a day
 # CAMS air-quality forecast runs out around day 4; past that a 'forecast' would be
@@ -680,37 +685,45 @@ def generate_insight(body: InsightBody) -> Dict[str, str]:
     # instant, stays well inside gemini's rate limits under real traffic, and means the
     # app doesn't degrade if the api key lapses.
     cache = RedisCache()
-    cache_key = f"insight:{key}:{language}"
-    hit = cache.get(cache_key)
-    if hit and hit.get("insight"):
-        return {"insight": hit["insight"]}
+    cache_key = f"insight:pool:{key}:{language}"
+    pool = (cache.get(cache_key) or {}).get("variants") or []
 
-    if gemini_client.is_available():
+    # top the pool up one variant at a time so the first user waits for one
+    # generation, not twelve, and the cost per combination is bounded.
+    if len(pool) < _INSIGHT_POOL_TARGET and gemini_client.is_available():
         try:
-            # deliberately generic: a cached string must not claim today's weather
-            # weeks from now, so live conditions are left out of the prompt.
             text = gemini_client.generate_air_quality_insight(
                 pm25=body.pm25,
                 aqi_category=cat,
-                weather={},
+                weather={},                 # a cached line must not claim today's weather
                 language=language,
                 language_name=body.language_name or None,
+                variant=len(pool),          # nudges gemini away from repeating itself
             )
-            cache.set(cache_key, {"insight": text}, _INSIGHT_TTL)
-            return {"insight": text}
+            if text and text not in pool:
+                pool.append(text)
+                cache.set(cache_key, {"variants": pool}, _INSIGHT_TTL)
         except Exception as exc:
-            logger.warning("Gemini insight failed, using stub: %s", exc)
-            if language not in ("en", ""):
-                try:
-                    translated = gemini_client.translate_strings(
-                        {key: _STUB_INSIGHTS_EN[key]},
-                        target_language=language,
-                        target_language_name=body.language_name or None,
-                    )
-                    cache.set(cache_key, {"insight": translated[key]}, _INSIGHT_TTL)
-                    return {"insight": translated[key]}
-                except Exception:
-                    pass
+            logger.warning("Gemini insight failed: %s", exc)
+
+    if pool:
+        # rotate rather than pick at random: random repeats within a few views,
+        # rotation shows every variant before any of them comes back.
+        counter = cache.get(f"{cache_key}:n") or {}
+        index = int(counter.get("i", 0))
+        cache.set(f"{cache_key}:n", {"i": (index + 1) % len(pool)}, _INSIGHT_TTL)
+        return {"insight": pool[index % len(pool)]}
+
+    if language not in ("en", "") and gemini_client.is_available():
+        try:
+            translated = gemini_client.translate_strings(
+                {key: _STUB_INSIGHTS_EN[key]},
+                target_language=language,
+                target_language_name=body.language_name or None,
+            )
+            return {"insight": translated[key]}
+        except Exception:
+            pass
 
     # stub is intentionally not cached, so a later request retries gemini once it works
     return {"insight": _STUB_INSIGHTS_EN[key]}
