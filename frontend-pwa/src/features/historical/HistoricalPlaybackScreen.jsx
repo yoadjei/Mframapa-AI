@@ -130,7 +130,7 @@ export function HistoricalPlaybackScreen({ isDark }) {
           <ArrowLeft size={22} color={colors.text} />
         </button>
 
-        <MframapaLogo size="sm" />
+        <MframapaLogo size="sm" markOnly />
 
         <div style={{ width: 36 }} />
       </div>

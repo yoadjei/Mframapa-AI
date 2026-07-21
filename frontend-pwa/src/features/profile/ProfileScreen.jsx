@@ -115,7 +115,7 @@ export function ProfileScreen({ isOnline, isDark }) {
 
         {/* Header: Logo */}
         <div className="flex justify-center mb-2">
-          <MframapaLogo size="sm" isDark={isDark ?? true} />
+          <MframapaLogo size="sm" isDark={isDark ?? true} markOnly />
         </div>
 
         {/* Page title */}

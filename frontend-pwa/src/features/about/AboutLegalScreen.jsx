@@ -1,4 +1,5 @@
-import { ArrowLeft, ChevronRight, Leaf } from "lucide-react";
+import { ArrowLeft, ChevronRight } from "lucide-react";
+import { MframapaLogo } from "../../components/brand/MframapaLogo.jsx";
 import { getColors, Colors } from "../../utils/colors.js";
 import { useNavigation } from "../../hooks/useNavigation.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
@@ -69,19 +70,7 @@ export function AboutLegalScreen({ params, isOnline, isDark }) {
             gap: 8,
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <Leaf size={28} color={Colors.brandGreen} />
-            <span
-              style={{
-                fontSize: 24,
-                fontWeight: 900,
-                letterSpacing: "-0.5px",
-                color: Colors.brandGreen,
-              }}
-            >
-              mframapa
-            </span>
-          </div>
+          <MframapaLogo size="xl" isDark={isDark} markOnly />
           <p style={{ fontSize: 13, color: colors.muted }}>
             {t("about.version_build")}
           </p>

@@ -110,7 +110,7 @@ function SlidesPhase({ onDone }) {
     >
       {/* Header — logo */}
       <div className="flex shrink-0 items-center px-6 pt-4 pb-2">
-        <MframapaLogo size="sm" />
+        <MframapaLogo size="sm" markOnly />
       </div>
 
       {/* Slide track */}

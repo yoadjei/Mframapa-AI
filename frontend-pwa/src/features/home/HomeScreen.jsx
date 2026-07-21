@@ -141,7 +141,7 @@ export function HomeScreen({ isOnline }) {
 
         {/* ── Header ── */}
         <div className="flex items-center justify-between px-4 py-3">
-          <MframapaLogo size="sm" isDark={isDark} />
+          <MframapaLogo size="sm" isDark={isDark} markOnly />
           <button
             type="button"
             onClick={() => dispatch({ type: "SET_ACTIVE_SCREEN", payload: "notifications" })}

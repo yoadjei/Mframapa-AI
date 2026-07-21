@@ -1,6 +1,13 @@
-// Matches MframapaLogo.tsx exactly — cloud SVG + "Mframapa" wordmark
-export function MframapaLogo({ size = "md", isDark = true }) {
-  const dims = { sm: { icon: 18, text: 15 }, md: { icon: 24, text: 20 }, lg: { icon: 32, text: 26 } };
+// The single Mframapa mark: a rain cloud, matching MframapaLogo.tsx on mobile.
+// `markOnly` drops the wordmark for in-app headers, where repeating the product
+// name on every screen adds nothing and crowds the top bar.
+export function MframapaLogo({ size = "md", isDark = true, markOnly = false }) {
+  const dims = {
+    sm: { icon: 18, text: 15 },
+    md: { icon: 24, text: 20 },
+    lg: { icon: 32, text: 26 },
+    xl: { icon: 44, text: 30 },
+  };
   const { icon, text } = dims[size] ?? dims.md;
   const restColor = isDark ? "#FFFFFF" : "#0F1419";
 
@@ -21,10 +28,12 @@ export function MframapaLogo({ size = "md", isDark = true }) {
         <path d="M12 16v7" />
         <path d="M16 14v7" />
       </svg>
-      <span style={{ fontSize: text, fontWeight: 700, letterSpacing: "0.2px" }}>
-        <span style={{ color: "#00C896", fontWeight: 800 }}>M</span>
-        <span style={{ color: restColor, fontWeight: 700 }}>framapa</span>
-      </span>
+      {markOnly ? null : (
+        <span style={{ fontSize: text, fontWeight: 700, letterSpacing: "0.2px" }}>
+          <span style={{ color: "#00C896", fontWeight: 800 }}>M</span>
+          <span style={{ color: restColor, fontWeight: 700 }}>framapa</span>
+        </span>
+      )}
     </div>
   );
 }
