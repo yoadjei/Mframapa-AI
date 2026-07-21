@@ -97,3 +97,12 @@ pipeline/data/
 # generated build stamp
 frontend-pwa/src/buildInfo.js
 frontend-pwa/public/version.json
+
+# local working notes, not part of the product
+SCOPE_V2_REFINED.md
+docs/AGENT_GUIDE_*.md
+docs/APP_STORE_GUIDE.md
+docs/PHASE1_QUICKSTART.md
+docs/architecture.png
+docs/deployment/
+notebooks/
