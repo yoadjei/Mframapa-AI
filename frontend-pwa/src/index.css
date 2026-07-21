@@ -115,6 +115,69 @@ html {
   scroll-behavior: smooth;
 }
 
+/* ── iOS feel ──────────────────────────────────────────────────────────────
+   safari needs to be told several of these explicitly; without them a pwa
+   reads as a website: grey flashes on tap, scrolling that stops dead instead
+   of gliding, and the whole page bouncing behind a fixed layout. */
+html, body {
+  /* momentum scrolling, and no rubber banding of the page itself */
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: none;
+  /* the grey box safari paints over anything tapped */
+  -webkit-tap-highlight-color: transparent;
+  /* safari renders text heavier than other engines without this */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* stops text jumping size when the device is rotated */
+  -webkit-text-size-adjust: 100%;
+}
+
+/* long presses should not offer to select or copy interface chrome */
+button, [role="button"], nav, header {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* inputs stay selectable, and 16px stops ios zooming the viewport on focus */
+input, textarea, select {
+  font-size: 16px;
+}
+
+/* ios standard easing: fast out, gentle settle. feels native rather than linear */
+:root {
+  --mf-ease: cubic-bezier(0.32, 0.72, 0, 1);
+  --mf-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* screens arrive with a short rise instead of appearing instantly */
+@keyframes mf-screen-in {
+  from { opacity: 0; transform: translate3d(0, 10px, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+.mf-screen {
+  animation: mf-screen-in 340ms var(--mf-ease-out) both;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* every tappable thing gives way slightly under the finger */
+.mf-press {
+  transition: transform 140ms var(--mf-ease), opacity 140ms var(--mf-ease);
+}
+.mf-press:active {
+  transform: scale(0.97);
+  opacity: 0.9;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .mf-screen { animation: none; }
+  .mf-press { transition: none; }
+  .mf-press:active { transform: none; }
+}
+
 /* Prevent horizontal scroll */
 html, body {
   overflow-x: hidden;
