@@ -95,7 +95,7 @@ export function LandingMarketingScreen({ params, isOnline, isDark }) {
           {/* Wordmark */}
           <p
             style={{
-              fontSize: 11,
+              fontSize: "0.6875rem",
               fontWeight: 800,
               textTransform: "uppercase",
               letterSpacing: "0.2em",
@@ -108,7 +108,7 @@ export function LandingMarketingScreen({ params, isOnline, isDark }) {
 
           <h1
             style={{
-              fontSize: 44,
+              fontSize: "2.75rem",
               fontWeight: 800,
               lineHeight: "52px",
               letterSpacing: "-0.5px",
@@ -120,7 +120,7 @@ export function LandingMarketingScreen({ params, isOnline, isDark }) {
             {t("screen.landing.hero")}
           </h1>
 
-          <p style={{ fontSize: 16, lineHeight: "24px", color: colors.subtext, margin: 0 }}>
+          <p style={{ fontSize: "1rem", lineHeight: "24px", color: colors.subtext, margin: 0 }}>
             {t("screen.landing.hero_sub")}
           </p>
 
@@ -153,10 +153,10 @@ export function LandingMarketingScreen({ params, isOnline, isDark }) {
               }}
             >
               <Icon size={22} color={Colors.brandGreen} />
-              <p style={{ fontSize: 12, fontWeight: 700, lineHeight: "16px", color: colors.text, margin: 0 }}>
+              <p style={{ fontSize: "0.75rem", fontWeight: 700, lineHeight: "16px", color: colors.text, margin: 0 }}>
                 {t(labelKey)}
               </p>
-              <p style={{ fontSize: 10, lineHeight: "14px", color: colors.muted, margin: 0 }}>
+              <p style={{ fontSize: "0.625rem", lineHeight: "14px", color: colors.muted, margin: 0 }}>
                 {t(descKey)}
               </p>
             </div>
@@ -172,7 +172,7 @@ export function LandingMarketingScreen({ params, isOnline, isDark }) {
               backgroundColor: colors.card,
             }}
           >
-            <p style={{ fontSize: 12, fontWeight: 500, color: colors.subtext, margin: 0 }}>
+            <p style={{ fontSize: "0.75rem", fontWeight: 500, color: colors.subtext, margin: 0 }}>
               {t("screen.landing.stats")}
             </p>
           </div>
@@ -183,10 +183,10 @@ export function LandingMarketingScreen({ params, isOnline, isDark }) {
 
         {/* Why Mframapa section */}
         <div style={{ marginBottom: 28, display: "flex", flexDirection: "column", gap: 16, ...enter(3) }}>
-          <h2 style={{ fontSize: 22, fontWeight: 800, color: colors.text, margin: 0 }}>
+          <h2 style={{ fontSize: "1.375rem", fontWeight: 800, color: colors.text, margin: 0 }}>
             {t("screen.landing.why_title")}
           </h2>
-          <p style={{ fontSize: 14, lineHeight: "20px", color: colors.subtext, margin: 0 }}>
+          <p style={{ fontSize: "0.875rem", lineHeight: "20px", color: colors.subtext, margin: 0 }}>
             {t("screen.landing.why_body")}
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -206,7 +206,7 @@ export function LandingMarketingScreen({ params, isOnline, isDark }) {
                 >
                   <Icon size={16} color={Colors.brandGreen} />
                 </div>
-                <p style={{ fontSize: 14, fontWeight: 600, color: colors.text, margin: 0 }}>
+                <p style={{ fontSize: "0.875rem", fontWeight: 600, color: colors.text, margin: 0 }}>
                   {t(labelKey)}
                 </p>
               </div>
@@ -230,17 +230,17 @@ export function LandingMarketingScreen({ params, isOnline, isDark }) {
             border: `1.5px solid ${colors.border}`,
           }}
         >
-          <h2 style={{ fontSize: 20, fontWeight: 800, color: colors.text, margin: 0 }}>
+          <h2 style={{ fontSize: "1.25rem", fontWeight: 800, color: colors.text, margin: 0 }}>
             Free for every individual, forever
           </h2>
-          <p style={{ fontSize: 14, lineHeight: "20px", color: colors.subtext, margin: 0 }}>
+          <p style={{ fontSize: "0.875rem", lineHeight: "20px", color: colors.subtext, margin: 0 }}>
             Air quality estimates, health guidance and episode alerts are free for everyone,
             always. Institutions fund it through API access and data partnerships.
           </p>
         </div>
 
         {/* Footer */}
-        <p style={{ textAlign: "center", fontSize: 11, color: colors.muted, margin: 0 }}>
+        <p style={{ textAlign: "center", fontSize: "0.6875rem", color: colors.muted, margin: 0 }}>
           Made with love for Africa · Version 2.0.0
         </p>
       </div>

@@ -201,7 +201,7 @@ function SlidesPhase({ onDone }) {
             background: "none",
             border: "none",
             padding: "4px 8px",
-            fontSize: 14,
+            fontSize: "0.875rem",
             fontWeight: 600,
             cursor: index === 0 ? "default" : "pointer",
             opacity: index === 0 ? 0 : 1,
@@ -277,14 +277,14 @@ function PermissionsPhase({ onDone }) {
         </div>
 
         <h1
-          className="text-center text-[26px] font-bold"
+          className="text-center text-[1.625rem] font-bold"
           style={{ color: "#FFFFFF" }}
         >
           {t("screen.permissions.title")}
         </h1>
 
         <p
-          className="text-center text-[15px] leading-[22px]"
+          className="text-center text-[0.9375rem] leading-[22px]"
           style={{ color: "#9AA7B5" }}
         >
           {t(
@@ -316,7 +316,7 @@ function PermissionsPhase({ onDone }) {
         <button
           type="button"
           onClick={handleSkip}
-          className="text-[13px]"
+          className="text-[0.8125rem]"
           style={{ color: BRAND_GREEN }}
         >
           {t("screen.permissions.setup_later")}

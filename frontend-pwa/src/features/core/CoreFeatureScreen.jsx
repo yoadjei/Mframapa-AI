@@ -317,7 +317,7 @@ export function CoreFeatureScreen({ isOnline, isDark }) {
             placeholder={t("search.city_placeholder")}
             autoCorrect="off"
             autoCapitalize="words"
-            className="flex-1 bg-transparent text-[15px] outline-none"
+            className="flex-1 bg-transparent text-[0.9375rem] outline-none"
             style={{ color: colors.text }}
           />
           {search.length > 0 ? (
@@ -377,7 +377,7 @@ export function CoreFeatureScreen({ isOnline, isDark }) {
               >
                 <MapPin size={16} color={colors.subtext} style={{ flexShrink: 0 }} />
                 <span
-                  className="flex-1 truncate text-[14px]"
+                  className="flex-1 truncate text-[0.875rem]"
                   style={{ color: colors.text }}
                 >
                   {s.placeName}
@@ -514,7 +514,7 @@ function NoCityListFallback({ cities, loading, onSelectCity, colors, t, error })
             placeholder={t("search.city_placeholder")}
             autoCorrect="off"
             autoCapitalize="words"
-            className="flex-1 bg-transparent text-[15px] outline-none"
+            className="flex-1 bg-transparent text-[0.9375rem] outline-none"
             style={{ color: colors.text }}
           />
           {query ? (
@@ -532,7 +532,7 @@ function NoCityListFallback({ cities, loading, onSelectCity, colors, t, error })
 
       {/* Section label */}
       <p
-        className="px-4 pb-1 text-[13px] font-semibold uppercase tracking-wide"
+        className="px-4 pb-1 text-[0.8125rem] font-semibold uppercase tracking-wide"
         style={{ color: colors.subtext }}
       >
         {t("map.recent")}
@@ -573,13 +573,13 @@ function NoCityListFallback({ cities, loading, onSelectCity, colors, t, error })
                 <MapPin size={18} color={Colors.brandGreen} style={{ flexShrink: 0 }} />
                 <div className="min-w-0 flex-1">
                   <p
-                    className="truncate text-[16px] font-bold"
+                    className="truncate text-[1rem] font-bold"
                     style={{ color: colors.text }}
                   >
                     {city.name}
                   </p>
                   {city.country ? (
-                    <p className="mt-0.5 text-[13px]" style={{ color: colors.subtext }}>
+                    <p className="mt-0.5 text-[0.8125rem]" style={{ color: colors.subtext }}>
                       {city.country}
                     </p>
                   ) : null}

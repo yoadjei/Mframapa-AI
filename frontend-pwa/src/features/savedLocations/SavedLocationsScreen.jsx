@@ -36,7 +36,7 @@ export function SavedLocationsScreen({ isDark, isOnline, params }) {
         </button>
 
         <span
-          className="text-[13px] font-bold uppercase tracking-widest"
+          className="text-[0.8125rem] font-bold uppercase tracking-widest"
           style={{ color: colors.text }}
         >
           {t("screen.saved_locations.title").toUpperCase()}
@@ -66,13 +66,13 @@ export function SavedLocationsScreen({ isDark, isOnline, params }) {
             }}
           >
             <MapPin size={36} color={colors.subtext} />
-            <p className="text-center text-[14px]" style={{ color: colors.subtext }}>
+            <p className="text-center text-[0.875rem]" style={{ color: colors.subtext }}>
               {t("screen.saved_locations.nothing_saved_yet")}
             </p>
             <button
               type="button"
               onClick={handleAdd}
-              className="flex items-center gap-1.5 rounded-full px-3.5 py-2 text-[14px] font-semibold active:opacity-70"
+              className="flex items-center gap-1.5 rounded-full px-3.5 py-2 text-[0.875rem] font-semibold active:opacity-70"
               style={{
                 backgroundColor: Colors.brandGreen + "22",
                 color: Colors.brandGreen,
@@ -96,11 +96,11 @@ export function SavedLocationsScreen({ isDark, isOnline, params }) {
               >
                 {/* Left: location info */}
                 <div className="flex flex-col gap-1">
-                  <span className="text-[18px] font-bold" style={{ color: colors.text }}>
+                  <span className="text-[1.125rem] font-bold" style={{ color: colors.text }}>
                     {item.name}
                   </span>
                   {item.country ? (
-                    <span className="text-[12px]" style={{ color: colors.subtext }}>
+                    <span className="text-[0.75rem]" style={{ color: colors.subtext }}>
                       {item.country}
                     </span>
                   ) : null}
@@ -111,7 +111,7 @@ export function SavedLocationsScreen({ isDark, isOnline, params }) {
                       style={{ backgroundColor: aqiColor }}
                     />
                     <span
-                      className="text-[11px] font-semibold"
+                      className="text-[0.6875rem] font-semibold"
                       style={{ color: colors.subtext }}
                     >
                       {t("common.aqi")}
@@ -122,14 +122,14 @@ export function SavedLocationsScreen({ isDark, isOnline, params }) {
                 {/* Right: PM2.5 + delete */}
                 <div className="flex flex-col items-end gap-2">
                   <div className="flex flex-col items-end gap-0.5">
-                    <span className="text-[11px]" style={{ color: colors.subtext }}>
+                    <span className="text-[0.6875rem]" style={{ color: colors.subtext }}>
                       {t("screen.saved_locations.last_pm25")}
                     </span>
-                    <span className="text-[14px] font-bold" style={{ color: colors.text }}>
+                    <span className="text-[0.875rem] font-bold" style={{ color: colors.text }}>
                       {item.lastPm25} {t("unit.ug_m3")}
                     </span>
                     {item.lastChecked ? (
-                      <span className="text-[11px]" style={{ color: colors.muted }}>
+                      <span className="text-[0.6875rem]" style={{ color: colors.muted }}>
                         {item.lastChecked}
                       </span>
                     ) : null}

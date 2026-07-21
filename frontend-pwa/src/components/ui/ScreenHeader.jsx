@@ -19,7 +19,7 @@ export function ScreenHeader({ title, right, onBack, colors }) {
         <ChevronLeft size={22} color={colors?.text ?? "#FFFFFF"} />
       </button>
 
-      <span className="text-[17px] font-bold" style={{ color: colors?.text ?? "#FFFFFF" }}>
+      <span className="text-[1.0625rem] font-bold" style={{ color: colors?.text ?? "#FFFFFF" }}>
         {title}
       </span>
 

@@ -31,7 +31,7 @@ function Field({ label, placeholder, value, onChange, type = "text", icon: Icon,
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
       {label && (
-        <span style={{ fontSize: 13, fontWeight: 500, color: c.SUBTEXT }}>{label}</span>
+        <span style={{ fontSize: "0.8125rem", fontWeight: 500, color: c.SUBTEXT }}>{label}</span>
       )}
       <div style={{
         display: "flex", alignItems: "center", gap: 10,
@@ -46,7 +46,7 @@ function Field({ label, placeholder, value, onChange, type = "text", icon: Icon,
           value={value}
           onChange={(e) => onChange(e.target.value)}
           autoComplete={autoComplete}
-          style={{ flex: 1, background: "transparent", border: "none", outline: "none", fontSize: 15, color: c.TEXT }}
+          style={{ flex: 1, background: "transparent", border: "none", outline: "none", fontSize: "0.9375rem", color: c.TEXT }}
           className="placeholder:opacity-40"
         />
         {secure && (
@@ -83,7 +83,7 @@ function BackBtn({ onPress, label = "Back", c }) {
       style={{
         display: "flex", alignItems: "center", gap: 4,
         background: "none", border: "none", cursor: "pointer",
-        color: c.TEXT, fontSize: 16, padding: 0,
+        color: c.TEXT, fontSize: "1rem", padding: 0,
       }}>
       <ChevronLeft size={22} color={c.TEXT} />
       {label}
@@ -122,11 +122,11 @@ function LoginView({ onAuth, onSignUp, onForgot, c, isDark }) {
       </div>
 
       {/* heading */}
-      <p style={{ fontSize: 28, fontWeight: 800, color: c.TEXT, marginBottom: 6, marginTop: 0 }}>
+      <p style={{ fontSize: "1.75rem", fontWeight: 800, color: c.TEXT, marginBottom: 6, marginTop: 0 }}>
         Welcome back
       </p>
       {/* sub */}
-      <p style={{ fontSize: 15, color: c.SUBTEXT, marginBottom: 28, marginTop: 0 }}>
+      <p style={{ fontSize: "0.9375rem", color: c.SUBTEXT, marginBottom: 28, marginTop: 0 }}>
         Sign in to your Mframapa account.
       </p>
 
@@ -146,13 +146,13 @@ function LoginView({ onAuth, onSignUp, onForgot, c, isDark }) {
         {/* Forgot password — alignSelf flex-end, marginBottom 24 */}
         <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 24 }}>
           <button type="button" onClick={onForgot}
-            style={{ background: "none", border: "none", cursor: "pointer", fontSize: 14, fontWeight: 500, color: GREEN }}>
+            style={{ background: "none", border: "none", cursor: "pointer", fontSize: "0.875rem", fontWeight: 500, color: GREEN }}>
             Forgot password?
           </button>
         </div>
 
         {error && (
-          <p style={{ fontSize: 13, color: "#E53935", backgroundColor: "rgba(229,57,53,0.08)",
+          <p style={{ fontSize: "0.8125rem", color: "#E53935", backgroundColor: "rgba(229,57,53,0.08)",
             borderRadius: 10, padding: "10px 14px", marginBottom: 12, marginTop: 0 }}>
             {error}
           </p>
@@ -166,9 +166,9 @@ function LoginView({ onAuth, onSignUp, onForgot, c, isDark }) {
 
       {/* signupRow — justifyContent center, marginTop 24, gap 6 */}
       <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: 24, gap: 6 }}>
-        <span style={{ fontSize: 14, color: c.SUBTEXT }}>Don&apos;t have an account?</span>
+        <span style={{ fontSize: "0.875rem", color: c.SUBTEXT }}>Don&apos;t have an account?</span>
         <button type="button" onClick={onSignUp}
-          style={{ background: "none", border: "none", cursor: "pointer", fontSize: 14, fontWeight: 600, color: GREEN }}>
+          style={{ background: "none", border: "none", cursor: "pointer", fontSize: "0.875rem", fontWeight: 600, color: GREEN }}>
           Sign up now
         </button>
       </div>
@@ -222,10 +222,10 @@ function SignUpView({ onAuth, onBack, c, isDark }) {
         <MframapaLogo size="lg" isDark={isDark} />
       </div>
 
-      <p style={{ fontSize: 28, fontWeight: 800, color: c.TEXT, marginBottom: 6, marginTop: 0 }}>
+      <p style={{ fontSize: "1.75rem", fontWeight: 800, color: c.TEXT, marginBottom: 6, marginTop: 0 }}>
         Create account
       </p>
-      <p style={{ fontSize: 15, color: c.SUBTEXT, marginBottom: 24, marginTop: 0 }}>
+      <p style={{ fontSize: "0.9375rem", color: c.SUBTEXT, marginBottom: 24, marginTop: 0 }}>
         Start monitoring air quality across Africa.
       </p>
 
@@ -248,13 +248,13 @@ function SignUpView({ onAuth, onBack, c, isDark }) {
         </div>
 
         {error && (
-          <p style={{ fontSize: 13, color: "#E53935", backgroundColor: "rgba(229,57,53,0.08)",
+          <p style={{ fontSize: "0.8125rem", color: "#E53935", backgroundColor: "rgba(229,57,53,0.08)",
             borderRadius: 10, padding: "10px 14px", marginBottom: 12, marginTop: 0 }}>
             {error}
           </p>
         )}
         {notice && (
-          <p style={{ fontSize: 13, color: GREEN, backgroundColor: "rgba(16,185,129,0.10)",
+          <p style={{ fontSize: "0.8125rem", color: GREEN, backgroundColor: "rgba(16,185,129,0.10)",
             borderRadius: 10, padding: "10px 14px", marginBottom: 12, marginTop: 0 }}>
             {notice}
           </p>
@@ -268,9 +268,9 @@ function SignUpView({ onAuth, onBack, c, isDark }) {
 
       {/* loginRow — justifyContent center, marginTop 24, gap 6 */}
       <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: 24, gap: 6 }}>
-        <span style={{ fontSize: 14, color: c.SUBTEXT }}>Already have an account?</span>
+        <span style={{ fontSize: "0.875rem", color: c.SUBTEXT }}>Already have an account?</span>
         <button type="button" onClick={onBack}
-          style={{ background: "none", border: "none", cursor: "pointer", fontSize: 14, fontWeight: 600, color: GREEN }}>
+          style={{ background: "none", border: "none", cursor: "pointer", fontSize: "0.875rem", fontWeight: 600, color: GREEN }}>
           Sign in
         </button>
       </div>
@@ -310,10 +310,10 @@ function ForgotView({ onBack , c, isDark }) {
         <Lock size={40} color={GREEN} />
       </div>
 
-      <p style={{ fontSize: 28, fontWeight: 800, color: c.TEXT, marginBottom: 6, marginTop: 0 }}>
+      <p style={{ fontSize: "1.75rem", fontWeight: 800, color: c.TEXT, marginBottom: 6, marginTop: 0 }}>
         Reset password
       </p>
-      <p style={{ fontSize: 15, color: c.SUBTEXT, marginBottom: 28, marginTop: 0 }}>
+      <p style={{ fontSize: "0.9375rem", color: c.SUBTEXT, marginBottom: 28, marginTop: 0 }}>
         Enter your email and we&apos;ll send a reset link.
       </p>
 
@@ -335,7 +335,7 @@ function ForgotView({ onBack , c, isDark }) {
               <path d="M2 6l3 3 5-5" stroke="#0A0D12" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </div>
-          <p style={{ fontSize: 14, fontWeight: 500, color: GREEN, margin: 0, flex: 1 }}>
+          <p style={{ fontSize: "0.875rem", fontWeight: 500, color: GREEN, margin: 0, flex: 1 }}>
             Check your inbox — a reset link is on its way.
           </p>
         </div>
@@ -355,7 +355,7 @@ function ForgotView({ onBack , c, isDark }) {
       {/* backLinkWrap — alignSelf center, marginTop 24 */}
       <div style={{ display: "flex", justifyContent: "center", marginTop: 24 }}>
         <button type="button" onClick={onBack}
-          style={{ background: "none", border: "none", cursor: "pointer", fontSize: 14, color: c.SUBTEXT }}>
+          style={{ background: "none", border: "none", cursor: "pointer", fontSize: "0.875rem", color: c.SUBTEXT }}>
           Back to login
         </button>
       </div>

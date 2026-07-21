@@ -27,6 +27,8 @@ const initialState = {
     notificationsEnabled: true,
     privacyMode: "balanced",
     liteMode: false,
+    // 1 is the browser default; larger values scale every rem in the app
+    textScale: 1,
     locationSharing: "balanced",
   },
   ui: {
@@ -229,6 +231,14 @@ export function AppStateProvider({ children }) {
     mq.addEventListener("change", apply);
     return () => mq.removeEventListener("change", apply);
   }, [state.preferences.theme]);
+
+  // ios does not pass the system font size through to web content, so the app
+  // has to offer its own control. every size in the interface is in rem, so
+  // moving the root size scales all of it together.
+  useEffect(() => {
+    const scale = state.preferences.textScale ?? 1;
+    document.documentElement.style.fontSize = `${Math.round(scale * 100)}%`;
+  }, [state.preferences.textScale]);
 
   const value = useMemo(() => ({ state, dispatch }), [state]);
   return <AppStateContext.Provider value={value}>{children}</AppStateContext.Provider>;

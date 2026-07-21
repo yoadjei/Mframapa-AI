@@ -38,7 +38,7 @@ function UncertaintyBar({ low, mid, high, color, colors }) {
         style={{
           display: "flex",
           justifyContent: "space-between",
-          fontSize: 11,
+          fontSize: "0.6875rem",
           color: colors.muted,
         }}
       >
@@ -79,7 +79,7 @@ function UncertaintyBar({ low, mid, high, color, colors }) {
       <p
         style={{
           textAlign: "center",
-          fontSize: 12,
+          fontSize: "0.75rem",
           fontWeight: 600,
           color,
           margin: 0,
@@ -218,7 +218,7 @@ export function PredictionDashboardScreen({ isOnline, isDark, params }) {
         </button>
         <span
           style={{
-            fontSize: 13,
+            fontSize: "0.8125rem",
             fontWeight: 700,
             letterSpacing: 1,
             color: colors.text,
@@ -254,7 +254,7 @@ export function PredictionDashboardScreen({ isOnline, isDark, params }) {
             <BarChart3 size={48} color={colors.subtext} />
             <p
               style={{
-                fontSize: 15,
+                fontSize: "0.9375rem",
                 textAlign: "center",
                 paddingLeft: 32,
                 paddingRight: 32,
@@ -273,7 +273,7 @@ export function PredictionDashboardScreen({ isOnline, isDark, params }) {
                 paddingTop: 10,
                 paddingBottom: 10,
                 borderRadius: 999,
-                fontSize: 14,
+                fontSize: "0.875rem",
                 fontWeight: 600,
                 backgroundColor: Colors.brandGreen + "22",
                 color: Colors.brandGreen,
@@ -290,7 +290,7 @@ export function PredictionDashboardScreen({ isOnline, isDark, params }) {
             <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
               <MapPin size={16} color={colors.subtext} />
               <span
-                style={{ fontSize: 14, fontWeight: 600, color: colors.text }}
+                style={{ fontSize: "0.875rem", fontWeight: 600, color: colors.text }}
               >
                 {pred.location?.name ?? "—"}
               </span>
@@ -316,7 +316,7 @@ export function PredictionDashboardScreen({ isOnline, isDark, params }) {
                     paddingTop: 8,
                     paddingBottom: 8,
                     borderRadius: 8,
-                    fontSize: 14,
+                    fontSize: "0.875rem",
                     fontWeight: 600,
                     border: "none",
                     cursor: "pointer",
@@ -330,7 +330,7 @@ export function PredictionDashboardScreen({ isOnline, isDark, params }) {
               ))}
             </div>
             {reducedConfidence && (
-              <p style={{ fontSize: 12, color: colors.muted, marginTop: 8, marginBottom: 0 }}>
+              <p style={{ fontSize: "0.75rem", color: colors.muted, marginTop: 8, marginBottom: 0 }}>
 {t("screen.prediction_dashboard.reduced_confidence")}.
               </p>
             )}
@@ -351,7 +351,7 @@ export function PredictionDashboardScreen({ isOnline, isDark, params }) {
             >
               <p
                 style={{
-                  fontSize: 13,
+                  fontSize: "0.8125rem",
                   fontWeight: 600,
                   textTransform: "uppercase",
                   letterSpacing: "0.05em",
@@ -366,7 +366,7 @@ export function PredictionDashboardScreen({ isOnline, isDark, params }) {
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
-                  fontSize: 11,
+                  fontSize: "0.6875rem",
                   color: colors.muted,
                 }}
               >
@@ -390,20 +390,20 @@ export function PredictionDashboardScreen({ isOnline, isDark, params }) {
                   gap: 6,
                 }}
               >
-                <span style={{ fontSize: 12, color: colors.subtext }}>
+                <span style={{ fontSize: "0.75rem", color: colors.subtext }}>
                   {t("screen.prediction_dashboard.predicted_high")}
                 </span>
                 <div style={{ display: "flex", alignItems: "baseline", gap: 4 }}>
                   <span
                     style={{
-                      fontSize: 28,
+                      fontSize: "1.75rem",
                       fontWeight: 800,
                       color: colors.text,
                     }}
                   >
                     {derivedBand.high}
                   </span>
-                  <span style={{ fontSize: 13, color: colors.subtext }}>
+                  <span style={{ fontSize: "0.8125rem", color: colors.subtext }}>
                     {t("unit.ug_m3")}
                   </span>
                 </div>
@@ -421,20 +421,20 @@ export function PredictionDashboardScreen({ isOnline, isDark, params }) {
                   gap: 6,
                 }}
               >
-                <span style={{ fontSize: 12, color: colors.subtext }}>
+                <span style={{ fontSize: "0.75rem", color: colors.subtext }}>
                   {t("screen.prediction_dashboard.predicted_low")}
                 </span>
                 <div style={{ display: "flex", alignItems: "baseline", gap: 4 }}>
                   <span
                     style={{
-                      fontSize: 28,
+                      fontSize: "1.75rem",
                       fontWeight: 800,
                       color: colors.text,
                     }}
                   >
                     {derivedBand.low}
                   </span>
-                  <span style={{ fontSize: 13, color: colors.subtext }}>
+                  <span style={{ fontSize: "0.8125rem", color: colors.subtext }}>
                     {t("unit.ug_m3")}
                   </span>
                 </div>
@@ -456,12 +456,12 @@ export function PredictionDashboardScreen({ isOnline, isDark, params }) {
               }}
             >
               <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                <span style={{ fontSize: 12, color: colors.muted }}>
+                <span style={{ fontSize: "0.75rem", color: colors.muted }}>
                   AQI Category
                 </span>
                 <span
                   style={{
-                    fontSize: 18,
+                    fontSize: "1.125rem",
                     fontWeight: 700,
                     textTransform: "capitalize",
                     color: aqiColor,
@@ -483,7 +483,7 @@ export function PredictionDashboardScreen({ isOnline, isDark, params }) {
               >
                 <span
                   style={{
-                    fontSize: 22,
+                    fontSize: "1.375rem",
                     fontWeight: 900,
                     color: aqiColor,
                   }}
@@ -509,7 +509,7 @@ export function PredictionDashboardScreen({ isOnline, isDark, params }) {
             >
               <p
                 style={{
-                  fontSize: 13,
+                  fontSize: "0.8125rem",
                   fontWeight: 600,
                   color: colors.text,
                   margin: 0,
@@ -543,7 +543,7 @@ export function PredictionDashboardScreen({ isOnline, isDark, params }) {
               >
                 <p
                   style={{
-                    fontSize: 13,
+                    fontSize: "0.8125rem",
                     fontWeight: 600,
                     color: colors.text,
                     margin: 0,
@@ -573,7 +573,7 @@ export function PredictionDashboardScreen({ isOnline, isDark, params }) {
                             FACTORS_COLORS[i % FACTORS_COLORS.length],
                         }}
                       />
-                      <span style={{ fontSize: 13, color: colors.subtext }}>
+                      <span style={{ fontSize: "0.8125rem", color: colors.subtext }}>
                         {f}
                       </span>
                     </div>

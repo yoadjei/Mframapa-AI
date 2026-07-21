@@ -105,7 +105,7 @@ export function CountryExplorerScreen({ isDark }) {
         >
           <span
             className="font-extrabold"
-            style={{ fontSize: 28, color: colors.text, flex: 1, textAlign: "left" }}
+            style={{ fontSize: "1.75rem", color: colors.text, flex: 1, textAlign: "left" }}
           >
             {selectedCountry || t("screen.country.tap_to_choose") || "Tap to choose…"}
           </span>
@@ -114,7 +114,7 @@ export function CountryExplorerScreen({ isDark }) {
 
         {/* Error message */}
         {errorMsg && (
-          <p className="text-[13px]" style={{ color: Colors.danger }}>
+          <p className="text-[0.8125rem]" style={{ color: Colors.danger }}>
             {errorMsg}
           </p>
         )}
@@ -136,7 +136,7 @@ export function CountryExplorerScreen({ isDark }) {
           >
             <MapPin size={36} color={colors.subtext} />
             <p
-              className="text-[14px] text-center"
+              className="text-[0.875rem] text-center"
               style={{ color: countries.length === 0 ? colors.subtext : colors.subtext }}
             >
               {countries.length === 0
@@ -172,11 +172,11 @@ export function CountryExplorerScreen({ isDark }) {
               )}
               <span
                 className="font-semibold"
-                style={{ flex: 1, fontSize: 16, color: colors.text, textAlign: "left" }}
+                style={{ flex: 1, fontSize: "1rem", color: colors.text, textAlign: "left" }}
               >
                 {city.name}
               </span>
-              <span className="text-[12px]" style={{ color: colors.subtext }}>
+              <span className="text-[0.75rem]" style={{ color: colors.subtext }}>
                 {city.lat.toFixed(2)}°, {city.lon.toFixed(2)}°
               </span>
               <ChevronLeft
@@ -201,7 +201,7 @@ export function CountryExplorerScreen({ isDark }) {
             flexDirection: "column",
           }}
         >
-          <span className="text-[17px] font-bold" style={{ color: colors.text }}>
+          <span className="text-[1.0625rem] font-bold" style={{ color: colors.text }}>
             {t("country.stats_title") || "Coverage Stats"}
           </span>
           <div className="flex flex-wrap" style={{ gap: 18 }}>
@@ -211,10 +211,10 @@ export function CountryExplorerScreen({ isDark }) {
               { label: t("screen.country.rural_cities") || "Rural", value: stats.rural },
             ].map((item) => (
               <div key={item.label} className="flex flex-col" style={{ width: "28%", gap: 2 }}>
-                <span className="text-[12px]" style={{ color: colors.subtext }}>
+                <span className="text-[0.75rem]" style={{ color: colors.subtext }}>
                   {item.label}
                 </span>
-                <span className="text-[20px] font-bold" style={{ color: colors.text }}>
+                <span className="text-[1.25rem] font-bold" style={{ color: colors.text }}>
                   {item.value}
                 </span>
               </div>
@@ -268,7 +268,7 @@ export function CountryExplorerScreen({ isDark }) {
               }}
             />
             <p
-              className="text-[18px] font-bold"
+              className="text-[1.125rem] font-bold"
               style={{ color: colors.text, marginBottom: 8 }}
             >
               {t("screen.country.choose_country")}
@@ -276,7 +276,7 @@ export function CountryExplorerScreen({ isDark }) {
 
             {countries.length === 0 ? (
               <p
-                className="text-[14px] text-center py-8"
+                className="text-[0.875rem] text-center py-8"
                 style={{ color: colors.subtext }}
               >
                 No countries yet — save some cities first.
@@ -304,7 +304,7 @@ export function CountryExplorerScreen({ isDark }) {
                       cursor: "pointer",
                     }}
                   >
-                    <span className="text-[16px]" style={{ color: colors.text }}>
+                    <span className="text-[1rem]" style={{ color: colors.text }}>
                       {country}
                     </span>
                     {country === selectedCountry && (

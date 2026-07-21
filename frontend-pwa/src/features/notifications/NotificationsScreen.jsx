@@ -53,7 +53,7 @@ function NotificationSettingsSheet({ visible, onClose, onMarkAllRead, isDark, un
 
         {/* header */}
         <div className="flex items-center justify-between pb-3">
-          <span className="text-[18px] font-bold" style={{ color: colors.text }}>
+          <span className="text-[1.125rem] font-bold" style={{ color: colors.text }}>
             {t("notif_prefs.title")}
           </span>
           <button
@@ -73,10 +73,10 @@ function NotificationSettingsSheet({ visible, onClose, onMarkAllRead, isDark, un
             style={{ borderBottom: `1px solid ${colors.border}` }}
           >
             <div className="flex-1">
-              <p className="text-[15px] font-medium" style={{ color: colors.text }}>
+              <p className="text-[0.9375rem] font-medium" style={{ color: colors.text }}>
                 {t("notif_prefs.all_notifications")}
               </p>
-              <p className="mt-0.5 text-[12px]" style={{ color: colors.subtext }}>
+              <p className="mt-0.5 text-[0.75rem]" style={{ color: colors.subtext }}>
                 {t("notif_prefs.all_notifications_explainer")}
               </p>
             </div>
@@ -98,7 +98,7 @@ function NotificationSettingsSheet({ visible, onClose, onMarkAllRead, isDark, un
 
           {/* per-category section label */}
           <p
-            className="mt-4 mb-1 text-[11px] font-semibold uppercase tracking-[0.5px]"
+            className="mt-4 mb-1 text-[0.6875rem] font-semibold uppercase tracking-[0.5px]"
             style={{ color: colors.muted }}
           >
             {t("notif_prefs.categories")}
@@ -119,7 +119,7 @@ function NotificationSettingsSheet({ visible, onClose, onMarkAllRead, isDark, un
               >
                 <Icon size={18} color={Colors.brandGreen} />
               </div>
-              <p className="flex-1 text-[15px] font-medium" style={{ color: colors.text }}>
+              <p className="flex-1 text-[0.9375rem] font-medium" style={{ color: colors.text }}>
                 {t(labelKey)}
               </p>
               {/* category toggles are display-only in PWA (no per-category state yet) */}
@@ -149,7 +149,7 @@ function NotificationSettingsSheet({ visible, onClose, onMarkAllRead, isDark, un
             style={{ borderColor: colors.border }}
           >
             <CheckCheck size={18} color={Colors.brandGreen} />
-            <span className="text-[15px] font-medium" style={{ color: colors.text }}>
+            <span className="text-[0.9375rem] font-medium" style={{ color: colors.text }}>
               {unreadCount > 0
                 ? t("notif_prefs.mark_count_as_read", { count: String(unreadCount) })
                 : t("notif_prefs.nothing_unread")}
@@ -210,12 +210,12 @@ export function NotificationsScreen({ isOnline, isDark }) {
         >
           {/* title + unread pill */}
           <div className="flex flex-1 min-w-0 items-center gap-[10px]">
-            <h1 className="text-[28px] font-extrabold leading-tight" style={{ color: colors.text }}>
+            <h1 className="text-[1.75rem] font-extrabold leading-tight" style={{ color: colors.text }}>
               {t("alerts.title")}
             </h1>
             {unreadCount > 0 ? (
               <span
-                className="flex h-[22px] min-w-[24px] items-center justify-center rounded-full px-2 text-[12px] font-bold text-white flex-shrink-0"
+                className="flex h-[22px] min-w-[24px] items-center justify-center rounded-full px-2 text-[0.75rem] font-bold text-white flex-shrink-0"
                 style={{ backgroundColor: Colors.brandGreen }}
               >
                 {unreadCount > 99 ? "99+" : unreadCount}
@@ -229,7 +229,7 @@ export function NotificationsScreen({ isOnline, isDark }) {
               type="button"
               onClick={handleMarkAll}
               disabled={unreadCount === 0}
-              className="text-[13px] font-semibold active:opacity-60 disabled:opacity-40"
+              className="text-[0.8125rem] font-semibold active:opacity-60 disabled:opacity-40"
               style={{ color: Colors.brandGreen }}
             >
               {t("alerts.mark_all")}
@@ -254,10 +254,10 @@ export function NotificationsScreen({ isOnline, isDark }) {
             >
               <Bell size={28} color={colors.subtext} />
             </div>
-            <p className="text-[17px] font-bold" style={{ color: colors.text }}>
+            <p className="text-[1.0625rem] font-bold" style={{ color: colors.text }}>
               {t("alerts.empty_title")}
             </p>
-            <p className="text-center text-[14px] leading-relaxed" style={{ color: colors.subtext }}>
+            <p className="text-center text-[0.875rem] leading-relaxed" style={{ color: colors.subtext }}>
               {t("alerts.empty_on")}
             </p>
           </div>
@@ -316,7 +316,7 @@ export function NotificationsScreen({ isOnline, isDark }) {
                     {/* text block */}
                     <div className="flex-1 min-w-0" style={{ gap: 2 }}>
                       <p
-                        className="text-[15px] leading-snug"
+                        className="text-[0.9375rem] leading-snug"
                         style={{
                           color: colors.text,
                           fontWeight: isUnread ? "700" : "500",
@@ -325,12 +325,12 @@ export function NotificationsScreen({ isOnline, isDark }) {
                         {title}
                       </p>
                       {subtitle ? (
-                        <p className="mt-0.5 text-[13px] leading-snug" style={{ color: colors.subtext }}>
+                        <p className="mt-0.5 text-[0.8125rem] leading-snug" style={{ color: colors.subtext }}>
                           {subtitle}
                         </p>
                       ) : null}
                       {timestamp ? (
-                        <p className="mt-1 text-[12px]" style={{ color: colors.muted }}>
+                        <p className="mt-1 text-[0.75rem]" style={{ color: colors.muted }}>
                           {timestamp}
                         </p>
                       ) : null}

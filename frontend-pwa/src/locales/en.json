@@ -667,5 +667,11 @@
   "a11y.reading_summary": "Air quality in {{city}}: {{pm25}} micrograms per cubic metre, {{category}}.",
   "a11y.reading_pending": "Air quality reading not loaded yet.",
   "a11y.open_details": "Open full details",
-  "a11y.notifications": "Notifications, {{count}} unread"
+  "a11y.notifications": "Notifications, {{count}} unread",
+  "settings.text_size": "Text size",
+  "settings.text_size_normal": "Normal",
+  "settings.text_size_large": "Large",
+  "settings.text_size_larger": "Larger",
+  "a11y.text_size_hint": "Makes all text in the app bigger",
+  "settings.accessibility": "Accessibility"
 }

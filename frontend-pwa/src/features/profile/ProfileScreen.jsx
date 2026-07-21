@@ -88,7 +88,7 @@ export function ProfileScreen({ isOnline, isDark }) {
         </div>
 
         {/* Page title */}
-        <p className="text-[22px] font-bold text-center mb-5" style={{ color: colors.text }}>
+        <p className="text-[1.375rem] font-bold text-center mb-5" style={{ color: colors.text }}>
           {t("screen.profile.title")}
         </p>
 
@@ -114,7 +114,7 @@ export function ProfileScreen({ isOnline, isDark }) {
                   style={{ width: "100%", height: "100%", objectFit: "contain" }}
                 />
               ) : (
-                <span className="text-[30px] font-bold" style={{ color: Colors.brandGreen }}>
+                <span className="text-[1.875rem] font-bold" style={{ color: Colors.brandGreen }}>
                   {initials}
                 </span>
               )}
@@ -138,11 +138,11 @@ export function ProfileScreen({ isOnline, isDark }) {
         />
         {/* Tier badge */}
         <div className="flex items-center justify-center gap-2 mb-6">
-          <span className="text-[14px]" style={{ color: colors.subtext }}>
+          <span className="text-[0.875rem]" style={{ color: colors.subtext }}>
             {t("screen.profile.account_tier")}
           </span>
           <span
-            className="px-3 py-0.5 rounded-full text-[13px] font-semibold"
+            className="px-3 py-0.5 rounded-full text-[0.8125rem] font-semibold"
             style={{ backgroundColor: tierStyle.bg, color: tierStyle.text }}
           >
             {tierStyle.label}
@@ -160,7 +160,7 @@ export function ProfileScreen({ isOnline, isDark }) {
         {authenticated ? (
           <div className="mb-6">
             <p
-              className="mb-2 text-[11px] font-semibold uppercase tracking-widest"
+              className="mb-2 text-[0.6875rem] font-semibold uppercase tracking-widest"
               style={{ color: colors.subtext }}
             >
               {t("screen.profile.account_details")}
@@ -178,14 +178,14 @@ export function ProfileScreen({ isOnline, isDark }) {
                   className="flex items-center justify-between py-3"
                   style={{ borderTop: i === 0 ? "none" : `1px solid ${colors.border}` }}
                 >
-                  <span className="text-[13px]" style={{ color: colors.subtext }}>{row.label}</span>
-                  <span className="text-[14px] font-medium" style={{ color: colors.text }}>
+                  <span className="text-[0.8125rem]" style={{ color: colors.subtext }}>{row.label}</span>
+                  <span className="text-[0.875rem] font-medium" style={{ color: colors.text }}>
                     {row.value || t("screen.profile.not_set")}
                   </span>
                 </div>
               ))}
             </div>
-            <p className="mt-2 text-[12px]" style={{ color: colors.muted }}>
+            <p className="mt-2 text-[0.75rem]" style={{ color: colors.muted }}>
               {t("screen.profile.managed_note")}
             </p>
           </div>
@@ -194,10 +194,10 @@ export function ProfileScreen({ isOnline, isDark }) {
             className="mb-6 rounded-2xl border p-4"
             style={{ backgroundColor: colors.card, borderColor: colors.border }}
           >
-            <p className="mb-1 text-[15px] font-semibold m-0" style={{ color: colors.text }}>
+            <p className="mb-1 text-[0.9375rem] font-semibold m-0" style={{ color: colors.text }}>
               {t("screen.profile.anon_title")}
             </p>
-            <p className="mb-3 text-[13px] leading-[19px] m-0" style={{ color: colors.subtext }}>
+            <p className="mb-3 text-[0.8125rem] leading-[19px] m-0" style={{ color: colors.subtext }}>
               {t("screen.profile.anon_body")}
             </p>
             <PrimaryButton
@@ -217,7 +217,7 @@ export function ProfileScreen({ isOnline, isDark }) {
               className="flex w-full items-center justify-between py-3.5 text-left active:opacity-60"
               style={{ borderBottom: `1px solid ${colors.border}` }}
             >
-              <span className="text-[15px]" style={{ color: colors.text }}>
+              <span className="text-[0.9375rem]" style={{ color: colors.text }}>
                 {t(item.labelKey)}
               </span>
               <ChevronRight size={18} color={colors.subtext} />
@@ -232,7 +232,7 @@ export function ProfileScreen({ isOnline, isDark }) {
             <button
               type="button"
               onClick={async () => { await logout().catch(() => undefined); dispatch({ type: "LOGOUT" }); }}
-              className="flex items-center gap-2 text-[16px] font-medium active:opacity-60"
+              className="flex items-center gap-2 text-[1rem] font-medium active:opacity-60"
               style={{ color: Colors.danger }}
             >
               <LogOut size={18} color={Colors.danger} />
@@ -242,7 +242,7 @@ export function ProfileScreen({ isOnline, isDark }) {
             <button
               type="button"
               onClick={() => navigate("auth")}
-              className="flex items-center gap-2 rounded-full px-5 py-2.5 text-[15px] font-semibold active:opacity-70"
+              className="flex items-center gap-2 rounded-full px-5 py-2.5 text-[0.9375rem] font-semibold active:opacity-70"
               style={{ backgroundColor: Colors.brandGreen, color: "#00110B" }}
             >
               <LogIn size={18} color="#00110B" />

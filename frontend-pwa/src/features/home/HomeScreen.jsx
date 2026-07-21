@@ -4,18 +4,9 @@ import { useAppState } from "../../state/appState.jsx";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { fetchCityPrediction, fetchPredictionAtCoords } from "../../services/predictionService.js";
 import { MframapaLogo } from "../../components/brand/MframapaLogo.jsx";
+import { getAQIColor, aqiSymbol } from "../../utils/colors.js";
 
 // ── AQI helpers ───────────────────────────────────────────────────────────────
-
-function getAQIColor(category) {
-  const c = (category ?? "").toLowerCase();
-  if (c === "good")                                          return "#00C896";
-  if (c === "moderate")                                      return "#F5C518";
-  if (c.includes("sensitive") || c === "high")               return "#FF8C00";
-  if (c === "unhealthy")                                     return "#E53935";
-  if (c.includes("very") || c.includes("hazardous"))        return "#9C27B0";
-  return "#F5C518";
-}
 
 function aqiCategoryKey(category) {
   const c = (category ?? "").toLowerCase();
@@ -151,7 +142,7 @@ export function HomeScreen({ isOnline }) {
             <Bell size={22} color={colors.text} aria-hidden="true" />
             {unreadCount > 0 && (
               <span
-                className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center rounded-full text-[9px] font-bold text-white"
+                className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center rounded-full text-[0.5625rem] font-bold text-white"
                 style={{ backgroundColor: "#E53935" }}
               >
                 {unreadCount > 9 ? "9+" : unreadCount}
@@ -215,7 +206,7 @@ export function HomeScreen({ isOnline }) {
             }}
           >
             {/* PM2.5 label */}
-            <p className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: colors.sub }}>
+            <p className="text-[0.6875rem] font-semibold uppercase tracking-widest" style={{ color: colors.sub }}>
               {t("home.air_now")}
             </p>
 
@@ -224,7 +215,7 @@ export function HomeScreen({ isOnline }) {
               <span
                 aria-hidden="true"
                 className="font-black leading-none"
-                style={{ fontSize: 56, color: colors.text }}
+                style={{ fontSize: "3.5rem", color: colors.text }}
               >
                 {pred ? (loading ? "…" : displayNum) : "--"}
               </span>
@@ -233,6 +224,9 @@ export function HomeScreen({ isOnline }) {
                   className="rounded-full px-3 py-1 text-xs font-bold"
                   style={{ backgroundColor: aqiColor + "28", color: aqiColor }}
                 >
+                  <span aria-hidden="true" style={{ marginRight: 6 }}>
+                    {aqiSymbol(pred.aqi_category ?? pred.category)}
+                  </span>
                   {t(aqiCategoryKey(pred.aqi_category ?? pred.category))}
                 </span>
               )}
@@ -263,12 +257,12 @@ export function HomeScreen({ isOnline }) {
             aria-live="polite"
           >
             <p
-              className="mb-1.5 text-[11px] font-semibold uppercase tracking-widest"
+              className="mb-1.5 text-[0.6875rem] font-semibold uppercase tracking-widest"
               style={{ color: colors.sub }}
             >
               {t("home.advice_title")}
             </p>
-            <p className="text-[15px] leading-[22px] m-0" style={{ color: colors.text }}>
+            <p className="text-[0.9375rem] leading-[22px] m-0" style={{ color: colors.text }}>
               {pred.insight}
             </p>
           </div>
@@ -313,7 +307,7 @@ export function HomeScreen({ isOnline }) {
                   ? <span className="h-6 w-6 animate-spin rounded-full border-2 border-app-green border-t-transparent" />
                   : <Icon size={24} color={item.color} />
                 }
-                <span className="text-[10px] font-bold uppercase tracking-[0.5px]" style={{ color: colors.text }}>
+                <span className="text-[0.625rem] font-bold uppercase tracking-[0.5px]" style={{ color: colors.text }}>
                   {item.label}
                 </span>
               </button>
@@ -338,7 +332,7 @@ export function HomeScreen({ isOnline }) {
                   aria-label={`${w.label}: ${w.value}`}
                 >
                   <Icon size={20} color="#00C896" aria-hidden="true" />
-                  <p className="text-[18px] font-bold" style={{ color: colors.text }}>{w.value}</p>
+                  <p className="text-[1.125rem] font-bold" style={{ color: colors.text }}>{w.value}</p>
                   <p className="text-xs" style={{ color: colors.sub }}>{w.label}</p>
                 </div>
               );

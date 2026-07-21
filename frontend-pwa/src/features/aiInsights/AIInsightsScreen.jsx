@@ -33,12 +33,12 @@ function InsightCard({ icon: IconComp, title, desc, source, colors }) {
       >
         <Icon size={28} color={Colors.brandGreen} />
       </div>
-      <p style={{ fontSize: 18, fontWeight: 700, color: colors.text, margin: 0 }}>
+      <p style={{ fontSize: "1.125rem", fontWeight: 700, color: colors.text, margin: 0 }}>
         {title}
       </p>
       <p
         style={{
-          fontSize: 14,
+          fontSize: "0.875rem",
           lineHeight: "20px",
           color: colors.subtext,
           margin: 0,
@@ -56,7 +56,7 @@ function InsightCard({ icon: IconComp, title, desc, source, colors }) {
             paddingTop: 6,
             paddingBottom: 6,
             alignSelf: "flex-start",
-            fontSize: 12,
+            fontSize: "0.75rem",
             fontWeight: 500,
             backgroundColor: colors.surface,
             color: colors.subtext,
@@ -152,7 +152,7 @@ export function AIInsightsScreen({ isOnline, isDark, params }) {
             <polyline points="15 18 9 12 15 6" />
           </svg>
         </button>
-        <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, color: colors.text }}>
+        <span style={{ fontSize: "0.8125rem", fontWeight: 700, letterSpacing: 1, color: colors.text }}>
           {t("screen.ai_insights.title").toUpperCase()}
         </span>
         <div style={{ width: 22 }} />
@@ -182,7 +182,7 @@ export function AIInsightsScreen({ isOnline, isDark, params }) {
             <Sparkles size={48} color={colors.subtext} />
             <p
               style={{
-                fontSize: 15,
+                fontSize: "0.9375rem",
                 textAlign: "center",
                 paddingLeft: 32,
                 paddingRight: 32,
@@ -201,7 +201,7 @@ export function AIInsightsScreen({ isOnline, isDark, params }) {
                 paddingTop: 10,
                 paddingBottom: 10,
                 borderRadius: 999,
-                fontSize: 14,
+                fontSize: "0.875rem",
                 fontWeight: 600,
                 backgroundColor: Colors.brandGreen + "22",
                 color: Colors.brandGreen,

@@ -65,7 +65,7 @@ export function ActivityScreen({ isOnline, isDark }) {
         </button>
 
         <span
-          className="text-[13px] font-bold tracking-widest"
+          className="text-[0.8125rem] font-bold tracking-widest"
           style={{ color: colors.text }}
         >
           {t("activity.title")}
@@ -90,7 +90,7 @@ export function ActivityScreen({ isOnline, isDark }) {
           <div className="flex flex-col items-center gap-3 py-12">
             <Clock size={40} color={colors.subtext} />
             <p
-              className="text-[14px] text-center px-6"
+              className="text-[0.875rem] text-center px-6"
               style={{ color: colors.subtext }}
             >
               {t("activity.no_activity_yet")}
@@ -139,14 +139,14 @@ export function ActivityScreen({ isOnline, isDark }) {
                   style={{ paddingTop: 10, paddingBottom: 24 }}
                 >
                   <span
-                    className="text-[15px] font-semibold"
+                    className="text-[0.9375rem] font-semibold"
                     style={{ color: colors.text }}
                   >
                     {label}
                   </span>
                   {timeStr ? (
                     <span
-                      className="text-[12px]"
+                      className="text-[0.75rem]"
                       style={{ color: colors.subtext, marginTop: 4 }}
                     >
                       {timeStr}

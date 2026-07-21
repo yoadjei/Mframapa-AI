@@ -115,7 +115,7 @@ function CityPicker({ slot, colors, onSelect, onClear, placeholder }) {
             background: "transparent",
             outline: "none",
             border: "none",
-            fontSize: 14,
+            fontSize: "0.875rem",
             color: colors.text,
           }}
         />
@@ -164,10 +164,10 @@ function CityPicker({ slot, colors, onSelect, onClear, placeholder }) {
               }}
             >
               <MapPin size={13} color={colors.muted} />
-              <span style={{ fontSize: 14, fontWeight: 600, color: colors.text }}>
+              <span style={{ fontSize: "0.875rem", fontWeight: 600, color: colors.text }}>
                 {city.name}
               </span>
-              <span style={{ fontSize: 12, color: colors.muted }}>{city.country}</span>
+              <span style={{ fontSize: "0.75rem", color: colors.muted }}>{city.country}</span>
             </button>
           ))}
         </div>
@@ -194,7 +194,7 @@ function CityCard({ city, prediction, series, color, loading, index, colors, t }
         }}
       >
         <MapPin size={24} color={colors.muted} />
-        <p style={{ fontSize: 12, textAlign: "center", color: colors.muted, margin: 0 }}>
+        <p style={{ fontSize: "0.75rem", textAlign: "center", color: colors.muted, margin: 0 }}>
           {t("screen.compare.pick_two_cities")} {index + 1}
         </p>
       </div>
@@ -221,8 +221,8 @@ function CityCard({ city, prediction, series, color, loading, index, colors, t }
       }}
     >
       <div>
-        <p style={{ fontSize: 15, fontWeight: 700, color, margin: 0 }}>{city.name}</p>
-        <p style={{ fontSize: 11, color: colors.muted, margin: 0 }}>{city.country}</p>
+        <p style={{ fontSize: "0.9375rem", fontWeight: 700, color, margin: 0 }}>{city.name}</p>
+        <p style={{ fontSize: "0.6875rem", color: colors.muted, margin: 0 }}>{city.country}</p>
       </div>
 
       {loading ? (
@@ -232,15 +232,15 @@ function CityCard({ city, prediction, series, color, loading, index, colors, t }
       ) : pm25 !== null ? (
         <>
           <div style={{ display: "flex", alignItems: "baseline", gap: 4 }}>
-            <span style={{ fontSize: 30, fontWeight: 900, color: aqiColor }}>
+            <span style={{ fontSize: "1.875rem", fontWeight: 900, color: aqiColor }}>
               {Number(pm25).toFixed(0)}
             </span>
-            <span style={{ fontSize: 11, color: colors.muted }}>μg/m³</span>
+            <span style={{ fontSize: "0.6875rem", color: colors.muted }}>μg/m³</span>
           </div>
 
           <span
             style={{
-              fontSize: 11,
+              fontSize: "0.6875rem",
               fontWeight: 600,
               padding: "2px 8px",
               borderRadius: 999,
@@ -255,12 +255,12 @@ function CityCard({ city, prediction, series, color, loading, index, colors, t }
 
           <MiniSparkline values={series} color={color} height={44} />
 
-          <p style={{ fontSize: 10, color: colors.muted, margin: 0 }}>
+          <p style={{ fontSize: "0.625rem", color: colors.muted, margin: 0 }}>
             Range: {lower}–{upper} μg/m³
           </p>
         </>
       ) : (
-        <p style={{ fontSize: 12, color: colors.muted, margin: 0 }}>
+        <p style={{ fontSize: "0.75rem", color: colors.muted, margin: 0 }}>
           {t("screen.compare.fetching_readings")}
         </p>
       )}
@@ -384,7 +384,7 @@ export function CompareCitiesScreen({ isOnline, isDark, params }) {
         <button type="button" onClick={goBack} style={{ background: "none", border: "none", cursor: "pointer", padding: 4 }}>
           <ArrowLeft size={22} color={colors.text} />
         </button>
-        <span style={{ fontSize: 17, fontWeight: 700, color: colors.text }}>
+        <span style={{ fontSize: "1.0625rem", fontWeight: 700, color: colors.text }}>
           {t("screen.compare.title")}
         </span>
         <div style={{ width: 30 }} />
@@ -440,7 +440,7 @@ export function CompareCitiesScreen({ isOnline, isDark, params }) {
               alignSelf: "flex-start",
               padding: "8px 16px",
               borderRadius: 999,
-              fontSize: 13,
+              fontSize: "0.8125rem",
               fontWeight: 600,
               backgroundColor: colors.surface,
               color: colors.subtext,
@@ -457,7 +457,7 @@ export function CompareCitiesScreen({ isOnline, isDark, params }) {
         {anyLoading && (
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
             <RefreshCw size={16} color={Colors.brandGreen} style={{ animation: "spin 1s linear infinite" }} />
-            <span style={{ fontSize: 13, color: colors.subtext }}>
+            <span style={{ fontSize: "0.8125rem", color: colors.subtext }}>
               {t("screen.compare.fetching_readings")}
             </span>
           </div>
@@ -512,10 +512,10 @@ export function CompareCitiesScreen({ isOnline, isDark, params }) {
             }}
           >
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
-              <span style={{ fontSize: 15, fontWeight: 700, color: CITY_COLORS[0] }}>
+              <span style={{ fontSize: "0.9375rem", fontWeight: 700, color: CITY_COLORS[0] }}>
                 {cities[0]?.name ?? "—"}
               </span>
-              <span style={{ fontSize: 13, color: CITY_COLORS[0] }}>
+              <span style={{ fontSize: "0.8125rem", color: CITY_COLORS[0] }}>
                 {t("screen.compare.avg", { value: predictions[0]?.pm25?.toFixed(0) })}
               </span>
             </div>
@@ -530,15 +530,15 @@ export function CompareCitiesScreen({ isOnline, isDark, params }) {
                 backgroundColor: colors.surface,
               }}
             >
-              <span style={{ fontSize: 13, fontWeight: 600, color: colors.subtext }}>
+              <span style={{ fontSize: "0.8125rem", fontWeight: 600, color: colors.subtext }}>
                 {t("screen.compare.vs")}
               </span>
             </div>
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
-              <span style={{ fontSize: 15, fontWeight: 700, color: CITY_COLORS[1] }}>
+              <span style={{ fontSize: "0.9375rem", fontWeight: 700, color: CITY_COLORS[1] }}>
                 {cities[1]?.name ?? "—"}
               </span>
-              <span style={{ fontSize: 13, color: CITY_COLORS[1] }}>
+              <span style={{ fontSize: "0.8125rem", color: CITY_COLORS[1] }}>
                 {t("screen.compare.avg", { value: predictions[1]?.pm25?.toFixed(0) })}
               </span>
             </div>
@@ -560,7 +560,7 @@ export function CompareCitiesScreen({ isOnline, isDark, params }) {
           >
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <BarChart3 size={16} color={Colors.brandGreen} />
-              <p style={{ fontSize: 14, fontWeight: 700, color: colors.text, margin: 0 }}>
+              <p style={{ fontSize: "0.875rem", fontWeight: 700, color: colors.text, margin: 0 }}>
                 Air Quality Ranking (cleanest first)
               </p>
             </div>
@@ -572,7 +572,7 @@ export function CompareCitiesScreen({ isOnline, isDark, params }) {
                 <div key={item.city.name} style={{ display: "flex", alignItems: "center", gap: 12 }}>
                   <span
                     style={{
-                      fontSize: 13,
+                      fontSize: "0.8125rem",
                       fontWeight: 900,
                       width: 20,
                       textAlign: "center",
@@ -583,8 +583,8 @@ export function CompareCitiesScreen({ isOnline, isDark, params }) {
                   </span>
                   <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 4 }}>
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                      <span style={{ fontSize: 13, fontWeight: 600, color }}>{item.city.name}</span>
-                      <span style={{ fontSize: 12, color: aqiColor }}>
+                      <span style={{ fontSize: "0.8125rem", fontWeight: 600, color }}>{item.city.name}</span>
+                      <span style={{ fontSize: "0.75rem", color: aqiColor }}>
                         {item.pred.pm25.toFixed(0)} μg/m³
                       </span>
                     </div>
@@ -624,7 +624,7 @@ export function CompareCitiesScreen({ isOnline, isDark, params }) {
             }}
           >
             <MapPin size={40} color={colors.muted} />
-            <p style={{ fontSize: 14, textAlign: "center", color: colors.subtext, margin: 0 }}>
+            <p style={{ fontSize: "0.875rem", textAlign: "center", color: colors.subtext, margin: 0 }}>
               {t("screen.compare.pick_two_cities")}
             </p>
           </div>

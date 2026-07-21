@@ -33,7 +33,7 @@ export function PreviewGallery({ isOnline }) {
       {/* Sidebar */}
       <aside className="w-52 shrink-0 border-r border-gray-200 bg-white flex flex-col">
         <div className="px-4 py-3 border-b border-gray-200">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
+          <p className="text-[0.625rem] font-bold uppercase tracking-widest text-gray-400">
             Mframapa Preview
           </p>
           <p className="text-xs text-gray-500 mt-0.5">9 screens</p>
@@ -57,10 +57,10 @@ export function PreviewGallery({ isOnline }) {
         </nav>
 
         <div className="p-3 border-t border-gray-200">
-          <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-amber-600 bg-amber-100 rounded px-2 py-0.5">
+          <span className="inline-block text-[0.625rem] font-bold uppercase tracking-wider text-amber-600 bg-amber-100 rounded px-2 py-0.5">
             Dev Only
           </span>
-          <p className="text-[10px] text-gray-400 mt-1">Visit /?preview to open</p>
+          <p className="text-[0.625rem] text-gray-400 mt-1">Visit /?preview to open</p>
         </div>
       </aside>
 
@@ -120,7 +120,7 @@ export function PreviewGallery({ isOnline }) {
         >
           {/* Status bar */}
           <div
-            className={`flex items-center justify-between px-7 pt-3 pb-1 text-[11px] font-semibold z-50 relative ${
+            className={`flex items-center justify-between px-7 pt-3 pb-1 text-[0.6875rem] font-semibold z-50 relative ${
               theme === "dark" ? "bg-[#0A0F1C] text-white" : "bg-white text-gray-900"
             }`}
           >

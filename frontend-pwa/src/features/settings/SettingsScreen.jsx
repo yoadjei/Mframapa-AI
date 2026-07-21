@@ -39,7 +39,7 @@ const LOCATION_OPTS = ["off", "balanced", "precise"];
 function SectionLabel({ label, colors }) {
   return (
     <p
-      className="text-[13px] font-semibold uppercase tracking-wide mt-5 mb-1.5"
+      className="text-[0.8125rem] font-semibold uppercase tracking-wide mt-5 mb-1.5"
       style={{ color: colors.subtext }}
     >
       {label}
@@ -54,8 +54,8 @@ function ToggleRow({ label, sublabel, checked, onChange, colors, noBorder }) {
       style={noBorder ? {} : { borderBottom: `1px solid ${colors.border}` }}
     >
       <div className="flex-1">
-        <p className="text-[15px] font-medium" style={{ color: colors.text }}>{label}</p>
-        {sublabel ? <p className="text-[12px] mt-0.5" style={{ color: colors.subtext }}>{sublabel}</p> : null}
+        <p className="text-[0.9375rem] font-medium" style={{ color: colors.text }}>{label}</p>
+        {sublabel ? <p className="text-[0.75rem] mt-0.5" style={{ color: colors.subtext }}>{sublabel}</p> : null}
       </div>
       {/* Styled toggle switch */}
       <label className="relative flex items-center cursor-pointer select-none">
@@ -88,6 +88,7 @@ export function SettingsScreen({ isOnline, isDark }) {
   const themeMode = prefs.theme ?? "system";
   const alertsEnabled = prefs.notificationsEnabled ?? false;
   const liteMode = prefs.liteMode ?? false;
+  const textScale = prefs.textScale ?? 1;
   const dataAnalytics = prefs.dataAnalytics ?? true;
   const locationSharing = prefs.locationSharing ?? "off";
   const language = prefs.language ?? "en";
@@ -123,7 +124,7 @@ export function SettingsScreen({ isOnline, isDark }) {
     >
       <div style={{ paddingTop: "calc(env(safe-area-inset-top) + 12px)" }}>
 
-        <p className="text-[28px] font-extrabold mb-5" style={{ color: colors.text }}>
+        <p className="text-[1.75rem] font-extrabold mb-5" style={{ color: colors.text }}>
           {t("settings.title")}
         </p>
 
@@ -135,7 +136,7 @@ export function SettingsScreen({ isOnline, isDark }) {
             className="flex items-center justify-between px-4 py-3.5 gap-3"
             style={{ borderBottom: `1px solid ${colors.border}` }}
           >
-            <p className="text-[15px] font-medium" style={{ color: colors.text }}>
+            <p className="text-[0.9375rem] font-medium" style={{ color: colors.text }}>
               {t("settings.theme")}
             </p>
             <div
@@ -149,7 +150,7 @@ export function SettingsScreen({ isOnline, isDark }) {
                     key={mode}
                     type="button"
                     onClick={() => dispatch({ type: "UPDATE_PREFERENCES", payload: { theme: mode } })}
-                    className="px-3 py-1.5 text-[13px] font-semibold capitalize transition-colors"
+                    className="px-3 py-1.5 text-[0.8125rem] font-semibold capitalize transition-colors"
                     style={{
                       backgroundColor: active ? Colors.brandGreen : "transparent",
                       color: active ? "#fff" : colors.subtext,
@@ -168,12 +169,12 @@ export function SettingsScreen({ isOnline, isDark }) {
             onClick={() => navigate("languageSelector")}
             className="flex w-full items-center justify-between px-4 py-3.5 gap-3 active:opacity-60"
           >
-            <p className="text-[15px] font-medium" style={{ color: colors.text }}>
+            <p className="text-[0.9375rem] font-medium" style={{ color: colors.text }}>
               {t("settings.language")}
             </p>
             <div className="flex items-center gap-1.5">
-              <span className="text-[16px]">{currentLang?.flag}</span>
-              <span className="text-[14px]" style={{ color: colors.text }}>{currentLang?.name}</span>
+              <span className="text-[1rem]">{currentLang?.flag}</span>
+              <span className="text-[0.875rem]" style={{ color: colors.text }}>{currentLang?.name}</span>
               <ChevronRight size={14} color={colors.subtext} />
             </div>
           </button>
@@ -199,7 +200,7 @@ export function SettingsScreen({ isOnline, isDark }) {
             className="flex items-center justify-between px-4 py-3.5 gap-3"
             style={{ borderBottom: `1px solid ${colors.border}` }}
           >
-            <p className="text-[15px] font-medium" style={{ color: colors.text }}>
+            <p className="text-[0.9375rem] font-medium" style={{ color: colors.text }}>
               {t("settings.location_sharing")}
             </p>
             <button
@@ -207,7 +208,7 @@ export function SettingsScreen({ isOnline, isDark }) {
               onClick={cycleLocationSharing}
               className="flex items-center gap-1.5 active:opacity-60"
             >
-              <span className="text-[14px]" style={{ color: colors.text }}>
+              <span className="text-[0.875rem]" style={{ color: colors.text }}>
                 {locationLabel(locationSharing)}
               </span>
               <ChevronDown size={14} color={colors.subtext} />
@@ -221,6 +222,59 @@ export function SettingsScreen({ isOnline, isDark }) {
             colors={colors}
             noBorder
           />
+        </div>
+
+        {/* ── Accessibility ── */}
+        <SectionLabel label={t("settings.accessibility")} colors={colors} />
+        <div style={cardStyle}>
+          <div style={{ padding: 16 }}>
+            <p
+              id="text-size-label"
+              style={{ fontSize: "0.9375rem", fontWeight: 600, color: colors.text, margin: 0 }}
+            >
+              {t("settings.text_size")}
+            </p>
+            <p style={{ fontSize: "0.8125rem", color: colors.subtext, margin: "4px 0 12px" }}>
+              {t("a11y.text_size_hint")}
+            </p>
+            <div
+              role="radiogroup"
+              aria-labelledby="text-size-label"
+              style={{ display: "flex", gap: 8 }}
+            >
+              {[
+                { value: 1, key: "settings.text_size_normal" },
+                { value: 1.15, key: "settings.text_size_large" },
+                { value: 1.3, key: "settings.text_size_larger" },
+              ].map((opt) => {
+                const active = Math.abs(textScale - opt.value) < 0.01;
+                return (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    role="radio"
+                    aria-checked={active}
+                    onClick={() =>
+                      dispatch({ type: "UPDATE_PREFERENCES", payload: { textScale: opt.value } })
+                    }
+                    style={{
+                      flex: 1,
+                      minHeight: 44,
+                      borderRadius: 12,
+                      fontSize: "0.875rem",
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      border: `1px solid ${active ? Colors.brandGreen : colors.border}`,
+                      backgroundColor: active ? Colors.brandGreen : "transparent",
+                      color: active ? "#00110B" : colors.text,
+                    }}
+                  >
+                    {t(opt.key)}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </div>
 
         {/* ── Performance ── */}

@@ -109,7 +109,7 @@ export function GlassTabBar({ isDark }) {
                 }}
               >
                 <Icon size={18} color="#00C896" />
-                <span className="text-[15px] font-medium">{t(item.labelKey)}</span>
+                <span className="text-[0.9375rem] font-medium">{t(item.labelKey)}</span>
               </button>
             );
           })}

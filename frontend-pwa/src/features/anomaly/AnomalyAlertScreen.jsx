@@ -58,7 +58,7 @@ export function AnomalyAlertScreen({ params, isOnline, isDark }) {
         >
           <ArrowLeft size={22} color={colors.text} />
         </button>
-        <span style={{ fontSize: 16, fontWeight: 700, color: colors.text }}>
+        <span style={{ fontSize: "1rem", fontWeight: 700, color: colors.text }}>
           {t("screen.anomaly.title")}
         </span>
         <div style={{ width: 22 }} />
@@ -90,20 +90,20 @@ export function AnomalyAlertScreen({ params, isOnline, isDark }) {
         >
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <AlertTriangle size={22} color={AQI_HIGH} />
-            <span style={{ fontSize: 16, fontWeight: 700, color: colors.text }}>
+            <span style={{ fontSize: "1rem", fontWeight: 700, color: colors.text }}>
               {spikeTitle}
             </span>
           </div>
-          <p style={{ fontSize: 14, lineHeight: "20px", color: colors.subtext }}>
+          <p style={{ fontSize: "0.875rem", lineHeight: "20px", color: colors.subtext }}>
             {spikeDesc}
           </p>
-          <p style={{ fontSize: 12, color: colors.muted }}>
+          <p style={{ fontSize: "0.75rem", color: colors.muted }}>
             {detectedAgo}
           </p>
         </div>
 
         {/* Severity section */}
-        <p style={{ fontSize: 16, fontWeight: 700, color: colors.text }}>
+        <p style={{ fontSize: "1rem", fontWeight: 700, color: colors.text }}>
           {t("screen.anomaly.severity")}
         </p>
 
@@ -120,10 +120,10 @@ export function AnomalyAlertScreen({ params, isOnline, isDark }) {
               }}
             />
             <div style={{ flex: 1 }}>
-              <p style={{ fontSize: 15, fontWeight: 600, color: colors.text }}>
+              <p style={{ fontSize: "0.9375rem", fontWeight: 600, color: colors.text }}>
                 {t(item.labelKey)}
               </p>
-              <p style={{ fontSize: 12, marginTop: 2, color: colors.subtext }}>
+              <p style={{ fontSize: "0.75rem", marginTop: 2, color: colors.subtext }}>
                 {t(item.infoKey)}
               </p>
             </div>
@@ -144,11 +144,11 @@ export function AnomalyAlertScreen({ params, isOnline, isDark }) {
               gap: 8,
             }}
           >
-            <p style={{ fontSize: 14, fontWeight: 700, color: colors.text }}>
+            <p style={{ fontSize: "0.875rem", fontWeight: 700, color: colors.text }}>
               Recommended Actions
             </p>
             {alert.actions.map((action, i) => (
-              <p key={i} style={{ fontSize: 14, lineHeight: "20px", color: colors.subtext }}>
+              <p key={i} style={{ fontSize: "0.875rem", lineHeight: "20px", color: colors.subtext }}>
                 • {action}
               </p>
             ))}
@@ -170,14 +170,14 @@ export function AnomalyAlertScreen({ params, isOnline, isDark }) {
           >
             {alert.area && (
               <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ fontSize: 12, color: colors.subtext }}>Affected area</span>
-                <span style={{ fontSize: 12, fontWeight: 600, color: colors.text }}>{alert.area}</span>
+                <span style={{ fontSize: "0.75rem", color: colors.subtext }}>Affected area</span>
+                <span style={{ fontSize: "0.75rem", fontWeight: 600, color: colors.text }}>{alert.area}</span>
               </div>
             )}
             {alert.time && (
               <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ fontSize: 12, color: colors.subtext }}>Time</span>
-                <span style={{ fontSize: 12, fontWeight: 600, color: colors.text }}>{alert.time}</span>
+                <span style={{ fontSize: "0.75rem", color: colors.subtext }}>Time</span>
+                <span style={{ fontSize: "0.75rem", fontWeight: 600, color: colors.text }}>{alert.time}</span>
               </div>
             )}
           </div>

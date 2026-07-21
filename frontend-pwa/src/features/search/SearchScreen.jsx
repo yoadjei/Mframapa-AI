@@ -3,24 +3,33 @@ import { Search, MapPin, X, ChevronRight, Clock } from "lucide-react";
 import { useAppState } from "../../state/appState.jsx";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { useCityPack } from "../../hooks/useCityPack.js";
-import { getColors, Colors } from "../../utils/colors.js";
+import { getColors, Colors, getAQIColor, aqiSymbol } from "../../utils/colors.js";
 import { getPrediction, generateInsight } from "../../services/api.js";
-import { getAQIColor } from "../../utils/colors.js";
 
 // ── AQI dot indicator ────────────────────────────────────────────
 function StatusDot({ category, size = 10, isDark }) {
   const color = getAQIColor(category, isDark);
+  // colour alone cannot carry meaning: the symbol keeps this readable for
+  // anyone with colour vision deficiency, and the label for a screen reader.
   return (
     <span
+      role="img"
+      aria-label={category ?? "unknown"}
+      title={category ?? ""}
       style={{
-        display: "inline-block",
-        width: size,
-        height: size,
-        borderRadius: "50%",
-        backgroundColor: color,
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        width: size * 1.6,
+        height: size * 1.6,
+        fontSize: `${size * 1.1}px`,
+        lineHeight: 1,
+        color,
         flexShrink: 0,
       }}
-    />
+    >
+      {aqiSymbol(category)}
+    </span>
   );
 }
 
@@ -156,7 +165,7 @@ export function SearchScreen({ isOnline, isDark }) {
             placeholder={t("search.city_placeholder")}
             autoCorrect="off"
             autoCapitalize="words"
-            className="flex-1 bg-transparent text-[15px] outline-none"
+            className="flex-1 bg-transparent text-[0.9375rem] outline-none"
             style={{ color: colors.text }}
           />
           {query ? (
@@ -200,13 +209,13 @@ export function SearchScreen({ isOnline, isDark }) {
                     <MapPin size={18} color={colors.subtext} style={{ flexShrink: 0 }} />
                     <div className="flex-1 min-w-0">
                       <p
-                        className="text-[16px] font-bold truncate"
+                        className="text-[1rem] font-bold truncate"
                         style={{ color: colors.text }}
                       >
                         {city.name}
                       </p>
                       <p
-                        className="text-[13px] mt-0.5 truncate"
+                        className="text-[0.8125rem] mt-0.5 truncate"
                         style={{ color: colors.subtext }}
                       >
                         {city.name}{city.country ? `, ${city.country}` : ""}
@@ -232,7 +241,7 @@ export function SearchScreen({ isOnline, isDark }) {
           {recentSearches.length > 0 ? (
             <>
               <p
-                className="px-4 pb-1 pt-2 text-[13px] font-semibold uppercase tracking-wide"
+                className="px-4 pb-1 pt-2 text-[0.8125rem] font-semibold uppercase tracking-wide"
                 style={{ color: colors.subtext }}
               >
                 {t("search.recent")}
@@ -250,14 +259,14 @@ export function SearchScreen({ isOnline, isDark }) {
                       <Clock size={16} color={colors.subtext} style={{ flexShrink: 0 }} />
                       <div className="flex-1 min-w-0">
                         <p
-                          className="text-[16px] font-bold"
+                          className="text-[1rem] font-bold"
                           style={{ color: colors.text }}
                         >
                           {item.cityName}
                         </p>
                         {item.pm25 != null ? (
                           <p
-                            className="text-[13px] mt-0.5"
+                            className="text-[0.8125rem] mt-0.5"
                             style={{ color: colors.subtext }}
                           >
                             PM2.5 {Math.round(item.pm25)} μg/m³
@@ -279,13 +288,13 @@ export function SearchScreen({ isOnline, isDark }) {
             >
               <Search size={44} color={colors.subtext} />
               <p
-                className="text-[18px] font-bold text-center"
+                className="text-[1.125rem] font-bold text-center"
                 style={{ color: colors.text }}
               >
                 {t("search.prompt")}
               </p>
               <p
-                className="text-[14px] text-center leading-relaxed"
+                className="text-[0.875rem] text-center leading-relaxed"
                 style={{ color: colors.subtext }}
               >
                 {t("search.helper")}

@@ -48,7 +48,7 @@ export function AvatarPickerSheet({ visible, selected, onSelect, onClose, isDark
 
         {/* Header */}
         <div className="mb-4 flex items-center justify-between">
-          <span className="text-[17px] font-bold" style={{ color: colors.text }}>
+          <span className="text-[1.0625rem] font-bold" style={{ color: colors.text }}>
             Choose your avatar
           </span>
           <button

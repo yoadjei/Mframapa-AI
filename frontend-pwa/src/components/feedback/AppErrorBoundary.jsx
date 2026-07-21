@@ -43,10 +43,10 @@ export class AppErrorBoundary extends Component {
           fontFamily: "system-ui, -apple-system, sans-serif",
         }}
       >
-        <p style={{ fontSize: 17, fontWeight: 700, margin: 0 }}>
+        <p style={{ fontSize: "1.0625rem", fontWeight: 700, margin: 0 }}>
           Something went wrong
         </p>
-        <p style={{ fontSize: 14, color: "#9AA7B5", margin: 0, maxWidth: 320 }}>
+        <p style={{ fontSize: "0.875rem", color: "#9AA7B5", margin: 0, maxWidth: 320 }}>
           The app hit an unexpected problem. Reloading usually clears it.
         </p>
         <button
@@ -59,7 +59,7 @@ export class AppErrorBoundary extends Component {
             border: "none",
             backgroundColor: "#00C896",
             color: "#00110B",
-            fontSize: 15,
+            fontSize: "0.9375rem",
             fontWeight: 700,
             cursor: "pointer",
           }}

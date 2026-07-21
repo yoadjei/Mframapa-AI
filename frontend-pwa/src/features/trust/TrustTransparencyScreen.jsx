@@ -57,7 +57,7 @@ export function TrustTransparencyScreen({ isOnline, isDark, params }) {
         >
           <ArrowLeft size={22} color={colors.text} />
         </button>
-        <span style={{ fontSize: 16, fontWeight: 700, color: colors.text }}>
+        <span style={{ fontSize: "1rem", fontWeight: 700, color: colors.text }}>
           {t("screen.trust.title")}
         </span>
         <div style={{ width: 30 }} />
@@ -97,7 +97,7 @@ export function TrustTransparencyScreen({ isOnline, isDark, params }) {
                 cursor: "pointer",
               }}
             >
-              <span style={{ fontSize: 15, fontWeight: 700, flex: 1, color: colors.text }}>
+              <span style={{ fontSize: "0.9375rem", fontWeight: 700, flex: 1, color: colors.text }}>
                 {t(titleKey(id))}
               </span>
               {open[id] ? (
@@ -140,7 +140,7 @@ export function TrustTransparencyScreen({ isOnline, isDark, params }) {
                           }}
                         />
                         <span
-                          style={{ fontSize: 14, fontWeight: 600, color: colors.text }}
+                          style={{ fontSize: "0.875rem", fontWeight: 600, color: colors.text }}
                         >
                           {src}
                         </span>
@@ -151,7 +151,7 @@ export function TrustTransparencyScreen({ isOnline, isDark, params }) {
                 ) : (
                   <p
                     style={{
-                      fontSize: 14,
+                      fontSize: "0.875rem",
                       lineHeight: "20px",
                       color: colors.subtext,
                       margin: 0,

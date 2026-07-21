@@ -46,10 +46,10 @@ export function FeedbackFormScreen({ params, isOnline, isDark }) {
         }}
       >
         <CheckCircle2 size={64} color={Colors.brandGreen} />
-        <p style={{ fontSize: 24, fontWeight: 800, color: colors.text }}>
+        <p style={{ fontSize: "1.5rem", fontWeight: 800, color: colors.text }}>
           {t("screen.feedback.title")}
         </p>
-        <p style={{ fontSize: 14, color: colors.subtext }}>
+        <p style={{ fontSize: "0.875rem", color: colors.subtext }}>
           {t("screen.feedback.privacy_note")}
         </p>
         <button
@@ -63,7 +63,7 @@ export function FeedbackFormScreen({ params, isOnline, isDark }) {
             border: "none",
             cursor: "pointer",
             color: "#fff",
-            fontSize: 16,
+            fontSize: "1rem",
             fontWeight: 700,
           }}
         >
@@ -97,7 +97,7 @@ export function FeedbackFormScreen({ params, isOnline, isDark }) {
         >
           <ArrowLeft size={22} color={colors.text} />
         </button>
-        <span style={{ fontSize: 17, fontWeight: 600, color: colors.text }}>
+        <span style={{ fontSize: "1.0625rem", fontWeight: 600, color: colors.text }}>
           {t("screen.feedback.nav_title")}
         </span>
         <button
@@ -107,7 +107,7 @@ export function FeedbackFormScreen({ params, isOnline, isDark }) {
             background: "none",
             border: "none",
             cursor: "pointer",
-            fontSize: 16,
+            fontSize: "1rem",
             fontWeight: 600,
             color: Colors.brandGreen,
           }}
@@ -126,13 +126,13 @@ export function FeedbackFormScreen({ params, isOnline, isDark }) {
           gap: 16,
         }}
       >
-        <span style={{ fontSize: 22, fontWeight: 800, color: colors.text }}>
+        <span style={{ fontSize: "1.375rem", fontWeight: 800, color: colors.text }}>
           {t("screen.feedback.title")}
         </span>
 
         {/* Category */}
         <div>
-          <p style={{ fontSize: 13, fontWeight: 500, color: colors.subtext, marginBottom: 8 }}>
+          <p style={{ fontSize: "0.8125rem", fontWeight: 500, color: colors.subtext, marginBottom: 8 }}>
             {t("screen.feedback.category")}
           </p>
           <button
@@ -150,10 +150,10 @@ export function FeedbackFormScreen({ params, isOnline, isDark }) {
               cursor: "pointer",
             }}
           >
-            <span style={{ fontSize: 15, fontWeight: 500, color: Colors.brandGreen }}>
+            <span style={{ fontSize: "0.9375rem", fontWeight: 500, color: Colors.brandGreen }}>
               {category}
             </span>
-            <span style={{ color: Colors.brandGreen, fontSize: 14 }}>▾</span>
+            <span style={{ color: Colors.brandGreen, fontSize: "0.875rem" }}>▾</span>
           </button>
         </div>
 
@@ -177,7 +177,7 @@ export function FeedbackFormScreen({ params, isOnline, isDark }) {
               border: "none",
               outline: "none",
               resize: "none",
-              fontSize: 15,
+              fontSize: "0.9375rem",
               color: colors.text,
               minHeight: 120,
               fontFamily: "inherit",
@@ -202,14 +202,14 @@ export function FeedbackFormScreen({ params, isOnline, isDark }) {
           }}
         >
           <Camera size={18} color={Colors.brandGreen} />
-          <span style={{ fontSize: 15, fontWeight: 600, color: Colors.brandGreen }}>
+          <span style={{ fontSize: "0.9375rem", fontWeight: 600, color: Colors.brandGreen }}>
             {t("screen.feedback.attach")}
           </span>
         </button>
 
         {/* Email */}
         <div>
-          <p style={{ fontSize: 13, fontWeight: 500, color: colors.subtext, marginBottom: 8 }}>
+          <p style={{ fontSize: "0.8125rem", fontWeight: 500, color: colors.subtext, marginBottom: 8 }}>
             {t("screen.feedback.your_email")}
           </p>
           <div
@@ -231,7 +231,7 @@ export function FeedbackFormScreen({ params, isOnline, isDark }) {
                 background: "transparent",
                 border: "none",
                 outline: "none",
-                fontSize: 15,
+                fontSize: "0.9375rem",
                 color: colors.text,
                 fontFamily: "inherit",
               }}
@@ -253,14 +253,14 @@ export function FeedbackFormScreen({ params, isOnline, isDark }) {
             cursor: submitting ? "not-allowed" : "pointer",
             opacity: submitting ? 0.7 : 1,
             color: "#fff",
-            fontSize: 16,
+            fontSize: "1rem",
             fontWeight: 700,
           }}
         >
           {submitting ? "Submitting…" : t("screen.feedback.submit_btn")}
         </button>
 
-        <p style={{ fontSize: 12, textAlign: "center", color: colors.muted }}>
+        <p style={{ fontSize: "0.75rem", textAlign: "center", color: colors.muted }}>
           {t("screen.feedback.privacy_note")}
         </p>
       </div>

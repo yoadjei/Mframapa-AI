@@ -31,7 +31,7 @@ function AQIBadge({ category, label, isDark }) {
   const color = getAQIColor(category, isDark);
   return (
     <span
-      className="flex-shrink-0 rounded-full px-3 py-1 text-[12px] font-bold text-white"
+      className="flex-shrink-0 rounded-full px-3 py-1 text-[0.75rem] font-bold text-white"
       style={{ backgroundColor: color }}
     >
       {label}
@@ -63,7 +63,7 @@ export function HealthRiskScreen({ isDark, isOnline, params }) {
         </button>
 
         <span
-          className="text-[13px] font-bold uppercase tracking-widest"
+          className="text-[0.8125rem] font-bold uppercase tracking-widest"
           style={{ color: colors.text }}
         >
           {t("screen.health_risk.title").toUpperCase()}
@@ -86,7 +86,7 @@ export function HealthRiskScreen({ isDark, isOnline, params }) {
           >
             {/* Top row: name + badge */}
             <div className="mb-2 flex items-center justify-between gap-3">
-              <span className="text-[16px] font-bold" style={{ color: colors.text }}>
+              <span className="text-[1rem] font-bold" style={{ color: colors.text }}>
                 {t(risk.nameKey)}
               </span>
               <AQIBadge isDark={isDark}
@@ -97,7 +97,7 @@ export function HealthRiskScreen({ isDark, isOnline, params }) {
 
             {/* Description */}
             <p
-              className="text-[14px] leading-snug"
+              className="text-[0.875rem] leading-snug"
               style={{ color: colors.subtext }}
             >
               {t(risk.descKey)}

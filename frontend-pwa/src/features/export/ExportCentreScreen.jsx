@@ -212,7 +212,7 @@ export function ExportCentreScreen({ params, isOnline, isDark }) {
           gap: 20,
         }}
       >
-        <span style={{ fontSize: 26, fontWeight: 800, color: colors.text }}>
+        <span style={{ fontSize: "1.625rem", fontWeight: 800, color: colors.text }}>
           {t("screen.export.title")}
         </span>
 
@@ -229,26 +229,26 @@ export function ExportCentreScreen({ params, isOnline, isDark }) {
           }}
         >
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ fontSize: 14, color: colors.subtext }}>
+            <span style={{ fontSize: "0.875rem", color: colors.subtext }}>
               {t("screen.export.saved_locations_count")}
             </span>
-            <span style={{ fontSize: 18, fontWeight: 700, color: colors.text }}>
+            <span style={{ fontSize: "1.125rem", fontWeight: 700, color: colors.text }}>
               {savedCities.length}
             </span>
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ fontSize: 14, color: colors.subtext }}>
+            <span style={{ fontSize: "0.875rem", color: colors.subtext }}>
               {t("screen.export.recent_checks_count")}
             </span>
-            <span style={{ fontSize: 18, fontWeight: 700, color: colors.text }}>
+            <span style={{ fontSize: "1.125rem", fontWeight: 700, color: colors.text }}>
               {predictionHistory.length}
             </span>
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ fontSize: 14, color: colors.subtext }}>
+            <span style={{ fontSize: "0.875rem", color: colors.subtext }}>
               {t("screen.export.total_records_count")}
             </span>
-            <span style={{ fontSize: 18, fontWeight: 700, color: Colors.brandGreen }}>
+            <span style={{ fontSize: "1.125rem", fontWeight: 700, color: Colors.brandGreen }}>
               {totalRecords}
             </span>
           </div>
@@ -256,7 +256,7 @@ export function ExportCentreScreen({ params, isOnline, isDark }) {
 
         {/* Format picker */}
         <div>
-          <p style={{ fontSize: 13, fontWeight: 500, color: colors.subtext, marginBottom: 8 }}>
+          <p style={{ fontSize: "0.8125rem", fontWeight: 500, color: colors.subtext, marginBottom: 8 }}>
             {t("screen.export.format")}
           </p>
           <div style={{ display: "flex", gap: 24 }}>
@@ -294,7 +294,7 @@ export function ExportCentreScreen({ params, isOnline, isDark }) {
                   checked={f.key === format}
                   onChange={() => setFormat(f.key)}
                 />
-                <span style={{ fontSize: 14, fontWeight: 500, color: colors.text }}>
+                <span style={{ fontSize: "0.875rem", fontWeight: 500, color: colors.text }}>
                   {t(f.labelKey)}
                 </span>
               </label>
@@ -320,7 +320,7 @@ export function ExportCentreScreen({ params, isOnline, isDark }) {
             justifyContent: "center",
             gap: 8,
             color: "#fff",
-            fontSize: 16,
+            fontSize: "1rem",
             fontWeight: 700,
           }}
         >
@@ -329,11 +329,11 @@ export function ExportCentreScreen({ params, isOnline, isDark }) {
         </button>
 
         {error ? (
-          <p style={{ fontSize: 12, textAlign: "center", color: Colors.danger }}>
+          <p style={{ fontSize: "0.75rem", textAlign: "center", color: Colors.danger }}>
             {error}
           </p>
         ) : (
-          <p style={{ fontSize: 12, textAlign: "center", color: colors.muted }}>
+          <p style={{ fontSize: "0.75rem", textAlign: "center", color: colors.muted }}>
             {format === "PDF"
               ? t("screen.export.pdf_format_explainer")
               : t("screen.export.share_sheet_explainer")}

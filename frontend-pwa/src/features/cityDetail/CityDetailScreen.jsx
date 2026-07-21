@@ -56,7 +56,7 @@ function TrendChart({ data, labels, color }) {
               opacity: 0.85,
             }}
           />
-          <span className="text-[9px]" style={{ color: "#9AA7B5" }}>
+          <span className="text-[0.5625rem]" style={{ color: "#9AA7B5" }}>
             {labels[i]}
           </span>
         </div>
@@ -194,7 +194,7 @@ export function CityDetailScreen({ isDark, params }) {
           className="flex flex-col items-center justify-center gap-4 px-6 py-16"
           style={{ backgroundColor: colors.background }}
         >
-          <p className="text-center text-[15px]" style={{ color: colors.subtext }}>
+          <p className="text-center text-[0.9375rem]" style={{ color: colors.subtext }}>
             {t("home.tap_check")}
           </p>
           <PrimaryButton label={t("common.back")} onClick={goBack} />
@@ -239,11 +239,11 @@ export function CityDetailScreen({ isDark, params }) {
                 strokeLinejoin="round"
               />
             </svg>
-            <span className="text-[16px] text-white">{t("common.back")}</span>
+            <span className="text-[1rem] text-white">{t("common.back")}</span>
           </button>
 
           {/* City name */}
-          <h1 className="flex-1 text-center text-[18px] font-bold text-white">
+          <h1 className="flex-1 text-center text-[1.125rem] font-bold text-white">
             {cityName}
           </h1>
 
@@ -262,27 +262,27 @@ export function CityDetailScreen({ isDark, params }) {
 
       {/* ── AQI block (mirrors mobile aqiBlock) ── */}
       <div className="flex flex-col gap-1.5 px-6 py-6" style={{ backgroundColor: aqiColor + "18" }}>
-        <p className="mb-1 text-[12px]" style={{ color: colors.subtext }}>
+        <p className="mb-1 text-[0.75rem]" style={{ color: colors.subtext }}>
           {t("screen.city_detail.updated_at", { time: updatedAt })}
         </p>
-        <p className="text-[13px] font-medium" style={{ color: colors.subtext }}>
+        <p className="text-[0.8125rem] font-medium" style={{ color: colors.subtext }}>
           {t("screen.city_detail.pm25_concentration")}
         </p>
         <div className="mt-1 flex items-end gap-4">
           {/* Big PM2.5 number */}
           <span
-            className="text-[56px] font-black"
+            className="text-[3.5rem] font-black"
             style={{ color: colors.text, lineHeight: "60px" }}
           >
             {Math.round(pm25)}
           </span>
           <div className="flex flex-col gap-2 pb-2">
-            <span className="text-[13px] font-semibold" style={{ color: colors.subtext }}>
+            <span className="text-[0.8125rem] font-semibold" style={{ color: colors.subtext }}>
               {t("unit.ug_m3")}
             </span>
             {/* AQI badge */}
             <span
-              className="rounded-full px-3 py-1 text-[12px] font-bold text-white"
+              className="rounded-full px-3 py-1 text-[0.75rem] font-bold text-white"
               style={{ backgroundColor: aqiColor }}
             >
               {categoryLabel}
@@ -290,7 +290,7 @@ export function CityDetailScreen({ isDark, params }) {
           </div>
         </div>
         {uncertainty ? (
-          <p className="mt-1 text-[13px]" style={{ color: colors.subtext }}>
+          <p className="mt-1 text-[0.8125rem]" style={{ color: colors.subtext }}>
             {t("screen.city_detail.uncertainty_range")}:{" "}
             {uncertainty.pm25_lower.toFixed(0)}–{uncertainty.pm25_upper.toFixed(0)}{" "}
             {t("unit.ug_m3")}
@@ -323,10 +323,10 @@ export function CityDetailScreen({ isDark, params }) {
             style={{ backgroundColor: colors.card, borderColor: colors.border }}
           >
             {icon}
-            <span className="text-[13px] font-bold" style={{ color: colors.text }}>
+            <span className="text-[0.8125rem] font-bold" style={{ color: colors.text }}>
               {val}
             </span>
-            <span className="text-center text-[11px]" style={{ color: colors.subtext }}>
+            <span className="text-center text-[0.6875rem]" style={{ color: colors.subtext }}>
               {label}
             </span>
           </div>
@@ -336,7 +336,7 @@ export function CityDetailScreen({ isDark, params }) {
       {/* ── AI Insights section header ── */}
       <div className="mt-2 flex items-center gap-2 px-4 pb-1">
         <Sparkles size={18} color={Colors.brandGreen} />
-        <span className="text-[16px] font-bold" style={{ color: colors.text }}>
+        <span className="text-[1rem] font-bold" style={{ color: colors.text }}>
           {t("screen.city_detail.ai_insights_section")}
         </span>
       </div>
@@ -348,23 +348,23 @@ export function CityDetailScreen({ isDark, params }) {
       >
         <div className="flex items-center gap-2">
           <Sparkles size={18} color={Colors.brandGreen} />
-          <span className="text-[14px] font-semibold" style={{ color: colors.text }}>
+          <span className="text-[0.875rem] font-semibold" style={{ color: colors.text }}>
             {t("card.insight_title")}
           </span>
         </div>
         {insightLoading ? (
           <div className="flex items-center gap-2.5 py-2">
             <Loader2 size={16} color={Colors.brandGreen} className="animate-spin" />
-            <span className="flex-1 text-[14px]" style={{ color: colors.subtext }}>
+            <span className="flex-1 text-[0.875rem]" style={{ color: colors.subtext }}>
               {t("screen.city_detail.insight_loading")}
             </span>
           </div>
         ) : insight ? (
-          <p className="text-[15px] leading-relaxed" style={{ color: colors.text }}>
+          <p className="text-[0.9375rem] leading-relaxed" style={{ color: colors.text }}>
             {insight}
           </p>
         ) : (
-          <p className="text-[15px] leading-relaxed" style={{ color: colors.subtext }}>
+          <p className="text-[0.9375rem] leading-relaxed" style={{ color: colors.subtext }}>
             {t("screen.ai_insights.trend_desc")}
           </p>
         )}
@@ -375,7 +375,7 @@ export function CityDetailScreen({ isDark, params }) {
         className="mx-4 mb-3 flex flex-col gap-2.5 rounded-2xl border p-4"
         style={{ backgroundColor: colors.card, borderColor: colors.border }}
       >
-        <p className="text-[14px] font-semibold" style={{ color: colors.text }}>
+        <p className="text-[0.875rem] font-semibold" style={{ color: colors.text }}>
           {t("screen.city_detail.trend_7d")}
         </p>
         <TrendChart data={trendData} labels={trendLabels} color={aqiColor} />
@@ -387,7 +387,7 @@ export function CityDetailScreen({ isDark, params }) {
           className="mx-4 mb-3 flex flex-col gap-2.5 rounded-2xl border p-4"
           style={{ backgroundColor: colors.card, borderColor: colors.border }}
         >
-          <p className="text-[14px] font-semibold" style={{ color: colors.text }}>
+          <p className="text-[0.875rem] font-semibold" style={{ color: colors.text }}>
             {t("card.factors_title")}
           </p>
           <ul className="flex flex-col gap-2">
@@ -398,7 +398,7 @@ export function CityDetailScreen({ isDark, params }) {
                   style={{ backgroundColor: Colors.brandGreen }}
                 />
                 <span
-                  className="text-[14px] capitalize"
+                  className="text-[0.875rem] capitalize"
                   style={{ color: colors.text }}
                 >
                   {factor.replace(/_/g, " ")}
@@ -415,10 +415,10 @@ export function CityDetailScreen({ isDark, params }) {
         className="mx-4 mb-3 flex flex-col gap-2.5 rounded-2xl border p-4"
         style={{ backgroundColor: colors.card, borderColor: colors.border }}
       >
-        <p className="text-[14px] font-semibold" style={{ color: colors.subtext }}>
+        <p className="text-[0.875rem] font-semibold" style={{ color: colors.subtext }}>
           {t("card.health_guidance")}
         </p>
-        <p className="text-[15px] font-medium leading-relaxed" style={{ color: colors.text }}>
+        <p className="text-[0.9375rem] font-medium leading-relaxed" style={{ color: colors.text }}>
           {healthAdvice}
         </p>
         <button
@@ -426,7 +426,7 @@ export function CityDetailScreen({ isDark, params }) {
           onClick={() => navigate("healthRisk", { prediction })}
           className="mt-1 flex items-center gap-1 active:opacity-60"
         >
-          <span className="text-[14px] font-semibold" style={{ color: Colors.brandGreen }}>
+          <span className="text-[0.875rem] font-semibold" style={{ color: Colors.brandGreen }}>
             {t("screen.city_detail.view_health_risk")}
           </span>
           <ChevronRight size={16} color={Colors.brandGreen} />
@@ -441,7 +441,7 @@ export function CityDetailScreen({ isDark, params }) {
             style={{ backgroundColor: colors.card, borderColor: colors.border }}
           >
             <CheckCircle2 size={22} color={Colors.brandGreen} />
-            <span className="text-[15px] font-semibold" style={{ color: colors.text }}>
+            <span className="text-[0.9375rem] font-semibold" style={{ color: colors.text }}>
               {t("screen.city_detail.saved")}
             </span>
           </div>

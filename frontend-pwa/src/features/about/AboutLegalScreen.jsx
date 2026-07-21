@@ -73,7 +73,7 @@ export function AboutLegalScreen({ params, isOnline, isDark }) {
           <MframapaLogo size="xl" isDark={isDark} markOnly />
           {/* the real build, not a number typed into a translation file. this
               is how we tell whether a deploy actually reached the browser. */}
-          <p style={{ fontSize: 13, color: colors.muted }}>
+          <p style={{ fontSize: "0.8125rem", color: colors.muted }}>
             {/* the commit stays out of the interface; /version.json still
                 reports it so a deploy can be checked from outside. */}
             {t("about.version")}
@@ -108,7 +108,7 @@ export function AboutLegalScreen({ params, isOnline, isDark }) {
                 textAlign: "left",
               }}
             >
-              <span style={{ fontSize: 15, color: colors.text }}>
+              <span style={{ fontSize: "0.9375rem", color: colors.text }}>
                 {t(link.key)}
               </span>
               <ChevronRight size={16} color={colors.muted} />
@@ -116,7 +116,7 @@ export function AboutLegalScreen({ params, isOnline, isDark }) {
           ))}
         </div>
 
-        <p style={{ fontSize: 13, marginTop: 32, color: colors.muted }}>
+        <p style={{ fontSize: "0.8125rem", marginTop: 32, color: colors.muted }}>
         </p>
       </div>
     </div>

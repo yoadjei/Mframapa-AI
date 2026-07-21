@@ -19,7 +19,7 @@ export function InputField({
   return (
     <div className="flex flex-col gap-1.5">
       {label && (
-        <label className="text-[13px] font-semibold" style={{ color: colors?.subtext ?? "#9AA7B5" }}>
+        <label className="text-[0.8125rem] font-semibold" style={{ color: colors?.subtext ?? "#9AA7B5" }}>
           {label}
         </label>
       )}
@@ -37,7 +37,7 @@ export function InputField({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           autoComplete={autoComplete}
-          className="flex-1 bg-transparent text-[15px] outline-none placeholder:opacity-50"
+          className="flex-1 bg-transparent text-[0.9375rem] outline-none placeholder:opacity-50"
           style={{ color: colors?.text ?? "#FFFFFF" }}
         />
         {secure && (

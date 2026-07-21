@@ -68,7 +68,7 @@ export function LanguageSelectorScreen({ isDark, isOnline, params }) {
           <ChevronLeft size={22} color={colors.text} />
         </button>
         <span
-          className="flex-1 text-[26px] font-extrabold"
+          className="flex-1 text-[1.625rem] font-extrabold"
           style={{ color: colors.text }}
         >
           {t("language.title")}
@@ -86,14 +86,14 @@ export function LanguageSelectorScreen({ isDark, isOnline, params }) {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder={t("common.search")}
-          className="flex-1 bg-transparent text-[15px] outline-none"
+          className="flex-1 bg-transparent text-[0.9375rem] outline-none"
           style={{ color: colors.text }}
         />
       </div>
 
       {/* Section header */}
       <p
-        className="px-4 pb-2 pt-4 text-[13px] font-bold"
+        className="px-4 pb-2 pt-4 text-[0.8125rem] font-bold"
         style={{ color: colors.text, backgroundColor: colors.card }}
       >
         {t("language.supported")}
@@ -111,8 +111,8 @@ export function LanguageSelectorScreen({ isDark, isOnline, params }) {
               className="flex w-full items-center gap-3 px-4 py-3.5 text-left active:opacity-60"
               style={{ borderBottom: `1px solid ${colors.border}` }}
             >
-              <span className="text-[20px]">{item.flag}</span>
-              <span className="flex-1 text-[15px]" style={{ color: colors.text }}>
+              <span className="text-[1.25rem]">{item.flag}</span>
+              <span className="flex-1 text-[0.9375rem]" style={{ color: colors.text }}>
                 {item.name}
               </span>
               {selected && <Check size={18} color={Colors.brandGreen} />}

@@ -183,7 +183,7 @@ function fallback(name) {
       return (
         <div className="flex h-full min-h-[60vh] flex-col items-center justify-center gap-3 px-8 text-center">
           <div className="h-12 w-12 rounded-full" style={{ backgroundColor: "rgba(0,200,150,0.12)" }}>
-            <span style={{ fontSize: 28, lineHeight: "48px" }}>🌿</span>
+            <span style={{ fontSize: "1.75rem", lineHeight: "48px" }}>🌿</span>
           </div>
           <p className="font-semibold" style={{ color: "#FFFFFF" }}>{name}</p>
           <p className="text-sm" style={{ color: "#9AA7B5" }}>Coming soon</p>

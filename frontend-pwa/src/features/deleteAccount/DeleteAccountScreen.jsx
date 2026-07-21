@@ -56,10 +56,10 @@ export function DeleteAccountScreen({ params, isOnline, isDark }) {
         >
           <AlertTriangle size={36} color={Colors.danger} />
         </div>
-        <p style={{ fontSize: 21, fontWeight: 800, color: colors.text }}>
+        <p style={{ fontSize: "1.3125rem", fontWeight: 800, color: colors.text }}>
           {t("delete.title")}
         </p>
-        <p style={{ fontSize: 14, color: colors.subtext }}>
+        <p style={{ fontSize: "0.875rem", color: colors.subtext }}>
           {t("delete.note_body")}
         </p>
       </div>
@@ -117,11 +117,11 @@ export function DeleteAccountScreen({ params, isOnline, isDark }) {
           <AlertTriangle size={64} color={Colors.danger} />
         </div>
 
-        <h1 style={{ fontSize: 24, fontWeight: 800, color: colors.text, textAlign: "center", margin: 0 }}>
+        <h1 style={{ fontSize: "1.5rem", fontWeight: 800, color: colors.text, textAlign: "center", margin: 0 }}>
           {t("delete.title")}
         </h1>
 
-        <p style={{ fontSize: 16, textAlign: "center", color: colors.subtext, margin: 0 }}>
+        <p style={{ fontSize: "1rem", textAlign: "center", color: colors.subtext, margin: 0 }}>
           {t("delete.warning_prefix")}{" "}
           <span style={{ fontWeight: 800, color: colors.text }}>{t("delete.warning_strong")}</span>
         </p>
@@ -142,7 +142,7 @@ export function DeleteAccountScreen({ params, isOnline, isDark }) {
             <div key={i} style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <span
                 style={{
-                  fontSize: 16,
+                  fontSize: "1rem",
                   fontWeight: 700,
                   color: Colors.danger,
                   width: 20,
@@ -152,13 +152,13 @@ export function DeleteAccountScreen({ params, isOnline, isDark }) {
               >
                 ✕
               </span>
-              <span style={{ fontSize: 15, color: colors.subtext }}>{item}</span>
+              <span style={{ fontSize: "0.9375rem", color: colors.subtext }}>{item}</span>
             </div>
           ))}
         </div>
 
         {/* Note */}
-        <p style={{ fontSize: 13, lineHeight: "18px", textAlign: "center", color: colors.muted, margin: 0 }}>
+        <p style={{ fontSize: "0.8125rem", lineHeight: "18px", textAlign: "center", color: colors.muted, margin: 0 }}>
           <span style={{ fontWeight: 600, color: colors.subtext }}>{t("delete.note_label")}</span>{" "}
           {t("delete.note_body")}
         </p>
@@ -176,7 +176,7 @@ export function DeleteAccountScreen({ params, isOnline, isDark }) {
               border: `1px solid ${confirm === "DELETE" ? Colors.danger : colors.border}`,
               backgroundColor: colors.card,
               padding: "14px",
-              fontSize: 14,
+              fontSize: "0.875rem",
               color: colors.text,
               outline: "none",
               fontFamily: "inherit",
@@ -199,7 +199,7 @@ export function DeleteAccountScreen({ params, isOnline, isDark }) {
             cursor: canDelete && !deleting ? "pointer" : "not-allowed",
             opacity: canDelete && !deleting ? 1 : 0.5,
             color: "#fff",
-            fontSize: 16,
+            fontSize: "1rem",
             fontWeight: 700,
           }}
         >
@@ -214,7 +214,7 @@ export function DeleteAccountScreen({ params, isOnline, isDark }) {
             background: "none",
             border: "none",
             cursor: "pointer",
-            fontSize: 15,
+            fontSize: "0.9375rem",
             color: colors.muted,
             marginTop: 4,
           }}
