@@ -5,7 +5,7 @@ from functools import lru_cache
 from typing import Any, Dict, List, Optional
 
 import numpy as np
-from fastapi import APIRouter, Depends, Query, HTTPException, Response, Request
+from fastapi import APIRouter, BackgroundTasks, Depends, Query, HTTPException, Response, Request
 from pydantic import BaseModel, Field
 
 from backend.api.aqi import aqi_category_from_pm25
@@ -137,10 +137,11 @@ def _cities() -> list:
 
 _INSIGHT_TTL = 30 * 24 * 3600   # guidance per category/language is effectively static
 # guidance for a category is stable, but one identical sentence forever reads like
-# a canned string. we build a small pool per category and language, then rotate
-# through it: the wording changes every view, and gemini is called at most
-# _INSIGHT_POOL_TARGET times per combination, ever.
-_INSIGHT_POOL_TARGET = 12
+# a canned string. we build a pool per category and language, then rotate through
+# it, so a daily user goes years without seeing the same line twice. the pool
+# grows one variant per view in the background, so it only ever costs what real
+# traffic asks for and never delays a response.
+_INSIGHT_POOL_TARGET = 500
 _I18N_TTL = 60 * 24 * 3600      # a translated bundle only changes when we ship new copy
 _MAP_SUMMARY_TTL = 3 * 3600     # continental map refreshes a few times a day
 # CAMS air-quality forecast runs out around day 4; past that a 'forecast' would be
@@ -674,8 +675,34 @@ def _insight_category_key(aqi_category: str, pm25: float) -> str:
     return "good"
 
 
+def _grow_insight_pool(cache_key: str, body: "InsightBody", cat: str, language: str) -> None:
+    """add one more variant to a pool, off the request path.
+
+    generating during the request would put a gemini round trip in front of the
+    user for every view until the pool filled. this runs after the response has
+    been sent.
+    """
+    try:
+        pool = (RedisCache().get(cache_key) or {}).get("variants") or []
+        if len(pool) >= _INSIGHT_POOL_TARGET:
+            return
+        text = gemini_client.generate_air_quality_insight(
+            pm25=body.pm25,
+            aqi_category=cat,
+            weather={},                     # a stored line must not claim today's weather
+            language=language,
+            language_name=body.language_name or None,
+            variant=len(pool),              # nudges gemini away from repeating itself
+        )
+        if text and text not in pool:
+            pool.append(text)
+            RedisCache().set(cache_key, {"variants": pool}, _INSIGHT_TTL)
+    except Exception as exc:
+        logger.warning("Gemini insight top-up failed: %s", exc)
+
+
 @router.post("/generate-insight")
-def generate_insight(body: InsightBody) -> Dict[str, str]:
+def generate_insight(body: InsightBody, background: BackgroundTasks) -> Dict[str, str]:
     cat = body.aqi_category or aqi_category_from_pm25(body.pm25)
     key = _insight_category_key(cat, body.pm25)
     language = (body.language or "en").lower()
@@ -688,20 +715,20 @@ def generate_insight(body: InsightBody) -> Dict[str, str]:
     cache_key = f"insight:pool:{key}:{language}"
     pool = (cache.get(cache_key) or {}).get("variants") or []
 
-    # top the pool up one variant at a time so the first user waits for one
-    # generation, not twelve, and the cost per combination is bounded.
+    # keep widening the pool in the background; the response never waits for it
     if len(pool) < _INSIGHT_POOL_TARGET and gemini_client.is_available():
+        background.add_task(_grow_insight_pool, cache_key, body, cat, language)
+
+    if not pool and gemini_client.is_available():
+        # nothing to serve yet, so this one caller does wait for a first line
         try:
             text = gemini_client.generate_air_quality_insight(
-                pm25=body.pm25,
-                aqi_category=cat,
-                weather={},                 # a cached line must not claim today's weather
-                language=language,
-                language_name=body.language_name or None,
-                variant=len(pool),          # nudges gemini away from repeating itself
+                pm25=body.pm25, aqi_category=cat, weather={},
+                language=language, language_name=body.language_name or None,
+                variant=0,
             )
-            if text and text not in pool:
-                pool.append(text)
+            if text:
+                pool = [text]
                 cache.set(cache_key, {"variants": pool}, _INSIGHT_TTL)
         except Exception as exc:
             logger.warning("Gemini insight failed: %s", exc)
