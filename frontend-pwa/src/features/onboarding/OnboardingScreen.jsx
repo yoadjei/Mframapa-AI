@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Globe2, BarChart3, ShieldCheck, MapPin } from "lucide-react";
+import { MorphBackground } from "../../components/background/MorphBackground.jsx";
 import { useAppState } from "../../state/appState.jsx";
 import { MframapaLogo } from "../../components/brand/MframapaLogo.jsx";
 import { PrimaryButton } from "../../components/ui/PrimaryButton.jsx";
@@ -340,20 +341,28 @@ function PermissionsPhase({ onDone }) {
 
 /* ──────────────────────────────────────────────────── OnboardingScreen root ── */
 export function OnboardingScreen() {
-  const { dispatch } = useAppState();
+  const { state, dispatch } = useAppState();
   const [phase, setPhase] = useState("splash"); // "splash" | "slides" | "permissions"
+  const liteMode = state.preferences?.liteMode ?? false;
 
   function completeOnboarding() {
     dispatch({ type: "COMPLETE_ONBOARDING" });
   }
 
-  if (phase === "splash") {
-    return <SplashPhase onDone={() => setPhase("slides")} />;
-  }
-
-  if (phase === "slides") {
-    return <SlidesPhase onDone={() => setPhase("permissions")} />;
-  }
-
-  return <PermissionsPhase onDone={completeOnboarding} />;
+  // one moving backdrop across all three phases, so first run feels continuous
+  // rather than like three separate screens
+  return (
+    <>
+      <MorphBackground isDark liteMode={liteMode} />
+      <div style={{ position: "relative", zIndex: 1 }}>
+        {phase === "splash" ? (
+          <SplashPhase onDone={() => setPhase("slides")} />
+        ) : phase === "slides" ? (
+          <SlidesPhase onDone={() => setPhase("permissions")} />
+        ) : (
+          <PermissionsPhase onDone={completeOnboarding} />
+        )}
+      </div>
+    </>
+  );
 }
