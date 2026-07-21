@@ -1,11 +1,14 @@
-import { lazy, Suspense, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { Loader2, MapPin, Minus, Navigation, Plus, Search, X } from "lucide-react";
 import { useAppState } from "../../state/appState.jsx";
 import { useNavigation } from "../../hooks/useNavigation.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
-import { getPrediction, generateInsight } from "../../services/api.js";
+import { getPrediction, generateInsight, getMapSummary } from "../../services/api.js";
 import { useCityPack } from "../../hooks/useCityPack.js";
-import { getColors, Colors } from "../../utils/colors.js";
+import { getColors, Colors, getAQIColor } from "../../utils/colors.js";
+
+/** a city we have no reading for: visibly not a judgement about its air. */
+const UNKNOWN_DOT = "#64748B";
 import { aqiCategoryKey } from "../../utils/i18nHelpers.js";
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN ?? "";
@@ -83,6 +86,39 @@ export function CoreFeatureScreen({ isOnline, isDark }) {
   const language = state.preferences?.language ?? "en";
 
   const { cities, loading: cityPackLoading } = useCityPack(isOnline);
+
+  // the city pack carries no air quality, so every marker fell through to the
+  // default green dot. green means "good" in our own legend, so the map was
+  // telling people the whole continent was fine. readings are merged in here,
+  // and a city we have no reading for is drawn neutral rather than green.
+  const [readings, setReadings] = useState({});
+  useEffect(() => {
+    let active = true;
+    getMapSummary()
+      .then((rows) => {
+        if (!active) return;
+        setReadings(Object.fromEntries(rows.map((r) => [r.name.toLowerCase(), r])));
+      })
+      .catch(() => {});
+    return () => { active = false; };
+  }, []);
+
+  const mapCities = useMemo(
+    () =>
+      cities.map((city) => {
+        const hit = readings[String(city.name).toLowerCase()];
+        if (!hit) {
+          return { ...city, color: UNKNOWN_DOT, size: 9, label: city.name };
+        }
+        return {
+          ...city,
+          color: getAQIColor(hit.aqi_category, isDark),
+          size: hit.pm25 >= 55 ? 20 : hit.pm25 >= 35 ? 17 : 14,
+          label: `${city.name}: ${Math.round(hit.pm25)} µg/m³`,
+        };
+      }),
+    [cities, readings, isDark]
+  );
 
   const [search, setSearch] = useState("");
   const [searchFocused, setSearchFocused] = useState(false);
@@ -287,7 +323,7 @@ export function CoreFeatureScreen({ isOnline, isDark }) {
             onMapClick={handleMapPress}
             mapboxToken={MAPBOX_TOKEN}
             isDark={isDark}
-            cities={cities}
+            cities={mapCities}
             selectedCity={null}
             liteMode={state.preferences?.liteMode ?? false}
           />

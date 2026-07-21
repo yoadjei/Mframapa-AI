@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useAppState } from "../../state/appState.jsx";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { fetchCityPrediction, fetchPredictionAtCoords } from "../../services/predictionService.js";
+import { getDailyFact } from "../../services/api.js";
 import { MframapaLogo } from "../../components/brand/MframapaLogo.jsx";
 import { getAQIColor, aqiSymbol } from "../../utils/colors.js";
 
@@ -79,6 +80,17 @@ export function HomeScreen({ isOnline }) {
     return () => { active = false; };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOnline, state.homeSummary?.city, state.preferences.language]);
+
+  // the same fact that goes out as the daily notification, so the app and the
+  // notification never disagree about what today's is.
+  const [fact, setFact] = useState("");
+  useEffect(() => {
+    let active = true;
+    getDailyFact(state.preferences.language ?? "en")
+      .then((f) => { if (active) setFact(f); })
+      .catch(() => {});
+    return () => { active = false; };
+  }, [state.preferences.language]);
 
   function updateSummary(r) {
     dispatch({
@@ -314,6 +326,21 @@ export function HomeScreen({ isOnline }) {
             );
           })}
         </div>
+
+        {/* ── Did you know ── */}
+        {fact && (
+          <div className="mf-glass mx-4 mb-3 rounded-2xl p-4">
+            <p
+              className="mb-1.5 text-[0.6875rem] font-semibold uppercase tracking-widest"
+              style={{ color: colors.sub }}
+            >
+              {t("home.did_you_know")}
+            </p>
+            <p className="text-[0.875rem] leading-[1.375rem] m-0" style={{ color: colors.text }}>
+              {fact}
+            </p>
+          </div>
+        )}
 
         {/* ── Weather strip (when available) ── */}
         {pred?.weather && (

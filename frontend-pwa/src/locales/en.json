@@ -673,5 +673,6 @@
   "settings.text_size_large": "Large",
   "settings.text_size_larger": "Larger",
   "a11y.text_size_hint": "Makes all text in the app bigger",
-  "settings.accessibility": "Accessibility"
+  "settings.accessibility": "Accessibility",
+  "home.did_you_know": "Did you know"
 }

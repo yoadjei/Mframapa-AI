@@ -129,3 +129,15 @@ export async function getMapHistory(days = 14) {
     throw new Error(normalizeError(error, "Could not load the history"));
   }
 }
+
+// one short reviewed fact a day, the same for everyone, translated server side.
+export async function getDailyFact(language = "en", languageName = "") {
+  try {
+    const response = await httpClient.get("/api/v1/daily-fact", {
+      params: { language, language_name: languageName },
+    });
+    return response.data?.fact ?? "";
+  } catch {
+    return "";                       // a missing fact should never block the screen
+  }
+}

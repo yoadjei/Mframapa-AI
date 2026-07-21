@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Globe2, BarChart3, ShieldCheck, MapPin } from "lucide-react";
+import { Satellite, BellRing, MapPin } from "lucide-react";
 import { MorphBackground } from "../../components/background/MorphBackground.jsx";
 import { useAppState } from "../../state/appState.jsx";
 import { useTranslation } from "../../hooks/useTranslation.js";
@@ -12,17 +12,17 @@ const MUTED = "#647182";
 
 const SLIDES = [
   {
-    icon: Globe2,
+    icon: null,                       // slide one shows the mframapa mark
     titleKey: "screen.onboarding.slide1_title",
     subKey: "screen.onboarding.slide1_sub",
   },
   {
-    icon: BarChart3,
+    icon: Satellite,
     titleKey: "screen.onboarding.slide2_title",
     subKey: "screen.onboarding.slide2_sub",
   },
   {
-    icon: ShieldCheck,
+    icon: BellRing,
     titleKey: "screen.onboarding.slide3_title",
     subKey: "screen.onboarding.slide3_sub",
   },
@@ -140,7 +140,11 @@ function SlidesPhase({ onDone }) {
                     flexShrink: 0,
                   }}
                 >
-                  <IconComp size={120} color={BRAND_GREEN} style={{ opacity: 0.9 }} />
+                  {IconComp ? (
+                    <IconComp size={120} color={BRAND_GREEN} style={{ opacity: 0.9 }} aria-hidden="true" />
+                  ) : (
+                    <MframapaLogo size="xl" markOnly />
+                  )}
                 </div>
 
                 {/* Text block */}
