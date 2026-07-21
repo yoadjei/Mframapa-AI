@@ -1,4 +1,7 @@
 /** Supported UI languages (matches frontend-pwa/src/locales/*.json). */
+/** languages written right to left. arabic is the only one we ship today. */
+export const RTL_LANGUAGES = new Set(["ar"]);
+
 export const SUPPORTED_LANGUAGES = [
   { code: "ar", name: "Arabic", flag: "🇪🇬" },
   { code: "fr", name: "French", flag: "🇫🇷" },

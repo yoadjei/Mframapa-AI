@@ -146,8 +146,9 @@ export function HomeScreen({ isOnline }) {
             type="button"
             onClick={() => dispatch({ type: "SET_ACTIVE_SCREEN", payload: "notifications" })}
             className="relative p-1"
+            aria-label={t("a11y.notifications", { count: unreadCount })}
           >
-            <Bell size={22} color={colors.text} />
+            <Bell size={22} color={colors.text} aria-hidden="true" />
             {unreadCount > 0 && (
               <span
                 className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center rounded-full text-[9px] font-bold text-white"
@@ -197,7 +198,16 @@ export function HomeScreen({ isOnline }) {
             type="button"
             disabled={!pred}
             onClick={() => pred && dispatch({ type: "SET_ACTIVE_SCREEN", payload: "core" })}
-            className="relative w-full rounded-[20px] border p-5 text-left"
+            className="mf-press relative w-full rounded-[20px] border p-5 text-left"
+            aria-label={
+              pred
+                ? t("a11y.reading_summary", {
+                    city: pred.city?.name ?? "",
+                    pm25: (pred.pm25 ?? 0).toFixed(0),
+                    category: t(aqiCategoryKey(pred.aqi_category ?? pred.category)),
+                  })
+                : t("a11y.reading_pending")
+            }
             style={{
               backgroundColor: pred ? aqiColor + (isDark ? "22" : "14") : colors.card,
               borderColor:     pred ? aqiColor + (isDark ? "45" : "40") : colors.border,
@@ -211,7 +221,11 @@ export function HomeScreen({ isOnline }) {
 
             {/* Big number + badge */}
             <div className="my-2 flex items-center gap-3">
-              <span className="font-black leading-none" style={{ fontSize: 56, color: colors.text }}>
+              <span
+                aria-hidden="true"
+                className="font-black leading-none"
+                style={{ fontSize: 56, color: colors.text }}
+              >
                 {pred ? (loading ? "…" : displayNum) : "--"}
               </span>
               {pred && (
@@ -244,8 +258,9 @@ export function HomeScreen({ isOnline }) {
         {/* ── What to do ── */}
         {pred?.insight && (
           <div
-            className="mx-4 mb-3 rounded-2xl border p-4"
-            style={{ backgroundColor: colors.card, borderColor: colors.border }}
+            className="mf-glass mx-4 mb-3 rounded-2xl p-4"
+            role="status"
+            aria-live="polite"
           >
             <p
               className="mb-1.5 text-[11px] font-semibold uppercase tracking-widest"
@@ -316,9 +331,13 @@ export function HomeScreen({ isOnline }) {
             ].filter(Boolean).map((w, i) => {
               const Icon = w.icon;
               return (
-                <div key={i} className="flex flex-1 flex-col items-center gap-1 rounded-2xl p-3.5"
-                  style={{ backgroundColor: colors.card }}>
-                  <Icon size={20} color="#00C896" />
+                <div
+                  key={i}
+                  className="mf-glass flex flex-1 flex-col items-center gap-1 rounded-2xl p-3.5"
+                  role="group"
+                  aria-label={`${w.label}: ${w.value}`}
+                >
+                  <Icon size={20} color="#00C896" aria-hidden="true" />
                   <p className="text-[18px] font-bold" style={{ color: colors.text }}>{w.value}</p>
                   <p className="text-xs" style={{ color: colors.sub }}>{w.label}</p>
                 </div>

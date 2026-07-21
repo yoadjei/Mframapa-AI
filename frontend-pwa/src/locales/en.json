@@ -663,5 +663,9 @@
   "screen.profile.managed_note": "These come from your account and cannot be changed here.",
   "screen.profile.home_city": "Home city",
   "screen.profile.not_set": "Not set",
-  "about.version": "Version 2.0"
+  "about.version": "Version 2.0",
+  "a11y.reading_summary": "Air quality in {{city}}: {{pm25}} micrograms per cubic metre, {{category}}.",
+  "a11y.reading_pending": "Air quality reading not loaded yet.",
+  "a11y.open_details": "Open full details",
+  "a11y.notifications": "Notifications, {{count}} unread"
 }

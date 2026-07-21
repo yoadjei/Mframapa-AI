@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { EN_STRINGS } from "../locales/enBundle.js";
 import { useAppState } from "../state/appState.jsx";
-import { SUPPORTED_LANGUAGES } from "./languages.js";
+import { RTL_LANGUAGES, SUPPORTED_LANGUAGES } from "./languages.js";
 import { clearLocaleMemory, ensureLocale } from "./translationService.js";
 
 const I18nContext = createContext(null);
@@ -44,6 +44,15 @@ export function I18nProvider({ children }) {
     return () => {
       cancelled = true;
     };
+  }, [language]);
+
+  // screen readers pick their voice and pronunciation from the document
+  // language, so a swahili interface announced with an english voice is close
+  // to unusable. arabic also needs right to left or the layout reads backwards.
+  useEffect(() => {
+    const el = document.documentElement;
+    el.lang = language || "en";
+    el.dir = RTL_LANGUAGES.has(language) ? "rtl" : "ltr";
   }, [language]);
 
   const setLanguage = useCallback(
