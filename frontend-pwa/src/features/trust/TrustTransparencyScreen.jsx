@@ -4,7 +4,9 @@ import { useNavigation } from "../../hooks/useNavigation.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { getColors, Colors } from "../../utils/colors.js";
 
-const SECTION_IDS = ["calc", "sources", "model", "disclaimers"];
+// how the model is built is not a user-facing detail; it invited scrutiny
+// of internals without helping anyone decide whether to go outside.
+const SECTION_IDS = ["calc", "sources", "disclaimers"];
 
 const DATA_SOURCES = ["ERA5", "Sentinel-5P", "MODIS"];
 
@@ -16,7 +18,6 @@ export function TrustTransparencyScreen({ isOnline, isDark, params }) {
   const [open, setOpen] = useState({
     calc: true,
     sources: true,
-    model: false,
     disclaimers: false,
   });
 
@@ -32,7 +33,6 @@ export function TrustTransparencyScreen({ isOnline, isDark, params }) {
 
   function bodyKey(id) {
     if (id === "calc") return "screen.trust.calc_body";
-    if (id === "model") return "screen.trust.model_body";
     if (id === "disclaimers") return "screen.trust.disclaim_body";
     return null;
   }

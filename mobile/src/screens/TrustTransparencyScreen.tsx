@@ -8,7 +8,9 @@ import { getColors } from '../theme';
 import { useTheme } from '../hooks/useTheme';
 import { useTranslation } from '../hooks/useTranslation';
 
-const SECTION_IDS = ['calc', 'sources', 'model', 'disclaimers'] as const;
+// how the model is built is not a user-facing detail; it invited scrutiny
+// of internals without helping anyone decide whether to go outside.
+const SECTION_IDS = ['calc', 'sources', 'disclaimers'] as const;
 
 export function TrustTransparencyScreen() {
   const { isDark } = useTheme();
@@ -19,7 +21,6 @@ export function TrustTransparencyScreen() {
   const [open, setOpen] = useState<Record<string, boolean>>({
     calc: true,
     sources: true,
-    model: false,
     disclaimers: false,
   });
 
@@ -81,7 +82,7 @@ export function TrustTransparencyScreen() {
                   <Text style={{ color: colors.subtext, fontSize: 14, lineHeight: 20 }}>
                     {t(
                       `screen.trust.${
-                        id === 'calc' ? 'calc' : id === 'model' ? 'model' : 'disclaim'
+                        id === 'calc' ? 'calc' : 'disclaim'
                       }_body`
                     )}
                   </Text>
