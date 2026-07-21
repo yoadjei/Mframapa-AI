@@ -305,7 +305,11 @@ export function App() {
           <OnboardingScreen canInstall={canInstall} onInstall={promptInstall} />
         ) : StackScreen ? (
           // Full-screen stack route — no tab bar, safe area insets handled by each screen
-          <div style={{ minHeight: "100dvh", backgroundColor: isDark ? "#0A0D12" : "#F8FAFC" }}>
+          <div
+            key={stackTop.name}
+            className="mf-screen"
+            style={{ minHeight: "100dvh", backgroundColor: isDark ? "#0A0D12" : "#F8FAFC" }}
+          >
             <ScreenSuspense>
               <StackScreen isOnline={isOnline} params={stackTop.params} isDark={isDark} />
             </ScreenSuspense>
