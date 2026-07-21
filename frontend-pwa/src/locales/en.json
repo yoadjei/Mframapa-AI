@@ -684,5 +684,6 @@
   "screen.profile.managed_note": "These come from your account and cannot be changed here.",
   "screen.profile.home_city": "Home city",
   "screen.profile.not_set": "Not set",
-  "about.version": "Version 2.0"
+  "about.version": "Version 2.0",
+  "screen.heatmap.subtitle": "Today across the continent"
 }

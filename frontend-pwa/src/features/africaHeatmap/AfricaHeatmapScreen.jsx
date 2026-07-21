@@ -100,7 +100,7 @@ export function AfricaHeatmapScreen({ isDark }) {
             {t("screen.heatmap.title")}
           </p>
           <p className="text-[13px] m-0" style={{ color: colors.subtext }}>
-            {loading ? "Loading today's readings…" : `${cities.length} cities · today`}
+            {loading ? `${t("common.loading")}…` : t("screen.heatmap.subtitle")}
           </p>
         </div>
         <button
