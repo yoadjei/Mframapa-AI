@@ -96,6 +96,12 @@ function SlidesPhase({ onDone }) {
     }
   }
 
+  // the slides could only be moved forward, so anyone who wanted to reread the
+  // one before Get Started had no way back to it.
+  function goBack() {
+    setIndex((i) => Math.max(0, i - 1));
+  }
+
   // Animate the slide track via CSS translate
   const translateX = `-${index * 100}%`;
 
@@ -168,14 +174,20 @@ function SlidesPhase({ onDone }) {
       <div
         className="flex shrink-0 flex-col items-center gap-5 px-6 pb-6"
       >
-        {/* Dots */}
+        {/* Dots double as jump targets, so any slide can be revisited */}
         <div className="flex gap-2">
           {SLIDES.map((_, i) => (
-            <div
+            <button
               key={i}
+              type="button"
+              aria-label={`Go to slide ${i + 1}`}
+              onClick={() => setIndex(i)}
               style={{
                 width: 8,
                 height: 8,
+                padding: 0,
+                border: "none",
+                cursor: "pointer",
                 borderRadius: 4,
                 backgroundColor: i === index ? BRAND_GREEN : MUTED,
                 transition: "background-color 0.25s",
@@ -192,6 +204,25 @@ function SlidesPhase({ onDone }) {
           }
           onClick={goNext}
         />
+
+        <button
+          type="button"
+          onClick={goBack}
+          disabled={index === 0}
+          style={{
+            background: "none",
+            border: "none",
+            padding: "4px 8px",
+            fontSize: 14,
+            fontWeight: 600,
+            cursor: index === 0 ? "default" : "pointer",
+            opacity: index === 0 ? 0 : 1,
+            color: MUTED,
+            transition: "opacity 0.2s",
+          }}
+        >
+          {t("common.back", "Back")}
+        </button>
       </div>
     </div>
   );
