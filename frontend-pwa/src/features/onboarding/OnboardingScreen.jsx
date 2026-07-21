@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Globe2, BarChart3, ShieldCheck, MapPin } from "lucide-react";
 import { MorphBackground } from "../../components/background/MorphBackground.jsx";
 import { useAppState } from "../../state/appState.jsx";
+import { useTranslation } from "../../hooks/useTranslation.js";
 import { MframapaLogo } from "../../components/brand/MframapaLogo.jsx";
 import { PrimaryButton } from "../../components/ui/PrimaryButton.jsx";
 import { OutlineButton } from "../../components/ui/OutlineButton.jsx";
@@ -13,38 +14,24 @@ const SLIDES = [
   {
     icon: Globe2,
     titleKey: "screen.onboarding.slide1_title",
-    titleFallback: "Check air quality instantly",
     subKey: "screen.onboarding.slide1_sub",
-    subFallback: "Monitor pollution levels in your area and stay healthy everywhere in Africa.",
   },
   {
     icon: BarChart3,
     titleKey: "screen.onboarding.slide2_title",
-    titleFallback: "AI-Powered Predictions",
     subKey: "screen.onboarding.slide2_sub",
-    subFallback: "Satellite data and 12 ML models give you accurate 7-day air quality forecasts.",
   },
   {
     icon: ShieldCheck,
     titleKey: "screen.onboarding.slide3_title",
-    titleFallback: "Stay Protected Anywhere",
     subKey: "screen.onboarding.slide3_sub",
-    subFallback: "Get instant alerts when air quality changes. Works offline with cached city data.",
   },
 ];
 
 function useT() {
-  // Minimal translation helper — reads from window.__mframapa_strings if populated by i18n system,
-  // otherwise returns the fallback value passed at call site.
-  return (key, fallback) => {
-    try {
-      const strings = window.__mframapa_strings;
-      if (strings && strings[key]) return strings[key];
-    } catch {
-      // window.__mframapa_strings not available — fall through to fallback
-    }
-    return fallback ?? key;
-  };
+  // the real catalog, so this screen is translated like every other one
+  const { t } = useTranslation();
+  return t;
 }
 
 /* ─────────────────────────────────────────────────────────── Splash phase ── */
@@ -159,10 +146,10 @@ function SlidesPhase({ onDone }) {
                 {/* Text block */}
                 <div className="flex flex-col items-center gap-3 text-center">
                   <h1 className="text-2xl font-bold leading-8" style={{ color: "#FFFFFF" }}>
-                    {t(slide.titleKey, slide.titleFallback)}
+                    {t(slide.titleKey)}
                   </h1>
                   <p className="text-sm leading-5" style={{ color: "#9AA7B5" }}>
-                    {t(slide.subKey, slide.subFallback)}
+                    {t(slide.subKey)}
                   </p>
                 </div>
               </div>
@@ -200,8 +187,8 @@ function SlidesPhase({ onDone }) {
         <PrimaryButton
           label={
             index === SLIDES.length - 1
-              ? t("screen.onboarding.get_started", "Get Started")
-              : t("screen.onboarding.next", "Next")
+              ? t("screen.onboarding.get_started")
+              : t("screen.onboarding.next")
           }
           onClick={goNext}
         />
@@ -222,7 +209,7 @@ function SlidesPhase({ onDone }) {
             transition: "opacity 0.2s",
           }}
         >
-          {t("common.back", "Back")}
+          {t("common.back")}
         </button>
       </div>
     </div>
@@ -293,7 +280,7 @@ function PermissionsPhase({ onDone }) {
           className="text-center text-[26px] font-bold"
           style={{ color: "#FFFFFF" }}
         >
-          {t("screen.permissions.title", "Location Access")}
+          {t("screen.permissions.title")}
         </h1>
 
         <p
@@ -310,12 +297,12 @@ function PermissionsPhase({ onDone }) {
       {/* Bottom buttons */}
       <div className="flex shrink-0 flex-col items-center gap-3 pb-4">
         <PrimaryButton
-          label={t("screen.permissions.allow", "Allow")}
+          label={t("screen.permissions.allow")}
           onClick={handleAllow}
           loading={requesting}
         />
         <OutlineButton
-          label={t("screen.permissions.not_now", "Not now")}
+          label={t("screen.permissions.not_now")}
           onClick={handleSkip}
           color={MUTED}
         />
@@ -332,7 +319,7 @@ function PermissionsPhase({ onDone }) {
           className="text-[13px]"
           style={{ color: BRAND_GREEN }}
         >
-          {t("screen.permissions.setup_later", "Set up later in Settings")}
+          {t("screen.permissions.setup_later")}
         </button>
       </div>
     </div>
