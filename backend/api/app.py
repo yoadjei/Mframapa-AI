@@ -125,6 +125,22 @@ def _prewarm_cache() -> None:
         list(pool.map(warm, _PREWARM_CITIES))
     logger.info("cache prewarm complete (%d cities)", len(_PREWARM_CITIES))
 
+    # build the continental map payload here too. assembling 120 cities takes
+    # longer than nginx will wait, so the first visitor of the day was getting a
+    # 504 while it was computed. doing it on startup means they get a cache hit.
+    try:
+        from backend.api.v1.router import build_map_summary
+
+        class _Ctx:                       # build_map_summary only needs app.state
+            pass
+
+        ctx = _Ctx()
+        ctx.app = app
+        summary = build_map_summary(ctx, pipeline)
+        logger.info("map summary warmed (%d cities)", len(summary.get("cities", [])))
+    except Exception:
+        logger.exception("could not warm the map summary")
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
