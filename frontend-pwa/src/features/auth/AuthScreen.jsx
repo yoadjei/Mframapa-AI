@@ -15,42 +15,45 @@ import { normalizeError } from "../../services/httpClient.js";
 import { MframapaLogo } from "../../components/brand/MframapaLogo.jsx";
 import { PrimaryButton } from "../../components/ui/PrimaryButton.jsx";
 
-const GREEN  = "#00C896";
-const TEXT   = "#FFFFFF";
-const SUBTEXT = "#9AA7B5";
-const MUTED  = "#647182";
-const BORDER = "#25303C";
-const SURFACE = "#1E2733";
+const GREEN = "#00C896";
+
+// this screen used a single dark palette, so in light mode the headings and
+// labels were white on white. colours now follow the app theme.
+function palette(isDark) {
+  return isDark
+    ? { TEXT: "#FFFFFF", SUBTEXT: "#9AA7B5", MUTED: "#647182", BORDER: "#25303C", SURFACE: "#1E2733", BG: "#0A0D12" }
+    : { TEXT: "#0F1419", SUBTEXT: "#5C6B7A", MUTED: "#7B8A99", BORDER: "#D4DAE3", SURFACE: "#FFFFFF", BG: "#F8FAFC" };
+}
 
 // ── Shared field ──────────────────────────────────────────────────────────────
-function Field({ label, placeholder, value, onChange, type = "text", icon: Icon, secure, autoComplete }) {
+function Field({ label, placeholder, value, onChange, type = "text", icon: Icon, secure, autoComplete, c }) {
   const [show, setShow] = useState(false);
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
       {label && (
-        <span style={{ fontSize: 13, fontWeight: 500, color: SUBTEXT }}>{label}</span>
+        <span style={{ fontSize: 13, fontWeight: 500, color: c.SUBTEXT }}>{label}</span>
       )}
       <div style={{
         display: "flex", alignItems: "center", gap: 10,
-        borderRadius: 12, border: `1px solid ${BORDER}`,
-        backgroundColor: SURFACE,
+        borderRadius: 12, border: `1px solid ${c.BORDER}`,
+        backgroundColor: c.SURFACE,
         paddingLeft: 14, paddingRight: 14, paddingTop: 14, paddingBottom: 14,
       }}>
-        {Icon && <Icon size={18} color={MUTED} />}
+        {Icon && <Icon size={18} color={c.MUTED} />}
         <input
           type={secure ? (show ? "text" : "password") : type}
           placeholder={placeholder}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           autoComplete={autoComplete}
-          style={{ flex: 1, background: "transparent", border: "none", outline: "none", fontSize: 15, color: TEXT }}
+          style={{ flex: 1, background: "transparent", border: "none", outline: "none", fontSize: 15, color: c.TEXT }}
           className="placeholder:opacity-40"
         />
         {secure && (
           <button type="button" tabIndex={-1}
             onClick={() => setShow((v) => !v)}
             style={{ background: "none", border: "none", cursor: "pointer", padding: 0, opacity: 0.6, lineHeight: 1 }}>
-            {show ? <EyeOff size={18} color={MUTED} /> : <Eye size={18} color={MUTED} />}
+            {show ? <EyeOff size={18} color={c.MUTED} /> : <Eye size={18} color={c.MUTED} />}
           </button>
         )}
       </div>
@@ -74,15 +77,15 @@ function AuthScroll({ children }) {
 }
 
 // ── Back button row (matches mobile backBtn) ──────────────────────────────────
-function BackBtn({ onPress, label = "Back" }) {
+function BackBtn({ onPress, label = "Back", c }) {
   return (
     <button type="button" onClick={onPress}
       style={{
         display: "flex", alignItems: "center", gap: 4,
         background: "none", border: "none", cursor: "pointer",
-        color: TEXT, fontSize: 16, padding: 0,
+        color: c.TEXT, fontSize: 16, padding: 0,
       }}>
-      <ChevronLeft size={22} color={TEXT} />
+      <ChevronLeft size={22} color={c.TEXT} />
       {label}
     </button>
   );
@@ -90,7 +93,7 @@ function BackBtn({ onPress, label = "Back" }) {
 
 /* ────────────────────────────────────────────────────── LoginView ── */
 // Mirrors mobile/src/screens/onboarding/LoginScreen.tsx
-function LoginView({ onAuth, onSignUp, onForgot }) {
+function LoginView({ onAuth, onSignUp, onForgot, c, isDark }) {
   const [email, setEmail]       = useState("");
   const [password, setPassword] = useState("");
   const [error, setError]       = useState("");
@@ -115,28 +118,28 @@ function LoginView({ onAuth, onSignUp, onForgot }) {
     <AuthScroll>
       {/* logoWrap — alignItems center, marginBottom 36 */}
       <div style={{ display: "flex", justifyContent: "center", marginBottom: 36 }}>
-        <MframapaLogo size="lg" isDark={true} />
+        <MframapaLogo size="lg" isDark={isDark} />
       </div>
 
       {/* heading */}
-      <p style={{ fontSize: 28, fontWeight: 800, color: TEXT, marginBottom: 6, marginTop: 0 }}>
+      <p style={{ fontSize: 28, fontWeight: 800, color: c.TEXT, marginBottom: 6, marginTop: 0 }}>
         Welcome back
       </p>
       {/* sub */}
-      <p style={{ fontSize: 15, color: SUBTEXT, marginBottom: 28, marginTop: 0 }}>
+      <p style={{ fontSize: 15, color: c.SUBTEXT, marginBottom: 28, marginTop: 0 }}>
         Sign in to your Mframapa account.
       </p>
 
       <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 0 }}>
         {/* Email — marginBottom 16 */}
         <div style={{ marginBottom: 16 }}>
-          <Field label="Email" placeholder="Email Address" value={email} onChange={setEmail}
+          <Field c={c} label="Email" placeholder="Email Address" value={email} onChange={setEmail}
             type="email" icon={Mail} autoComplete="email" />
         </div>
 
         {/* Password — marginBottom 0 (forgot sits below) */}
         <div style={{ marginBottom: 4 }}>
-          <Field label="Password" placeholder="Password" value={password} onChange={setPassword}
+          <Field c={c} label="Password" placeholder="Password" value={password} onChange={setPassword}
             secure icon={Lock} autoComplete="current-password" />
         </div>
 
@@ -163,7 +166,7 @@ function LoginView({ onAuth, onSignUp, onForgot }) {
 
       {/* signupRow — justifyContent center, marginTop 24, gap 6 */}
       <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: 24, gap: 6 }}>
-        <span style={{ fontSize: 14, color: SUBTEXT }}>Don&apos;t have an account?</span>
+        <span style={{ fontSize: 14, color: c.SUBTEXT }}>Don&apos;t have an account?</span>
         <button type="button" onClick={onSignUp}
           style={{ background: "none", border: "none", cursor: "pointer", fontSize: 14, fontWeight: 600, color: GREEN }}>
           Sign up now
@@ -175,7 +178,7 @@ function LoginView({ onAuth, onSignUp, onForgot }) {
 
 /* ────────────────────────────────────────────────────── SignUpView ── */
 // Mirrors mobile/src/screens/onboarding/SignUpScreen.tsx
-function SignUpView({ onAuth, onBack }) {
+function SignUpView({ onAuth, onBack, c, isDark }) {
   const [fullName, setFullName]             = useState("");
   const [email, setEmail]                   = useState("");
   const [password, setPassword]             = useState("");
@@ -211,36 +214,36 @@ function SignUpView({ onAuth, onBack }) {
     <AuthScroll>
       {/* backBtn — marginBottom 16 */}
       <div style={{ marginBottom: 16 }}>
-        <BackBtn onPress={onBack} />
+        <BackBtn c={c} onPress={onBack} />
       </div>
 
       {/* logoWrap — center, marginBottom 28 */}
       <div style={{ display: "flex", justifyContent: "center", marginBottom: 28 }}>
-        <MframapaLogo size="lg" isDark={true} />
+        <MframapaLogo size="lg" isDark={isDark} />
       </div>
 
-      <p style={{ fontSize: 28, fontWeight: 800, color: TEXT, marginBottom: 6, marginTop: 0 }}>
+      <p style={{ fontSize: 28, fontWeight: 800, color: c.TEXT, marginBottom: 6, marginTop: 0 }}>
         Create account
       </p>
-      <p style={{ fontSize: 15, color: SUBTEXT, marginBottom: 24, marginTop: 0 }}>
+      <p style={{ fontSize: 15, color: c.SUBTEXT, marginBottom: 24, marginTop: 0 }}>
         Start monitoring air quality across Africa.
       </p>
 
       <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 0 }}>
         <div style={{ marginBottom: 16 }}>
-          <Field label="Full Name" placeholder="Kofi Antwi" value={fullName} onChange={setFullName}
+          <Field c={c} label="Full Name" placeholder="Kofi Antwi" value={fullName} onChange={setFullName}
             icon={User} autoComplete="name" />
         </div>
         <div style={{ marginBottom: 16 }}>
-          <Field label="Email" placeholder="Email Address" value={email} onChange={setEmail}
+          <Field c={c} label="Email" placeholder="Email Address" value={email} onChange={setEmail}
             type="email" icon={Mail} autoComplete="email" />
         </div>
         <div style={{ marginBottom: 16 }}>
-          <Field label="Password" placeholder="Password" value={password} onChange={setPassword}
+          <Field c={c} label="Password" placeholder="Password" value={password} onChange={setPassword}
             secure icon={Lock} autoComplete="new-password" />
         </div>
         <div style={{ marginBottom: 16 }}>
-          <Field label="Confirm Password" placeholder="Confirm Password" value={confirmPassword}
+          <Field c={c} label="Confirm Password" placeholder="Confirm Password" value={confirmPassword}
             onChange={setConfirmPassword} secure icon={Lock} autoComplete="new-password" />
         </div>
 
@@ -265,7 +268,7 @@ function SignUpView({ onAuth, onBack }) {
 
       {/* loginRow — justifyContent center, marginTop 24, gap 6 */}
       <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: 24, gap: 6 }}>
-        <span style={{ fontSize: 14, color: SUBTEXT }}>Already have an account?</span>
+        <span style={{ fontSize: 14, color: c.SUBTEXT }}>Already have an account?</span>
         <button type="button" onClick={onBack}
           style={{ background: "none", border: "none", cursor: "pointer", fontSize: 14, fontWeight: 600, color: GREEN }}>
           Sign in
@@ -277,7 +280,7 @@ function SignUpView({ onAuth, onBack }) {
 
 /* ────────────────────────────────────────────────── ForgotView ── */
 // Mirrors mobile/src/screens/onboarding/ForgotPasswordScreen.tsx
-function ForgotView({ onBack }) {
+function ForgotView({ onBack , c, isDark }) {
   const [email, setEmail]   = useState("");
   const [loading, setLoading] = useState(false);
   const [sent, setSent]     = useState(false);
@@ -294,7 +297,7 @@ function ForgotView({ onBack }) {
     <AuthScroll>
       {/* backBtn — marginBottom 24 */}
       <div style={{ marginBottom: 24 }}>
-        <BackBtn onPress={onBack} />
+        <BackBtn c={c} onPress={onBack} />
       </div>
 
       {/* iconWrap — 72×72, borderRadius 22, green bg dim, centered, marginBottom 24 */}
@@ -307,10 +310,10 @@ function ForgotView({ onBack }) {
         <Lock size={40} color={GREEN} />
       </div>
 
-      <p style={{ fontSize: 28, fontWeight: 800, color: TEXT, marginBottom: 6, marginTop: 0 }}>
+      <p style={{ fontSize: 28, fontWeight: 800, color: c.TEXT, marginBottom: 6, marginTop: 0 }}>
         Reset password
       </p>
-      <p style={{ fontSize: 15, color: SUBTEXT, marginBottom: 28, marginTop: 0 }}>
+      <p style={{ fontSize: 15, color: c.SUBTEXT, marginBottom: 28, marginTop: 0 }}>
         Enter your email and we&apos;ll send a reset link.
       </p>
 
@@ -339,7 +342,7 @@ function ForgotView({ onBack }) {
       ) : (
         <form onSubmit={handleSubmit}>
           <div style={{ marginBottom: 16 }}>
-            <Field label="Email" placeholder="Email Address" value={email} onChange={setEmail}
+            <Field c={c} label="Email" placeholder="Email Address" value={email} onChange={setEmail}
               type="email" icon={Mail} autoComplete="email" />
           </div>
           {/* cta — marginTop 8 */}
@@ -352,7 +355,7 @@ function ForgotView({ onBack }) {
       {/* backLinkWrap — alignSelf center, marginTop 24 */}
       <div style={{ display: "flex", justifyContent: "center", marginTop: 24 }}>
         <button type="button" onClick={onBack}
-          style={{ background: "none", border: "none", cursor: "pointer", fontSize: 14, color: SUBTEXT }}>
+          style={{ background: "none", border: "none", cursor: "pointer", fontSize: 14, color: c.SUBTEXT }}>
           Back to login
         </button>
       </div>
@@ -361,8 +364,9 @@ function ForgotView({ onBack }) {
 }
 
 /* ── Root ── */
-export function AuthScreen() {
+export function AuthScreen({ isDark = true }) {
   const { dispatch } = useAppState();
+  const c = palette(isDark);
   // "login" | "signup" | "forgot"
   const [screen, setScreen] = useState("login");
 
@@ -371,16 +375,18 @@ export function AuthScreen() {
   }
 
   if (screen === "signup") {
-    return <SignUpView onAuth={handleAuth} onBack={() => setScreen("login")} />;
+    return <SignUpView onAuth={handleAuth} onBack={() => setScreen("login")} c={c} isDark={isDark} />;
   }
   if (screen === "forgot") {
-    return <ForgotView onBack={() => setScreen("login")} />;
+    return <ForgotView onBack={() => setScreen("login")} c={c} isDark={isDark} />;
   }
   return (
     <LoginView
       onAuth={handleAuth}
       onSignUp={() => setScreen("signup")}
       onForgot={() => setScreen("forgot")}
+      c={c}
+      isDark={isDark}
     />
   );
 }
