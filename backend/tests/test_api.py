@@ -130,8 +130,10 @@ def test_generate_insight_hazardous(client):
         json={"pm25": 200.0, "aqi_category": "Hazardous", "weather": {}, "language": "en"},
     )
     assert r.status_code == 200
+    # guidance is now plain language, so assert the intent (urgency and a clear
+    # action) rather than the wording of the stub it replaced.
     text = r.json()["insight"].lower()
-    assert any(w in text for w in ("high", "hazard", "exposure", "particulate", "level"))
+    assert any(w in text for w in ("dangerous", "indoors", "inside", "avoid", "medical", "risk"))
 
 
 def test_generate_insight_negative_pm25(client):
