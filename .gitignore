@@ -93,3 +93,7 @@ cleanup.ps1
 # Misc
 MANUAL_DOWNLOADS.md
 pipeline/data/
+
+# generated build stamp
+frontend-pwa/src/buildInfo.js
+frontend-pwa/public/version.json

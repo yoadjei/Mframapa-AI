@@ -9,6 +9,9 @@
 
 # policy pages change without a new filename, so they must be revalidated
 # rather than served from an edge or browser cache.
+/version.json
+  Cache-Control: no-cache
+
 /privacy.html
   Cache-Control: no-cache
 /terms.html

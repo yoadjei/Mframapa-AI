@@ -1,5 +1,6 @@
 import { ArrowLeft, ChevronRight } from "lucide-react";
 import { MframapaLogo } from "../../components/brand/MframapaLogo.jsx";
+import { BUILD_INFO } from "../../buildInfo.js";
 import { getColors, Colors } from "../../utils/colors.js";
 import { useNavigation } from "../../hooks/useNavigation.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
@@ -71,8 +72,10 @@ export function AboutLegalScreen({ params, isOnline, isDark }) {
           }}
         >
           <MframapaLogo size="xl" isDark={isDark} markOnly />
+          {/* the real build, not a number typed into a translation file. this
+              is how we tell whether a deploy actually reached the browser. */}
           <p style={{ fontSize: 13, color: colors.muted }}>
-            {t("about.version_build")}
+            {t("about.version")} {BUILD_INFO.commit}
           </p>
         </div>
 
