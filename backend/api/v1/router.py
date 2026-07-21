@@ -5,11 +5,12 @@ from functools import lru_cache
 from typing import Any, Dict, List, Optional
 
 import numpy as np
-from fastapi import APIRouter, BackgroundTasks, Depends, Query, HTTPException, Response, Request
+from fastapi import APIRouter, Depends, Query, HTTPException, Response, Request
 from pydantic import BaseModel, Field
 
 from backend.api.aqi import aqi_category_from_pm25
 from backend.api.cities import MAJOR_CITIES, PLAYBACK_CITIES
+from backend.api.insights import DRY, season_for, variants
 from backend.api.security import authenticate_or_anonymous, require_institutional
 from backend.cache.redis_cache import RedisCache
 from backend.services import gemini_client
@@ -136,12 +137,6 @@ def _cities() -> list:
         return json.load(f)["cities"]
 
 _INSIGHT_TTL = 30 * 24 * 3600   # guidance per category/language is effectively static
-# guidance for a category is stable, but one identical sentence forever reads like
-# a canned string. we build a pool per category and language, then rotate through
-# it, so a daily user goes years without seeing the same line twice. the pool
-# grows one variant per view in the background, so it only ever costs what real
-# traffic asks for and never delays a response.
-_INSIGHT_POOL_TARGET = 500
 _I18N_TTL = 60 * 24 * 3600      # a translated bundle only changes when we ship new copy
 _MAP_SUMMARY_TTL = 3 * 3600     # continental map refreshes a few times a day
 # CAMS air-quality forecast runs out around day 4; past that a 'forecast' would be
@@ -155,13 +150,6 @@ _HISTORY_DAYS = 14
 _MAX_HISTORY_DAYS = 30
 _HISTORY_TTL = 6 * 3600         # past days only shift as archives settle
 
-_STUB_INSIGHTS_EN = {
-    "good": "Satellite-based estimate suggests favorable dispersion today.",
-    "moderate": "Particulate levels are slightly elevated; sensitive people may notice.",
-    "sensitive": "Elevated PM2.5 — children and older adults should limit strenuous outdoor time.",
-    "unhealthy": "Poor air quality likely from stagnant conditions or local emissions.",
-    "hazardous": "Very high particulate levels — reduce outdoor exposure.",
-}
 
 def get_feature_pipeline() -> FeaturePipeline:
     return FeaturePipeline()
@@ -614,6 +602,8 @@ class InsightBody(BaseModel):
     weather: Dict[str, Any] = Field(default_factory=dict)
     language: str = "en"
     language_name: str = ""
+    lat: Optional[float] = Field(default=None, ge=-90, le=90)
+    lon: Optional[float] = Field(default=None, ge=-180, le=180)
 
 class TranslateBody(BaseModel):
     strings: Dict[str, str] = Field(..., min_length=1)
@@ -675,85 +665,52 @@ def _insight_category_key(aqi_category: str, pm25: float) -> str:
     return "good"
 
 
-def _grow_insight_pool(cache_key: str, body: "InsightBody", cat: str, language: str) -> None:
-    """add one more variant to a pool, off the request path.
-
-    generating during the request would put a gemini round trip in front of the
-    user for every view until the pool filled. this runs after the response has
-    been sent.
-    """
-    try:
-        pool = (RedisCache().get(cache_key) or {}).get("variants") or []
-        if len(pool) >= _INSIGHT_POOL_TARGET:
-            return
-        text = gemini_client.generate_air_quality_insight(
-            pm25=body.pm25,
-            aqi_category=cat,
-            weather={},                     # a stored line must not claim today's weather
-            language=language,
-            language_name=body.language_name or None,
-            variant=len(pool),              # nudges gemini away from repeating itself
-        )
-        if text and text not in pool:
-            pool.append(text)
-            RedisCache().set(cache_key, {"variants": pool}, _INSIGHT_TTL)
-    except Exception as exc:
-        logger.warning("Gemini insight top-up failed: %s", exc)
-
-
 @router.post("/generate-insight")
-def generate_insight(body: InsightBody, background: BackgroundTasks) -> Dict[str, str]:
+def generate_insight(body: InsightBody) -> Dict[str, str]:
+    """rotate through reviewed guidance for this category and season.
+
+    the lines are written and checked in english (backend/api/insights.py), then
+    translated once per language through the same cached pipeline as the rest of
+    the interface. no model writes health advice at request time: across fifty
+    five languages nobody here could review what it said.
+    """
     cat = body.aqi_category or aqi_category_from_pm25(body.pm25)
     key = _insight_category_key(cat, body.pm25)
     language = (body.language or "en").lower()
+    season = (
+        season_for(body.lat, body.lon)
+        if body.lat is not None and body.lon is not None
+        else DRY
+    )
 
-    # health guidance varies only by category x language (~135 combinations), so it is
-    # generated once and cached rather than called per request. that keeps responses
-    # instant, stays well inside gemini's rate limits under real traffic, and means the
-    # app doesn't degrade if the api key lapses.
     cache = RedisCache()
-    cache_key = f"insight:pool:{key}:{language}"
-    pool = (cache.get(cache_key) or {}).get("variants") or []
+    lines = variants(key, season)
 
-    # keep widening the pool in the background; the response never waits for it
-    if len(pool) < _INSIGHT_POOL_TARGET and gemini_client.is_available():
-        background.add_task(_grow_insight_pool, cache_key, body, cat, language)
+    # non-english: translate the set once, then rotate inside it. that is one
+    # translation per category, season and language, cached for two months.
+    if language not in ("en", ""):
+        bundle_key = f"insight:lines:{key}:{season}:{language}"
+        hit = (cache.get(bundle_key) or {}).get("lines")
+        if hit:
+            lines = hit
+        elif gemini_client.is_available():
+            try:
+                mapping = {str(i): line for i, line in enumerate(lines)}
+                out = gemini_client.translate_strings(
+                    mapping,
+                    target_language=language,
+                    target_language_name=body.language_name or None,
+                )
+                translated = [out.get(str(i), line) for i, line in enumerate(lines)]
+                cache.set(bundle_key, {"lines": translated}, _I18N_TTL)
+                lines = translated
+            except Exception as exc:
+                logger.warning("insight translation failed, serving english: %s", exc)
 
-    if not pool and gemini_client.is_available():
-        # nothing to serve yet, so this one caller does wait for a first line
-        try:
-            text = gemini_client.generate_air_quality_insight(
-                pm25=body.pm25, aqi_category=cat, weather={},
-                language=language, language_name=body.language_name or None,
-                variant=0,
-            )
-            if text:
-                pool = [text]
-                cache.set(cache_key, {"variants": pool}, _INSIGHT_TTL)
-        except Exception as exc:
-            logger.warning("Gemini insight failed: %s", exc)
-
-    if pool:
-        # rotate rather than pick at random: random repeats within a few views,
-        # rotation shows every variant before any of them comes back.
-        counter = cache.get(f"{cache_key}:n") or {}
-        index = int(counter.get("i", 0))
-        cache.set(f"{cache_key}:n", {"i": (index + 1) % len(pool)}, _INSIGHT_TTL)
-        return {"insight": pool[index % len(pool)]}
-
-    if language not in ("en", "") and gemini_client.is_available():
-        try:
-            translated = gemini_client.translate_strings(
-                {key: _STUB_INSIGHTS_EN[key]},
-                target_language=language,
-                target_language_name=body.language_name or None,
-            )
-            return {"insight": translated[key]}
-        except Exception:
-            pass
-
-    # stub is intentionally not cached, so a later request retries gemini once it works
-    return {"insight": _STUB_INSIGHTS_EN[key]}
+    counter_key = f"insight:n:{key}:{season}:{language}"
+    index = int((cache.get(counter_key) or {}).get("i", 0))
+    cache.set(counter_key, {"i": (index + 1) % len(lines)}, _INSIGHT_TTL)
+    return {"insight": lines[index % len(lines)]}
 
 
 # Push token registration — use persistent store if available
