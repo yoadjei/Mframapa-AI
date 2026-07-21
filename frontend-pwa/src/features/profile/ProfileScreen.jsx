@@ -6,7 +6,7 @@ import { useNavigation } from "../../hooks/useNavigation.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { getColors, Colors } from "../../utils/colors.js";
 import { MframapaLogo } from "../../components/brand/MframapaLogo.jsx";
-import { InputField } from "../../components/ui/InputField.jsx";
+
 import { PrimaryButton } from "../../components/ui/PrimaryButton.jsx";
 import { AvatarPickerSheet, naviiUrl, defaultSeedFor } from "../../components/ui/AvatarPickerSheet.jsx";
 
@@ -49,19 +49,8 @@ export function ProfileScreen({ isOnline, isDark }) {
   const profile = state.profile ?? {};
   const tier = state.session?.tier ?? "free";
 
-  const [fullName, setFullName] = useState(profile.fullName ?? "");
-  const [organization, setOrg] = useState(profile.organization ?? "");
-  const [editing, setEditing] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [saveMsg, setSaveMsg] = useState("");
   const [pickerOpen, setPickerOpen] = useState(false);
   const avatarSeed = profile.avatarSeed ?? null;
-
-  // Keep local state in sync if profile is re-hydrated
-  useEffect(() => {
-    setFullName(profile.fullName ?? "");
-    setOrg(profile.organization ?? "");
-  }, [profile.fullName, profile.organization]);
 
   // give every user an avatar up front instead of bare initials; deterministic so
   // it stays the same on every visit. they can still change it from the picker.
@@ -71,27 +60,6 @@ export function ProfileScreen({ isOnline, isDark }) {
     dispatch({ type: "UPDATE_PROFILE", payload: { avatarSeed: defaultSeedFor(key) } });
   }, [profile.avatarSeed, profile.email, profile.fullName, state.session, dispatch]);
 
-  const isDirty =
-    fullName.trim() !== (profile.fullName ?? "").trim() ||
-    organization.trim() !== (profile.organization ?? "").trim();
-
-  async function handleSave() {
-    if (saving) return;
-    if (!isDirty) { setEditing(false); return; }
-    const cleanName = fullName.trim();
-    if (!cleanName) { setSaveMsg(t("screen.profile.full_name_required")); return; }
-    setSaving(true);
-    dispatch({ type: "UPDATE_PROFILE", payload: { fullName: cleanName, organization: organization.trim() } });
-    setSaving(false);
-    setEditing(false);
-    setSaveMsg(t("screen.profile.changes_saved"));
-    setTimeout(() => setSaveMsg(""), 2500);
-  }
-
-  function handlePrimaryAction() {
-    if (editing) { void handleSave(); } else { setEditing(true); }
-  }
-
   function handleMenuItem(item) {
     if (item.target.type === "tab") {
       dispatch({ type: "SET_ACTIVE_SCREEN", payload: item.target.name });
@@ -99,6 +67,10 @@ export function ProfileScreen({ isOnline, isDark }) {
       navigate(item.target.name);
     }
   }
+
+  const authenticated = Boolean(state.session?.authenticated);
+  const displayName = profile.fullName || state.session?.user?.fullName || "";
+  const displayEmail = profile.email || state.session?.user?.email || "";
 
   const tierStyle = getTierStyle(tier);
   const initials = getInitials(profile.fullName ?? state.session?.user?.fullName);
@@ -108,7 +80,7 @@ export function ProfileScreen({ isOnline, isDark }) {
   }
   return (
     <div
-      className="min-h-[100dvh] overflow-y-auto pb-36 px-4"
+      className="min-h-[100dvh] overflow-y-auto mf-tab-gap px-4"
       style={{ backgroundColor: colors.bg }}
     >
       <div style={{ paddingTop: 12 }}>
@@ -180,43 +152,63 @@ export function ProfileScreen({ isOnline, isDark }) {
           </span>
         </div>
 
-        {/* Form */}
-        <div className="flex flex-col gap-3.5 mb-6">
-          <InputField
-            label={t("screen.profile.full_name")}
-            value={fullName}
-            onChange={editing ? setFullName : () => {}}
-            placeholder="Kofi Antwi"
-            colors={colors}
-          />
-          <div style={{ opacity: editing ? 0.5 : 1 }}>
-            <InputField
-              label={t("screen.profile.email")}
-              value={profile.email ?? state.session?.user?.email ?? ""}
-              onChange={() => {}}
-              placeholder="email@example.com"
-              type="email"
-              colors={colors}
+        {/* Account details.
+
+            anonymous visitors used to get an editable name, email and
+            organisation form with nothing behind it: there was no account to
+            save to, so the fields were theatre. signed-in details come from
+            the auth provider, so they are shown read only rather than pretending
+            they can be edited here. organisation is gone; it asked for something
+            the product never uses. */}
+        {authenticated ? (
+          <div className="mb-6">
+            <p
+              className="mb-2 text-[11px] font-semibold uppercase tracking-widest"
+              style={{ color: colors.subtext }}
+            >
+              {t("screen.profile.account_details")}
+            </p>
+            <div
+              className="rounded-2xl border px-4 py-1"
+              style={{ backgroundColor: colors.card, borderColor: colors.border }}
+            >
+              {[
+                { label: t("screen.profile.full_name"), value: displayName },
+                { label: t("screen.profile.email"), value: displayEmail },
+              ].map((row, i) => (
+                <div
+                  key={row.label}
+                  className="flex items-center justify-between py-3"
+                  style={{ borderTop: i === 0 ? "none" : `1px solid ${colors.border}` }}
+                >
+                  <span className="text-[13px]" style={{ color: colors.subtext }}>{row.label}</span>
+                  <span className="text-[14px] font-medium" style={{ color: colors.text }}>
+                    {row.value || t("screen.profile.not_set")}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <p className="mt-2 text-[12px]" style={{ color: colors.muted }}>
+              {t("screen.profile.managed_note")}
+            </p>
+          </div>
+        ) : (
+          <div
+            className="mb-6 rounded-2xl border p-4"
+            style={{ backgroundColor: colors.card, borderColor: colors.border }}
+          >
+            <p className="mb-1 text-[15px] font-semibold m-0" style={{ color: colors.text }}>
+              {t("screen.profile.anon_title")}
+            </p>
+            <p className="mb-3 text-[13px] leading-[19px] m-0" style={{ color: colors.subtext }}>
+              {t("screen.profile.anon_body")}
+            </p>
+            <PrimaryButton
+              label={t("screen.profile.sign_in")}
+              onClick={() => navigate("auth")}
             />
           </div>
-          <InputField
-            label={t("screen.profile.organization")}
-            value={organization}
-            onChange={editing ? setOrg : () => {}}
-            placeholder="Organization"
-            colors={colors}
-          />
-        </div>
-
-        {saveMsg ? (
-          <p className="text-center text-[13px] mb-3" style={{ color: Colors.brandGreen }}>{saveMsg}</p>
-        ) : null}
-
-        <PrimaryButton
-          label={editing ? t("screen.profile.save") : t("screen.profile.edit")}
-          onClick={handlePrimaryAction}
-          loading={saving}
-        />
+        )}
 
         {/* Menu links */}
         <div className="mt-6" style={{ borderTop: `1px solid ${colors.border}` }}>

@@ -688,5 +688,12 @@
   "screen.landing.why_title": "Why Mframapa",
   "screen.landing.why_body": "Most of Africa has no air quality monitoring station nearby, so people are left guessing about the air they breathe. Mframapa gives you an estimate for your own area, in your own language, free.",
   "home.air_now": "Air right now",
-  "home.advice_title": "What to do"
+  "home.advice_title": "What to do",
+  "screen.profile.anon_title": "You are using Mframapa without an account",
+  "screen.profile.anon_body": "Everything works this way. Sign in only if you want your saved places and alerts on more than one device.",
+  "screen.profile.sign_in": "Sign in",
+  "screen.profile.account_details": "Account",
+  "screen.profile.managed_note": "These come from your account and cannot be changed here.",
+  "screen.profile.home_city": "Home city",
+  "screen.profile.not_set": "Not set"
 }
