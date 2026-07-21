@@ -3,10 +3,14 @@ import { useEffect, useState } from "react";
 /**
  * Slow morphing colour field behind marketing and first-run screens.
  *
- * Deliberately cheap: three blurred blobs animated only via `transform`, which
- * the compositor handles without repainting. Many of our users are on low end
- * Android devices, so this switches itself off entirely under Lite mode or when
- * the system asks for reduced motion, leaving a flat gradient.
+ * Built for iOS Safari first. The soft edges come from radial gradients rather
+ * than `filter: blur()`: WebKit re-rasterises a blurred layer as it animates,
+ * which is the main cause of stutter in effects like this. A gradient is painted
+ * once into a layer and then only transformed, which the compositor does on the
+ * GPU without touching the main thread.
+ *
+ * Switches itself off entirely under Lite mode or when the system asks for
+ * reduced motion, since many of our users are on low end Android devices.
  */
 export function MorphBackground({ isDark = true, liteMode = false }) {
   const [reduceMotion, setReduceMotion] = useState(false);
@@ -22,11 +26,12 @@ export function MorphBackground({ isDark = true, liteMode = false }) {
 
   const still = liteMode || reduceMotion;
   const base = isDark ? "#0A0D12" : "#F8FAFC";
+  const strength = isDark ? 0.22 : 0.14;
 
   const blobs = [
-    { color: "#00C896", size: 420, top: "-12%", left: "-18%", duration: 26, delay: 0 },
-    { color: "#2196F3", size: 360, top: "38%", left: "58%", duration: 32, delay: -8 },
-    { color: "#00C896", size: 300, top: "72%", left: "-10%", duration: 38, delay: -16 },
+    { rgb: "0, 200, 150", size: 460, top: "-14%", left: "-20%", duration: 28, delay: 0 },
+    { rgb: "33, 150, 243", size: 400, top: "34%", left: "56%", duration: 34, delay: -9 },
+    { rgb: "0, 200, 150", size: 340, top: "70%", left: "-12%", duration: 40, delay: -18 },
   ];
 
   return (
@@ -39,44 +44,52 @@ export function MorphBackground({ isDark = true, liteMode = false }) {
         overflow: "hidden",
         backgroundColor: base,
         pointerEvents: "none",
+        // keeps the whole field on its own compositor layer
+        transform: "translateZ(0)",
       }}
     >
       {blobs.map((b, i) => (
         <div
           key={i}
+          className="mf-blob"
           style={{
             position: "absolute",
             top: b.top,
             left: b.left,
             width: b.size,
             height: b.size,
-            borderRadius: "50%",
-            backgroundColor: b.color,
-            opacity: isDark ? 0.16 : 0.1,
-            filter: "blur(70px)",
-            willChange: still ? undefined : "transform",
+            // the soft edge is baked into the paint, so nothing is re-blurred
+            background: `radial-gradient(closest-side, rgba(${b.rgb}, ${strength}), rgba(${b.rgb}, 0))`,
+            willChange: still ? "auto" : "transform",
             animation: still
-              ? undefined
-              : `mf-morph-${i} ${b.duration}s ease-in-out ${b.delay}s infinite`,
+              ? "none"
+              : `mf-morph-${i} ${b.duration}s cubic-bezier(0.4, 0.0, 0.2, 1) ${b.delay}s infinite`,
           }}
         />
       ))}
 
       <style>{`
+        .mf-blob {
+          /* stops WebKit flickering the layer mid animation */
+          -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
+          -webkit-transform: translate3d(0, 0, 0);
+          transform: translate3d(0, 0, 0);
+        }
         @keyframes mf-morph-0 {
           0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
-          50%      { transform: translate3d(14vw, 10vh, 0) scale(1.25); }
+          50%      { transform: translate3d(14vw, 10vh, 0) scale(1.28); }
         }
         @keyframes mf-morph-1 {
-          0%, 100% { transform: translate3d(0, 0, 0) scale(1.1); }
-          50%      { transform: translate3d(-18vw, -8vh, 0) scale(0.85); }
+          0%, 100% { transform: translate3d(0, 0, 0) scale(1.12); }
+          50%      { transform: translate3d(-18vw, -8vh, 0) scale(0.84); }
         }
         @keyframes mf-morph-2 {
           0%, 100% { transform: translate3d(0, 0, 0) scale(0.9); }
-          50%      { transform: translate3d(12vw, -14vh, 0) scale(1.2); }
+          50%      { transform: translate3d(12vw, -14vh, 0) scale(1.22); }
         }
         @media (prefers-reduced-motion: reduce) {
-          [aria-hidden="true"] > div { animation: none !important; }
+          .mf-blob { animation: none !important; }
         }
       `}</style>
     </div>
