@@ -11,7 +11,7 @@ from pydantic import BaseModel, Field
 from backend.api.aqi import aqi_category_from_pm25
 from backend.api.cities import MAJOR_CITIES, PLAYBACK_CITIES
 from backend.api.insights import DRY, season_for, variants
-from backend.api.security import authenticate_or_anonymous, require_institutional
+from backend.api.security import _client_ip, authenticate_or_anonymous, require_institutional
 from backend.cache.redis_cache import RedisCache
 from backend.services import gemini_client
 from backend.ml.inference import rectify_prediction, select_bundle
@@ -302,6 +302,12 @@ def compute_prediction(
     """assemble features, run inference, and build the §2 response dict."""
     d = day or dt_date.today().isoformat()
 
+    # snap to the ~1km grid our inputs actually resolve. latitude and longitude
+    # are model features, and a phone's gps wanders by tens of metres between
+    # readings, so raw coordinates made the number change on every refresh of
+    # the same spot. anything finer than this is false precision anyway.
+    lat, lon = round(lat, 2), round(lon, 2)
+
     result = None
     # assemble features and run inference pipeline
     feats = pipeline.get_features(lat, lon, d)
@@ -514,16 +520,11 @@ def map_history(
     return payload
 
 
-@router.get("/map-summary")
-def map_summary(
-    request: Request,
-    pipeline: FeaturePipeline = Depends(get_feature_pipeline),
-) -> Dict[str, Any]:
-    """today's pm2.5 for the major cities, for the continental map.
+def build_map_summary(request, pipeline: FeaturePipeline) -> Dict[str, Any]:
+    """build (or reuse) today's continental summary.
 
-    one cached request instead of one per city: the client would otherwise burn its
-    whole anonymous rate-limit budget drawing a single screen. these cities are the
-    ones the startup pre-warm keeps hot, so this is served from cache.
+    shared with the startup pre-warm: building 120 cities takes far longer than
+    nginx will wait, so the first user must never be the one who pays for it.
     """
     day = dt_date.today().isoformat()
     cache = RedisCache()
@@ -549,6 +550,19 @@ def map_summary(
     if cities:
         cache.set(cache_key, payload, _MAP_SUMMARY_TTL)
     return payload
+
+
+@router.get("/map-summary")
+def map_summary(
+    request: Request,
+    pipeline: FeaturePipeline = Depends(get_feature_pipeline),
+) -> Dict[str, Any]:
+    """today's pm2.5 for the major cities, for the continental map.
+
+    one cached request instead of one per city: the client would otherwise burn
+    its whole anonymous rate-limit budget drawing a single screen.
+    """
+    return build_map_summary(request, pipeline)
 
 
 class BatchLocation(BaseModel):
@@ -666,7 +680,7 @@ def _insight_category_key(aqi_category: str, pm25: float) -> str:
 
 
 @router.post("/generate-insight")
-def generate_insight(body: InsightBody) -> Dict[str, str]:
+def generate_insight(body: InsightBody, request: Request) -> Dict[str, str]:
     """rotate through reviewed guidance for this category and season.
 
     the lines are written and checked in english (backend/api/insights.py), then
@@ -707,9 +721,13 @@ def generate_insight(body: InsightBody) -> Dict[str, str]:
             except Exception as exc:
                 logger.warning("insight translation failed, serving english: %s", exc)
 
-    counter_key = f"insight:n:{key}:{season}:{language}"
-    index = int((cache.get(counter_key) or {}).get("i", 0))
-    cache.set(counter_key, {"i": (index + 1) % len(lines)}, _INSIGHT_TTL)
+    # a shared counter meant the line changed on every tap, so the advice read
+    # as though it kept changing its mind. the choice is instead fixed by who is
+    # asking and what day it is: steady while you use the app, different for the
+    # next person, and new tomorrow.
+    who = _client_ip(request)
+    seed = f"{who}:{key}:{season}:{dt_date.today().isoformat()}"
+    index = int(hashlib.sha1(seed.encode()).hexdigest()[:8], 16)
     return {"insight": lines[index % len(lines)]}
 
 

@@ -47,11 +47,19 @@ def test_no_api_call_is_needed_for_english(monkeypatch):
     assert called == []
 
 
-def test_every_line_appears_before_any_repeats(monkeypatch):
+def test_every_line_is_reachable_across_callers(monkeypatch):
+    """no line should be dead: across enough people, all of them get used."""
     _patch(monkeypatch, FakeCache())
-    n = len(variants("moderate", DRY))
-    seen = [_ask() for _ in range(n)]
-    assert len(set(seen)) == n
+    expected = set(variants("moderate", DRY))
+    seen = set()
+    for i in range(400):
+        r = client.post(
+            "/api/v1/generate-insight",
+            json=BODY,
+            headers={"cf-connecting-ip": f"41.{i // 250}.{i % 250}.7"},
+        )
+        seen.add(r.json()["insight"])
+    assert seen == expected
 
 
 def test_west_africa_gets_harmattan_wording_in_january():
@@ -115,3 +123,24 @@ def test_no_line_mentions_how_the_estimate_is_made():
             for line in variants(category, season):
                 low = line.lower()
                 assert not any(b in low for b in banned), f"technical wording: {line}"
+
+
+def test_advice_is_steady_for_one_person_on_one_day(monkeypatch):
+    """it changed on every tap, so it read as though it kept changing its mind."""
+    _patch(monkeypatch, FakeCache())
+    first = _ask()
+    assert all(_ask() == first for _ in range(6))
+
+
+def test_different_callers_get_different_advice(monkeypatch):
+    """otherwise everyone in a city reads the same sentence on the same day."""
+    _patch(monkeypatch, FakeCache())
+    seen = set()
+    for i in range(24):
+        r = client.post(
+            "/api/v1/generate-insight",
+            json=BODY,
+            headers={"cf-connecting-ip": f"41.20.{i}.5"},
+        )
+        seen.add(r.json()["insight"])
+    assert len(seen) > 1

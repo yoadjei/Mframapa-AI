@@ -178,9 +178,10 @@ def test_translate_with_gemini(mock_translate, client):
     assert r.json()["provider"] == "gemini"
 
 
-@patch("backend.api.v1.router.gemini_client.generate_air_quality_insight")
-def test_generate_insight_gemini(mock_insight, client):
-    mock_insight.return_value = "Qualité de l'air dégradée aujourd'hui."
+@patch("backend.api.v1.router.gemini_client.translate_strings")
+def test_generate_insight_translates_the_reviewed_lines(mock_translate, client):
+    """guidance is no longer written by the model, only translated by it."""
+    mock_translate.side_effect = lambda mapping, **_k: {k: f"fr {k}" for k in mapping}
     with patch("backend.api.v1.router.gemini_client.is_available", return_value=True):
         r = client.post(
             "/api/v1/generate-insight",
@@ -192,7 +193,7 @@ def test_generate_insight_gemini(mock_insight, client):
             },
         )
     assert r.status_code == 200
-    assert "air" in r.json()["insight"].lower()
+    assert r.json()["insight"].startswith("fr ")
 
 
 def test_batch_predict_success(client):
