@@ -681,5 +681,10 @@
   "screen.historical.empty": "No history available right now",
   "screen.historical.load_failed": "Could not load the history",
   "screen.prediction_dashboard.reduced_confidence": "Air quality inputs do not reach this far ahead, so this day is a lower confidence estimate",
-  "screen.heatmap.title": "Air quality across Africa"
+  "screen.heatmap.title": "Air quality across Africa",
+  "screen.landing.trust1": "Free for everyone",
+  "screen.landing.trust2": "No account needed",
+  "screen.landing.trust3": "Works offline",
+  "screen.landing.why_title": "Why Mframapa",
+  "screen.landing.why_body": "Most of Africa has no air quality monitoring station nearby, so people are left guessing about the air they breathe. Mframapa gives you an estimate for your own area, in your own language, free."
 }

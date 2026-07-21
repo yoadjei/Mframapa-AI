@@ -1,4 +1,6 @@
-import { Activity, ArrowLeft, Globe, WifiOff, Sparkles, ShieldCheck, Users } from "lucide-react";
+import { Activity, ArrowLeft, Globe, WifiOff, Gift, UserX, CloudOff } from "lucide-react";
+import { useAppState } from "../../state/appState.jsx";
+import { MorphBackground, useStaggeredEntrance } from "../../components/background/MorphBackground.jsx";
 import { useNavigation } from "../../hooks/useNavigation.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { getColors, Colors } from "../../utils/colors.js";
@@ -22,20 +24,33 @@ const FEATURE_KEYS = [
   },
 ];
 
+// these were hardcoded english and never reached the translation pipeline
 const TRUST_ITEMS = [
-  { Icon: Sparkles,    label: "AI-Powered Insights" },
-  { Icon: ShieldCheck, label: "Privacy First"        },
-  { Icon: Users,       label: "Built for Africa"     },
+  { Icon: Gift,     labelKey: "screen.landing.trust1" },
+  { Icon: UserX,    labelKey: "screen.landing.trust2" },
+  { Icon: CloudOff, labelKey: "screen.landing.trust3" },
 ];
 
 export function LandingMarketingScreen({ params, isOnline, isDark }) {
   const { navigate, goBack } = useNavigation();
   const { t } = useTranslation();
+  const { state } = useAppState();
   const colors = getColors(isDark ?? true);
+  const liteMode = state.preferences?.liteMode ?? false;
+  const shown = useStaggeredEntrance(4, { disabled: liteMode });
+
+  // blocks rise into place in order rather than appearing all at once
+  const enter = (i) => ({
+    opacity: shown > i ? 1 : 0,
+    transform: shown > i ? "translateY(0)" : "translateY(14px)",
+    transition: liteMode ? undefined : "opacity 420ms ease, transform 420ms ease",
+  });
 
   return (
     <div
       style={{
+        position: "relative",
+        zIndex: 1,
         minHeight: "100dvh",
         display: "flex",
         flexDirection: "column",
@@ -44,6 +59,8 @@ export function LandingMarketingScreen({ params, isOnline, isDark }) {
         paddingBottom: "env(safe-area-inset-bottom)",
       }}
     >
+      <MorphBackground isDark={isDark ?? true} liteMode={liteMode} />
+
       {/* Header */}
       <div
         style={{
@@ -74,7 +91,7 @@ export function LandingMarketingScreen({ params, isOnline, isDark }) {
         }}
       >
         {/* Hero */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 20, marginBottom: 36 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 20, marginBottom: 36, ...enter(0) }}>
           {/* Wordmark */}
           <p
             style={{
@@ -162,20 +179,19 @@ export function LandingMarketingScreen({ params, isOnline, isDark }) {
         </div>
 
         {/* Divider */}
-        <div style={{ height: 1, backgroundColor: colors.border, marginBottom: 28 }} />
+        <div style={{ height: 1, backgroundColor: colors.border, marginBottom: 28, ...enter(2) }} />
 
         {/* Why Mframapa section */}
-        <div style={{ marginBottom: 28, display: "flex", flexDirection: "column", gap: 16 }}>
+        <div style={{ marginBottom: 28, display: "flex", flexDirection: "column", gap: 16, ...enter(3) }}>
           <h2 style={{ fontSize: 22, fontWeight: 800, color: colors.text, margin: 0 }}>
-            Why Mframapa?
+            {t("screen.landing.why_title")}
           </h2>
           <p style={{ fontSize: 14, lineHeight: "20px", color: colors.subtext, margin: 0 }}>
-            Africa has over 1.4 billion people but fewer than 200 air quality monitoring stations.
-            Mframapa bridges that gap with satellite data, machine learning, and a 30+ language interface.
+            {t("screen.landing.why_body")}
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            {TRUST_ITEMS.map(({ Icon, label }) => (
-              <div key={label} style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            {TRUST_ITEMS.map(({ Icon, labelKey }) => (
+              <div key={labelKey} style={{ display: "flex", alignItems: "center", gap: 12 }}>
                 <div
                   style={{
                     width: 32,
@@ -191,7 +207,7 @@ export function LandingMarketingScreen({ params, isOnline, isDark }) {
                   <Icon size={16} color={Colors.brandGreen} />
                 </div>
                 <p style={{ fontSize: 14, fontWeight: 600, color: colors.text, margin: 0 }}>
-                  {label}
+                  {t(labelKey)}
                 </p>
               </div>
             ))}
@@ -199,7 +215,7 @@ export function LandingMarketingScreen({ params, isOnline, isDark }) {
         </div>
 
         {/* Divider */}
-        <div style={{ height: 1, backgroundColor: colors.border, marginBottom: 28 }} />
+        <div style={{ height: 1, backgroundColor: colors.border, marginBottom: 28, ...enter(2) }} />
 
         {/* Pricing teaser */}
         <div
