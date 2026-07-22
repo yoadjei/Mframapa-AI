@@ -717,5 +717,11 @@
   "dashboard.aqi_category": "Air quality band",
   "dashboard.contributing_factors": "What shaped this reading",
   "profile.sign_in_prompt": "Sign in to save places and get alerts",
-  "offline.choose_city": "Choose a saved city"
+  "offline.choose_city": "Choose a saved city",
+  "auth.signup.first_name": "First name",
+  "auth.signup.first_name_placeholder": "What should we call you?",
+  "screen.profile.name": "Name",
+  "signout.confirm_title": "Sign out?",
+  "signout.confirm_message": "You can sign back in any time. The app keeps working without an account.",
+  "screen.profile.delete_account": "Delete account"
 }

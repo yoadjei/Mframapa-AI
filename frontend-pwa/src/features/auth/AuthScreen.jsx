@@ -8,7 +8,7 @@
  * matching the mobile behaviour exactly.
  */
 import { useId, useMemo, useState } from "react";
-import { ChevronLeft, Mail, Lock, MapPin, Eye, EyeOff } from "lucide-react";
+import { ChevronLeft, Mail, Lock, MapPin, User, Eye, EyeOff } from "lucide-react";
 import { useAppState } from "../../state/appState.jsx";
 import { login, signup } from "../../services/authService.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
@@ -187,6 +187,7 @@ function LoginView({ onAuth, onSignUp, onForgot, c, isDark }) {
 // Mirrors mobile/src/screens/onboarding/SignUpScreen.tsx
 function SignUpView({ onAuth, onBack, c, isDark }) {
   const { t } = useTranslation();
+  const [firstName, setFirstName]           = useState("");
   const [email, setEmail]                   = useState("");
   const [password, setPassword]             = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -199,7 +200,7 @@ function SignUpView({ onAuth, onBack, c, isDark }) {
   // datalist stays fully usable with a keyboard and a screen reader.
   const suggestions = useMemo(() => {
     const q = cityQuery.trim().toLowerCase();
-    if (q.length < 2) return [];
+    if (q.length < 3) return [];   // show matches only after three letters
     return africanCities.filter((city) => city.name.toLowerCase().includes(q)).slice(0, 6);
   }, [cityQuery]);
 
@@ -224,6 +225,7 @@ function SignUpView({ onAuth, onBack, c, isDark }) {
     setLoading(true);
     try {
       const result = await signup({
+        firstName: firstName.trim(),
         email: email.trim(),
         password,
         homeCity: homeCity && { name: homeCity.name, lat: homeCity.lat, lon: homeCity.lon },
@@ -258,6 +260,10 @@ function SignUpView({ onAuth, onBack, c, isDark }) {
       </p>
 
       <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+        <div style={{ marginBottom: 16 }}>
+          <Field c={c} label={t("auth.signup.first_name")} placeholder={t("auth.signup.first_name_placeholder")}
+            value={firstName} onChange={setFirstName} icon={User} autoComplete="given-name" />
+        </div>
         <div style={{ marginBottom: 16 }}>
           <Field c={c} label={t("auth.signup.email")} placeholder={t("auth.signup.email")} value={email} onChange={setEmail}
             type="email" icon={Mail} autoComplete="email" />

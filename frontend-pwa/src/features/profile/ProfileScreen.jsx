@@ -9,6 +9,7 @@ import { MframapaLogo } from "../../components/brand/MframapaLogo.jsx";
 
 import { PrimaryButton } from "../../components/ui/PrimaryButton.jsx";
 import { AvatarPickerSheet, naviiUrl, defaultSeedFor } from "../../components/ui/AvatarPickerSheet.jsx";
+import { ConfirmDialog } from "../../components/ui/ConfirmDialog.jsx";
 
 // All profile menu items (PROFILE_MENU_ITEMS + MORE_MENU_ITEMS from mobile)
 const ALL_MENU_ITEMS = [
@@ -47,6 +48,7 @@ export function ProfileScreen({ isOnline, isDark }) {
   const tier = state.session?.tier ?? "free";
 
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [signOutOpen, setSignOutOpen] = useState(false);
   const avatarSeed = profile.avatarSeed ?? null;
 
   // give every user an avatar up front instead of bare initials; deterministic so
@@ -66,11 +68,11 @@ export function ProfileScreen({ isOnline, isDark }) {
   }
 
   const authenticated = Boolean(state.session?.authenticated);
-  const displayName = profile.fullName || state.session?.user?.fullName || "";
+  const displayName = profile.firstName || state.session?.user?.firstName || "";
   const displayEmail = profile.email || state.session?.user?.email || "";
 
   const tierStyle = getTierStyle(tier);
-  const initials = getInitials(profile.fullName ?? state.session?.user?.fullName);
+  const initials = getInitials(displayName || profile.email);
 
   function handleAvatarSelect(seed) {
     dispatch({ type: "UPDATE_PROFILE", payload: { avatarSeed: seed } });
@@ -129,6 +131,20 @@ export function ProfileScreen({ isOnline, isDark }) {
           </button>
         </div>
 
+      <ConfirmDialog
+        open={signOutOpen}
+        title={t("signout.confirm_title")}
+        message={t("signout.confirm_message")}
+        confirmLabel={t("settings.sign_out")}
+        destructive
+        isDark={isDark ?? true}
+        onCancel={() => setSignOutOpen(false)}
+        onConfirm={async () => {
+          setSignOutOpen(false);
+          await logout().catch(() => undefined);
+          dispatch({ type: "LOGOUT" });
+        }}
+      />
         <AvatarPickerSheet
           visible={pickerOpen}
           selected={avatarSeed ?? ""}
@@ -170,7 +186,7 @@ export function ProfileScreen({ isOnline, isDark }) {
               style={{ backgroundColor: colors.card, borderColor: colors.border }}
             >
               {[
-                { label: t("screen.profile.full_name"), value: displayName },
+                ...(displayName ? [{ label: t("screen.profile.name"), value: displayName }] : []),
                 { label: t("screen.profile.email"), value: displayEmail },
               ].map((row, i) => (
                 <div
@@ -227,18 +243,29 @@ export function ProfileScreen({ isOnline, isDark }) {
 
         {/* Sign in / sign out. air quality works without an account, so signing in
             is an upgrade (saved places, alerts, sync) rather than a requirement. */}
-        <div className="mt-8 mb-2 flex justify-center">
+        <div className="mt-8 mb-2 flex flex-col items-center gap-3">
           {state.session?.authenticated ? (
-            <button
-              type="button"
-              onClick={async () => { await logout().catch(() => undefined); dispatch({ type: "LOGOUT" }); }}
-              className="flex items-center gap-2 text-[1rem] font-medium active:opacity-60"
-              style={{ color: Colors.danger }}
-            >
-              <LogOut size={18} color={Colors.danger} />
-              {t("settings.sign_out")}
-            </button>
+            <>
+              <button
+                type="button"
+                onClick={() => setSignOutOpen(true)}
+                className="flex items-center gap-2 text-[1rem] font-medium active:opacity-60"
+                style={{ color: Colors.danger }}
+              >
+                <LogOut size={18} color={Colors.danger} />
+                {t("settings.sign_out")}
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate("deleteAccount")}
+                className="text-[0.875rem] active:opacity-60"
+                style={{ color: colors.subtext }}
+              >
+                {t("screen.profile.delete_account")}
+              </button>
+            </>
           ) : (
+
             <button
               type="button"
               onClick={() => navigate("auth")}

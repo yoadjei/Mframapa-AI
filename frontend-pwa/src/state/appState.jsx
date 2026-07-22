@@ -70,6 +70,7 @@ function appReducer(state, action) {
         },
         profile: {
           ...state.profile,
+          firstName: action.payload.user?.firstName ?? state.profile.firstName,
           email: action.payload.user?.email ?? state.profile.email,
         },
         // a home city chosen at sign-up seeds the home screen, but never
@@ -97,6 +98,7 @@ function appReducer(state, action) {
         },
         profile: {
           ...state.profile,
+          firstName: action.payload.user?.firstName ?? state.profile.firstName,
           email: action.payload.user?.email ?? state.profile.email,
         },
         // a home city chosen at sign-up seeds the home screen, but never

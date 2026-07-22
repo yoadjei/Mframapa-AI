@@ -33,7 +33,7 @@ function homeFromMeta(meta) {
   return { name: meta.home_city, lat: meta.home_lat, lon: meta.home_lon };
 }
 
-export async function signup({ email, password, homeCity }) {
+export async function signup({ firstName, email, password, homeCity }) {
   requireSupabase();
 
   const { data, error } = await supabase.auth.signUp({
@@ -44,7 +44,10 @@ export async function signup({ email, password, homeCity }) {
       // not supabase's Site URL default (which was still localhost). the Site
       // URL must also be set in the supabase dashboard as the trusted origin.
       emailRedirectTo: `${window.location.origin}/`,
-      data: homeCity ? { home_city: homeCity.name, home_lat: homeCity.lat, home_lon: homeCity.lon } : {},
+      data: {
+        ...(firstName ? { first_name: firstName } : {}),
+        ...(homeCity ? { home_city: homeCity.name, home_lat: homeCity.lat, home_lon: homeCity.lon } : {}),
+      },
     },
   });
   if (error) throw new Error(error.message);
@@ -75,6 +78,7 @@ export async function restoreSession() {
     user: {
       id: session.user.id,
       email: session.user.email,
+      firstName: session.user.user_metadata?.first_name ?? null,
       homeCity: homeFromMeta(session.user.user_metadata),
     },
   };
