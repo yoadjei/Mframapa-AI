@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { InputField } from '../../components/ui/InputField';
+import { CityPicker } from '../../components/CityPicker';
 import { PrimaryButton } from '../../components/ui/PrimaryButton';
 import { MframapaLogo } from '../../components/MframapaLogo';
 import { useTheme } from '../../hooks/useTheme';
@@ -25,14 +26,14 @@ export function SignUpScreen({ onAuth }: Props) {
   const navigation = useNavigation<any>();
   const signUp = useStore((s) => s.signUp);
 
-  const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [homeCity, setHomeCity] = useState<{ name: string; lat: number; lon: number } | null>(null);
   const [loading, setLoading] = useState(false);
 
   async function handleSignUp() {
-    if (!fullName.trim() || !email.trim() || !password) {
+    if (!email.trim() || !password) {
       Alert.alert(t('screen.auth.fill_required_fields'));
       return;
     }
@@ -41,7 +42,7 @@ export function SignUpScreen({ onAuth }: Props) {
       return;
     }
     setLoading(true);
-    const res = await signUp(fullName, email, password);
+    const res = await signUp(email, password, homeCity);
     setLoading(false);
     if (!res.ok) {
       Alert.alert(res.error ?? t('screen.auth.could_not_sign_up'));
@@ -68,17 +69,6 @@ export function SignUpScreen({ onAuth }: Props) {
 
         <Text style={[styles.heading, { color: colors.text }]}>{t('screen.auth.create_account_heading')}</Text>
         <Text style={[styles.sub, { color: colors.subtext }]}>{t('screen.auth.signup_sub')}</Text>
-
-        <InputField
-          label={t('screen.auth.full_name')}
-          icon="person-outline"
-          placeholder={t('screen.auth.placeholder_name')}
-          value={fullName}
-          onChangeText={setFullName}
-          isDark={isDark}
-          containerStyle={styles.field}
-          autoCapitalize="words"
-        />
 
         <InputField
           label={t('screen.auth.email')}
@@ -114,6 +104,14 @@ export function SignUpScreen({ onAuth }: Props) {
           containerStyle={styles.field}
         />
 
+        <Text style={[styles.fieldLabel, { color: colors.subtext }]}>{t('auth.signup.home_city')}</Text>
+        <CityPicker
+          isDark={isDark}
+          placeholder={homeCity ? homeCity.name : t('auth.signup.home_city_placeholder')}
+          onSelect={(city) => setHomeCity({ name: city.name, lat: city.lat, lon: city.lon })}
+        />
+        <Text style={[styles.fieldHint, { color: colors.subtext }]}>{t('auth.signup.home_city_hint')}</Text>
+
         <PrimaryButton label={t('screen.auth.create_btn')} onPress={handleSignUp} loading={loading} style={styles.cta} />
 
         <View style={styles.loginRow}>
@@ -136,6 +134,8 @@ const styles = StyleSheet.create({
   heading: { fontSize: 28, fontWeight: '800', marginBottom: 6 },
   sub: { fontSize: 15, marginBottom: 24 },
   field: { marginBottom: 16 },
+  fieldLabel: { fontSize: 13, fontWeight: '500', marginBottom: 6, marginTop: 4 },
+  fieldHint: { fontSize: 12, marginTop: 6, marginBottom: 4 },
   cta: { marginTop: 8 },
   loginRow: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 24, gap: 6 },
   loginPrompt: { fontSize: 14 },

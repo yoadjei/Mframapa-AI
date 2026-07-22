@@ -1,21 +1,30 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { getAQIColor } from '../../theme/colors';
+import { Text, StyleSheet } from 'react-native';
+import { getAQIColor, aqiSymbol } from '../../theme/colors';
 
 interface Props {
   category: string;
   size?: number;
+  isDark?: boolean;
 }
 
-export function StatusDot({ category, size = 10 }: Props) {
+/**
+ * Severity indicator. Colour alone cannot carry meaning — roughly one in twelve
+ * men has some colour vision deficiency — so the band is drawn as a shape in the
+ * category colour, and labelled for screen readers.
+ */
+export function StatusDot({ category, size = 12, isDark = true }: Props) {
   return (
-    <View
-      style={[styles.dot, { backgroundColor: getAQIColor(category), width: size, height: size, borderRadius: size / 2 }]}
-      accessibilityLabel={`AQI status: ${category}`}
-    />
+    <Text
+      style={[styles.symbol, { color: getAQIColor(category, isDark), fontSize: size }]}
+      accessibilityLabel={category}
+      allowFontScaling
+    >
+      {aqiSymbol(category)}
+    </Text>
   );
 }
 
 const styles = StyleSheet.create({
-  dot: {},
+  symbol: {},
 });

@@ -89,7 +89,7 @@ export function SavedLocationsScreen() {
             <Text style={[styles.cityName, { color: colors.text }]}>{item.name}</Text>
             <Text style={[styles.country, { color: colors.subtext }]}>{item.country}</Text>
             <View style={styles.aqiRow}>
-              <View style={[styles.dot, { backgroundColor: getAQIColor(item.lastAqiCategory ?? 'moderate') }]} />
+              <View style={[styles.dot, { backgroundColor: getAQIColor(item.lastAqiCategory ?? 'moderate', isDark) }]} />
               <Text style={[styles.aqiLabel, { color: colors.subtext }]}>{t('common.aqi')}</Text>
             </View>
           </View>

@@ -94,7 +94,7 @@ export function CityDetailScreen() {
   const pm25 = pred?.pm25 ?? 0;
   const category = pred?.aqi_category ?? 'good';
   const weather = pred?.weather ?? { temp: 0, humidity: 0, wind: 0 };
-  const aqiColor = getAQIColor(category);
+  const aqiColor = getAQIColor(category, isDark);
   const categoryLabel = t(aqiCategoryKey(category));
   const healthAdvice = t(healthAdviceKey(category));
   const trendLabels = TREND_DAY_KEYS.map((key) => t(key));

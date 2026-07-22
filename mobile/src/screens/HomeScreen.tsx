@@ -83,7 +83,7 @@ export function HomeScreen() {
   }
 
   const pred = lastPrediction;
-  const aqiColor = pred ? getAQIColor(pred.aqi_category) : Colors.brandGreen;
+  const aqiColor = pred ? getAQIColor(pred.aqi_category, isDark) : Colors.brandGreen;
 
   function openCityDetail() {
     if (!pred) return;
@@ -183,7 +183,7 @@ export function HomeScreen() {
             <View style={[styles.statCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
               <Text style={[styles.statLabel, { color: colors.subtext }]}>{t('card.aqi_level')}</Text>
               <Text style={[styles.statValue, { color: colors.text }]}>{pred.pm25.toFixed(0)}</Text>
-              <Text style={[styles.statSub, { color: getAQIColor(pred.aqi_category) }]}>
+              <Text style={[styles.statSub, { color: getAQIColor(pred.aqi_category, isDark) }]}>
                 ({t(aqiCategoryKey(pred.aqi_category))})
               </Text>
             </View>

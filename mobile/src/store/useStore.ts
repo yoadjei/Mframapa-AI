@@ -3,6 +3,7 @@ import { detectDeviceLanguage } from '../utils/constants';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { markSignOutThisSession } from '../session/authSession';
+import { fetchPredictionAtCoords } from '../services/prediction';
 import {
   signInWithPassword,
   signUpWithPassword,
@@ -133,9 +134,9 @@ interface AppState {
   setAuthenticated: (v: boolean) => void;
   signIn: (email: string, password: string) => Promise<{ ok: boolean; error?: string }>;
   signUp: (
-    fullName: string,
     email: string,
     password: string,
+    homeCity?: { name: string; lat: number; lon: number } | null,
   ) => Promise<{ ok: boolean; error?: string }>;
   signOut: () => Promise<void>;
 
@@ -403,18 +404,20 @@ export const useStore = create<AppState>()(
         return { ok: true };
       },
 
-      signUp: async (fullName, email, password) => {
+      signUp: async (email, password, homeCity) => {
         const cleanEmail = email.trim().toLowerCase();
-        const cleanName  = fullName.trim();
-        if (!cleanName) return { ok: false, error: 'Full name is required.' };
         if (!cleanEmail) return { ok: false, error: 'Email is required.' };
         if (password.length < 6) {
           return { ok: false, error: 'Password must be at least 6 characters.' };
         }
-        const res = await signUpWithPassword(cleanEmail, password, cleanName);
+        const res = await signUpWithPassword(cleanEmail, password, homeCity ?? null);
         if (!res.ok) return res;
-        // Use setProfile so initials are recomputed.
-        get().setProfile({ email: cleanEmail, fullName: cleanName });
+        get().setProfile({ email: cleanEmail });
+        // a chosen home city seeds the home screen, but never overrides a place
+        // the user has already been looking at on this device.
+        if (homeCity && !get().lastPrediction) {
+          void fetchPredictionAtCoords(homeCity.lat, homeCity.lon, homeCity.name, get().language, get().offlineCities).catch(() => undefined);
+        }
         set((s) => ({
           isAuthenticated: true,
           activityFeed: [makeActivity('activity.account_created', 'person'), ...s.activityFeed].slice(0, 50),
