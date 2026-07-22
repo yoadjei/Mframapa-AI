@@ -33,6 +33,17 @@ export function ProfileScreen() {
 
 
 
+  function confirmSignOut() {
+    Alert.alert(
+      t('signout.confirm_title'),
+      t('signout.confirm_message'),
+      [
+        { text: t('common.cancel'), style: 'cancel' },
+        { text: t('settings.sign_out'), style: 'destructive', onPress: () => void signOut() },
+      ],
+    );
+  }
+
   function handleAvatarSelect(seed: string) {
     // Fire-and-forget — picker closes immediately, sync happens in background.
     void updateProfile({ avatarSeed: seed });
@@ -101,8 +112,12 @@ export function ProfileScreen() {
           ))}
         </View>
 
-        <TouchableOpacity onPress={() => signOut()} style={styles.signOut}>
+        <TouchableOpacity onPress={confirmSignOut} style={styles.signOut}>
           <Text style={styles.signOutText}>{t('settings.sign_out')}</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => navigation.navigate('DeleteAccount')} style={styles.deleteLink}>
+          <Text style={[styles.deleteLinkText, { color: colors.subtext }]}>{t('screen.profile.delete_account')}</Text>
         </TouchableOpacity>
       </ScrollView>
 
@@ -143,6 +158,8 @@ const styles = StyleSheet.create({
   },
   linkText: { fontSize: 15 },
   linkChevron: { fontSize: 22, fontWeight: '300' },
+  deleteLink: { alignItems: 'center', paddingVertical: 10, marginBottom: 8 },
+  deleteLinkText: { fontSize: 13 },
   signOut: {
     marginTop: 32,
     marginBottom: 8,

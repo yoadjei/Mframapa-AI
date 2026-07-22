@@ -25,8 +25,9 @@ export function CityPicker({ onSelect, isDark, placeholder = 'Search city...' }:
   const [query, setQuery] = useState('');
 
   const filtered = useMemo(() => {
-    if (!query.trim()) return offlineCities.slice(0, 30);
-    const q = query.toLowerCase();
+    const q = query.trim().toLowerCase();
+    if (!q) return offlineCities.slice(0, 30);
+    if (q.length < 3) return [];   // matches appear after three letters
     return offlineCities
       .filter(
         (c) =>

@@ -26,6 +26,7 @@ export function SignUpScreen({ onAuth }: Props) {
   const navigation = useNavigation<any>();
   const signUp = useStore((s) => s.signUp);
 
+  const [firstName, setFirstName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -42,7 +43,7 @@ export function SignUpScreen({ onAuth }: Props) {
       return;
     }
     setLoading(true);
-    const res = await signUp(email, password, homeCity);
+    const res = await signUp(email, password, homeCity, firstName.trim() || undefined);
     setLoading(false);
     if (!res.ok) {
       Alert.alert(res.error ?? t('screen.auth.could_not_sign_up'));
@@ -69,6 +70,17 @@ export function SignUpScreen({ onAuth }: Props) {
 
         <Text style={[styles.heading, { color: colors.text }]}>{t('screen.auth.create_account_heading')}</Text>
         <Text style={[styles.sub, { color: colors.subtext }]}>{t('screen.auth.signup_sub')}</Text>
+
+        <InputField
+          label={t('auth.signup.first_name')}
+          icon="person-outline"
+          placeholder={t('auth.signup.first_name_placeholder')}
+          value={firstName}
+          onChangeText={setFirstName}
+          isDark={isDark}
+          containerStyle={styles.field}
+          autoCapitalize="words"
+        />
 
         <InputField
           label={t('screen.auth.email')}

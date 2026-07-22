@@ -137,6 +137,7 @@ interface AppState {
     email: string,
     password: string,
     homeCity?: { name: string; lat: number; lon: number } | null,
+    firstName?: string,
   ) => Promise<{ ok: boolean; error?: string }>;
   signOut: () => Promise<void>;
 
@@ -404,15 +405,15 @@ export const useStore = create<AppState>()(
         return { ok: true };
       },
 
-      signUp: async (email, password, homeCity) => {
+      signUp: async (email, password, homeCity, firstName) => {
         const cleanEmail = email.trim().toLowerCase();
         if (!cleanEmail) return { ok: false, error: 'Email is required.' };
         if (password.length < 6) {
           return { ok: false, error: 'Password must be at least 6 characters.' };
         }
-        const res = await signUpWithPassword(cleanEmail, password, homeCity ?? null);
+        const res = await signUpWithPassword(cleanEmail, password, homeCity ?? null, firstName);
         if (!res.ok) return res;
-        get().setProfile({ email: cleanEmail });
+        get().setProfile({ email: cleanEmail, ...(firstName ? { fullName: firstName } : {}) });
         // a chosen home city seeds the home screen, but never overrides a place
         // the user has already been looking at on this device.
         if (homeCity && !get().lastPrediction) {

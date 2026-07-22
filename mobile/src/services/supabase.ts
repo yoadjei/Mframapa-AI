@@ -64,6 +64,7 @@ export async function signUpWithPassword(
   email: string,
   password: string,
   homeCity?: { name: string; lat: number; lon: number } | null,
+  firstName?: string,
 ): Promise<AuthResult> {
   const supabase = getSupabase();
   if (!supabase) {
@@ -72,7 +73,12 @@ export async function signUpWithPassword(
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    options: { data: homeCity ? { home_city: homeCity.name, home_lat: homeCity.lat, home_lon: homeCity.lon } : {} },
+    options: {
+      data: {
+        ...(firstName ? { first_name: firstName } : {}),
+        ...(homeCity ? { home_city: homeCity.name, home_lat: homeCity.lat, home_lon: homeCity.lon } : {}),
+      },
+    },
   });
   if (error) return { ok: false, error: formatAuthError(error, 'Sign up failed') };
   return { ok: true, session: data.session };
