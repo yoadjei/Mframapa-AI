@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { detectDeviceLanguage } from '../utils/constants';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { markSignOutThisSession } from '../session/authSession';
@@ -365,7 +366,8 @@ export const useStore = create<AppState>()(
       themeMode: 'dark',
       setThemeMode: (mode) => set({ themeMode: mode }),
 
-      language: 'en',
+      // first launch follows the device; a stored choice overrides it on rehydrate
+      language: detectDeviceLanguage(),
       setLanguage: (lang) => {
         void import('../services/translation').then(({ clearLocaleCache }) => clearLocaleCache(lang));
         set({ language: lang });

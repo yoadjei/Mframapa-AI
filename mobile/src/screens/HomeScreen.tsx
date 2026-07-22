@@ -8,6 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
 import { useNavigation } from '@react-navigation/native';
 import { useStore } from '../store/useStore';
+import { getDailyFact } from '../services/api';
 import { fetchPredictionAtCoords } from '../services/prediction';
 import { isAfricanCountryCode } from '../utils/africanCountries';
 import { OfflineBanner } from '../components/OfflineBanner';
@@ -31,6 +32,14 @@ export function HomeScreen() {
   const offlineCities  = useStore((s) => s.offlineCities);
   const language       = useStore((s) => s.language);
   const unreadCount    = useStore((s) => s.notifications.filter((n) => !n.read).length);
+
+  // the same fact the notification carries, so the app and the alert agree
+  const [fact, setFact] = useState('');
+  useEffect(() => {
+    let active = true;
+    getDailyFact(language).then((f) => { if (active) setFact(f); }).catch(() => {});
+    return () => { active = false; };
+  }, [language]);
 
   const [loading, setLoading] = useState(false);
   const [error, setError]     = useState<string | null>(null);
@@ -246,6 +255,13 @@ export function HomeScreen() {
             </View>
           </View>
         ) : null}
+
+        {fact ? (
+          <View style={[styles.factCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <Text style={[styles.factLabel, { color: colors.subtext }]}>{t('home.did_you_know')}</Text>
+            <Text style={[styles.factBody, { color: colors.text }]}>{fact}</Text>
+          </View>
+        ) : null}
       </ScrollView>
     </View>
   );
@@ -362,6 +378,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   actionLabel: { fontSize: 10, fontWeight: '700', letterSpacing: 0.5 },
+  factCard: { marginHorizontal: 16, marginTop: 12, padding: 16, borderRadius: 16, borderWidth: 1 },
+  factLabel: { fontSize: 11, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6 },
+  factBody: { fontSize: 14, lineHeight: 20 },
   weatherRow: {
     flexDirection: 'row',
     paddingHorizontal: 16,

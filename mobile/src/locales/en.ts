@@ -22,6 +22,7 @@ const base: Record<string, string> = {
   'home.action_alerts': 'Alerts',
   'home.action_alerts_sub': 'Manage updates',
   'home.action_search_sub': 'Pick a city',
+  'home.did_you_know': 'Did you know',
   'home.select_city': 'Select a city',
   'home.tap_check': 'Tap CHECK NOW to get your reading',
   'home.wind_speed': 'Wind speed',

@@ -184,6 +184,18 @@ export async function getMapHistory(days = 14): Promise<MapHistory> {
   return { dates: data?.dates ?? [], cities: data?.cities ?? [] };
 }
 
+// one short reviewed fact a day, the same for everyone, translated server side.
+export async function getDailyFact(language = 'en', languageName = ''): Promise<string> {
+  try {
+    const { data } = await client.get('/api/v1/daily-fact', {
+      params: { language, language_name: languageName },
+    });
+    return (data?.fact as string) ?? '';
+  } catch {
+    return '';
+  }
+}
+
 export async function generateInsight(body: {
   pm25: number;
   aqi_category: string;

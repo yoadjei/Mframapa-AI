@@ -13,6 +13,7 @@ import { saveCities } from './src/services/offline';
 import { requestPermissions, getAndRegisterPushToken } from './src/services/notifications';
 import { syncLocaleInBackground } from './src/services/translation';
 import { trackAppOpen } from './src/services/analytics';
+import { AppErrorBoundary } from './src/components/AppErrorBoundary';
 
 export default function App() {
   const { isDark } = useTheme();
@@ -81,6 +82,7 @@ export default function App() {
   const shellBg = isDark ? AppBackgroundColors.dark : AppBackgroundColors.light;
 
   return (
+    <AppErrorBoundary>
     <SafeAreaProvider>
       <View style={[styles.shell, { backgroundColor: shellBg }]}>
         <CloudRainBackground />
@@ -95,6 +97,7 @@ export default function App() {
         </View>
       </View>
     </SafeAreaProvider>
+    </AppErrorBoundary>
   );
 }
 
