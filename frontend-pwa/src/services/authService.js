@@ -39,7 +39,13 @@ export async function signup({ email, password, homeCity }) {
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    options: { data: homeCity ? { home_city: homeCity.name, home_lat: homeCity.lat, home_lon: homeCity.lon } : {} },
+    options: {
+      // send the confirmation link back to wherever the app is actually running,
+      // not supabase's Site URL default (which was still localhost). the Site
+      // URL must also be set in the supabase dashboard as the trusted origin.
+      emailRedirectTo: `${window.location.origin}/`,
+      data: homeCity ? { home_city: homeCity.name, home_lat: homeCity.lat, home_lon: homeCity.lon } : {},
+    },
   });
   if (error) throw new Error(error.message);
 
