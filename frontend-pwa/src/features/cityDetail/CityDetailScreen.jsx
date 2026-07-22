@@ -365,7 +365,7 @@ export function CityDetailScreen({ isDark, params }) {
           </p>
         ) : (
           <p className="text-[0.9375rem] leading-relaxed" style={{ color: colors.subtext }}>
-            {t("screen.ai_insights.trend_desc")}
+            {t("screen.ai_insights.no_insights_yet")}
           </p>
         )}
       </div>

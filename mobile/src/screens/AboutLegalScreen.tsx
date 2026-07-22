@@ -30,7 +30,7 @@ export function AboutLegalScreen() {
       >
         <View style={styles.logoBlock}>
           <MframapaLogo size="lg" />
-          <Text style={[styles.version, { color: colors.muted }]}>{t('about.version_build')}</Text>
+          <Text style={[styles.version, { color: colors.muted }]}>{t('about.version')}</Text>
         </View>
 
         <View style={[styles.linkList, { borderColor: colors.border }]}>
