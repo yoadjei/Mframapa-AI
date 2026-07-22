@@ -48,7 +48,9 @@ export default defineConfig({
         type: 'module',
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,json}'],
+        globPatterns: ['**/*.{css,html,ico,woff2}', 'assets/index-*.js'],
+        // never precache these; they are fetched on demand and cached below
+        globIgnores: ['**/mapbox-gl-*.js', '**/assets/{af,am,ar,ee,es,fr,ga,ha,ig,mg,nd,ny,pt,rn,rw,sn,so,ss,st,sw,ti,tn,tw,wo,xh,yo,zu}-*.js'],
         navigateFallback: '/index.html',
         cleanupOutdatedCaches: true,
         runtimeCaching: [
@@ -101,6 +103,16 @@ export default defineConfig({
               cacheName: 'api-cache',
               networkTimeoutSeconds: 10,
               expiration: { maxEntries: 50, maxAgeSeconds: 60 * 60 * 6 },
+              cacheableResponse: { statuses: [0, 200] }
+            }
+          },
+          {
+            // the map and locale chunks, cached the first time they are used
+            urlPattern: /\/assets\/.*\.js$/i,
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'app-chunks',
+              expiration: { maxEntries: 40, maxAgeSeconds: 60 * 60 * 24 * 30 },
               cacheableResponse: { statuses: [0, 200] }
             }
           },
