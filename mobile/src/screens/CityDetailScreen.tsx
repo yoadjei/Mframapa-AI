@@ -16,6 +16,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { AQIBadge } from '../components/ui/AQIBadge';
 import { PrimaryButton } from '../components/ui/PrimaryButton';
 import { LineChart } from '../components/charts/LineChart';
+import { getHistory } from '../services/api';
 import { getColors, Colors } from '../theme';
 import { getAQIColor } from '../theme/colors';
 import { useTheme } from '../hooks/useTheme';
@@ -35,24 +36,7 @@ const TREND_DAY_KEYS = [
   'screen.city_detail.day_sat',
   'screen.city_detail.day_sun'] as const;
 
-const CONTEXT_INSIGHT_KEYS = [
-  {
-    icon: 'hardware-chip-outline' as const,
-    titleKey: 'screen.ai_insights.seasonal_title',
-    descKey: 'screen.ai_insights.seasonal_desc',
-    sourceKey: 'screen.ai_insights.seasonal_source',
-  },
-  {
-    icon: 'trending-up-outline' as const,
-    titleKey: 'screen.ai_insights.trend_title',
-    descKey: 'screen.ai_insights.trend_desc',
-    sourceKey: null,
-  },
-  {
-    icon: 'warning-outline' as const,
-    titleKey: 'screen.ai_insights.hotspot_title',
-    descKey: 'screen.ai_insights.hotspot_desc',
-  }];
+// invented context cards removed: they cited data we do not have.
 
 function locationId(lat: number, lon: number): string {
   return `${lat.toFixed(4)}:${lon.toFixed(4)}`;
@@ -73,10 +57,6 @@ function resolveCountry(
   if (fromList?.country) return fromList.country;
   const parts = name.split(',').slice(1).map((p) => p.trim()).filter(Boolean);
   return parts.join(', ') || '';
-}
-
-function buildTrend(pm25: number): number[] {
-  return [0.92, 1.08, 0.96, 1.14, 1.02, 0.88, 1.0].map((m) => Math.max(1, Math.round(pm25 * m)));
 }
 
 export function CityDetailScreen() {
@@ -118,7 +98,18 @@ export function CityDetailScreen() {
   const categoryLabel = t(aqiCategoryKey(category));
   const healthAdvice = t(healthAdviceKey(category));
   const trendLabels = TREND_DAY_KEYS.map((key) => t(key));
-  const trendData = useMemo(() => buildTrend(pm25 || 22), [pm25]);
+  // real recent days rather than today's number times fixed multipliers
+  const [trendData, setTrendData] = useState<number[]>([]);
+  useEffect(() => {
+    const lat = pred?.location?.lat;
+    const lon = pred?.location?.lon;
+    if (lat == null || lon == null) { setTrendData([]); return; }
+    let cancelled = false;
+    getHistory(lat, lon, pred?.location?.name ?? 'Unknown', 7)
+      .then((days) => { if (!cancelled) setTrendData(days.map((d) => Math.round(d.pm25))); })
+      .catch(() => { if (!cancelled) setTrendData([]); });
+    return () => { cancelled = true; };
+  }, [pred?.location?.lat, pred?.location?.lon, pred?.location?.name]);
   const updatedAt = pred?.timestamp
     ? new Date(pred.timestamp).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
     : new Date().toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
@@ -299,33 +290,18 @@ export function CityDetailScreen() {
             <Text style={[styles.insightBody, { color: colors.text }]}>{insight}</Text>
           ) : (
             <Text style={[styles.insightBody, { color: colors.subtext }]}>
-              {t('screen.ai_insights.trend_desc')}
+              {t('screen.ai_insights.no_insights_yet')}
             </Text>
           )}
         </View>
 
-        {CONTEXT_INSIGHT_KEYS.map((item, i) => (
-          <View
-            key={i}
-            style={[styles.section, styles.contextInsight, { backgroundColor: colors.card, borderColor: colors.border }]}
-          >
-            <View style={[styles.contextIcon, { backgroundColor: Colors.brandGreen + '22' }]}>
-              <Ionicons name={item.icon} size={22} color={Colors.brandGreen} />
-            </View>
-            <Text style={[styles.contextTitle, { color: colors.text }]}>{t(item.titleKey)}</Text>
-            <Text style={[styles.contextDesc, { color: colors.subtext }]}>{t(item.descKey)}</Text>
-            {item.sourceKey ? (
-              <View style={[styles.sourcePill, { backgroundColor: colors.surface }]}>
-                <Text style={[styles.sourceText, { color: colors.subtext }]}>{t(item.sourceKey)}</Text>
-              </View>
-            ) : null}
-          </View>
-        ))}
 
-        <View style={[styles.section, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <Text style={[styles.sectionTitle, { color: colors.text }]}>{t('screen.city_detail.trend_7d')}</Text>
-          <LineChart data={trendData} labels={trendLabels} isDark={isDark} color={aqiColor} height={120} />
-        </View>
+        {trendData.length > 1 ? (
+          <View style={[styles.section, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>{t('screen.city_detail.trend_7d')}</Text>
+            <LineChart data={trendData} labels={trendLabels} isDark={isDark} color={aqiColor} height={120} />
+          </View>
+        ) : null}
 
         {pred.factors && pred.factors.length > 0 ? (
           <View style={[styles.section, { backgroundColor: colors.card, borderColor: colors.border }]}>

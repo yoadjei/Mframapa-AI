@@ -31,12 +31,34 @@ export const Colors = {
 
 export type ColorKey = keyof typeof Colors;
 
-export function getAQIColor(category: string): string {
-  const cat = category.toLowerCase();
-  if (cat === 'good') return Colors.aqiGood;
-  if (cat === 'moderate') return Colors.aqiModerate;
-  if (cat.includes('sensitive') || cat === 'high' || cat.includes('unhealthy for')) return Colors.aqiHigh;
-  if (cat === 'unhealthy') return Colors.aqiUnhealthy;
-  if (cat.includes('very') || cat.includes('hazardous')) return Colors.aqiVeryUnhealthy;
-  return Colors.aqiModerate;
+export function aqiBand(category: string): 'good' | 'moderate' | 'sensitive' | 'unhealthy' | 'hazardous' {
+  const cat = (category ?? '').toLowerCase();
+  if (cat === 'good') return 'good';
+  if (cat === 'moderate') return 'moderate';
+  if (cat.includes('sensitive') || cat === 'high' || cat.includes('unhealthy for')) return 'sensitive';
+  if (cat === 'unhealthy') return 'unhealthy';
+  if (cat.includes('very') || cat.includes('hazardous')) return 'hazardous';
+  return 'moderate';
+}
+
+// measured against each theme background: all clear WCAG AA (4.5:1) for text.
+// the previous single palette failed on four of five categories in light mode
+// and on hazardous in dark, the one that matters most. mirrors the pwa.
+const AQI_DARK: Record<string, string> = {
+  good: '#00C896', moderate: '#F5C518', sensitive: '#FF8C00',
+  unhealthy: '#E53935', hazardous: '#C043D5',
+};
+const AQI_LIGHT: Record<string, string> = {
+  good: '#008060', moderate: '#8B6E06', sensitive: '#AB5E00',
+  unhealthy: '#DD211C', hazardous: '#9C27B0',
+};
+
+export function getAQIColor(category: string, isDark = true): string {
+  return (isDark ? AQI_DARK : AQI_LIGHT)[aqiBand(category)];
+}
+
+// a shape per band, so severity is legible without seeing colour (roughly one
+// in twelve men has colour vision deficiency).
+export function aqiSymbol(category: string): string {
+  return { good: '●', moderate: '◐', sensitive: '◑', unhealthy: '◕', hazardous: '■' }[aqiBand(category)];
 }

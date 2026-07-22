@@ -17,6 +17,10 @@ import * as Location from 'expo-location';
 import { isLocationInAfricanNation, nearestCityWithin, MAX_CITY_SNAP_DEG } from '../utils/geo';
 import { getColors, Colors } from '../theme';
 import { getAQIColor } from '../theme/colors';
+import { getMapSummary, MapSummaryCity } from '../services/api';
+
+/** a city we have no reading for: not a judgement about its air. */
+const UNKNOWN_DOT = '#64748B';
 import { useTheme } from '../hooks/useTheme';
 import { AfricaMapView, AfricaMapViewHandle, MapMarker } from '../components/AfricaMapView';
 import { useTranslation } from '../hooks/useTranslation';
@@ -60,21 +64,38 @@ export function MapScreen() {
       name: prediction.location.name,
       lat: prediction.location.lat,
       lon: prediction.location.lon,
-      color: getAQIColor(prediction.aqi_category),
+      color: getAQIColor(prediction.aqi_category, isDark),
     };
-  }, [prediction]);
+  }, [prediction, isDark]);
 
   // Marker pool is independent of `search` — filtering it per-keystroke is what
   // caused the flicker. Search now drives the suggestion dropdown only.
+  const [readings, setReadings] = useState<Record<string, MapSummaryCity>>({});
+  useEffect(() => {
+    let active = true;
+    getMapSummary()
+      .then((rows) => {
+        if (!active) return;
+        setReadings(Object.fromEntries(rows.map((r) => [r.name.toLowerCase(), r])));
+      })
+      .catch(() => {});
+    return () => { active = false; };
+  }, []);
+
   const mapMarkers: MapMarker[] = useMemo(() => {
     const limit = liteMode ? 80 : 250;
-    return offlineCities.slice(0, limit).map((city) => ({
-      name: city.name,
-      lat: city.lat,
-      lon: city.lon,
-      color: getAQIColor('good'),
-    }));
-  }, [offlineCities, liteMode]);
+    return offlineCities.slice(0, limit).map((city) => {
+      const hit = readings[city.name.toLowerCase()];
+      return {
+        name: city.name,
+        lat: city.lat,
+        lon: city.lon,
+        // a city we have no reading for is drawn neutral, not green: green means
+        // good in the legend, so hardcoding it told users the air was fine.
+        color: hit ? getAQIColor(hit.aqi_category, isDark) : UNKNOWN_DOT,
+      };
+    });
+  }, [offlineCities, liteMode, readings, isDark]);
 
   // ── Search suggestions (offline-instant + debounced Mapbox enrich) ────────
   const [searchFocused, setSearchFocused] = useState(false);

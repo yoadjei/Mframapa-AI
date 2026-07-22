@@ -1,4 +1,4 @@
-export { Colors, getAQIColor } from './colors';
+export { Colors, getAQIColor, aqiSymbol, aqiBand } from './colors';
 export { Typography } from './typography';
 
 export const Spacing = {
