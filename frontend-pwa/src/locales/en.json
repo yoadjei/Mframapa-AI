@@ -705,5 +705,17 @@
   "auth.forgot.subtitle": "Enter your email and we will send you a reset link.",
   "auth.forgot.cta": "Send reset link",
   "auth.forgot.sent": "If that email has an account, a reset link is on its way.",
-  "auth.forgot.back": "Back to sign in"
+  "auth.forgot.back": "Back to sign in",
+  "common.coming_soon": "Coming soon",
+  "common.go_home": "Go home",
+  "common.go_back": "Go back",
+  "common.add_city": "Add city",
+  "avatar.choose": "Choose your avatar",
+  "avatar.change": "Change avatar",
+  "anomaly.recommended_actions": "Recommended actions",
+  "anomaly.affected_area": "Affected area",
+  "dashboard.aqi_category": "Air quality band",
+  "dashboard.contributing_factors": "What shaped this reading",
+  "profile.sign_in_prompt": "Sign in to save places and get alerts",
+  "offline.choose_city": "Choose a saved city"
 }

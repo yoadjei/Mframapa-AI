@@ -40,7 +40,7 @@ export function AboutLegalScreen({ params, isOnline, isDark }) {
           onClick={goBack}
           className="flex items-center justify-center active:opacity-60"
           style={{ width: 36, height: 36 }}
-          aria-label="Go back"
+          aria-label={t("common.go_back")}
         >
           <ArrowLeft size={22} color={colors.text} />
         </button>

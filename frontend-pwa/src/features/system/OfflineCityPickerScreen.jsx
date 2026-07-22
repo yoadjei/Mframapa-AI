@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "../../hooks/useTranslation.js";
 import { ArrowLeft, MapPin, Plane, Info, User } from "lucide-react";
 import { getColors, Colors } from "../../utils/colors.js";
 import { useAppState } from "../../state/appState.jsx";
@@ -18,6 +19,7 @@ const FALLBACK_CITIES = [
 ];
 
 export function OfflineCityPickerScreen({ params, isOnline, isDark }) {
+  const { t } = useTranslation();
   const colors = getColors(isDark ?? true);
   const { dispatch } = useAppState();
   const { goBack } = useNavigation();
@@ -78,7 +80,7 @@ export function OfflineCityPickerScreen({ params, isOnline, isDark }) {
           onClick={goBack}
           className="flex items-center justify-center active:opacity-60"
           style={{ width: 36, height: 36 }}
-          aria-label="Go back"
+          aria-label={t("common.go_back")}
         >
           <ArrowLeft size={22} color={colors.text} />
         </button>
@@ -91,7 +93,7 @@ export function OfflineCityPickerScreen({ params, isOnline, isDark }) {
       <div className="flex flex-col items-center py-6 gap-2.5">
         <Plane size={56} color={Colors.brandGreen} />
         <h1 className="text-2xl font-extrabold" style={{ color: colors.text }}>
-          Choose City Offline
+          {t("offline.choose_city")}
         </h1>
         {/* Breadcrumb */}
         <div className="flex items-center">

@@ -1,4 +1,5 @@
 import { X, Check } from "lucide-react";
+import { useTranslation } from "../../hooks/useTranslation.js";
 import { getColors, Colors, liquidGlass } from "../../utils/colors.js";
 
 const SEEDS = [
@@ -20,6 +21,7 @@ export function defaultSeedFor(key = "") {
 }
 
 export function AvatarPickerSheet({ visible, selected, onSelect, onClose, isDark }) {
+  const { t } = useTranslation();
   const colors = getColors(isDark ?? true);
 
   if (!visible) return null;
@@ -49,7 +51,7 @@ export function AvatarPickerSheet({ visible, selected, onSelect, onClose, isDark
         {/* Header */}
         <div className="mb-4 flex items-center justify-between">
           <span className="text-[1.0625rem] font-bold" style={{ color: colors.text }}>
-            Choose your avatar
+            {t("avatar.choose")}
           </span>
           <button
             type="button"

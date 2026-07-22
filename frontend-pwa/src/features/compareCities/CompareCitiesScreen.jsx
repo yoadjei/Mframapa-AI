@@ -449,7 +449,7 @@ export function CompareCitiesScreen({ isOnline, isDark, params }) {
             }}
           >
             <Plus size={14} color={colors.subtext} />
-            Add city
+            {t("common.add_city")}
           </button>
         )}
 

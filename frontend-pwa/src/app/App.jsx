@@ -187,7 +187,7 @@ function fallback(name) {
             <span style={{ fontSize: "1.75rem", lineHeight: "48px" }}>🌿</span>
           </div>
           <p className="font-semibold" style={{ color: "#FFFFFF" }}>{name}</p>
-          <p className="text-sm" style={{ color: "#9AA7B5" }}>Coming soon</p>
+          <p className="text-sm" style={{ color: "#9AA7B5" }}>This screen could not load. Pull to refresh.</p>
         </div>
       );
     },

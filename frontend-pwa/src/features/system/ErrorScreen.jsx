@@ -1,9 +1,11 @@
 import { ArrowLeft, CloudOff, Leaf, X } from "lucide-react";
+import { useTranslation } from "../../hooks/useTranslation.js";
 import { getColors, Colors } from "../../utils/colors.js";
 import { useAppState } from "../../state/appState.jsx";
 import { useNavigation } from "../../hooks/useNavigation.js";
 
 export function ErrorScreen({ params, isOnline, isDark }) {
+  const { t } = useTranslation();
   const colors = getColors(isDark ?? true);
   const { dispatch } = useAppState();
   const { goBack } = useNavigation();
@@ -41,7 +43,7 @@ export function ErrorScreen({ params, isOnline, isDark }) {
           onClick={goBack}
           className="flex items-center justify-center active:opacity-60"
           style={{ width: 36, height: 36 }}
-          aria-label="Go back"
+          aria-label={t("common.go_back")}
         >
           <ArrowLeft size={22} color={colors.text} />
         </button>
@@ -74,7 +76,7 @@ export function ErrorScreen({ params, isOnline, isDark }) {
             className="w-full py-3.5 rounded-full text-white font-bold text-base"
             style={{ backgroundColor: Colors.brandGreen }}
           >
-            Try Again
+            {t("common.try_again")}
           </button>
           <button
             onClick={handleGoHome}
@@ -85,7 +87,7 @@ export function ErrorScreen({ params, isOnline, isDark }) {
               color: colors.text,
             }}
           >
-            Go Home
+            {t("common.go_home")}
           </button>
         </div>
       </div>

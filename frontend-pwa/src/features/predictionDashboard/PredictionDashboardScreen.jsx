@@ -457,7 +457,7 @@ export function PredictionDashboardScreen({ isOnline, isDark, params }) {
             >
               <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                 <span style={{ fontSize: "0.75rem", color: colors.muted }}>
-                  AQI Category
+                  {t("dashboard.aqi_category")}
                 </span>
                 <span
                   style={{
@@ -549,7 +549,7 @@ export function PredictionDashboardScreen({ isOnline, isDark, params }) {
                     margin: 0,
                   }}
                 >
-                  Contributing Factors
+                  {t("dashboard.contributing_factors")}
                 </p>
                 <div
                   style={{

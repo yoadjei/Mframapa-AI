@@ -145,7 +145,7 @@ export function AnomalyAlertScreen({ params, isOnline, isDark }) {
             }}
           >
             <p style={{ fontSize: "0.875rem", fontWeight: 700, color: colors.text }}>
-              Recommended Actions
+              {t("anomaly.recommended_actions")}
             </p>
             {alert.actions.map((action, i) => (
               <p key={i} style={{ fontSize: "0.875rem", lineHeight: "20px", color: colors.subtext }}>
@@ -170,7 +170,7 @@ export function AnomalyAlertScreen({ params, isOnline, isDark }) {
           >
             {alert.area && (
               <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ fontSize: "0.75rem", color: colors.subtext }}>Affected area</span>
+                <span style={{ fontSize: "0.75rem", color: colors.subtext }}>{t("anomaly.affected_area")}</span>
                 <span style={{ fontSize: "0.75rem", fontWeight: 600, color: colors.text }}>{alert.area}</span>
               </div>
             )}

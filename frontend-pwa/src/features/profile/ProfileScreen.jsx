@@ -246,7 +246,7 @@ export function ProfileScreen({ isOnline, isDark }) {
               style={{ backgroundColor: Colors.brandGreen, color: "#00110B" }}
             >
               <LogIn size={18} color="#00110B" />
-              Sign in to save places and get alerts
+              {t("profile.sign_in_prompt")}
             </button>
           )}
         </div>
