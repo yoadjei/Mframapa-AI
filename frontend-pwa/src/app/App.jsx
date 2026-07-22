@@ -13,6 +13,7 @@ import { PreviewGallery } from "../features/preview/PreviewGallery.jsx";
 import { preloadCityPack } from "../services/cityPackService.js";
 import { trackAppOpen } from "../services/analytics.js";
 import { restoreSession, onAuthChange } from "../services/authService.js";
+import { useHardwareBack } from "../hooks/useHardwareBack.js";
 
 // ── Tab screens (loaded eagerly — they are the main experience) ─────────────
 // All screen files use named exports; .then() wraps them as the default export
@@ -260,6 +261,10 @@ export function App() {
   }, [session.authenticated, isOnline]);
 
   // hooks must run on every render before any early return (rules of hooks)
+
+  // the phone back button and gestures pop the screen stack instead of leaving
+  useHardwareBack(ui.screenStack.length, dispatch);
+
   const ActiveTab = useMemo(
     () => TAB_SCREENS[ui.activeScreen] ?? HomeScreen,
     [ui.activeScreen]
@@ -301,7 +306,7 @@ export function App() {
               type="button"
               onPointerDown={(e) => {
                 e.preventDefault();
-                dispatch({ type: "GO_BACK" });
+                window.history.back();
               }}
               aria-label="Go back"
               style={{

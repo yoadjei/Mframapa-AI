@@ -10,9 +10,13 @@ export function useNavigation() {
     dispatch({ type: "NAVIGATE", payload: { name, params } });
   }, [dispatch]);
 
+  // route back through browser history so the hardware back button, the
+  // gesture, the global arrow and per-screen back all take the same path and
+  // cannot fall out of step. useHardwareBack turns the resulting popstate into
+  // a stack pop.
   const goBack = useCallback(() => {
-    dispatch({ type: "GO_BACK" });
-  }, [dispatch]);
+    window.history.back();
+  }, []);
 
   const navigateToTab = useCallback((tab) => {
     dispatch({ type: "SET_ACTIVE_SCREEN", payload: tab });
