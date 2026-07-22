@@ -130,10 +130,12 @@ def test_generate_insight_hazardous(client):
         json={"pm25": 200.0, "aqi_category": "Hazardous", "weather": {}, "language": "en"},
     )
     assert r.status_code == 200
-    # guidance is now plain language, so assert the intent (urgency and a clear
-    # action) rather than the wording of the stub it replaced.
-    text = r.json()["insight"].lower()
-    assert any(w in text for w in ("dangerous", "indoors", "inside", "avoid", "medical", "risk"))
+    # guidance is now a reviewed line, so assert it is one of the real hazardous
+    # variants rather than guessing at keywords (which the hash-based selection
+    # made brittle).
+    from backend.api.insights import variants, DRY, RAINY, HARMATTAN
+    hazardous = set(variants("hazardous", DRY)) | set(variants("hazardous", RAINY)) | set(variants("hazardous", HARMATTAN))
+    assert r.json()["insight"] in hazardous
 
 
 def test_generate_insight_negative_pm25(client):
