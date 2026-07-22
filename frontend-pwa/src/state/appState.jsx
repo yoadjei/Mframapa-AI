@@ -70,9 +70,19 @@ function appReducer(state, action) {
         },
         profile: {
           ...state.profile,
-          fullName: action.payload.user?.fullName ?? state.profile.fullName,
           email: action.payload.user?.email ?? state.profile.email,
         },
+        // a home city chosen at sign-up seeds the home screen, but never
+        // overrides a city the user has already been looking at on this device.
+        homeSummary:
+          action.payload.user?.homeCity && state.homeSummary?.city == null
+            ? {
+                ...state.homeSummary,
+                city: action.payload.user.homeCity.name,
+                lat: action.payload.user.homeCity.lat,
+                lon: action.payload.user.homeCity.lon,
+              }
+            : state.homeSummary,
       };
     case "RESTORE_SESSION":
       // supabase restored a persisted session on load/refresh — sync app state so
@@ -87,9 +97,19 @@ function appReducer(state, action) {
         },
         profile: {
           ...state.profile,
-          fullName: action.payload.user?.fullName ?? state.profile.fullName,
           email: action.payload.user?.email ?? state.profile.email,
         },
+        // a home city chosen at sign-up seeds the home screen, but never
+        // overrides a city the user has already been looking at on this device.
+        homeSummary:
+          action.payload.user?.homeCity && state.homeSummary?.city == null
+            ? {
+                ...state.homeSummary,
+                city: action.payload.user.homeCity.name,
+                lat: action.payload.user.homeCity.lat,
+                lon: action.payload.user.homeCity.lon,
+              }
+            : state.homeSummary,
       };
     case "LOGOUT":
       return {

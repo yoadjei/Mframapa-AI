@@ -22,18 +22,24 @@ export async function login({ email, password }) {
     user: {
       id: data.user.id,
       email: data.user.email,
-      fullName: data.user.user_metadata?.full_name ?? data.user.email,
+      homeCity: homeFromMeta(data.user.user_metadata),
     },
   };
 }
 
-export async function signup({ fullName, email, password }) {
+/** the home city a user chose at sign-up, if any. */
+function homeFromMeta(meta) {
+  if (!meta?.home_city) return null;
+  return { name: meta.home_city, lat: meta.home_lat, lon: meta.home_lon };
+}
+
+export async function signup({ email, password, homeCity }) {
   requireSupabase();
 
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    options: { data: { full_name: fullName } },
+    options: { data: homeCity ? { home_city: homeCity.name, home_lat: homeCity.lat, home_lon: homeCity.lon } : {} },
   });
   if (error) throw new Error(error.message);
 
@@ -48,7 +54,6 @@ export async function signup({ fullName, email, password }) {
     user: {
       id: data.user.id,
       email: data.user.email,
-      fullName,
     },
   };
 }
@@ -64,7 +69,7 @@ export async function restoreSession() {
     user: {
       id: session.user.id,
       email: session.user.email,
-      fullName: session.user.user_metadata?.full_name ?? session.user.email,
+      homeCity: homeFromMeta(session.user.user_metadata),
     },
   };
 }

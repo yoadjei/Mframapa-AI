@@ -7,10 +7,12 @@
  * All views have transparent backgrounds so CloudRainBackground shows through,
  * matching the mobile behaviour exactly.
  */
-import { useState } from "react";
-import { ChevronLeft, Mail, Lock, User, Eye, EyeOff } from "lucide-react";
+import { useId, useMemo, useState } from "react";
+import { ChevronLeft, Mail, Lock, MapPin, Eye, EyeOff } from "lucide-react";
 import { useAppState } from "../../state/appState.jsx";
 import { login, signup } from "../../services/authService.js";
+import { useTranslation } from "../../hooks/useTranslation.js";
+import { africanCities } from "../../data/africanCities.js";
 import { normalizeError } from "../../services/httpClient.js";
 import { MframapaLogo } from "../../components/brand/MframapaLogo.jsx";
 import { PrimaryButton } from "../../components/ui/PrimaryButton.jsx";
@@ -26,12 +28,13 @@ function palette(isDark) {
 }
 
 // ── Shared field ──────────────────────────────────────────────────────────────
-function Field({ label, placeholder, value, onChange, type = "text", icon: Icon, secure, autoComplete, c }) {
+function Field({ label, placeholder, value, onChange, type = "text", icon: Icon, secure, autoComplete, c, listId }) {
   const [show, setShow] = useState(false);
+  const inputId = useId();
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
       {label && (
-        <span style={{ fontSize: "0.8125rem", fontWeight: 500, color: c.SUBTEXT }}>{label}</span>
+        <label htmlFor={inputId} style={{ fontSize: "0.8125rem", fontWeight: 500, color: c.SUBTEXT }}>{label}</label>
       )}
       <div style={{
         display: "flex", alignItems: "center", gap: 10,
@@ -39,8 +42,10 @@ function Field({ label, placeholder, value, onChange, type = "text", icon: Icon,
         backgroundColor: c.SURFACE,
         paddingLeft: 14, paddingRight: 14, paddingTop: 14, paddingBottom: 14,
       }}>
-        {Icon && <Icon size={18} color={c.MUTED} />}
+        {Icon && <Icon size={18} color={c.MUTED} aria-hidden="true" />}
         <input
+          id={inputId}
+          list={listId}
           type={secure ? (show ? "text" : "password") : type}
           placeholder={placeholder}
           value={value}
@@ -50,9 +55,10 @@ function Field({ label, placeholder, value, onChange, type = "text", icon: Icon,
           className="placeholder:opacity-40"
         />
         {secure && (
-          <button type="button" tabIndex={-1}
+          <button type="button"
+            aria-label={show ? "Hide password" : "Show password"}
             onClick={() => setShow((v) => !v)}
-            style={{ background: "none", border: "none", cursor: "pointer", padding: 0, opacity: 0.6, lineHeight: 1 }}>
+            style={{ background: "none", border: "none", cursor: "pointer", padding: 0, opacity: 0.6, lineHeight: 1, minWidth: 24, minHeight: 24 }}>
             {show ? <EyeOff size={18} color={c.MUTED} /> : <Eye size={18} color={c.MUTED} />}
           </button>
         )}
@@ -94,6 +100,7 @@ function BackBtn({ onPress, label = "Back", c }) {
 /* ────────────────────────────────────────────────────── LoginView ── */
 // Mirrors mobile/src/screens/onboarding/LoginScreen.tsx
 function LoginView({ onAuth, onSignUp, onForgot, c, isDark }) {
+  const { t } = useTranslation();
   const [email, setEmail]       = useState("");
   const [password, setPassword] = useState("");
   const [error, setError]       = useState("");
@@ -123,23 +130,23 @@ function LoginView({ onAuth, onSignUp, onForgot, c, isDark }) {
 
       {/* heading */}
       <p style={{ fontSize: "1.75rem", fontWeight: 800, color: c.TEXT, marginBottom: 6, marginTop: 0 }}>
-        Welcome back
+        {t("auth.login.title")}
       </p>
       {/* sub */}
       <p style={{ fontSize: "0.9375rem", color: c.SUBTEXT, marginBottom: 28, marginTop: 0 }}>
-        Sign in to your Mframapa account.
+        {t("auth.login.subtitle")}
       </p>
 
       <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 0 }}>
         {/* Email — marginBottom 16 */}
         <div style={{ marginBottom: 16 }}>
-          <Field c={c} label="Email" placeholder="Email Address" value={email} onChange={setEmail}
+          <Field c={c} label={t("auth.login.email")} placeholder={t("auth.login.email")} value={email} onChange={setEmail}
             type="email" icon={Mail} autoComplete="email" />
         </div>
 
         {/* Password — marginBottom 0 (forgot sits below) */}
         <div style={{ marginBottom: 4 }}>
-          <Field c={c} label="Password" placeholder="Password" value={password} onChange={setPassword}
+          <Field c={c} label={t("auth.login.password")} placeholder={t("auth.login.password")} value={password} onChange={setPassword}
             secure icon={Lock} autoComplete="current-password" />
         </div>
 
@@ -147,7 +154,7 @@ function LoginView({ onAuth, onSignUp, onForgot, c, isDark }) {
         <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 24 }}>
           <button type="button" onClick={onForgot}
             style={{ background: "none", border: "none", cursor: "pointer", fontSize: "0.875rem", fontWeight: 500, color: GREEN }}>
-            Forgot password?
+            {t("auth.login.forgot")}
           </button>
         </div>
 
@@ -160,16 +167,16 @@ function LoginView({ onAuth, onSignUp, onForgot, c, isDark }) {
 
         {/* cta — marginTop 4 */}
         <div style={{ marginTop: 4 }}>
-          <PrimaryButton label="Sign in" type="submit" loading={loading} />
+          <PrimaryButton label={t("auth.login.cta")} type="submit" loading={loading} />
         </div>
       </form>
 
       {/* signupRow — justifyContent center, marginTop 24, gap 6 */}
       <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: 24, gap: 6 }}>
-        <span style={{ fontSize: "0.875rem", color: c.SUBTEXT }}>Don&apos;t have an account?</span>
+        <span style={{ fontSize: "0.875rem", color: c.SUBTEXT }}>{t("auth.login.no_account")}</span>
         <button type="button" onClick={onSignUp}
           style={{ background: "none", border: "none", cursor: "pointer", fontSize: "0.875rem", fontWeight: 600, color: GREEN }}>
-          Sign up now
+          {t("auth.login.sign_up")}
         </button>
       </div>
     </AuthScroll>
@@ -179,32 +186,55 @@ function LoginView({ onAuth, onSignUp, onForgot, c, isDark }) {
 /* ────────────────────────────────────────────────────── SignUpView ── */
 // Mirrors mobile/src/screens/onboarding/SignUpScreen.tsx
 function SignUpView({ onAuth, onBack, c, isDark }) {
-  const [fullName, setFullName]             = useState("");
+  const { t } = useTranslation();
   const [email, setEmail]                   = useState("");
   const [password, setPassword]             = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [cityQuery, setCityQuery]           = useState("");
   const [error, setError]                   = useState("");
   const [loading, setLoading]               = useState(false);
-
   const [notice, setNotice] = useState("");
+
+  // suggestions come from the bundled city list; a plain text input backed by a
+  // datalist stays fully usable with a keyboard and a screen reader.
+  const suggestions = useMemo(() => {
+    const q = cityQuery.trim().toLowerCase();
+    if (q.length < 2) return [];
+    return africanCities.filter((city) => city.name.toLowerCase().includes(q)).slice(0, 6);
+  }, [cityQuery]);
+
+  function resolveCity() {
+    const q = cityQuery.trim().toLowerCase();
+    if (!q) return null;
+    return (
+      africanCities.find((city) => city.name.toLowerCase() === q) ||
+      africanCities.find((city) => city.name.toLowerCase().includes(q)) ||
+      null
+    );
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
     setError(""); setNotice("");
-    if (!fullName.trim() || !email.trim() || !password) { setError("Please fill in all required fields."); return; }
-    if (password.length < 6) { setError("Password must be at least 6 characters."); return; }
-    if (password !== confirmPassword) { setError("Passwords do not match."); return; }
+    if (!email.trim() || !password) { setError(t("auth.error.fill_required")); return; }
+    if (password.length < 6) { setError(t("auth.error.password_short")); return; }
+    if (password !== confirmPassword) { setError(t("auth.error.password_mismatch")); return; }
+    const homeCity = cityQuery.trim() ? resolveCity() : null;
+    if (cityQuery.trim() && !homeCity) { setError(t("auth.error.city_unknown")); return; }
     setLoading(true);
     try {
-      const result = await signup({ fullName: fullName.trim(), email: email.trim(), password });
+      const result = await signup({
+        email: email.trim(),
+        password,
+        homeCity: homeCity && { name: homeCity.name, lat: homeCity.lat, lon: homeCity.lon },
+      });
       if (result.pending) {
-        // email confirmation is on: do NOT pretend they're signed in
-        setNotice("Account created. Check your email to confirm, then sign in.");
+        setNotice(t("auth.signup.pending"));
       } else {
         onAuth({ ...result, tier: "free" });
       }
     } catch (err) {
-      setError(normalizeError(err, "Could not create your account. Please try again."));
+      setError(normalizeError(err, t("auth.error.signup_failed")));
     } finally {
       setLoading(false);
     }
@@ -212,39 +242,45 @@ function SignUpView({ onAuth, onBack, c, isDark }) {
 
   return (
     <AuthScroll>
-      {/* backBtn — marginBottom 16 */}
       <div style={{ marginBottom: 16 }}>
         <BackBtn c={c} onPress={onBack} />
       </div>
 
-      {/* logoWrap — center, marginBottom 28 */}
       <div style={{ display: "flex", justifyContent: "center", marginBottom: 28 }}>
         <MframapaLogo size="lg" isDark={isDark} />
       </div>
 
       <p style={{ fontSize: "1.75rem", fontWeight: 800, color: c.TEXT, marginBottom: 6, marginTop: 0 }}>
-        Create account
+        {t("auth.signup.title")}
       </p>
       <p style={{ fontSize: "0.9375rem", color: c.SUBTEXT, marginBottom: 24, marginTop: 0 }}>
-        Start monitoring air quality across Africa.
+        {t("auth.signup.subtitle")}
       </p>
 
       <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 0 }}>
         <div style={{ marginBottom: 16 }}>
-          <Field c={c} label="Full Name" placeholder="Kofi Antwi" value={fullName} onChange={setFullName}
-            icon={User} autoComplete="name" />
-        </div>
-        <div style={{ marginBottom: 16 }}>
-          <Field c={c} label="Email" placeholder="Email Address" value={email} onChange={setEmail}
+          <Field c={c} label={t("auth.signup.email")} placeholder={t("auth.signup.email")} value={email} onChange={setEmail}
             type="email" icon={Mail} autoComplete="email" />
         </div>
         <div style={{ marginBottom: 16 }}>
-          <Field c={c} label="Password" placeholder="Password" value={password} onChange={setPassword}
+          <Field c={c} label={t("auth.signup.password")} placeholder={t("auth.signup.password")} value={password} onChange={setPassword}
             secure icon={Lock} autoComplete="new-password" />
         </div>
         <div style={{ marginBottom: 16 }}>
-          <Field c={c} label="Confirm Password" placeholder="Confirm Password" value={confirmPassword}
+          <Field c={c} label={t("auth.signup.confirm")} placeholder={t("auth.signup.confirm")} value={confirmPassword}
             onChange={setConfirmPassword} secure icon={Lock} autoComplete="new-password" />
+        </div>
+        <div style={{ marginBottom: 4 }}>
+          <Field c={c} label={t("auth.signup.home_city")} placeholder={t("auth.signup.home_city_placeholder")}
+            value={cityQuery} onChange={setCityQuery} icon={MapPin} autoComplete="off" listId="signup-city-list" />
+          <datalist id="signup-city-list">
+            {suggestions.map((city) => (
+              <option key={`${city.name}-${city.lat}`} value={city.name}>{city.country}</option>
+            ))}
+          </datalist>
+          <p style={{ fontSize: "0.75rem", color: c.MUTED, margin: "6px 2px 0" }}>
+            {t("auth.signup.home_city_hint")}
+          </p>
         </div>
 
         {error && (
@@ -268,10 +304,10 @@ function SignUpView({ onAuth, onBack, c, isDark }) {
 
       {/* loginRow — justifyContent center, marginTop 24, gap 6 */}
       <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: 24, gap: 6 }}>
-        <span style={{ fontSize: "0.875rem", color: c.SUBTEXT }}>Already have an account?</span>
+        <span style={{ fontSize: "0.875rem", color: c.SUBTEXT }}>{t("auth.signup.have_account")}</span>
         <button type="button" onClick={onBack}
           style={{ background: "none", border: "none", cursor: "pointer", fontSize: "0.875rem", fontWeight: 600, color: GREEN }}>
-          Sign in
+          {t("auth.signup.sign_in")}
         </button>
       </div>
     </AuthScroll>
@@ -281,6 +317,7 @@ function SignUpView({ onAuth, onBack, c, isDark }) {
 /* ────────────────────────────────────────────────── ForgotView ── */
 // Mirrors mobile/src/screens/onboarding/ForgotPasswordScreen.tsx
 function ForgotView({ onBack , c, isDark }) {
+  const { t } = useTranslation();
   const [email, setEmail]   = useState("");
   const [loading, setLoading] = useState(false);
   const [sent, setSent]     = useState(false);
@@ -311,10 +348,10 @@ function ForgotView({ onBack , c, isDark }) {
       </div>
 
       <p style={{ fontSize: "1.75rem", fontWeight: 800, color: c.TEXT, marginBottom: 6, marginTop: 0 }}>
-        Reset password
+        {t("auth.forgot.title")}
       </p>
       <p style={{ fontSize: "0.9375rem", color: c.SUBTEXT, marginBottom: 28, marginTop: 0 }}>
-        Enter your email and we&apos;ll send a reset link.
+        {t("auth.forgot.subtitle")}
       </p>
 
       {sent ? (
@@ -336,18 +373,18 @@ function ForgotView({ onBack , c, isDark }) {
             </svg>
           </div>
           <p style={{ fontSize: "0.875rem", fontWeight: 500, color: GREEN, margin: 0, flex: 1 }}>
-            Check your inbox — a reset link is on its way.
+            {t("auth.forgot.sent")}
           </p>
         </div>
       ) : (
         <form onSubmit={handleSubmit}>
           <div style={{ marginBottom: 16 }}>
-            <Field c={c} label="Email" placeholder="Email Address" value={email} onChange={setEmail}
+            <Field c={c} label={t("auth.login.email")} placeholder="Email" value={email} onChange={setEmail}
               type="email" icon={Mail} autoComplete="email" />
           </div>
           {/* cta — marginTop 8 */}
           <div style={{ marginTop: 8 }}>
-            <PrimaryButton label="Send reset link" type="submit" loading={loading} />
+            <PrimaryButton label={t("auth.forgot.cta")} type="submit" loading={loading} />
           </div>
         </form>
       )}
@@ -356,7 +393,7 @@ function ForgotView({ onBack , c, isDark }) {
       <div style={{ display: "flex", justifyContent: "center", marginTop: 24 }}>
         <button type="button" onClick={onBack}
           style={{ background: "none", border: "none", cursor: "pointer", fontSize: "0.875rem", color: c.SUBTEXT }}>
-          Back to login
+          {t("auth.forgot.back")}
         </button>
       </div>
     </AuthScroll>
