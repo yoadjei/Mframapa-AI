@@ -70,32 +70,32 @@ export function MapScreen() {
 
   // Marker pool is independent of `search` — filtering it per-keystroke is what
   // caused the flicker. Search now drives the suggestion dropdown only.
-  const [readings, setReadings] = useState<Record<string, MapSummaryCity>>({});
+  const [summary, setSummary] = useState<MapSummaryCity[]>([]);
   useEffect(() => {
     let active = true;
-    getMapSummary()
-      .then((rows) => {
-        if (!active) return;
-        setReadings(Object.fromEntries(rows.map((r) => [r.name.toLowerCase(), r])));
-      })
-      .catch(() => {});
+    getMapSummary().then((rows) => { if (active) setSummary(rows); }).catch(() => {});
     return () => { active = false; };
   }, []);
 
   const mapMarkers: MapMarker[] = useMemo(() => {
     const limit = liteMode ? 80 : 250;
-    return offlineCities.slice(0, limit).map((city) => {
-      const hit = readings[city.name.toLowerCase()];
-      return {
-        name: city.name,
-        lat: city.lat,
-        lon: city.lon,
-        // a city we have no reading for is drawn neutral, not green: green means
-        // good in the legend, so hardcoding it told users the air was fine.
-        color: hit ? getAQIColor(hit.aqi_category, isDark) : UNKNOWN_DOT,
-      };
-    });
-  }, [offlineCities, liteMode, readings, isDark]);
+    // every city we have a reading for is drawn coloured. these come from the
+    // continental summary, which covers all 55 countries, so no country is a
+    // blank space. offline cities without a reading fill in as neutral dots for
+    // density, and are skipped if they duplicate a reading we already show.
+    const named = new Set(summary.map((r) => r.name.toLowerCase()));
+    const coloured: MapMarker[] = summary.map((r) => ({
+      name: r.name,
+      lat: r.lat,
+      lon: r.lon,
+      color: getAQIColor(r.aqi_category, isDark),
+    }));
+    const neutral: MapMarker[] = offlineCities
+      .filter((c) => !named.has(c.name.toLowerCase()))
+      .slice(0, limit)
+      .map((c) => ({ name: c.name, lat: c.lat, lon: c.lon, color: UNKNOWN_DOT }));
+    return [...neutral, ...coloured];   // readings render on top
+  }, [offlineCities, liteMode, summary, isDark]);
 
   // ── Search suggestions (offline-instant + debounced Mapbox enrich) ────────
   const [searchFocused, setSearchFocused] = useState(false);

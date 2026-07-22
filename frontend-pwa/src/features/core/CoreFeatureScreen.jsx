@@ -91,34 +91,30 @@ export function CoreFeatureScreen({ isOnline, isDark }) {
   // default green dot. green means "good" in our own legend, so the map was
   // telling people the whole continent was fine. readings are merged in here,
   // and a city we have no reading for is drawn neutral rather than green.
-  const [readings, setReadings] = useState({});
+  const [summary, setSummary] = useState([]);
   useEffect(() => {
     let active = true;
-    getMapSummary()
-      .then((rows) => {
-        if (!active) return;
-        setReadings(Object.fromEntries(rows.map((r) => [r.name.toLowerCase(), r])));
-      })
-      .catch(() => {});
+    getMapSummary().then((rows) => { if (active) setSummary(rows); }).catch(() => {});
     return () => { active = false; };
   }, []);
 
-  const mapCities = useMemo(
-    () =>
-      cities.map((city) => {
-        const hit = readings[String(city.name).toLowerCase()];
-        if (!hit) {
-          return { ...city, color: UNKNOWN_DOT, size: 9, label: city.name };
-        }
-        return {
-          ...city,
-          color: getAQIColor(hit.aqi_category, isDark),
-          size: hit.pm25 >= 55 ? 20 : hit.pm25 >= 35 ? 17 : 14,
-          label: `${city.name}: ${Math.round(hit.pm25)} µg/m³`,
-        };
-      }),
-    [cities, readings, isDark]
-  );
+  // colour every city we have a reading for; the summary covers all 55 countries
+  // so none is a blank space. offline cities without a reading fill in neutral.
+  const mapCities = useMemo(() => {
+    const named = new Set(summary.map((r) => r.name.toLowerCase()));
+    const coloured = summary.map((r) => ({
+      name: r.name,
+      lat: r.lat,
+      lon: r.lon,
+      color: getAQIColor(r.aqi_category, isDark),
+      size: r.pm25 >= 55 ? 20 : r.pm25 >= 35 ? 17 : 14,
+      label: `${r.name}: ${Math.round(r.pm25)} µg/m³`,
+    }));
+    const neutral = cities
+      .filter((c) => !named.has(String(c.name).toLowerCase()))
+      .map((city) => ({ ...city, color: UNKNOWN_DOT, size: 9, label: city.name }));
+    return [...neutral, ...coloured];
+  }, [cities, summary, isDark]);
 
   const [search, setSearch] = useState("");
   const [searchFocused, setSearchFocused] = useState(false);
