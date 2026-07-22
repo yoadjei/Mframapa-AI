@@ -9,7 +9,6 @@ import { Avatar } from '../components/ui/Avatar';
 import { Badge } from '../components/ui/Badge';
 import { AvatarPickerSheet, naviiUrl } from '../components/AvatarPickerSheet';
 import { InputField } from '../components/ui/InputField';
-import { PrimaryButton } from '../components/ui/PrimaryButton';
 import { MframapaLogo } from '../components/MframapaLogo';
 import { getColors, Colors } from '../theme';
 import { useTheme } from '../hooks/useTheme';
@@ -29,53 +28,10 @@ export function ProfileScreen() {
 
   // Initialise from the actual signed-in profile. Effect below keeps these
   // in sync if profile is re-hydrated (e.g. after sign-in completes).
-  const [fullName, setFullName]     = useState(profile.fullName);
   const [email]                     = useState(profile.email); // read-only (auth identity)
-  const [organization, setOrg]      = useState(profile.organization);
-  const [editing, setEditing]       = useState(false);
-  const [saving, setSaving]         = useState(false);
   const [pickerVisible, setPickerVisible] = useState(false);
 
-  const isDirty =
-    fullName.trim() !== profile.fullName.trim() ||
-    organization.trim() !== profile.organization.trim();
 
-  useEffect(() => {
-    setFullName(profile.fullName);
-    setOrg(profile.organization);
-  }, [profile.fullName, profile.organization]);
-
-  async function handleSave() {
-    if (saving) return;
-    // No edits → just exit edit mode silently.
-    if (!isDirty) {
-      setEditing(false);
-      return;
-    }
-    const cleanName = fullName.trim();
-    const cleanOrg  = organization.trim();
-    if (!cleanName) {
-      Alert.alert(t('screen.profile.full_name_required'));
-      return;
-    }
-    setSaving(true);
-    const res = await updateProfile({ fullName: cleanName, organization: cleanOrg });
-    setSaving(false);
-    if (!res.ok) {
-      Alert.alert(res.error ?? t('screen.profile.could_not_save'));
-      return;
-    }
-    setEditing(false);
-    Alert.alert(t('screen.profile.changes_saved'));
-  }
-
-  function handlePrimaryAction() {
-    if (editing) {
-      void handleSave();
-    } else {
-      setEditing(true);
-    }
-  }
 
   function handleAvatarSelect(seed: string) {
     // Fire-and-forget — picker closes immediately, sync happens in background.
@@ -116,16 +72,9 @@ export function ProfileScreen() {
           <Badge label={profile.tier.charAt(0).toUpperCase() + profile.tier.slice(1)} variant={profile.tier as any} />
         </View>
 
-        {/* Form Fields */}
+        {/* Account: read-only. identity comes from the provider, and the app
+            never used organization, so neither is an editable field here. */}
         <View style={styles.form}>
-          <InputField
-            label={t('screen.profile.full_name')}
-            value={fullName}
-            onChangeText={setFullName}
-            placeholder="Kofi Antwi"
-            isDark={isDark}
-            editable={editing}
-          />
           <InputField
             label={t('screen.profile.email')}
             value={email}
@@ -136,22 +85,7 @@ export function ProfileScreen() {
             keyboardType="email-address"
             autoCapitalize="none"
           />
-          <InputField
-            label={t('screen.profile.organization')}
-            value={organization}
-            onChangeText={setOrg}
-            placeholder="Organization"
-            isDark={isDark}
-            editable={editing}
-          />
         </View>
-
-        <PrimaryButton
-          label={editing ? t('screen.profile.save') : t('screen.profile.edit')}
-          onPress={handlePrimaryAction}
-          loading={saving}
-          style={styles.saveBtn}
-        />
 
         {/* Profile links */}
         <View style={styles.links}>
