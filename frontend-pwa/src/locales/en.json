@@ -723,5 +723,9 @@
   "screen.profile.name": "Name",
   "signout.confirm_title": "Sign out?",
   "signout.confirm_message": "You can sign back in any time. The app keeps working without an account.",
-  "screen.profile.delete_account": "Delete account"
+  "screen.profile.delete_account": "Delete account",
+  "landing.preview.label": "Live now",
+  "landing.preview.aria": "A live air quality reading",
+  "landing.preview.trend": "Last 7 days",
+  "landing.preview.confidence": "90% likely between {{low}} and {{high}} µg/m³. We show our uncertainty, not a false exact number."
 }

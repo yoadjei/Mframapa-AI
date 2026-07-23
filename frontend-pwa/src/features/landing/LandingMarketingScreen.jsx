@@ -5,6 +5,7 @@ import { useNavigation } from "../../hooks/useNavigation.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { getColors, Colors } from "../../utils/colors.js";
 import { PrimaryButton } from "../../components/ui/PrimaryButton.jsx";
+import { LivePreviewCard } from "./LivePreviewCard.jsx";
 
 const FEATURE_KEYS = [
   {
@@ -128,6 +129,10 @@ export function LandingMarketingScreen({ params, isOnline, isDark }) {
             label={t("screen.landing.get_started")}
             onClick={() => navigate("auth")}
           />
+
+          <div style={{ marginTop: 8 }}>
+            <LivePreviewCard isDark={isDark ?? true} />
+          </div>
         </div>
 
         {/* Feature cards */}
@@ -161,21 +166,6 @@ export function LandingMarketingScreen({ params, isOnline, isDark }) {
               </p>
             </div>
           ))}
-        </div>
-
-        {/* Stats bar */}
-        <div style={{ marginBottom: 28, display: "flex", justifyContent: "center" }}>
-          <div
-            style={{
-              borderRadius: 999,
-              padding: "12px 20px",
-              backgroundColor: colors.card,
-            }}
-          >
-            <p style={{ fontSize: "0.75rem", fontWeight: 500, color: colors.subtext, margin: 0 }}>
-              {t("screen.landing.stats")}
-            </p>
-          </div>
         </div>
 
         {/* Divider */}
