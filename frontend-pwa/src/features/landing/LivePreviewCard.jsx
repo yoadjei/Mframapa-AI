@@ -4,6 +4,7 @@ import { getColors, getAQIColor, aqiSymbol } from "../../utils/colors.js";
 import { aqiCategoryKey } from "../../utils/i18nHelpers.js";
 import { getPrediction, getHistory } from "../../services/api.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
+import { useAppState } from "../../state/appState.jsx";
 
 // a real city to show the product with, not a mock. everything on this card is
 // fetched live from the same endpoints the app uses, so the landing page can
@@ -38,19 +39,27 @@ function Sparkline({ values, color }) {
 export function LivePreviewCard({ isDark = true }) {
   const { t } = useTranslation();
   const colors = getColors(isDark);
+  const { state } = useAppState();
   const [pred, setPred] = useState(null);
   const [trend, setTrend] = useState([]);
 
+  // the visitor's own place when we know it, otherwise the showcase city
+  const home = state.homeSummary ?? {};
+  const place =
+    home.lat != null && home.lon != null && home.city
+      ? { name: home.city, lat: home.lat, lon: home.lon }
+      : SHOWCASE;
+
   useEffect(() => {
     let active = true;
-    getPrediction(SHOWCASE.lat, SHOWCASE.lon, SHOWCASE.name)
+    getPrediction(place.lat, place.lon, place.name)
       .then((p) => { if (active) setPred(p); })
       .catch(() => {});
-    getHistory(SHOWCASE.lat, SHOWCASE.lon, SHOWCASE.name, 7)
+    getHistory(place.lat, place.lon, place.name, 7)
       .then((days) => { if (active) setTrend(days.map((d) => Math.round(d.pm25))); })
       .catch(() => {});
     return () => { active = false; };
-  }, []);
+  }, [place.name, place.lat, place.lon]);
 
   const category = pred?.aqi_category ?? pred?.category;
   const color = getAQIColor(category, isDark);
@@ -73,7 +82,7 @@ export function LivePreviewCard({ isDark = true }) {
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
           <MapPin size={15} color={colors.subtext} aria-hidden="true" />
-          <span style={{ fontSize: "0.8125rem", fontWeight: 600, color: colors.text }}>{SHOWCASE.name}</span>
+          <span style={{ fontSize: "0.8125rem", fontWeight: 600, color: colors.text }}>{place.name}</span>
         </div>
         <span style={{ fontSize: "0.6875rem", color: colors.muted }}>{t("landing.preview.label")}</span>
       </div>
