@@ -50,7 +50,7 @@ export function LoginScreen({ onAuth }: Props) {
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.logoWrap}>
-          <MframapaLogo size="lg" />
+          <MframapaLogo size="lg" markOnly />
         </View>
 
         <Text style={[styles.heading, { color: colors.text }]}>{t('screen.auth.welcome_back')}</Text>

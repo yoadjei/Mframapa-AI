@@ -73,7 +73,7 @@ export function PermissionsScreen({ onAllow, onSkip }: Props) {
   return (
     <View style={[styles.root, {paddingTop: insets.top, paddingBottom: insets.bottom }]}>
       <View style={styles.logoContainer}>
-        <MframapaLogo size="md" />
+        <MframapaLogo size="md" markOnly />
       </View>
 
       <View style={styles.center}>

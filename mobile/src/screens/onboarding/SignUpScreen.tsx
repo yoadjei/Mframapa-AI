@@ -65,7 +65,7 @@ export function SignUpScreen({ onAuth }: Props) {
         </TouchableOpacity>
 
         <View style={styles.logoWrap}>
-          <MframapaLogo size="lg" />
+          <MframapaLogo size="lg" markOnly />
         </View>
 
         <Text style={[styles.heading, { color: colors.text }]}>{t('screen.auth.create_account_heading')}</Text>

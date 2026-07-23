@@ -25,7 +25,7 @@ export function SplashScreen({ onDone }: Props) {
   return (
     <View style={[styles.root]}>
       <Animated.View style={[styles.center, { opacity, transform: [{ scale }] }]}>
-        <MframapaLogo size="lg" />
+        <MframapaLogo size="lg" markOnly />
       </Animated.View>
     </View>
   );

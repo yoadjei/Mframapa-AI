@@ -6,6 +6,7 @@ import { getColors } from '../theme';
 
 interface MframapaLogoProps {
   size?: 'sm' | 'md' | 'lg';
+  markOnly?: boolean;
 }
 
 const SIZES = {
@@ -14,7 +15,7 @@ const SIZES = {
   lg: { icon: 32, text: 26, gap: 10 },
 };
 
-export function MframapaLogo({ size = 'md' }: MframapaLogoProps) {
+export function MframapaLogo({ size = 'md', markOnly = false }: MframapaLogoProps) {
   const s = SIZES[size];
   const { isDark } = useTheme();
   const colors = getColors(isDark);
@@ -22,12 +23,14 @@ export function MframapaLogo({ size = 'md' }: MframapaLogoProps) {
   return (
     <View style={styles.row}>
       <CloudIcon size={s.icon} color={colors.accent} />
-      <View style={[styles.textRow, { gap: s.gap / 2 }]}>
-        <Text style={[styles.name, { fontSize: s.text }]}>
-          <Text style={[styles.mLetter, { color: colors.accent }]}>M</Text>
-          <Text style={[styles.rest, { color: colors.text }]}>framapa</Text>
-        </Text>
-      </View>
+      {markOnly ? null : (
+        <View style={[styles.textRow, { gap: s.gap / 2 }]}>
+          <Text style={[styles.name, { fontSize: s.text }]}>
+            <Text style={[styles.mLetter, { color: colors.accent }]}>M</Text>
+            <Text style={[styles.rest, { color: colors.text }]}>framapa</Text>
+          </Text>
+        </View>
+      )}
     </View>
   );
 }

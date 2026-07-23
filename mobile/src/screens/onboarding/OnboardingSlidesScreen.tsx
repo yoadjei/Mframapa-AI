@@ -43,7 +43,7 @@ export function OnboardingSlidesScreen({ onDone }: Props) {
   return (
     <View style={[styles.root, {paddingTop: insets.top, paddingBottom: insets.bottom }]}>
       <View style={styles.header}>
-        <MframapaLogo size="sm" />
+        <MframapaLogo size="sm" markOnly />
       </View>
 
       <ScrollView
