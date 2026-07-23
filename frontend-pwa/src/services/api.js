@@ -150,3 +150,14 @@ export async function deleteAccount() {
     throw new Error(normalizeError(error, "Could not delete your account."));
   }
 }
+
+/** send a user report. category is one of bug, feature, data, general. */
+export async function sendFeedback({ category, message, email }) {
+  try {
+    await httpClient.post("/api/v1/feedback", {
+      category, message, email: email || null, platform: "web",
+    });
+  } catch (error) {
+    throw new Error(normalizeError(error, "Could not send your feedback."));
+  }
+}

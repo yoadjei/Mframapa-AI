@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
-  TextInput, KeyboardAvoidingView, Platform,
+  TextInput, KeyboardAvoidingView, Platform, Alert,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -9,7 +9,11 @@ import { useNavigation } from '@react-navigation/native';
 import { Colors } from '../theme/colors';
 import { getColors } from '../theme';
 import { useTheme } from '../hooks/useTheme';
+import { sendFeedback } from '../services/api';
 import { useTranslation } from '../hooks/useTranslation';
+
+// the slugs the api stores, in the same order as the labels below
+const CATEGORY_SLUGS = ['bug', 'feature', 'data', 'general'];
 
 const CATEGORY_KEYS = [
   'screen.feedback.cat_bug',
@@ -29,10 +33,27 @@ export function FeedbackFormScreen() {
   const [submitting, setSubmitting] = useState(false);
 
   async function handleSubmit() {
+    if (submitting) return;
+    if (!message.trim()) {
+      Alert.alert(t('screen.feedback.message_required'));
+      return;
+    }
     setSubmitting(true);
-    await new Promise((r) => setTimeout(r, 800));
-    setSubmitting(false);
-    navigation.goBack();
+    try {
+      // really send it; this used to wait 800ms and drop the message.
+      await sendFeedback({
+        category: CATEGORY_SLUGS[categoryIdx] ?? 'general',
+        message,
+        email: email || null,
+      });
+      // confirm before leaving, so it is clear the report actually went
+      Alert.alert(t('screen.feedback.thanks_title'), t('screen.feedback.thanks_body'));
+      navigation.goBack();
+    } catch {
+      Alert.alert(t('screen.feedback.failed'));
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   const category = t(CATEGORY_KEYS[categoryIdx]);

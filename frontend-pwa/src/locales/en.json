@@ -730,5 +730,6 @@
   "landing.preview.confidence": "90% likely between {{low}} and {{high}} µg/m³. We show our uncertainty, not a false exact number.",
   "auth.error.email_invalid": "That does not look like an email address.",
   "auth.error.password_weak": "That password is too easy to guess.",
-  "auth.error.generic": "Something went wrong. Please try again."
+  "auth.error.generic": "Something went wrong. Please try again.",
+  "screen.feedback.message_required": "Please tell us what happened."
 }

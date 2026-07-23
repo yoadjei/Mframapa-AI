@@ -196,6 +196,15 @@ export async function getDailyFact(language = 'en', languageName = ''): Promise<
   }
 }
 
+/** send a user report. category is one of bug, feature, data, general. */
+export async function sendFeedback(body: {
+  category: string;
+  message: string;
+  email?: string | null;
+}): Promise<void> {
+  await client.post('/api/v1/feedback', { ...body, platform: 'mobile' });
+}
+
 /** permanently delete the signed-in account. irreversible. */
 export async function deleteAccount(): Promise<void> {
   await client.delete('/api/v1/account');

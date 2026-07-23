@@ -3,6 +3,10 @@ import { ArrowLeft, Camera, CheckCircle2 } from "lucide-react";
 import { getColors, Colors } from "../../utils/colors.js";
 import { useNavigation } from "../../hooks/useNavigation.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
+import { sendFeedback } from "../../services/api.js";
+
+// the slugs the api stores, in the same order as the labels below
+const CATEGORY_SLUGS = ["bug", "feature", "data", "general"];
 
 const CATEGORY_KEYS = [
   "screen.feedback.cat_bug",
@@ -21,13 +25,27 @@ export function FeedbackFormScreen({ params, isOnline, isDark }) {
   const [email, setEmail]             = useState("");
   const [submitting, setSubmitting]   = useState(false);
   const [submitted, setSubmitted]     = useState(false);
+  const [error, setError]             = useState("");
 
   async function handleSubmit() {
     if (submitting) return;
+    if (!message.trim()) { setError(t("screen.feedback.message_required")); return; }
     setSubmitting(true);
-    await new Promise((r) => setTimeout(r, 800));
-    setSubmitting(false);
-    setSubmitted(true);
+    setError("");
+    try {
+      // really send it. this form used to wait 800ms and say thanks while
+      // dropping the message, so nobody who reported anything was heard.
+      await sendFeedback({
+        category: CATEGORY_SLUGS[categoryIdx] ?? "general",
+        message,
+        email,
+      });
+      setSubmitted(true);
+    } catch (err) {
+      setError(err?.message ?? t("auth.error.generic"));
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   if (submitted) {
@@ -238,6 +256,14 @@ export function FeedbackFormScreen({ params, isOnline, isDark }) {
             />
           </div>
         </div>
+
+        {error && (
+          <p role="alert" style={{ fontSize: "0.8125rem", color: "#E53935",
+            backgroundColor: "rgba(229,57,53,0.08)", borderRadius: 10,
+            padding: "10px 14px", marginBottom: 12 }}>
+            {error}
+          </p>
+        )}
 
         {/* Submit button */}
         <button
