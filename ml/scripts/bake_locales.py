@@ -52,6 +52,14 @@ LANGUAGE_NAMES = {
 }
 
 
+def save(path: pathlib.Path, current: dict, english: dict) -> dict:
+    """write the bundle, ordered like english so diffs stay readable."""
+    ordered = {k: current[k] for k in english if k in current}
+    ordered.update({k: v for k, v in current.items() if k not in english})
+    path.write_text(json.dumps(ordered, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return ordered
+
+
 def looks_untranslated(value: str, english: str) -> bool:
     """the model sometimes echoes the source; never store that as a translation."""
     return value.strip().casefold() == english.strip().casefold()
@@ -105,7 +113,14 @@ def main() -> int:
                     )
                     break
                 except Exception as exc:
-                    throttled = "429" in str(exc)
+                    message = str(exc)
+                    if "quota" in message.lower() and "free_tier" in message:
+                        print("\n\nDaily free-tier quota is exhausted. Progress is saved;"
+                              "\nrerun the same command once it resets and it continues"
+                              "\nfrom here.", flush=True)
+                        save(path, current, english)
+                        return 2
+                    throttled = "429" in message
                     if attempt == MAX_RETRIES - 1:
                         print(f"\n  chunk gave up: {str(exc)[:120]}", flush=True)
                         break
@@ -121,14 +136,15 @@ def main() -> int:
                 if value and not looks_untranslated(value, english[k]):
                     current[k] = value
                     added += 1
+
+            # checkpoint after every chunk. quota runs out mid-language often
+            # enough that losing a language's worth of paid-for calls is not
+            # acceptable; rerunning then picks up exactly where this stopped.
+            save(path, current, english)
             print(".", end="", flush=True)
             time.sleep(PAUSE)
 
-        # keep the file ordered like english so diffs stay readable
-        ordered = {k: current[k] for k in english if k in current}
-        ordered.update({k: v for k, v in current.items() if k not in english})
-        path.write_text(json.dumps(ordered, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-
+        ordered = save(path, current, english)
         coverage = 100 * len([k for k in english if k in ordered]) / len(english)
         grand_total += added
         print(f" +{added} -> {coverage:.1f}%", flush=True)
