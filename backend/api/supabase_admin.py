@@ -100,3 +100,28 @@ def set_user_tier(user_id: str, tier: str) -> bool:
         return False
     logger.info("set tier=%s for user %s", tier, user_id)
     return True
+
+
+def delete_user(user_id: str) -> bool:
+    """permanently delete a supabase auth user.
+
+    irreversible, and the only way to honour a delete-account request: the row
+    holds the email, the home city and anything else in user_metadata. returns
+    False rather than raising so the caller can report a real failure instead of
+    telling someone their account is gone when it is not.
+    """
+    headers = _admin_headers()
+    base = _base()
+    if not headers or not base:
+        logger.error("account deletion requested but supabase admin is not configured")
+        return False
+    try:
+        resp = requests.delete(f"{base}/users/{user_id}", headers=headers, timeout=_TIMEOUT)
+    except requests.RequestException as exc:
+        logger.error("account deletion failed for %s: %s", user_id, exc)
+        return False
+    if resp.status_code in (200, 204):
+        logger.info("deleted supabase user %s", user_id)
+        return True
+    logger.error("account deletion rejected for %s: %s %s", user_id, resp.status_code, resp.text[:200])
+    return False

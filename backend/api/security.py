@@ -236,6 +236,21 @@ def authenticate_or_anonymous(
     return tier
 
 
+def current_user_id(
+    bearer: Optional[HTTPAuthorizationCredentials] = Security(_bearer_scheme),
+) -> Optional[str]:
+    """the signed-in user's id, or None for anonymous/api-key callers.
+
+    authenticate_or_anonymous only yields a tier, which is all rate limiting
+    needs. anything acting *on* a specific account (deleting it) needs to know
+    exactly whose account it is, and must never fall back to a guess.
+    """
+    if not (bearer and bearer.credentials):
+        return None
+    claims = verify_supabase_jwt(bearer.credentials)
+    return claims.get("user_id") if claims else None
+
+
 def current_tier(
     bearer: Optional[HTTPAuthorizationCredentials] = Security(_bearer_scheme),
     header_key: str = Security(_api_key_header),

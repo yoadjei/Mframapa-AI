@@ -12,7 +12,8 @@ from backend.api.aqi import aqi_category_from_pm25
 from backend.api.cities import MAJOR_CITIES, PLAYBACK_CITIES
 from backend.api.facts import fact_for
 from backend.api.insights import DRY, season_for, variants
-from backend.api.security import _client_ip, authenticate_or_anonymous, require_institutional
+from backend.api import supabase_admin
+from backend.api.security import _client_ip, authenticate_or_anonymous, current_user_id, require_institutional
 from backend.cache.redis_cache import RedisCache
 from backend.services import gemini_client
 from backend.ml.inference import rectify_prediction, select_bundle
@@ -551,6 +552,29 @@ def build_map_summary(request, pipeline: FeaturePipeline) -> Dict[str, Any]:
     if cities:
         cache.set(cache_key, payload, _MAP_SUMMARY_TTL)
     return payload
+
+
+@router.delete("/account")
+def delete_account(user_id: Optional[str] = Depends(current_user_id)) -> Dict[str, str]:
+    """permanently delete the caller's account.
+
+    apple and google both require an in-app deletion path, and both clients
+    previously faked it. this removes the supabase user, which is where the
+    email, the chosen home city and the tier live. push tokens are keyed by
+    device and location rather than by user, so they expire on their own.
+    """
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Sign in to delete your account")
+
+    try:
+        ok = supabase_admin.delete_user(user_id)
+    except Exception as exc:
+        logger.exception("account deletion failed")
+        raise HTTPException(status_code=502, detail="Could not delete the account") from exc
+
+    if not ok:
+        raise HTTPException(status_code=502, detail="Could not delete the account")
+    return {"status": "deleted"}
 
 
 @router.get("/daily-fact")
