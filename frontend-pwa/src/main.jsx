@@ -6,6 +6,10 @@ import { AppStateProvider } from "./state/appState.jsx";
 import { I18nProvider } from "./i18n/I18nProvider.jsx";
 import { registerServiceWorker } from "./pwa/registerServiceWorker.js";
 import "./index.css";
+import { initSentry } from "./services/sentry.js";
+
+// error tracking first, so anything below is captured
+initSentry();
 
 // a rejected promise nobody handled used to disappear silently: nothing in the
 // console for the user to report and nothing sent to sentry. this is how most

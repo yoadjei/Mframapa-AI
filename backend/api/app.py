@@ -36,6 +36,8 @@ try:
             dsn=_dsn,
             integrations=[FastApiIntegration(), LoggingIntegration()],
             traces_sample_rate=0.2,
+            # privacy-first: do not attach user ip or request bodies to events
+            send_default_pii=False,
             environment=os.getenv("ENVIRONMENT", "production"),
         )
 except ImportError:
