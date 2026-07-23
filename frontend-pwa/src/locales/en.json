@@ -688,7 +688,7 @@
   "auth.signup.sign_in": "Sign in",
   "auth.signup.pending": "Account created. Check your email to confirm, then sign in.",
   "auth.error.fill_required": "Please enter your email and a password.",
-  "auth.error.password_short": "Password must be at least 6 characters.",
+  "auth.error.password_short": "Use at least 8 characters.",
   "auth.error.password_mismatch": "The passwords do not match.",
   "auth.error.city_unknown": "We do not know that city yet. Pick one from the list.",
   "auth.error.signup_failed": "Could not create your account. Please try again.",
@@ -727,5 +727,8 @@
   "landing.preview.label": "Live now",
   "landing.preview.aria": "A live air quality reading",
   "landing.preview.trend": "Last 7 days",
-  "landing.preview.confidence": "90% likely between {{low}} and {{high}} µg/m³. We show our uncertainty, not a false exact number."
+  "landing.preview.confidence": "90% likely between {{low}} and {{high}} µg/m³. We show our uncertainty, not a false exact number.",
+  "auth.error.email_invalid": "That does not look like an email address.",
+  "auth.error.password_weak": "That password is too easy to guess.",
+  "auth.error.generic": "Something went wrong. Please try again."
 }

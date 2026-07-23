@@ -10,9 +10,10 @@
 import { useId, useMemo, useState } from "react";
 import { ChevronLeft, Mail, Lock, MapPin, User, Eye, EyeOff } from "lucide-react";
 import { useAppState } from "../../state/appState.jsx";
-import { login, signup } from "../../services/authService.js";
+import { login, signup, resetPassword } from "../../services/authService.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { africanCities } from "../../data/africanCities.js";
+import { isValidEmail, passwordProblem } from "../../utils/validators.js";
 import { normalizeError } from "../../services/httpClient.js";
 import { MframapaLogo } from "../../components/brand/MframapaLogo.jsx";
 import { PrimaryButton } from "../../components/ui/PrimaryButton.jsx";
@@ -109,13 +110,14 @@ function LoginView({ onAuth, onSignUp, onForgot, c, isDark }) {
   async function handleSubmit(e) {
     e.preventDefault();
     setError("");
-    if (!email.trim() || !password) { setError("Please fill in all required fields."); return; }
+    if (!email.trim() || !password) { setError(t("auth.error.fill_required")); return; }
+    if (!isValidEmail(email)) { setError(t("auth.error.email_invalid")); return; }
     setLoading(true);
     try {
       const result = await login({ email: email.trim(), password });
       onAuth({ ...result, tier: "free" });
     } catch (err) {
-      setError(normalizeError(err, "Could not sign in. Check your details and try again."));
+      setError(normalizeError(err, t("auth.error.login_failed")));
     } finally {
       setLoading(false);
     }
@@ -218,7 +220,9 @@ function SignUpView({ onAuth, onBack, c, isDark }) {
     e.preventDefault();
     setError(""); setNotice("");
     if (!email.trim() || !password) { setError(t("auth.error.fill_required")); return; }
-    if (password.length < 6) { setError(t("auth.error.password_short")); return; }
+    if (!isValidEmail(email)) { setError(t("auth.error.email_invalid")); return; }
+    const pwProblem = passwordProblem(password);
+    if (pwProblem) { setError(t(pwProblem)); return; }
     if (password !== confirmPassword) { setError(t("auth.error.password_mismatch")); return; }
     const homeCity = cityQuery.trim() ? resolveCity() : null;
     if (cityQuery.trim() && !homeCity) { setError(t("auth.error.city_unknown")); return; }
@@ -327,13 +331,23 @@ function ForgotView({ onBack , c, isDark }) {
   const [email, setEmail]   = useState("");
   const [loading, setLoading] = useState(false);
   const [sent, setSent]     = useState(false);
+  const [error, setError]   = useState("");
 
   async function handleSubmit(e) {
     e.preventDefault();
+    setError("");
+    if (!isValidEmail(email)) { setError(t("auth.error.email_invalid")); return; }
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 800));
-    setLoading(false);
-    setSent(true);
+    try {
+      await resetPassword(email.trim());
+      // always report the same thing, so this cannot be used to discover which
+      // addresses have accounts.
+      setSent(true);
+    } catch (err) {
+      setError(normalizeError(err, t("auth.error.generic")));
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -384,6 +398,12 @@ function ForgotView({ onBack , c, isDark }) {
         </div>
       ) : (
         <form onSubmit={handleSubmit}>
+          {error && (
+            <p style={{ fontSize: "0.8125rem", color: "#E53935", backgroundColor: "rgba(229,57,53,0.08)",
+              borderRadius: 10, padding: "10px 14px", marginBottom: 12, marginTop: 0 }}>
+              {error}
+            </p>
+          )}
           <div style={{ marginBottom: 16 }}>
             <Field c={c} label={t("auth.login.email")} placeholder="Email" value={email} onChange={setEmail}
               type="email" icon={Mail} autoComplete="email" />
