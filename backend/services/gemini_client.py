@@ -161,26 +161,59 @@ def _translate_chunk(
 ) -> Dict[str, str]:
     target_name = language_display_name(target_language, target_language_name)
 
-    prompt = f"""You are a native {target_name} speaker localizing an air-quality health app used across Africa.
-Rewrite each English UI string in {target_name} ({target_language}) the way a fluent local speaker would actually say it.
+    prompt = f"""You are a professional localiser and a native speaker of {target_name}.
+You are translating the interface of Mframapa, an air quality app used across Africa by
+ordinary people, many on small phones and many reading in their second or third language.
 
-Translate meaning, not words:
-- Sound natural and human, never like a literal machine translation. If a word-for-word version would feel stiff or foreign, rephrase it the way a local person would.
-- Use everyday, respectful register. Keep it short and clear for a small mobile screen.
-- Health guidance must stay accurate and actionable — a caregiver should immediately understand what to do.
-- Adapt phrasing to local usage where it helps comprehension, but do not invent facts or change numbers.
+TASK
+Translate each value in the input JSON into {target_name} ({target_language}).
+Return the same keys, with translated values.
 
-Keep exactly as-is (do not translate):
-- Placeholders like {{{{name}}}}, {{{{pm25}}}}, {{{{category}}}}.
+MEANING FIRST
+- Translate what the sentence *does*, not word by word. If a literal rendering would read
+  stiff, foreign or comic, rewrite it as a fluent speaker would actually say it.
+- Everyday, respectful register. Not academic, not slangy, not corporate.
+- Keep it short. These are buttons, labels and one line cards on a small screen. If the
+  natural translation is much longer than the English, find a shorter way to say it.
+- Health guidance must stay accurate and actionable. A caregiver has to know immediately
+  what to do. Never soften a warning, never strengthen one, never invent a detail.
+
+CAPITALISATION
+- Follow the conventions of {target_name} itself, not English habits.
+- English UI often title cases ("Saved Locations"). Most languages do not. Use the casing a
+  native reader expects: usually sentence case, capital on the first word only.
+- If the language has no letter case at all, ignore casing entirely.
+- Preserve capitalisation that carries meaning: proper nouns, place names, acronyms.
+- If the English is ALL CAPS for emphasis, do not copy that. Use normal casing; the app
+  applies its own styling.
+- Keep the first letter capitalised where the language would, even if the English key is
+  lowercase.
+
+PUNCTUATION AND NUMBERS
+- Use the punctuation conventions of {target_name}, including its own quotation marks and
+  spacing rules where they differ from English.
+- Never use em dashes or en dashes. Use a comma or a full stop.
+- Keep numerals as digits. Do not convert 17 into a word.
+- Keep the decimal and thousands convention the language actually uses.
+
+NEVER TRANSLATE
+- Placeholders exactly as written: {{{{name}}}}, {{{{pm25}}}}, {{{{category}}}}, {{{{city}}}},
+  {{{{count}}}}, {{{{low}}}}, {{{{high}}}}. Keep the braces, keep the spelling, keep them all.
 - The product name "Mframapa".
-- Technical tokens: PM2.5, PM10, AQI, NO2, SO2, CO, µg/m³.
+- Units and technical tokens: PM2.5, PM10, AQI, NO2, SO2, CO, µg/m³.
 
-Formatting:
-- Return ONLY valid JSON with the exact same keys as the input. Do not add, remove, or reorder keys.
-- Use simple punctuation. Do not use em dashes or en dashes; use a full stop or comma instead.
-- Give ONLY the translated text. Never keep the English wording alongside it, and never add a
-  gloss, transliteration or explanation in brackets. "Lite mode (mapu achepetsedwa)" is wrong;
-  "mapu achepetsedwa" is right.
+FORBIDDEN
+- Do not keep the English alongside the translation.
+- Do not add a gloss, transliteration, explanation or note in brackets.
+  "Lite mode (mapu achepetsedwa)" is wrong. "mapu achepetsedwa" is right.
+- Do not add quotation marks that were not in the English.
+- Do not add or drop keys, and do not reorder them.
+- Do not return commentary. Only the JSON.
+- If a term genuinely has no equivalent, use the widely understood loanword rather than
+  inventing a new one, and do not mark it in any way.
+
+OUTPUT
+Return only valid JSON. Same keys as the input, translated values, nothing else.
 
 Input JSON:
 {json.dumps(strings, ensure_ascii=False, indent=2)}
