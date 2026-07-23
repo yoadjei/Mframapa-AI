@@ -13,6 +13,7 @@ from backend.api.cities import MAJOR_CITIES, PLAYBACK_CITIES
 from backend.api.facts import fact_for
 from backend.api.insights import DRY, season_for, variants
 from backend.api import supabase_admin
+from backend.feedback.store import FeedbackStore
 from backend.api.security import _client_ip, authenticate_or_anonymous, current_user_id, require_institutional
 from backend.cache.redis_cache import RedisCache
 from backend.services import gemini_client
@@ -575,6 +576,50 @@ def delete_account(user_id: Optional[str] = Depends(current_user_id)) -> Dict[st
     if not ok:
         raise HTTPException(status_code=502, detail="Could not delete the account")
     return {"status": "deleted"}
+
+
+class FeedbackBody(BaseModel):
+    category: str = "general"
+    message: str = Field(..., min_length=1, max_length=20000)
+    email: Optional[str] = None
+    platform: Optional[str] = None
+
+
+@lru_cache(maxsize=1)
+def _feedback_store() -> FeedbackStore:
+    return FeedbackStore()
+
+
+def get_feedback_store() -> FeedbackStore:
+    return _feedback_store()
+
+
+@router.post("/feedback")
+def submit_feedback(
+    body: FeedbackBody,
+    store: FeedbackStore = Depends(get_feedback_store),
+) -> Dict[str, str]:
+    """store a user report.
+
+    public on purpose: the people most likely to hit a bug have no account, and
+    making them sign in to tell us about it would lose the report. the form used
+    to pretend to submit and then drop the message.
+    """
+    if not body.message.strip():
+        raise HTTPException(status_code=422, detail="A message is required")
+    try:
+        store.add(
+            category=body.category,
+            message=body.message,
+            email=body.email,
+            platform=body.platform,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    except Exception as exc:
+        logger.exception("could not store feedback")
+        raise HTTPException(status_code=502, detail="Could not send your feedback") from exc
+    return {"status": "received"}
 
 
 @router.get("/daily-fact")
