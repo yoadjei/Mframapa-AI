@@ -13,7 +13,10 @@ import { saveCities } from './src/services/offline';
 import { requestPermissions, getAndRegisterPushToken } from './src/services/notifications';
 import { syncLocaleInBackground } from './src/services/translation';
 import { trackAppOpen } from './src/services/analytics';
+import { initSentry } from './src/services/sentry';
 import { AppErrorBoundary } from './src/components/AppErrorBoundary';
+
+initSentry();   // crash reporting before anything renders
 
 export default function App() {
   const { isDark } = useTheme();
