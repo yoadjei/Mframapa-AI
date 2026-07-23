@@ -24,6 +24,9 @@ dist-ssr
 *.sw?
 
 .env
+
+# transient translation working dir (export_missing.py -> merge_translations.py)
+src/locales/_todo/
 # Android TWA build
 android/
 *.keystore
