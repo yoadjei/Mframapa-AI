@@ -36,17 +36,24 @@ function useT() {
 
 /* ─────────────────────────────────────────────────────────── Splash phase ── */
 function SplashPhase({ onDone }) {
-  const [visible, setVisible] = useState(false);
+  // three beats: the mark fades in alone, the wordmark then wipes in from the
+  // right, and the whole lockup settles before we move on. reduced motion gets
+  // the end state immediately rather than a sequence it did not ask for.
+  const [stage, setStage] = useState(0);   // 0 hidden, 1 mark, 2 wordmark
 
   useEffect(() => {
-    // Fade in
-    const fadeIn = setTimeout(() => setVisible(true), 60);
-    // Auto-advance after 1.4 s
-    const advance = setTimeout(() => onDone(), 1460);
-    return () => {
-      clearTimeout(fadeIn);
-      clearTimeout(advance);
-    };
+    const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+    if (reduce) {
+      setStage(2);
+      const advance = setTimeout(onDone, 900);
+      return () => clearTimeout(advance);
+    }
+    const timers = [
+      setTimeout(() => setStage(1), 60),     // mark fades in
+      setTimeout(() => setStage(2), 1100),   // wordmark wipes in
+      setTimeout(onDone, 3000),              // hold, then continue
+    ];
+    return () => timers.forEach(clearTimeout);
   }, [onDone]);
 
   return (
@@ -58,13 +65,35 @@ function SplashPhase({ onDone }) {
         paddingBottom: "env(safe-area-inset-bottom)",
       }}
     >
-      <div
-        style={{
-          opacity: visible ? 1 : 0,
-          transition: "opacity 0.6s ease",
-        }}
-      >
-        <MframapaLogo size="lg" markOnly />
+      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <div
+          style={{
+            opacity: stage >= 1 ? 1 : 0,
+            transform: stage >= 1 ? "scale(1)" : "scale(0.88)",
+            transition: "opacity 600ms var(--mf-ease-out), transform 600ms var(--mf-ease-out)",
+          }}
+        >
+          <MframapaLogo size="lg" markOnly />
+        </div>
+
+        {/* the wordmark reveals by unclipping from the right, so it reads as one
+            mark growing into the full lockup rather than two separate fades. */}
+        <div
+          aria-hidden={stage < 2}
+          style={{
+            overflow: "hidden",
+            maxWidth: stage >= 2 ? 220 : 0,
+            opacity: stage >= 2 ? 1 : 0,
+            transform: stage >= 2 ? "translateX(0)" : "translateX(-12px)",
+            transition:
+              "max-width 700ms var(--mf-ease-out), opacity 500ms ease 120ms, transform 700ms var(--mf-ease-out)",
+          }}
+        >
+          <span style={{ fontSize: "1.625rem", fontWeight: 700, letterSpacing: "0.2px", whiteSpace: "nowrap" }}>
+            <span style={{ color: BRAND_GREEN, fontWeight: 800 }}>M</span>
+            <span style={{ color: "#FFFFFF" }}>framapa</span>
+          </span>
+        </div>
       </div>
     </div>
   );
