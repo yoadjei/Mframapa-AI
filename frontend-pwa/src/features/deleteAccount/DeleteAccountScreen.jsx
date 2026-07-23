@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { deleteAccount } from "../../services/api.js";
 import { AlertTriangle, ArrowLeft } from "lucide-react";
 import { getColors, Colors } from "../../utils/colors.js";
 import { useNavigation } from "../../hooks/useNavigation.js";
@@ -14,19 +15,28 @@ export function DeleteAccountScreen({ params, isOnline, isDark }) {
   const [confirm, setConfirm] = useState("");
   const [deleting, setDeleting] = useState(false);
   const [done, setDone] = useState(false);
+  const [error, setError] = useState("");
 
   const canDelete = confirm === "DELETE";
 
   async function handleDelete() {
     if (!canDelete || deleting) return;
     setDeleting(true);
-    await new Promise((r) => setTimeout(r, 1000));
-    setDeleting(false);
-    setDone(true);
-    setTimeout(() => {
-      dispatch({ type: "LOGOUT" });
-      goBack();
-    }, 1500);
+    setError("");
+    try {
+      // really delete it. this screen used to wait a second and claim success
+      // while the account stayed exactly where it was.
+      await deleteAccount();
+      setDone(true);
+      setTimeout(() => {
+        dispatch({ type: "LOGOUT" });
+        goBack();
+      }, 1500);
+    } catch (err) {
+      setError(err?.message ?? t("auth.error.generic"));
+    } finally {
+      setDeleting(false);
+    }
   }
 
   if (done) {
@@ -184,6 +194,14 @@ export function DeleteAccountScreen({ params, isOnline, isDark }) {
             }}
           />
         </div>
+
+        {error && (
+          <p role="alert" style={{ fontSize: "0.8125rem", color: "#E53935",
+            backgroundColor: "rgba(229,57,53,0.08)", borderRadius: 10,
+            padding: "10px 14px", marginBottom: 12 }}>
+            {error}
+          </p>
+        )}
 
         {/* Delete button */}
         <button

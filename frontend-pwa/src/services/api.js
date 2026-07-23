@@ -141,3 +141,12 @@ export async function getDailyFact(language = "en", languageName = "") {
     return "";                       // a missing fact should never block the screen
   }
 }
+
+/** permanently delete the signed-in account. irreversible. */
+export async function deleteAccount() {
+  try {
+    await httpClient.delete("/api/v1/account");
+  } catch (error) {
+    throw new Error(normalizeError(error, "Could not delete your account."));
+  }
+}

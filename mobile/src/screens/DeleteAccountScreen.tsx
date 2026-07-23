@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useTheme } from '../hooks/useTheme';
 import { getColors, Colors } from '../theme';
 import { InputField } from '../components/ui/InputField';
+import { deleteAccount } from '../services/api';
+import { useStore } from '../store/useStore';
 import { useTranslation } from '../hooks/useTranslation';
 
 export function DeleteAccountScreen() {
@@ -16,7 +18,25 @@ export function DeleteAccountScreen() {
   const [confirm, setConfirm] = useState('');
   const { t } = useTranslation();
 
+  const signOut = useStore((st) => st.signOut);
   const canDelete = confirm === 'DELETE';
+  const [deleting, setDeleting] = useState(false);
+
+  // the button had no handler at all, so nothing happened when it was pressed.
+  async function handleDelete() {
+    if (!canDelete || deleting) return;
+    setDeleting(true);
+    try {
+      await deleteAccount();
+      await signOut();
+      Alert.alert(t('delete.done_title'), t('delete.done_body'));
+      navigation.goBack();
+    } catch {
+      Alert.alert(t('delete.failed'));
+    } finally {
+      setDeleting(false);
+    }
+  }
 
   return (
     <View style={[styles.root]}>
@@ -61,10 +81,13 @@ export function DeleteAccountScreen() {
         />
 
         <TouchableOpacity
-          style={[styles.deleteBtn, { opacity: canDelete ? 1 : 0.5 }]}
-          disabled={!canDelete}
+          style={[styles.deleteBtn, { opacity: canDelete && !deleting ? 1 : 0.5 }]}
+          disabled={!canDelete || deleting}
+          onPress={handleDelete}
         >
-          <Text style={styles.deleteBtnText}>{t('delete.confirm_button')}</Text>
+          <Text style={styles.deleteBtnText}>
+            {deleting ? t('common.loading') : t('delete.confirm_button')}
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.cancelBtn}>

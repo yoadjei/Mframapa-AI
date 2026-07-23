@@ -196,6 +196,11 @@ export async function getDailyFact(language = 'en', languageName = ''): Promise<
   }
 }
 
+/** permanently delete the signed-in account. irreversible. */
+export async function deleteAccount(): Promise<void> {
+  await client.delete('/api/v1/account');
+}
+
 export async function generateInsight(body: {
   pm25: number;
   aqi_category: string;
