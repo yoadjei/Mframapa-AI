@@ -125,7 +125,7 @@ function LoginView({ onAuth, onSignUp, onForgot, c, isDark }) {
     <AuthScroll>
       {/* logoWrap — alignItems center, marginBottom 36 */}
       <div style={{ display: "flex", justifyContent: "center", marginBottom: 36 }}>
-        <MframapaLogo size="lg" isDark={isDark} />
+        <MframapaLogo size="lg" isDark={isDark} markOnly />
       </div>
 
       {/* heading */}
@@ -249,7 +249,7 @@ function SignUpView({ onAuth, onBack, c, isDark }) {
       </div>
 
       <div style={{ display: "flex", justifyContent: "center", marginBottom: 28 }}>
-        <MframapaLogo size="lg" isDark={isDark} />
+        <MframapaLogo size="lg" isDark={isDark} markOnly />
       </div>
 
       <p style={{ fontSize: "1.75rem", fontWeight: 800, color: c.TEXT, marginBottom: 6, marginTop: 0 }}>

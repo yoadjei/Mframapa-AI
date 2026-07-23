@@ -64,7 +64,7 @@ function SplashPhase({ onDone }) {
           transition: "opacity 0.6s ease",
         }}
       >
-        <MframapaLogo size="lg" />
+        <MframapaLogo size="lg" markOnly />
       </div>
     </div>
   );
@@ -257,7 +257,7 @@ function PermissionsPhase({ onDone }) {
     >
       {/* Logo */}
       <div className="flex shrink-0 items-center justify-center pt-4 pb-2">
-        <MframapaLogo size="md" />
+        <MframapaLogo size="md" markOnly />
       </div>
 
       {/* Center content */}
