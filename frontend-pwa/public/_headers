@@ -7,6 +7,15 @@
 /manifest.webmanifest
   Cache-Control: no-cache
 
+# the html entry references the hashed bundle by name, so it must always be
+# revalidated: a cached index.html would keep pointing at an old build even
+# after a new one is deployed. this is what makes updates lag for returning
+# users. the assets it points to are immutable and cached forever below.
+/
+  Cache-Control: no-cache
+/index.html
+  Cache-Control: no-cache
+
 # policy pages change without a new filename, so they must be revalidated
 # rather than served from an edge or browser cache.
 /version.json
