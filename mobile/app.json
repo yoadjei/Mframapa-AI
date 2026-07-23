@@ -18,7 +18,6 @@
         "backgroundColor": "#06080d"
       },
       "package": "ai.mframapa.app",
-      "minSdkVersion": 21,
       "permissions": [
         "ACCESS_FINE_LOCATION",
         "ACCESS_COARSE_LOCATION",

@@ -55,7 +55,7 @@ function getLanIPv4() {
  * Physical iPhones cannot reach the Mac via 127.0.0.1 — rewrite to LAN IP at config time.
  */
 function resolveApiUrl() {
-  let url = process.env.EXPO_PUBLIC_API_URL || 'https://mframapa.ai';
+  let url = process.env.EXPO_PUBLIC_API_URL || 'https://api.mframapa.live';
   try {
     const parsed = new URL(url);
     if (parsed.hostname === '127.0.0.1' || parsed.hostname === 'localhost') {
