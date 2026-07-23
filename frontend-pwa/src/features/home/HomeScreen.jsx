@@ -107,8 +107,26 @@ export function HomeScreen({ isOnline }) {
     });
   }
 
+  // a neutral starting city so the home screen always shows a real reading even
+  // when we have no location. the user can search their own city at any time.
+  const FALLBACK_CITY = { name: "Accra", lat: 5.6, lon: -0.19 };
+  async function loadFallbackCity() {
+    try {
+      setLoading(true);
+      const r = await fetchPredictionAtCoords(
+        FALLBACK_CITY.lat, FALLBACK_CITY.lon, state.preferences.language ?? "en"
+      );
+      setPrediction(r);
+      updateSummary(r);
+    } catch {
+      /* offline or backend down — leave the empty state */
+    } finally {
+      setLoading(false);
+    }
+  }
+
   function handleLocate() {
-    if (!navigator.geolocation) { setError(t("error.geolocation_unsupported")); return; }
+    if (!navigator.geolocation) { setError(t("error.geolocation_unsupported")); loadFallbackCity(); return; }
     setLocating(true);
     setError(null);
     navigator.geolocation.getCurrentPosition(
@@ -125,12 +143,19 @@ export function HomeScreen({ isOnline }) {
           updateSummary(r);
         } catch {
           setError(t("error.generic"));
+          if (!prediction) loadFallbackCity();
         } finally {
           setLocating(false);
           setLoading(false);
         }
       },
-      () => { setLocating(false); setError(t("pwa.core.location_permission")); },
+      () => {
+        setLocating(false);
+        setError(t("pwa.core.location_permission"));
+        // location refused or unavailable: show a starting city so home is not
+        // blank, and let the banner invite the user to pick their own.
+        if (!prediction) loadFallbackCity();
+      },
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 30000 },
     );
   }
