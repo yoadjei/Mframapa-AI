@@ -43,8 +43,28 @@ export interface AuthResult {
 
 function formatAuthError(err: AuthError | null, fallback: string): string {
   if (!err) return fallback;
-  // Supabase error messages are user-readable enough for the auth screens.
+  const raw = (err.message || '').toLowerCase();
+  if (!raw || raw.includes('network') || raw.includes('failed to fetch'))
+    return 'You appear to be offline. Check your connection and try again.';
+  if (raw.includes('already registered') || raw.includes('already exists') || raw.includes('user already'))
+    return 'An account already uses this email. Try signing in, or reset your password.';
+  if (raw.includes('invalid login') || raw.includes('invalid credentials'))
+    return 'That email and password do not match. Check them and try again.';
+  if (raw.includes('not confirmed'))
+    return 'Please confirm your email first. Check your inbox for the link.';
+  if (raw.includes('rate limit') || raw.includes('too many') || raw.includes('over_email_send'))
+    return 'Too many attempts. Please wait a minute and try again.';
+  if (raw.includes('password') && (raw.includes('least') || raw.includes('short') || raw.includes('weak')))
+    return 'Use at least 8 characters.';
+  if (raw.includes('unable to validate email') || raw.includes('invalid email'))
+    return 'That does not look like an email address.';
   return err.message || fallback;
+}
+
+/** supabase hides a duplicate signup as a fake success with empty identities. */
+function isExistingEmail(data: { user?: { identities?: unknown[] } | null }): boolean {
+  const ids = data?.user?.identities;
+  return Array.isArray(ids) && ids.length === 0;
 }
 
 export async function signInWithPassword(
@@ -81,6 +101,9 @@ export async function signUpWithPassword(
     },
   });
   if (error) return { ok: false, error: formatAuthError(error, 'Sign up failed') };
+  if (isExistingEmail(data)) {
+    return { ok: false, error: 'An account already uses this email. Try signing in, or reset your password.' };
+  }
   return { ok: true, session: data.session };
 }
 

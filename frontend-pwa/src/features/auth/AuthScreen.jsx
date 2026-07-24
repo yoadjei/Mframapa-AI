@@ -117,7 +117,7 @@ function LoginView({ onAuth, onSignUp, onForgot, c, isDark }) {
       const result = await login({ email: email.trim(), password });
       onAuth({ ...result, tier: "free" });
     } catch (err) {
-      setError(normalizeError(err, t("auth.error.login_failed")));
+      setError(err?.key ? t(err.key) : normalizeError(err, t("auth.error.login_failed")));
     } finally {
       setLoading(false);
     }
@@ -240,7 +240,7 @@ function SignUpView({ onAuth, onBack, c, isDark }) {
         onAuth({ ...result, tier: "free" });
       }
     } catch (err) {
-      setError(normalizeError(err, t("auth.error.signup_failed")));
+      setError(err?.key ? t(err.key) : normalizeError(err, t("auth.error.signup_failed")));
     } finally {
       setLoading(false);
     }
@@ -344,7 +344,7 @@ function ForgotView({ onBack , c, isDark }) {
       // addresses have accounts.
       setSent(true);
     } catch (err) {
-      setError(normalizeError(err, t("auth.error.generic")));
+      setError(err?.key ? t(err.key) : normalizeError(err, t("auth.error.generic")));
     } finally {
       setLoading(false);
     }

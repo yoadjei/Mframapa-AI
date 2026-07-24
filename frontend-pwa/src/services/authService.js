@@ -1,4 +1,5 @@
 import { supabase } from "./supabase.js";
+import { authErrorKey, isExistingEmail } from "./authErrors.js";
 
 // auth must fail closed: a fabricated local session would look signed-in to the ui
 // but carries no valid token, so every api call 401s — and in a misconfigured
@@ -15,7 +16,7 @@ export async function login({ email, password }) {
   requireSupabase();
 
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) throw new Error(error.message);
+  if (error) { const e = new Error(error.message); e.key = authErrorKey(error); throw e; }
 
   return {
     token: data.session.access_token,
@@ -50,7 +51,16 @@ export async function signup({ firstName, email, password, homeCity }) {
       },
     },
   });
-  if (error) throw new Error(error.message);
+  if (error) { const e = new Error(error.message); e.key = authErrorKey(error); throw e; }
+
+  // supabase hides a duplicate signup as a fake success (empty identities) to
+  // avoid enumeration; catch it so we do not tell the user to check an inbox for
+  // an email that will never arrive.
+  if (isExistingEmail(data)) {
+    const e = new Error("email already registered");
+    e.key = "auth.error.email_taken";
+    throw e;
+  }
 
   // no session means email confirmation is required — the user is NOT signed in
   // yet. never fabricate a token; surface a pending state so the ui asks them to
@@ -101,5 +111,5 @@ export async function resetPassword(email) {
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo: `${window.location.origin}/`,
   });
-  if (error) throw new Error(error.message);
+  if (error) { const e = new Error(error.message); e.key = authErrorKey(error); throw e; }
 }
