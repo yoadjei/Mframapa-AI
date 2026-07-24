@@ -737,5 +737,9 @@
   "auth.error.email_unconfirmed": "Please confirm your email first. Check your inbox for the link.",
   "auth.error.rate_limited": "Too many attempts. Please wait a minute and try again.",
   "auth.error.no_account": "We could not find an account for that email.",
-  "auth.error.network": "You appear to be offline. Check your connection and try again."
+  "auth.error.network": "You appear to be offline. Check your connection and try again.",
+  "screen.feedback.failed": "Could not send your feedback. Please try again.",
+  "delete.failed": "Could not delete your account. Please try again.",
+  "auth.error.session_expired": "Your session has expired. Please sign in again.",
+  "error.server": "Our servers are having trouble right now. Please try again shortly."
 }

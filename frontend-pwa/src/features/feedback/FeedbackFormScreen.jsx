@@ -42,7 +42,7 @@ export function FeedbackFormScreen({ params, isOnline, isDark }) {
       });
       setSubmitted(true);
     } catch (err) {
-      setError(err?.message ?? t("auth.error.generic"));
+      setError(err?.message ?? t("screen.feedback.failed"));
     } finally {
       setSubmitting(false);
     }

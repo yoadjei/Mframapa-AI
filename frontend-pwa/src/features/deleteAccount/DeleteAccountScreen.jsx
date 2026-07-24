@@ -33,7 +33,7 @@ export function DeleteAccountScreen({ params, isOnline, isDark }) {
         goBack();
       }, 1500);
     } catch (err) {
-      setError(err?.message ?? t("auth.error.generic"));
+      setError(err?.message ?? t("delete.failed"));
     } finally {
       setDeleting(false);
     }
