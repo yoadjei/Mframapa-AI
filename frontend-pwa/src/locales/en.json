@@ -662,7 +662,7 @@
   "push_prompt.allow": "Allow",
   "push_prompt.not_now": "Not now",
   "push_prompt.local_only": "Alerts work while the app is open. Phone alerts when the app is closed are not available on this server yet — try again after the next update.",
-  "screen.city_detail.trend_7d_hint": "Estimated PM2.5 (µg/m³) for each of the last 7 days from our model — not a live monitor.",
+  "screen.city_detail.trend_7d_hint": "Estimated PM2.5 (µg/m³) for each of the last 7 days from our model. Not a live monitor.",
   "push_prompt.denied": "Notifications are blocked in your browser settings. You can still check air quality anytime.",
   "push_prompt.error": "We could not finish setting up alerts. You can still use the app and try again later.",
   "offline.no_cache": "You're offline and we don't have a saved reading for this city yet. Reconnect to check the air.",

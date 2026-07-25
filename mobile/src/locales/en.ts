@@ -407,7 +407,7 @@ const base: Record<string, string> = {
   'screen.city_detail.updated_at': 'Updated {{time}}',
   'screen.city_detail.trend_7d': '7-day trend',
   'screen.city_detail.trend_7d_hint':
-    'Estimated PM2.5 (µg/m³) for each of the last 7 days from our model — not a live monitor.',
+    'Estimated PM2.5 (µg/m³) for each of the last 7 days from our model. Not a live monitor.',
   'home.air_now': 'Air right now',
   'home.advice_title': 'What to do',
   'screen.profile.managed_note': 'These come from your account and cannot be changed here.',

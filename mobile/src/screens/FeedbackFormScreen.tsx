@@ -45,6 +45,7 @@ export function FeedbackFormScreen() {
       mediaTypes: ['images'],
       quality: 0.7,
       allowsEditing: false,
+      selectionLimit: 1,
     });
     if (result.canceled || !result.assets?.[0]) return;
     const asset = result.assets[0];

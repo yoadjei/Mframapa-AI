@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Camera, CheckCircle2, X } from "lucide-react";
+import { ImagePlus, CheckCircle2, X } from "lucide-react";
 import { getColors, Colors } from "../../utils/colors.js";
 import { useNavigation } from "../../hooks/useNavigation.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
@@ -236,7 +236,6 @@ export function FeedbackFormScreen({ params, isOnline, isDark }) {
           ref={fileRef}
           type="file"
           accept="image/*"
-          capture="environment"
           onChange={onPickFile}
           style={{ display: "none" }}
         />
@@ -256,7 +255,7 @@ export function FeedbackFormScreen({ params, isOnline, isDark }) {
             cursor: "pointer",
           }}
         >
-          <Camera size={18} color={Colors.brandGreen} />
+          <ImagePlus size={18} color={Colors.brandGreen} />
           <span style={{ fontSize: "0.9375rem", fontWeight: 600, color: Colors.brandGreen }}>
             {attachmentName || t("screen.feedback.attach")}
           </span>

@@ -419,13 +419,6 @@ export function HomeScreen({ isOnline, isDark: isDarkProp }) {
               loading: false,
               color: "#00C896",
             },
-            {
-              icon: Bell,
-              label: t("tab.alerts") ?? "Alerts",
-              action: () => dispatch({ type: "NAVIGATE", payload: { name: "notifications", params: {} } }),
-              loading: false,
-              color: "#00C896",
-            },
           ].map((item, i) => {
             const Icon = item.icon;
             return (

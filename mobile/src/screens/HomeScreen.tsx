@@ -232,7 +232,6 @@ export function HomeScreen() {
               disabled: loading || isRateLimited,
             },
             { icon: 'search-outline' as const, label: t('tab.search'), action: () => navigation.navigate('Search'), loading: false, disabled: false },
-            { icon: 'notifications-outline' as const, label: t('tab.alerts'), action: () => navigation.navigate('Alerts'), loading: false, disabled: false },
           ].map((item, i) => (
             <TouchableOpacity
               key={i}
