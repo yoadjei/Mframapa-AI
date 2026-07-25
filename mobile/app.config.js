@@ -84,12 +84,12 @@ module.exports = {
     splash: {
       image: './assets/splash.png',
       resizeMode: 'contain',
-      backgroundColor: '#06080d',
+      backgroundColor: '#FFFFFF',
     },
     android: {
       adaptiveIcon: {
         foregroundImage: './assets/adaptive-icon.png',
-        backgroundColor: '#06080d',
+        backgroundColor: '#FFFFFF',
       },
       package: 'ai.mframapa.app',
       permissions: [
