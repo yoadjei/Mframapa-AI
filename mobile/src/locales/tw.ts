@@ -34,6 +34,12 @@ const tw: Record<string, string> = {
   'error.network': 'Wontumi kɔ server. Hwɛ wo konnect na sɔ bio.',
   'error.outside_africa': 'Kafra, Mframapa AI di hɔ ma Afrika aman nko.',
   'error.cached_fallback': 'Ɛrekyerɛ wo nsɛnkyerɛnne a wosiev ho.',
+  // injected critical keys
+  'push_prompt.title': 'Stay ahead of the air',
+  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you — and share a daily Did you know.',
+  'push_prompt.allow': 'Allow',
+  'push_prompt.not_now': 'Not now',
+  'screen.auth.continue_without_account': 'Continue without account',
 };
 
 export default tw;

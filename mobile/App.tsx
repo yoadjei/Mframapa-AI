@@ -5,6 +5,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { useStore } from './src/store/useStore';
 import { AppNavigator } from './src/navigation/AppNavigator';
+import { navigationRef, navigate } from './src/navigation/navigationRef';
 import { CloudRainBackground } from './src/components/CloudRainBackground';
 import { AppBackgroundColors } from './src/theme/background';
 import { useTheme } from './src/hooks/useTheme';
@@ -57,7 +58,28 @@ export default function App() {
       ingest(notification?.request?.content ?? {});
     });
     const response = addNotificationResponseListener((res) => {
-      ingest(res?.notification?.request?.content ?? {});
+      const content = res?.notification?.request?.content ?? {};
+      ingest(content);
+      const data = (content.data ?? {}) as Record<string, unknown>;
+      const type = String(data.type ?? '');
+      // Episode pushes open the anomaly screen; tips land in Alerts.
+      if (type === 'alert' || data.city) {
+        navigate('MainApp', {
+          screen: 'Home',
+          params: {
+            screen: 'AnomalyAlert',
+            params: {
+              alert: {
+                title: content.title,
+                description: content.body,
+                area: data.city,
+              },
+            },
+          },
+        });
+      } else {
+        navigate('MainApp', { screen: 'Alerts' });
+      }
     });
     return () => {
       received.remove();
@@ -136,6 +158,7 @@ export default function App() {
         <CloudRainBackground />
         <View style={styles.nav}>
           <NavigationContainer
+            ref={navigationRef}
             key={isAuthenticated ? 'main' : 'onboarding'}
             theme={navTheme}
           >

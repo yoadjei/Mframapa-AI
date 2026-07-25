@@ -34,6 +34,12 @@ const nd: Record<string, string> = {
   'error.network': 'Akwazanga ukufika ku-server. Hlola ukuxhumana kwakho uzame futhi.',
   'error.outside_africa': 'Uxolo, iMframapa AI ifaka amazwe e-Afrika kuphela.',
   'error.cached_fallback': 'Ibonisa ukufunda kwakho okokugcina okugcinwe.',
+  // injected critical keys
+  'push_prompt.title': 'Stay ahead of the air',
+  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you — and share a daily Did you know.',
+  'push_prompt.allow': 'Allow',
+  'push_prompt.not_now': 'Not now',
+  'screen.auth.continue_without_account': 'Continue without account',
 };
 
 export default nd;

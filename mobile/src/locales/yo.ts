@@ -69,6 +69,12 @@ const yo: Record<string, string> = {
   'error.network': 'Ko le de odo olupin. Sayewo asopo re ki o gbiyanju leekansii.',
   'error.outside_africa': 'Idariji, Mframapa AI bo awon orile-ede Afirika nikan.',
   'error.cached_fallback': 'N safihan kika ikehin re ti a fi pamo.',
+  // injected critical keys
+  'push_prompt.title': 'Stay ahead of the air',
+  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you — and share a daily Did you know.',
+  'push_prompt.allow': 'Allow',
+  'push_prompt.not_now': 'Not now',
+  'screen.auth.continue_without_account': 'Continue without account',
 };
 
 export default yo;

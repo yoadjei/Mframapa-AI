@@ -34,6 +34,12 @@ const st: Record<string, string> = {
   'error.network': 'E sitwa ho fihla ho seva. Hlahloba khokahanyo ya hao u leke hape.',
   'error.outside_africa': 'Ke maswabi, Mframapa AI e khabisa ke linaha tsa Afrika feela.',
   'error.cached_fallback': 'E bontsha ho bala ha hao ho qetelang ho bolokilweng.',
+  // injected critical keys
+  'push_prompt.title': 'Stay ahead of the air',
+  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you — and share a daily Did you know.',
+  'push_prompt.allow': 'Allow',
+  'push_prompt.not_now': 'Not now',
+  'screen.auth.continue_without_account': 'Continue without account',
 };
 
 export default st;

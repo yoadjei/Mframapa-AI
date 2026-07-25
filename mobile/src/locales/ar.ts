@@ -69,6 +69,12 @@ const ar: Record<string, string> = {
   'error.network': 'تعذر الوصول إلى الخادم. تحقق من اتصالك وحاول مجدداً.',
   'error.outside_africa': 'عذراً، Mframapa AI يغطي الدول الأفريقية فقط.',
   'error.cached_fallback': 'عرض آخر قراءة محفوظة.',
+  // injected critical keys
+  'push_prompt.title': 'ابقَ على اطلاع بالهواء',
+  'push_prompt.body': 'اسمح بالإشعارات لتنبيهات جودة الهواء ونصيحة اليوم.',
+  'push_prompt.allow': 'السماح',
+  'push_prompt.not_now': 'ليس الآن',
+  'screen.auth.continue_without_account': 'المتابعة بدون حساب',
 };
 
 export default ar;

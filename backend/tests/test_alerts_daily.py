@@ -117,6 +117,23 @@ def test_high_pm25_without_episode_category_is_not_an_episode():
     assert sent == []
 
 
+def test_cold_start_unhealthy_is_an_episode():
+    """no Redis history yet — still alert on Unhealthy/Hazardous (day-1 deploy)."""
+    sent = []
+    records = [{
+        "name": "Accra", "lat": 5.6, "lon": -0.19,
+        "history": [],
+        "today_pm25": 90.0, "today_category": "Unhealthy",
+    }]
+    episodes = run_daily_scan(
+        records,
+        store=FakeStore(["ExponentPushToken[abc]"]),
+        push=lambda *a, **k: sent.append(a),
+    )
+    assert len(episodes) == 1
+    assert sent
+
+
 # ── config ────────────────────────────────────────────────────────────────────
 
 def test_alerts_disabled_by_default(monkeypatch):

@@ -34,6 +34,12 @@ const ga: Record<string, string> = {
   'error.network': 'Server heŋ ŋmɛnɛ. Hɛɛ connection lɛ hɛɛ bi.',
   'error.outside_africa': 'Kɛ yaa, Mframapa AI Afrikaga kɛ daa.',
   'error.cached_fallback': 'Ŋɛni tɛŋ gbɔŋ tsɔmɔ lɛ mli.',
+  // injected critical keys
+  'push_prompt.title': 'Stay ahead of the air',
+  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you — and share a daily Did you know.',
+  'push_prompt.allow': 'Allow',
+  'push_prompt.not_now': 'Not now',
+  'screen.auth.continue_without_account': 'Continue without account',
 };
 
 export default ga;

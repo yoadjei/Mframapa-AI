@@ -34,6 +34,12 @@ const af: Record<string, string> = {
   'error.network': 'Kon nie die bediener bereik nie. Kyk jou verbinding en probeer weer.',
   'error.outside_africa': 'Jammer, Mframapa AI dek slegs Afrikalande.',
   'error.cached_fallback': 'Wys jou laaste gestoorde lesing.',
+  // injected critical keys
+  'push_prompt.title': 'Stay ahead of the air',
+  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you — and share a daily Did you know.',
+  'push_prompt.allow': 'Allow',
+  'push_prompt.not_now': 'Not now',
+  'screen.auth.continue_without_account': 'Continue without account',
 };
 
 export default af;

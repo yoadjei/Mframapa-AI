@@ -34,6 +34,12 @@ const wo: Record<string, string> = {
   'error.network': 'Mënuloo jëm serveur bi. Xool connexion bi te jëfandikoo.',
   'error.outside_africa': 'Baal ma, Mframapa AI dëkku Afrig rekk.',
   'error.cached_fallback': 'Bëgg a jëlen kanam bi nga bind ci kanam.',
+  // injected critical keys
+  'push_prompt.title': 'Stay ahead of the air',
+  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you — and share a daily Did you know.',
+  'push_prompt.allow': 'Allow',
+  'push_prompt.not_now': 'Not now',
+  'screen.auth.continue_without_account': 'Continue without account',
 };
 
 export default wo;

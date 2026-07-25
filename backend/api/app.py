@@ -187,8 +187,16 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Mframapa API", version="2.0.0", description="Mframapa AI v2.0 Versioned API with rate limiting and API keys.", lifespan=lifespan)
 
+_DEFAULT_ORIGINS = ",".join(
+    [
+        "http://localhost:5173",
+        "http://localhost:5174",
+        "https://mframapa.live",
+        "https://www.mframapa.live",
+    ]
+)
 _ALLOWED_ORIGINS = [
-    o.strip() for o in os.getenv("ALLOWED_ORIGINS", "http://localhost:5173").split(",") if o.strip()
+    o.strip() for o in os.getenv("ALLOWED_ORIGINS", _DEFAULT_ORIGINS).split(",") if o.strip()
 ]
 app.add_middleware(TracingMiddleware)
 app.add_middleware(

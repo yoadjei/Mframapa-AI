@@ -69,6 +69,12 @@ const ha: Record<string, string> = {
   'error.network': 'Ba za a iya isar da uwar garken ba. Duba hadin gwiwar ka kuma sake gwadawa.',
   'error.outside_africa': 'Yi hakuri, Mframapa AI yana rufe kasashen Afirka kawai.',
   'error.cached_fallback': 'Ana nuna karanta karshenka da aka adana.',
+  // injected critical keys
+  'push_prompt.title': 'Stay ahead of the air',
+  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you — and share a daily Did you know.',
+  'push_prompt.allow': 'Allow',
+  'push_prompt.not_now': 'Not now',
+  'screen.auth.continue_without_account': 'Continue without account',
 };
 
 export default ha;

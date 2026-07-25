@@ -35,7 +35,6 @@ import { SavedLocationsScreen } from '../screens/SavedLocationsScreen';
 import { ActivityFeedScreen } from '../screens/ActivityFeedScreen';
 import { AIInsightsScreen } from '../screens/AIInsightsScreen';
 import { PredictionDashboardScreen } from '../screens/PredictionDashboardScreen';
-import { LandingMarketingScreen } from '../screens/LandingMarketingScreen';
 import { CountryExplorerScreen } from '../screens/CountryExplorerScreen';
 import { CompareCitiesScreen } from '../screens/CompareCitiesScreen';
 import { AnomalyAlertScreen } from '../screens/AnomalyAlertScreen';
@@ -49,7 +48,6 @@ import { FeedbackFormScreen } from '../screens/FeedbackFormScreen';
 // System screens
 import { OfflineCityPickerScreen } from '../screens/system/OfflineCityPickerScreen';
 import { ErrorScreen } from '../screens/system/ErrorScreen';
-import { ForceUpdateScreen } from '../screens/system/ForceUpdateScreen';
 
 const Tab   = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -114,10 +112,8 @@ function ProfileStack() {
       <Stack.Screen name="ActivityFeed" component={ActivityFeedScreen} />
       <Stack.Screen name="AIInsights" component={AIInsightsScreen} />
       <Stack.Screen name="PredictionDashboard" component={PredictionDashboardScreen} />
-      <Stack.Screen name="LandingMarketing" component={LandingMarketingScreen} />
       <Stack.Screen name="CountryExplorer" component={CountryExplorerScreen} />
       <Stack.Screen name="CompareCities" component={CompareCitiesScreen} />
-      <Stack.Screen name="AnomalyAlert" component={AnomalyAlertScreen} />
       <Stack.Screen name="TrustTransparency" component={TrustTransparencyScreen} />
       <Stack.Screen name="ExportCentre" component={ExportCentreScreen} />
       <Stack.Screen name="LanguageSelector" component={LanguageSelectorScreen} />
@@ -231,7 +227,6 @@ export function AppNavigator() {
   return (
     <Stack.Navigator screenOptions={stackScreenOptions}>
       <Stack.Screen name="MainApp" component={MainApp} />
-      <Stack.Screen name="ForceUpdate" component={ForceUpdateScreen} />
       <Stack.Screen name="OfflineCityPicker" component={OfflineCityPickerScreen} options={{ presentation: 'modal' }} />
       <Stack.Screen name="Error" component={ErrorScreen} options={{ presentation: 'modal' }} />
     </Stack.Navigator>

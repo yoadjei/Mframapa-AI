@@ -34,9 +34,15 @@ def detect_episode(
     *,
     multiplier: float = _DEFAULT_MULTIPLIER,
 ) -> bool:
-    if today_pm25 is None or baseline_pm25 <= 0:
+    if today_pm25 is None:
         return False
-    return float(today_pm25) > baseline_pm25 * multiplier and is_episode_category(today_category)
+    if not is_episode_category(today_category):
+        return False
+    # Cold start (no Redis history yet): still alert on Unhealthy/Hazardous so
+    # day-1 deployments are not silent until baselines accumulate.
+    if baseline_pm25 <= 0:
+        return True
+    return float(today_pm25) > baseline_pm25 * multiplier
 
 
 def scan_cities(

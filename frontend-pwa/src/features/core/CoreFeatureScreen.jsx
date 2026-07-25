@@ -306,6 +306,7 @@ export function CoreFeatureScreen({ isOnline, isDark }) {
         loading={cityPackLoading || loading}
         onSelectCity={loadPredictionAndNavigate}
         colors={colors}
+        isDark={isDark}
         t={t}
         error={error}
       />
@@ -520,7 +521,7 @@ export function CoreFeatureScreen({ isOnline, isDark }) {
 }
 
 // ── City list fallback (no Mapbox token) ─────────────────────────────────────
-function NoCityListFallback({ cities, loading, onSelectCity, colors, t, error }) {
+function NoCityListFallback({ cities, loading, onSelectCity, colors, isDark, t, error }) {
   const [query, setQuery] = useState("");
 
   const filtered = useMemo(() => {
@@ -543,6 +544,18 @@ function NoCityListFallback({ cities, loading, onSelectCity, colors, t, error })
         paddingBottom: "calc(env(safe-area-inset-bottom) + 100px)",
       }}
     >
+      <div className="px-4 pt-3">
+        <div
+          className="rounded-xl px-3 py-2 text-[0.8125rem] leading-snug"
+          style={{
+            backgroundColor: "rgba(245,196,24,0.12)",
+            color: isDark ? "#ffd54f" : "#8a6d00",
+            border: "1px solid rgba(245,196,24,0.35)",
+          }}
+        >
+          {t("core.map_token", "Set VITE_MAPBOX_TOKEN to enable the interactive map. Searching cities still works below.")}
+        </div>
+      </div>
       {/* Search bar */}
       <div className="px-4 py-3">
         <div

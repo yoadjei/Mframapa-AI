@@ -69,6 +69,12 @@ const sw: Record<string, string> = {
   'error.network': 'Imeshindwa kufikia seva. Angalia muunganisho wako na ujaribu tena.',
   'error.outside_africa': 'Samahani, Mframapa AI inashughulikia mataifa ya Afrika tu.',
   'error.cached_fallback': 'Unaonyesha usomaji wako wa mwisho uliohifadhiwa.',
+  // injected critical keys
+  'push_prompt.title': 'Kuwa mbele ya hewa',
+  'push_prompt.body': 'Ruhusu arifa kwa tahadhari za ubora wa hewa na kidokezo cha kila siku.',
+  'push_prompt.allow': 'Ruhusu',
+  'push_prompt.not_now': 'Sio sasa',
+  'screen.auth.continue_without_account': 'Endelea bila akaunti',
 };
 
 export default sw;

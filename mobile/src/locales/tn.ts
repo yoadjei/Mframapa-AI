@@ -34,6 +34,12 @@ const tn: Record<string, string> = {
   'error.network': 'E sitwa go fitlhela seva. Ela tlhoko kgolagano ya gago o leke gape.',
   'error.outside_africa': 'Ke maswabi, Mframapa AI e apola dinaga tsa Afrika fela.',
   'error.cached_fallback': 'E bontsha go bala ga gago go leng teng go bolokilweng.',
+  // injected critical keys
+  'push_prompt.title': 'Stay ahead of the air',
+  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you — and share a daily Did you know.',
+  'push_prompt.allow': 'Allow',
+  'push_prompt.not_now': 'Not now',
+  'screen.auth.continue_without_account': 'Continue without account',
 };
 
 export default tn;

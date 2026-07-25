@@ -34,6 +34,12 @@ const rn: Record<string, string> = {
   'error.network': 'Ntishoboka kugera kuri seriveri. Reba neza iyunganira ryawe ugerageze nanone.',
   'error.outside_africa': "Mbabarira, Mframapa AI ikubiye gusa amahanga y'Afurika.",
   'error.cached_fallback': 'Aragaragaza isomwa ryawe rya nyuma ryabitswe.',
+  // injected critical keys
+  'push_prompt.title': 'Stay ahead of the air',
+  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you — and share a daily Did you know.',
+  'push_prompt.allow': 'Allow',
+  'push_prompt.not_now': 'Not now',
+  'screen.auth.continue_without_account': 'Continue without account',
 };
 
 export default rn;

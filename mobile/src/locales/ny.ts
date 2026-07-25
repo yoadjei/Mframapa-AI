@@ -34,6 +34,12 @@ const ny: Record<string, string> = {
   'error.network': 'Sikutha kufika pa seva. Onani kugwirizana kwanu ndikuyesaninso.',
   'error.outside_africa': 'Pepani, Mframapa AI imapereka maiko a Africa okha.',
   'error.cached_fallback': 'Ikuonyesa kuwerenga kwanu kotsiriza kokwatidwa.',
+  // injected critical keys
+  'push_prompt.title': 'Stay ahead of the air',
+  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you — and share a daily Did you know.',
+  'push_prompt.allow': 'Allow',
+  'push_prompt.not_now': 'Not now',
+  'screen.auth.continue_without_account': 'Continue without account',
 };
 
 export default ny;

@@ -34,6 +34,12 @@ const sn: Record<string, string> = {
   'error.network': 'Haigoni kusvika pa-server. Tarisa kubatana kwako uye uedze zvakare.',
   'error.outside_africa': 'Ndine hurombo, Mframapa AI inofukidza nyika dze-Afrika chete.',
   'error.cached_fallback': 'Unoratidza kuverenga kwako kwekupedzisira kwakachengeterwa.',
+  // injected critical keys
+  'push_prompt.title': 'Stay ahead of the air',
+  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you — and share a daily Did you know.',
+  'push_prompt.allow': 'Allow',
+  'push_prompt.not_now': 'Not now',
+  'screen.auth.continue_without_account': 'Continue without account',
 };
 
 export default sn;

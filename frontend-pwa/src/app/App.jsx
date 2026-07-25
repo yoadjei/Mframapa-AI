@@ -105,10 +105,6 @@ const SavedLocationsScreen = lazyScreen(
   () => import("../features/savedLocations/SavedLocationsScreen.jsx").then((m) => ({ default: m.SavedLocationsScreen })),
   "Saved Locations",
 );
-const LandingMarketingScreen = lazyScreen(
-  () => import("../features/landing/LandingMarketingScreen.jsx").then((m) => ({ default: m.LandingMarketingScreen })),
-  "About",
-);
 const AIInsightsScreen = lazyScreen(
   () => import("../features/aiInsights/AIInsightsScreen.jsx").then((m) => ({ default: m.AIInsightsScreen })),
   "AI Insights",
@@ -175,7 +171,6 @@ const STACK_SCREENS = {
   healthRisk:          HealthRiskScreen,
   languageSelector:    LanguageSelectorScreen,
   savedLocations:      SavedLocationsScreen,
-  landing:             LandingMarketingScreen,
   aiInsights:          AIInsightsScreen,
   predictionDashboard: PredictionDashboardScreen,
   countryExplorer:     CountryExplorerScreen,

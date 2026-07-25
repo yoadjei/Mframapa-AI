@@ -69,6 +69,12 @@ const am: Record<string, string> = {
   'error.network': 'ሰርቨሩን መድረስ አልተቻለም። ግንኙነትዎን ያረጋግጡ እና እንደገና ይሞክሩ።',
   'error.outside_africa': 'ይቅርታ, Mframapa AI የሚሸፍነው የአፍሪካ ሀገሮችን ብቻ ነው።',
   'error.cached_fallback': 'የተቀመጠውን የመጨረሻ ንባብዎን በማሳየት።',
+  // injected critical keys
+  'push_prompt.title': 'Stay ahead of the air',
+  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you — and share a daily Did you know.',
+  'push_prompt.allow': 'Allow',
+  'push_prompt.not_now': 'Not now',
+  'screen.auth.continue_without_account': 'Continue without account',
 };
 
 export default am;

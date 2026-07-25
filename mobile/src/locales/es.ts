@@ -69,6 +69,12 @@ const es: Record<string, string> = {
   'error.network': 'No se pudo llegar al servidor. Revisa tu conexión e inténtalo de nuevo.',
   'error.outside_africa': 'Lo sentimos, Mframapa AI solo cubre naciones africanas.',
   'error.cached_fallback': 'Mostrando tu última lectura guardada.',
+  // injected critical keys
+  'push_prompt.title': 'Adelántate al aire',
+  'push_prompt.body': 'Permite notificaciones para alertas de calidad del aire y el dato del día.',
+  'push_prompt.allow': 'Permitir',
+  'push_prompt.not_now': 'Ahora no',
+  'screen.auth.continue_without_account': 'Continuar sin cuenta',
 };
 
 export default es;

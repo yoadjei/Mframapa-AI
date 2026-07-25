@@ -34,6 +34,12 @@ const mg: Record<string, string> = {
   'error.network': 'Tsy azo ny mpizara. Jereo ny fampifandraisanao ary andramo indray.',
   'error.outside_africa': 'Miala tsiny, ny Mframapa AI dia manapaka firenena Afrika ihany.',
   'error.cached_fallback': 'Mampiseho ny famakiana farany nalahatra.',
+  // injected critical keys
+  'push_prompt.title': 'Stay ahead of the air',
+  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you — and share a daily Did you know.',
+  'push_prompt.allow': 'Allow',
+  'push_prompt.not_now': 'Not now',
+  'screen.auth.continue_without_account': 'Continue without account',
 };
 
 export default mg;
