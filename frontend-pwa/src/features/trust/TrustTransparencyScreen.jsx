@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { ArrowLeft, CheckCircle2, ChevronDown, ChevronUp } from "lucide-react";
+import { CheckCircle2, ChevronDown, ChevronUp } from "lucide-react";
 import { useNavigation } from "../../hooks/useNavigation.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { getColors, Colors } from "../../utils/colors.js";
+import { StackBackButton } from "../../components/navigation/StackBackButton.jsx";
 
 // how the model is built is not a user-facing detail; it invited scrutiny
 // of internals without helping anyone decide whether to go outside.
@@ -50,17 +51,16 @@ export function TrustTransparencyScreen({ isOnline, isDark, params }) {
           padding: "12px 16px",
         }}
       >
-        <button
-          type="button"
+        <StackBackButton
           onClick={goBack}
-          style={{ background: "none", border: "none", cursor: "pointer", padding: 4 }}
-        >
-          <ArrowLeft size={22} color={colors.text} />
-        </button>
+          color={colors.text}
+          variant="arrow"
+          ariaLabel={t("common.go_back")}
+        />
         <span style={{ fontSize: "1rem", fontWeight: 700, color: colors.text }}>
           {t("screen.trust.title")}
         </span>
-        <div style={{ width: 30 }} />
+        <div style={{ width: 44 }} />
       </div>
 
       {/* Accordion sections */}

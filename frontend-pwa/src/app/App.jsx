@@ -3,6 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import { useAppState } from "../state/appState.jsx";
 import { useOnlineStatus } from "../hooks/useOnlineStatus.js";
 import { useInstallPrompt } from "../hooks/useInstallPrompt.js";
+import { StackChromeContext } from "../hooks/useStackChrome.js";
 import { CloudRainBackground } from "../components/background/CloudRainBackground.jsx";
 import { NetworkBanner } from "../components/feedback/NetworkBanner.jsx";
 import { MobileShell } from "../components/layout/MobileShell.jsx";
@@ -15,125 +16,140 @@ import { trackAppOpen } from "../services/analytics.js";
 import { restoreSession, onAuthChange } from "../services/authService.js";
 import { useHardwareBack } from "../hooks/useHardwareBack.js";
 
-// ── Tab screens (loaded eagerly — they are the main experience) ─────────────
-// All screen files use named exports; .then() wraps them as the default export
-// that React.lazy() requires.
-const CoreFeatureScreen = React.lazy(() =>
-  import("../features/core/CoreFeatureScreen.jsx")
-    .then((m) => ({ default: m.CoreFeatureScreen }))
-    .catch(fallback("Map"))
+const CHUNK_RELOAD_KEY = "mframapa:chunk-reload";
+
+// ── Lazy load helpers (hoisted; used by the React.lazy() declarations below) ─
+function fallback(name) {
+  return () => ({
+    default: function ComingSoon() {
+      return (
+        <div className="flex h-full min-h-[60vh] flex-col items-center justify-center gap-3 px-8 text-center">
+          <div className="h-12 w-12 rounded-full" style={{ backgroundColor: "rgba(0,200,150,0.12)" }}>
+            <span style={{ fontSize: "1.75rem", lineHeight: "48px" }}>🌿</span>
+          </div>
+          <p className="font-semibold" style={{ color: "#FFFFFF" }}>{name}</p>
+          <p className="text-sm" style={{ color: "#9AA7B5" }}>This screen could not load. Pull to refresh.</p>
+        </div>
+      );
+    },
+  });
+}
+
+/** One reload on stale chunk (old SW → new deploy), then show fallback. */
+function lazyScreen(importer, name) {
+  return React.lazy(() =>
+    importer()
+      .then((mod) => {
+        try { sessionStorage.removeItem(CHUNK_RELOAD_KEY); } catch { /* ignore */ }
+        return mod;
+      })
+      .catch(() => {
+        try {
+          if (!sessionStorage.getItem(CHUNK_RELOAD_KEY)) {
+            sessionStorage.setItem(CHUNK_RELOAD_KEY, "1");
+            window.location.reload();
+            return new Promise(() => {});
+          }
+        } catch { /* private mode */ }
+        return fallback(name)();
+      })
+  );
+}
+
+// ── Tab screens ─────────────────────────────────────────────────────────────
+const CoreFeatureScreen = lazyScreen(
+  () => import("../features/core/CoreFeatureScreen.jsx").then((m) => ({ default: m.CoreFeatureScreen })),
+  "Map",
 );
-const ActivityScreen = React.lazy(() =>
-  import("../features/activity/ActivityScreen.jsx")
-    .then((m) => ({ default: m.ActivityScreen }))
-    .catch(fallback("Activity"))
+const ActivityScreen = lazyScreen(
+  () => import("../features/activity/ActivityScreen.jsx").then((m) => ({ default: m.ActivityScreen })),
+  "Activity",
 );
-const SearchScreen = React.lazy(() =>
-  import("../features/search/SearchScreen.jsx")
-    .then((m) => ({ default: m.SearchScreen }))
-    .catch(fallback("Search"))
+const SearchScreen = lazyScreen(
+  () => import("../features/search/SearchScreen.jsx").then((m) => ({ default: m.SearchScreen })),
+  "Search",
 );
-const ProfileScreen = React.lazy(() =>
-  import("../features/profile/ProfileScreen.jsx")
-    .then((m) => ({ default: m.ProfileScreen }))
-    .catch(fallback("Profile"))
+const ProfileScreen = lazyScreen(
+  () => import("../features/profile/ProfileScreen.jsx").then((m) => ({ default: m.ProfileScreen })),
+  "Profile",
 );
-const SettingsScreen = React.lazy(() =>
-  import("../features/settings/SettingsScreen.jsx")
-    .then((m) => ({ default: m.SettingsScreen }))
-    .catch(fallback("Settings"))
+const SettingsScreen = lazyScreen(
+  () => import("../features/settings/SettingsScreen.jsx").then((m) => ({ default: m.SettingsScreen })),
+  "Settings",
 );
-const NotificationsScreen = React.lazy(() =>
-  import("../features/notifications/NotificationsScreen.jsx")
-    .then((m) => ({ default: m.NotificationsScreen }))
-    .catch(fallback("Alerts"))
+const NotificationsScreen = lazyScreen(
+  () => import("../features/notifications/NotificationsScreen.jsx").then((m) => ({ default: m.NotificationsScreen })),
+  "Alerts",
 );
 
-// ── Stack screens (sub-pages opened via navigate()) ─────────────────────────
-const CityDetailScreen = React.lazy(() =>
-  import("../features/cityDetail/CityDetailScreen.jsx")
-    .then((m) => ({ default: m.CityDetailScreen }))
-    .catch(fallback("City Detail"))
+// ── Stack screens ───────────────────────────────────────────────────────────
+const CityDetailScreen = lazyScreen(
+  () => import("../features/cityDetail/CityDetailScreen.jsx").then((m) => ({ default: m.CityDetailScreen })),
+  "City Detail",
 );
-const HealthRiskScreen = React.lazy(() =>
-  import("../features/healthRisk/HealthRiskScreen.jsx")
-    .then((m) => ({ default: m.HealthRiskScreen }))
-    .catch(fallback("Health Risk"))
+const HealthRiskScreen = lazyScreen(
+  () => import("../features/healthRisk/HealthRiskScreen.jsx").then((m) => ({ default: m.HealthRiskScreen })),
+  "Health Risk",
 );
-const LanguageSelectorScreen = React.lazy(() =>
-  import("../features/language/LanguageSelectorScreen.jsx")
-    .then((m) => ({ default: m.LanguageSelectorScreen }))
-    .catch(fallback("Language"))
+const LanguageSelectorScreen = lazyScreen(
+  () => import("../features/language/LanguageSelectorScreen.jsx").then((m) => ({ default: m.LanguageSelectorScreen })),
+  "Language",
 );
-const SavedLocationsScreen = React.lazy(() =>
-  import("../features/savedLocations/SavedLocationsScreen.jsx")
-    .then((m) => ({ default: m.SavedLocationsScreen }))
-    .catch(fallback("Saved Locations"))
+const SavedLocationsScreen = lazyScreen(
+  () => import("../features/savedLocations/SavedLocationsScreen.jsx").then((m) => ({ default: m.SavedLocationsScreen })),
+  "Saved Locations",
 );
-const LandingMarketingScreen = React.lazy(() =>
-  import("../features/landing/LandingMarketingScreen.jsx")
-    .then((m) => ({ default: m.LandingMarketingScreen }))
-    .catch(fallback("About"))
+const LandingMarketingScreen = lazyScreen(
+  () => import("../features/landing/LandingMarketingScreen.jsx").then((m) => ({ default: m.LandingMarketingScreen })),
+  "About",
 );
-const AIInsightsScreen = React.lazy(() =>
-  import("../features/aiInsights/AIInsightsScreen.jsx")
-    .then((m) => ({ default: m.AIInsightsScreen }))
-    .catch(fallback("AI Insights"))
+const AIInsightsScreen = lazyScreen(
+  () => import("../features/aiInsights/AIInsightsScreen.jsx").then((m) => ({ default: m.AIInsightsScreen })),
+  "AI Insights",
 );
-const PredictionDashboardScreen = React.lazy(() =>
-  import("../features/predictionDashboard/PredictionDashboardScreen.jsx")
-    .then((m) => ({ default: m.PredictionDashboardScreen }))
-    .catch(fallback("Prediction Dashboard"))
+const PredictionDashboardScreen = lazyScreen(
+  () => import("../features/predictionDashboard/PredictionDashboardScreen.jsx").then((m) => ({ default: m.PredictionDashboardScreen })),
+  "Prediction Dashboard",
 );
-const CountryExplorerScreen = React.lazy(() =>
-  import("../features/countryExplorer/CountryExplorerScreen.jsx")
-    .then((m) => ({ default: m.CountryExplorerScreen }))
-    .catch(fallback("Country Explorer"))
+const CountryExplorerScreen = lazyScreen(
+  () => import("../features/countryExplorer/CountryExplorerScreen.jsx").then((m) => ({ default: m.CountryExplorerScreen })),
+  "Country Explorer",
 );
-const CompareCitiesScreen = React.lazy(() =>
-  import("../features/compareCities/CompareCitiesScreen.jsx")
-    .then((m) => ({ default: m.CompareCitiesScreen }))
-    .catch(fallback("Compare Cities"))
+const CompareCitiesScreen = lazyScreen(
+  () => import("../features/compareCities/CompareCitiesScreen.jsx").then((m) => ({ default: m.CompareCitiesScreen })),
+  "Compare Cities",
 );
-const TrustTransparencyScreen = React.lazy(() =>
-  import("../features/trust/TrustTransparencyScreen.jsx")
-    .then((m) => ({ default: m.TrustTransparencyScreen }))
-    .catch(fallback("Trust & Transparency"))
+const TrustTransparencyScreen = lazyScreen(
+  () => import("../features/trust/TrustTransparencyScreen.jsx").then((m) => ({ default: m.TrustTransparencyScreen })),
+  "Trust & Transparency",
 );
-const ExportCentreScreen = React.lazy(() =>
-  import("../features/export/ExportCentreScreen.jsx")
-    .then((m) => ({ default: m.ExportCentreScreen }))
-    .catch(fallback("Export Centre"))
+const ExportCentreScreen = lazyScreen(
+  () => import("../features/export/ExportCentreScreen.jsx").then((m) => ({ default: m.ExportCentreScreen })),
+  "Export Centre",
 );
-const FeedbackFormScreen = React.lazy(() =>
-  import("../features/feedback/FeedbackFormScreen.jsx")
-    .then((m) => ({ default: m.FeedbackFormScreen }))
-    .catch(fallback("Feedback"))
+const FeedbackFormScreen = lazyScreen(
+  () => import("../features/feedback/FeedbackFormScreen.jsx").then((m) => ({ default: m.FeedbackFormScreen })),
+  "Feedback",
 );
-const AboutLegalScreen = React.lazy(() =>
-  import("../features/about/AboutLegalScreen.jsx")
-    .then((m) => ({ default: m.AboutLegalScreen }))
-    .catch(fallback("About & Legal"))
+const AboutLegalScreen = lazyScreen(
+  () => import("../features/about/AboutLegalScreen.jsx").then((m) => ({ default: m.AboutLegalScreen })),
+  "About & Legal",
 );
-const AnomalyAlertScreen = React.lazy(() =>
-  import("../features/anomaly/AnomalyAlertScreen.jsx")
-    .then((m) => ({ default: m.AnomalyAlertScreen }))
-    .catch(fallback("Anomaly Alert"))
+const AnomalyAlertScreen = lazyScreen(
+  () => import("../features/anomaly/AnomalyAlertScreen.jsx").then((m) => ({ default: m.AnomalyAlertScreen })),
+  "Anomaly Alert",
 );
-const DeleteAccountScreen = React.lazy(() =>
-  import("../features/deleteAccount/DeleteAccountScreen.jsx")
-    .then((m) => ({ default: m.DeleteAccountScreen }))
-    .catch(fallback("Delete Account"))
+const DeleteAccountScreen = lazyScreen(
+  () => import("../features/deleteAccount/DeleteAccountScreen.jsx").then((m) => ({ default: m.DeleteAccountScreen })),
+  "Delete Account",
 );
-const ErrorScreen = React.lazy(() =>
-  import("../features/system/ErrorScreen.jsx")
-    .then((m) => ({ default: m.ErrorScreen }))
-    .catch(fallback("Error"))
+const ErrorScreen = lazyScreen(
+  () => import("../features/system/ErrorScreen.jsx").then((m) => ({ default: m.ErrorScreen })),
+  "Error",
 );
-const OfflineCityPickerScreen = React.lazy(() =>
-  import("../features/system/OfflineCityPickerScreen.jsx")
-    .then((m) => ({ default: m.OfflineCityPickerScreen }))
-    .catch(fallback("Offline Cities"))
+const OfflineCityPickerScreen = lazyScreen(
+  () => import("../features/system/OfflineCityPickerScreen.jsx").then((m) => ({ default: m.OfflineCityPickerScreen })),
+  "Offline Cities",
 );
 
 // ── Screen name → component maps ─────────────────────────────────────────────
@@ -176,23 +192,6 @@ const STACK_SCREENS = {
   notifications: NotificationsScreen,
   search:        SearchScreen,
 };
-
-// ── Lazy fallback factory ──────────────────────────────────────────────────
-function fallback(name) {
-  return () => ({
-    default: function ComingSoon() {
-      return (
-        <div className="flex h-full min-h-[60vh] flex-col items-center justify-center gap-3 px-8 text-center">
-          <div className="h-12 w-12 rounded-full" style={{ backgroundColor: "rgba(0,200,150,0.12)" }}>
-            <span style={{ fontSize: "1.75rem", lineHeight: "48px" }}>🌿</span>
-          </div>
-          <p className="font-semibold" style={{ color: "#FFFFFF" }}>{name}</p>
-          <p className="text-sm" style={{ color: "#9AA7B5" }}>This screen could not load. Pull to refresh.</p>
-        </div>
-      );
-    },
-  });
-}
 
 function ScreenSuspense({ children }) {
   return (
@@ -295,13 +294,16 @@ export function App() {
             className="mf-screen"
             style={{ minHeight: "100dvh", backgroundColor: isDark ? "#0A0D12" : "#F8FAFC" }}
           >
-            <ScreenSuspense>
-              <StackScreen isOnline={isOnline} params={stackTop.params} isDark={isDark} />
-            </ScreenSuspense>
+            <StackChromeContext.Provider value={true}>
+              <ScreenSuspense>
+                <StackScreen isOnline={isOnline} params={stackTop.params} isDark={isDark} />
+              </ScreenSuspense>
+            </StackChromeContext.Provider>
 
             {/* Single, guaranteed back button for every stack screen.
                 Uses onPointerDown (fires before gesture detection on iOS Safari)
-                and a solid background so no duplicate button shows through. */}
+                and a solid background so no duplicate button shows through.
+                Screens under StackChromeContext pad titles/content clear of this. */}
             <button
               type="button"
               onPointerDown={(e) => {

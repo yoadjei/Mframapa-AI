@@ -112,13 +112,19 @@ export function ProfileScreen() {
           ))}
         </View>
 
-        <TouchableOpacity onPress={confirmSignOut} style={styles.signOut}>
-          <Text style={styles.signOutText}>{t('settings.sign_out')}</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => navigation.navigate('DeleteAccount')} style={styles.deleteLink}>
-          <Text style={[styles.deleteLinkText, { color: colors.subtext }]}>{t('screen.profile.delete_account')}</Text>
-        </TouchableOpacity>
+        <View style={[styles.accountActions, { borderColor: colors.border, backgroundColor: colors.card }]}>
+          <Text style={[styles.accountActionsLabel, { color: colors.subtext }]}>
+            {t('screen.profile.account_actions')}
+          </Text>
+          <TouchableOpacity onPress={confirmSignOut} style={styles.signOut}>
+            <Text style={styles.signOutText}>{t('settings.sign_out')}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('DeleteAccount')} style={styles.deleteLink}>
+            <Text style={[styles.deleteLinkText, { color: Colors.danger, opacity: 0.75 }]}>
+              {t('screen.profile.delete_account')}
+            </Text>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
 
       <AvatarPickerSheet
@@ -158,11 +164,26 @@ const styles = StyleSheet.create({
   },
   linkText: { fontSize: 15 },
   linkChevron: { fontSize: 22, fontWeight: '300' },
-  deleteLink: { alignItems: 'center', paddingVertical: 10, marginBottom: 8 },
-  deleteLinkText: { fontSize: 13 },
-  signOut: {
+  accountActions: {
     marginTop: 32,
     marginBottom: 8,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+    gap: 12,
+  },
+  accountActionsLabel: {
+    fontSize: 11,
+    fontWeight: '600',
+    letterSpacing: 1.2,
+    textTransform: 'uppercase',
+    marginBottom: 4,
+  },
+  deleteLink: { alignItems: 'center', paddingVertical: 4 },
+  deleteLinkText: { fontSize: 13 },
+  signOut: {
     alignSelf: 'center',
   },
   signOutText: {

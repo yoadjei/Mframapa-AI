@@ -423,7 +423,7 @@
   "screen.country.choose_country": "Yi ɔman",
   "screen.country.no_cities": "Wɔnkora kurow biara amma ɔman yi da.",
   "screen.country.urban_cities": "Kurow mu",
-  "screen.country.rural_cities": "Nkuraa so",
+  "screen.country.rural_cities": "Kurotia",
   "delete.title": "Popa account",
   "delete.warning_prefix": "Dwuma yi",
   "delete.warning_strong": "ɛrentumi nsan.",
@@ -464,7 +464,7 @@
   "notif_prefs.all_notifications_explainer": "Dum na gyae kɔkɔbɔ nyinaa a ɛba app mu.",
   "notif_prefs.categories": "Nkyekyɛmu",
   "notif_prefs.mark_count_as_read": "Kyerɛ {{count}} sɛ wɔakenkan",
-  "notif_prefs.nothing_unread": "Nkra biara nni hɔ a yɛnkenkan",
+  "notif_prefs.nothing_unread": "Biribiara nni hɔ a wonkenkan",
   "settings.title": "Nhyehyɛe",
   "settings.theme": "Asɛmti",
   "settings.about": "Fa ho",
@@ -706,5 +706,10 @@
   "auth.error.password_weak": "Saa password yi yɛ mmerɛw dodo.",
   "auth.error.generic": "Biribi asɛe. Yɛsrɛ bɔ mmɔden bio.",
   "screen.feedback.message_required": "Yɛsrɛ ka deɛ ɛsii kyerɛ yɛn.",
-  "settings.about.credits": "Credits & Nneɛma a Wɔde Ma"
+  "settings.about.credits": "Credits & Nneɛma a Wɔde Ma",
+  "notif_prefs.air_quality_alerts": "Mframa ho kɔkɔbɔ",
+  "notif_prefs.daily_summaries": "Daa ntio",
+  "notif_prefs.air_quality_updates": "Mframa ho nkaebɔ foforo",
+  "notif_prefs.tips_and_guidance": "Afotu ne akwankyerɛ",
+  "screen.profile.account_actions": "Akonta"
 }

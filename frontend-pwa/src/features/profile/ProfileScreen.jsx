@@ -82,7 +82,7 @@ export function ProfileScreen({ isOnline, isDark }) {
       className="min-h-[100dvh] overflow-y-auto mf-tab-gap px-4"
       style={{ backgroundColor: colors.bg }}
     >
-      <div style={{ paddingTop: 12 }}>
+      <div style={{ paddingTop: "calc(env(safe-area-inset-top) + 12px)" }}>
 
         {/* Header: Logo */}
         <div className="flex justify-center mb-2">
@@ -241,11 +241,23 @@ export function ProfileScreen({ isOnline, isDark }) {
           ))}
         </div>
 
-        {/* Sign in / sign out. air quality works without an account, so signing in
-            is an upgrade (saved places, alerts, sync) rather than a requirement. */}
-        <div className="mt-8 mb-2 flex flex-col items-center gap-3">
+        {/* Account actions: sign out + delete grouped together when signed in. */}
+        <div className="mt-8 mb-2">
           {state.session?.authenticated ? (
-            <>
+            <div
+              className="flex flex-col items-center gap-3 rounded-2xl border px-4 py-5"
+              style={{
+                borderColor: colors.border,
+                backgroundColor: colors.card,
+                borderTop: `1px solid ${colors.border}`,
+              }}
+            >
+              <p
+                className="w-full text-center text-[0.6875rem] font-semibold uppercase tracking-widest"
+                style={{ color: colors.subtext }}
+              >
+                {t("screen.profile.account_actions")}
+              </p>
               <button
                 type="button"
                 onClick={() => setSignOutOpen(true)}
@@ -259,22 +271,23 @@ export function ProfileScreen({ isOnline, isDark }) {
                 type="button"
                 onClick={() => navigate("deleteAccount")}
                 className="text-[0.875rem] active:opacity-60"
-                style={{ color: colors.subtext }}
+                style={{ color: Colors.danger, opacity: 0.75 }}
               >
                 {t("screen.profile.delete_account")}
               </button>
-            </>
+            </div>
           ) : (
-
-            <button
-              type="button"
-              onClick={() => navigate("auth")}
-              className="flex items-center gap-2 rounded-full px-5 py-2.5 text-[0.9375rem] font-semibold active:opacity-70"
-              style={{ backgroundColor: Colors.brandGreen, color: "#00110B" }}
-            >
-              <LogIn size={18} color="#00110B" />
-              {t("profile.sign_in_prompt")}
-            </button>
+            <div className="flex flex-col items-center">
+              <button
+                type="button"
+                onClick={() => navigate("auth")}
+                className="flex items-center gap-2 rounded-full px-5 py-2.5 text-[0.9375rem] font-semibold active:opacity-70"
+                style={{ backgroundColor: Colors.brandGreen, color: "#00110B" }}
+              >
+                <LogIn size={18} color="#00110B" />
+                {t("profile.sign_in_prompt")}
+              </button>
+            </div>
           )}
         </div>
 

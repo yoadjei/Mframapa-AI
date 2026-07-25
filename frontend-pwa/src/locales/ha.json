@@ -428,7 +428,7 @@
   "screen.country.choose_country": "Zaɓi ƙasa",
   "screen.country.no_cities": "Babu biranen da aka ajiye ga wannan ƙasar tukuna.",
   "screen.country.urban_cities": "Birni",
-  "screen.country.rural_cities": "Ƙauye",
+  "screen.country.rural_cities": "Kauye",
   "screen.prediction.range_24h": "24 awa",
   "screen.prediction.range_48h": "48 awa",
   "screen.prediction.range_7d": "7 kwn",
@@ -472,7 +472,7 @@
   "notif_prefs.all_notifications_explainer": "Kashe don daina karɓar dukkan faɗakarwa cikin manhaja.",
   "notif_prefs.categories": "Rukunoni",
   "notif_prefs.mark_count_as_read": "Nuna {{count}} an karanta",
-  "notif_prefs.nothing_unread": "Babu sanarwar da ba a karanta ba",
+  "notif_prefs.nothing_unread": "Babu wanda ba duba ba",
   "settings.title": "Saituna",
   "settings.theme": "Jigo",
   "settings.about": "Game da",
@@ -720,5 +720,10 @@
   "auth.error.password_weak": "Wannan kalmar sirri ta yi sauƙin tsinkayal.",
   "auth.error.generic": "Wani abu ya yi ba daidai ba. Da fatan za a sake gwadawa.",
   "screen.feedback.message_required": "Da fatan za a gaya mana abin da ya faru.",
-  "settings.about.credits": "Kirkira & Hali"
+  "settings.about.credits": "Kirkira & Hali",
+  "notif_prefs.air_quality_alerts": "Faɗakarwa kan ingancin iska",
+  "notif_prefs.daily_summaries": "Taƙaitaccen yau da kullum",
+  "notif_prefs.air_quality_updates": "Sabuntawa kan ingancin iska",
+  "notif_prefs.tips_and_guidance": "Shawarwari da jagora",
+  "screen.profile.account_actions": "Asusu"
 }

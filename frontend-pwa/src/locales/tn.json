@@ -428,7 +428,7 @@
   "screen.country.choose_country": "Kgetha naga",
   "screen.country.no_cities": "Ga go na ditoropo tse di bolokilweng tsa naga eno go fitlha jaanong.",
   "screen.country.urban_cities": "Toropo",
-  "screen.country.rural_cities": "Magaeng",
+  "screen.country.rural_cities": "Rural",
   "screen.prediction.range_24h": "Dioura tse 24",
   "screen.prediction.range_48h": "Dioura tse 48",
   "screen.prediction.range_7d": "Malatsi a 7",
@@ -472,7 +472,7 @@
   "notif_prefs.all_notifications_explainer": "Tima go kgaotsa go amogela ditsiboso tsotlhe tsa mo teng ga app.",
   "notif_prefs.categories": "Ditlhopha",
   "notif_prefs.mark_count_as_read": "Tshwaya {{count}} e le tse di badilweng",
-  "notif_prefs.nothing_unread": "Ga go na ditsiboso tse di sa balwang",
+  "notif_prefs.nothing_unread": "Nothing unread",
   "settings.title": "Ditsamaiso",
   "settings.theme": "Sehlogo sa ditaba",
   "settings.about": "Ka ga",
@@ -720,5 +720,10 @@
   "auth.error.password_weak": "Phasa botlhe tsena go ya letlha e a ba",
   "auth.error.generic": "Phetho a a tsalana theile fela tsena ruri. Re tla gopolo botlhe gape.",
   "screen.feedback.message_required": "Fa molaetsa mme bo rona se re tseng go e go re gae ruri",
-  "settings.about.credits": "Dikrediti & Kabo"
+  "settings.about.credits": "Dikrediti & Kabo",
+  "notif_prefs.air_quality_alerts": "Air quality alerts",
+  "notif_prefs.daily_summaries": "Daily summaries",
+  "notif_prefs.air_quality_updates": "Air quality updates",
+  "notif_prefs.tips_and_guidance": "Tips and guidance",
+  "screen.profile.account_actions": "Account"
 }

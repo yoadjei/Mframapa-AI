@@ -1,6 +1,7 @@
 import { Bell, ChevronDown, MapPin, Navigation, Search, AlertTriangle, Clock, Droplets, Wind, Thermometer, ChevronRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useAppState } from "../../state/appState.jsx";
+import { useNavigation } from "../../hooks/useNavigation.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { fetchCityPrediction, fetchPredictionAtCoords } from "../../services/predictionService.js";
 import { getDailyFact } from "../../services/api.js";
@@ -41,6 +42,7 @@ function useCountUp(target, duration = 600) {
 
 export function HomeScreen({ isOnline }) {
   const { state, dispatch } = useAppState();
+  const { navigate } = useNavigation();
   const { t } = useTranslation();
   const isDark = state.preferences.theme === "dark" ||
     (state.preferences.theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
@@ -225,7 +227,15 @@ export function HomeScreen({ isOnline }) {
           <button
             type="button"
             disabled={!pred}
-            onClick={() => pred && dispatch({ type: "SET_ACTIVE_SCREEN", payload: "core" })}
+            onClick={() => {
+              if (!pred) return;
+              const city = pred.city ?? {
+                name: pred.location?.name ?? state.homeSummary?.city,
+                lat: pred.lat ?? pred.location?.lat ?? state.homeSummary?.lat,
+                lon: pred.lon ?? pred.location?.lon ?? state.homeSummary?.lon,
+              };
+              navigate("cityDetail", { prediction: pred, city });
+            }}
             className="mf-press relative w-full rounded-[20px] border p-5 text-left"
             aria-label={
               pred

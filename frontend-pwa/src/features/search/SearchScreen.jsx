@@ -3,6 +3,7 @@ import { Search, MapPin, X, ChevronRight, Clock } from "lucide-react";
 import { useAppState } from "../../state/appState.jsx";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { useCityPack } from "../../hooks/useCityPack.js";
+import { useStackChrome, stackTitlePad } from "../../hooks/useStackChrome.js";
 import { getColors, Colors, getAQIColor, aqiSymbol } from "../../utils/colors.js";
 import { getPrediction, generateInsight } from "../../services/api.js";
 
@@ -37,6 +38,7 @@ export function SearchScreen({ isOnline, isDark }) {
   const { state, dispatch } = useAppState();
   const { t } = useTranslation();
   const { cities } = useCityPack(isOnline);
+  const inStack = useStackChrome();
   const colors = getColors(isDark);
 
   const [query, setQuery] = useState("");
@@ -150,8 +152,8 @@ export function SearchScreen({ isOnline, isDark }) {
       className="min-h-[100dvh] overflow-y-auto mf-tab-gap"
       style={{ backgroundColor: colors.bg }}
     >
-      {/* ── Search bar ── */}
-      <div className="px-4 py-3">
+      {/* ── Search bar — pad left when opened as stack from profile ── */}
+      <div className="px-4 py-3" style={{ paddingLeft: Math.max(16, stackTitlePad(inStack) || 16) }}>
         <div
           className="flex items-center gap-3 rounded-xl border px-4 py-3"
           style={{ backgroundColor: colors.card, borderColor: colors.border }}

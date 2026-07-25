@@ -472,7 +472,7 @@
   "notif_prefs.all_notifications_explainer": "أوقف التشغيل لإيقاف جميع التنبيهات داخل التطبيق.",
   "notif_prefs.categories": "الفئات",
   "notif_prefs.mark_count_as_read": "تعيين {{count}} كمقروء",
-  "notif_prefs.nothing_unread": "لا توجد إشعارات غير مقروءة",
+  "notif_prefs.nothing_unread": "لا يوجد غير مقروء",
   "settings.title": "الإعدادات",
   "settings.theme": "الموضوع",
   "settings.about": "حول",
@@ -720,5 +720,10 @@
   "auth.error.password_weak": "كلمة المرور هذه سهلة التخمين.",
   "auth.error.generic": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
   "screen.feedback.message_required": "يرجى إخبارنا بما حدث.",
-  "settings.about.credits": "الاعتمادات والإسناد"
+  "settings.about.credits": "الاعتمادات والإسناد",
+  "notif_prefs.air_quality_alerts": "تنبيهات جودة الهواء",
+  "notif_prefs.daily_summaries": "ملخصات يومية",
+  "notif_prefs.air_quality_updates": "تحديثات جودة الهواء",
+  "notif_prefs.tips_and_guidance": "نصائح وإرشاد",
+  "screen.profile.account_actions": "الحساب"
 }

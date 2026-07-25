@@ -2,6 +2,7 @@ import { Sparkles, BarChart3, List } from "lucide-react";
 import { useNavigation } from "../../hooks/useNavigation.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { getColors, Colors } from "../../utils/colors.js";
+import { StackBackButton } from "../../components/navigation/StackBackButton.jsx";
 
 function InsightCard({ icon: IconComp, title, desc, source, colors }) {
   const Icon = IconComp;
@@ -135,27 +136,16 @@ export function AIInsightsScreen({ isOnline, isDark, params }) {
           paddingBottom: 12,
         }}
       >
-        <button
-          type="button"
+        <StackBackButton
           onClick={goBack}
-          style={{
-            background: "none",
-            border: "none",
-            padding: 0,
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          {/* ChevronLeft equivalent — inline SVG to avoid Lucide size mismatch */}
-          <svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke={colors.text} strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="15 18 9 12 15 6" />
-          </svg>
-        </button>
+          color={colors.text}
+          variant="chevron"
+          ariaLabel={t("common.go_back")}
+        />
         <span style={{ fontSize: "0.8125rem", fontWeight: 700, letterSpacing: 1, color: colors.text }}>
           {t("screen.ai_insights.title").toUpperCase()}
         </span>
-        <div style={{ width: 22 }} />
+        <div style={{ width: 44 }} />
       </div>
 
       {/* Scrollable content */}

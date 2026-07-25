@@ -426,7 +426,7 @@
   "screen.country.choose_country": "Họrọ obodo",
   "screen.country.no_cities": "Enweghị obodo e chekwara maka mba a.",
   "screen.country.urban_cities": "Obodo mepere emepe",
-  "screen.country.rural_cities": "Ime obodo",
+  "screen.country.rural_cities": "Rural",
   "delete.title": "Hichapụ Akaụntụ",
   "delete.warning_prefix": "Omume a",
   "delete.warning_strong": "agaghị emeli ka eweghachite ya.",
@@ -467,7 +467,7 @@
   "notif_prefs.all_notifications_explainer": "Gbanyụọ iji kwụsị ịnata ịdọ aka ná ntị nile n'ime ngwa a.",
   "notif_prefs.categories": "Ụdị",
   "notif_prefs.mark_count_as_read": "Kaa {{count}} na a gụọla ya",
-  "notif_prefs.nothing_unread": "Enweghị ọkwa ọhụrụ a gụbeghị",
+  "notif_prefs.nothing_unread": "Nothing unread",
   "settings.title": "Ntọala",
   "settings.theme": "Okwu",
   "settings.about": "Banyere",
@@ -713,5 +713,10 @@
   "auth.error.password_weak": "Paswọọdụ ahụ dị mfe ịmata.",
   "auth.error.generic": "Ọ dị ihe mebiri emebi. Biko nwaa ọzọ.",
   "screen.feedback.message_required": "Biko gwa anyị ihe mere.",
-  "settings.about.credits": "Ebe E Si Nweta & Njirimara"
+  "settings.about.credits": "Ebe E Si Nweta & Njirimara",
+  "notif_prefs.air_quality_alerts": "Air quality alerts",
+  "notif_prefs.daily_summaries": "Daily summaries",
+  "notif_prefs.air_quality_updates": "Air quality updates",
+  "notif_prefs.tips_and_guidance": "Tips and guidance",
+  "screen.profile.account_actions": "Account"
 }

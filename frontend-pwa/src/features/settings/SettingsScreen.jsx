@@ -1,6 +1,7 @@
 import { ChevronRight, ChevronDown } from "lucide-react";
 import { useAppState } from "../../state/appState.jsx";
 import { useNavigation } from "../../hooks/useNavigation.js";
+import { useStackChrome, stackTopPad, stackTitlePad } from "../../hooks/useStackChrome.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { getColors, Colors } from "../../utils/colors.js";
 
@@ -82,6 +83,7 @@ export function SettingsScreen({ isOnline, isDark }) {
   const { state, dispatch } = useAppState();
   const { t } = useTranslation();
   const { navigate } = useNavigation();
+  const inStack = useStackChrome();
   const colors = getColors(isDark ?? true);
   const prefs = state.preferences ?? {};
 
@@ -122,9 +124,12 @@ export function SettingsScreen({ isOnline, isDark }) {
       className="min-h-[100dvh] overflow-y-auto mf-tab-gap px-4"
       style={{ backgroundColor: colors.bg }}
     >
-      <div style={{ paddingTop: "calc(env(safe-area-inset-top) + 12px)" }}>
+      <div style={{ paddingTop: stackTopPad(inStack) }}>
 
-        <p className="text-[1.75rem] font-extrabold mb-5" style={{ color: colors.text }}>
+        <p
+          className="text-[1.75rem] font-extrabold mb-5"
+          style={{ color: colors.text, paddingLeft: stackTitlePad(inStack) }}
+        >
           {t("settings.title")}
         </p>
 

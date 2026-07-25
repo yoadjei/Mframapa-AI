@@ -8,15 +8,17 @@
  * matching the mobile behaviour exactly.
  */
 import { useId, useMemo, useState } from "react";
-import { ChevronLeft, Mail, Lock, MapPin, User, Eye, EyeOff } from "lucide-react";
+import { Mail, Lock, MapPin, User, Eye, EyeOff } from "lucide-react";
 import { useAppState } from "../../state/appState.jsx";
 import { login, signup, resetPassword } from "../../services/authService.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
+import { useStackChrome, stackTitlePad } from "../../hooks/useStackChrome.js";
 import { africanCities } from "../../data/africanCities.js";
 import { isValidEmail, passwordProblem } from "../../utils/validators.js";
 import { normalizeError } from "../../services/httpClient.js";
 import { MframapaLogo } from "../../components/brand/MframapaLogo.jsx";
 import { PrimaryButton } from "../../components/ui/PrimaryButton.jsx";
+import { StackBackButton } from "../../components/navigation/StackBackButton.jsx";
 
 const GREEN = "#00C896";
 
@@ -83,18 +85,15 @@ function AuthScroll({ children }) {
   );
 }
 
-// ── Back button row (matches mobile backBtn) ──────────────────────────────────
-function BackBtn({ onPress, label = "Back", c }) {
+// ── Back button row (yields to global stack back when inStack) ─────────────────
+function BackBtn({ onPress, c, ariaLabel = "Go back" }) {
   return (
-    <button type="button" onClick={onPress}
-      style={{
-        display: "flex", alignItems: "center", gap: 4,
-        background: "none", border: "none", cursor: "pointer",
-        color: c.TEXT, fontSize: "1rem", padding: 0,
-      }}>
-      <ChevronLeft size={22} color={c.TEXT} />
-      {label}
-    </button>
+    <StackBackButton
+      onClick={onPress}
+      color={c.TEXT}
+      variant="chevron"
+      ariaLabel={ariaLabel}
+    />
   );
 }
 
@@ -102,6 +101,7 @@ function BackBtn({ onPress, label = "Back", c }) {
 // Mirrors mobile/src/screens/onboarding/LoginScreen.tsx
 function LoginView({ onAuth, onSignUp, onForgot, c, isDark }) {
   const { t } = useTranslation();
+  const inStack = useStackChrome();
   const [email, setEmail]       = useState("");
   const [password, setPassword] = useState("");
   const [error, setError]       = useState("");
@@ -130,8 +130,8 @@ function LoginView({ onAuth, onSignUp, onForgot, c, isDark }) {
         <MframapaLogo size="lg" isDark={isDark} markOnly />
       </div>
 
-      {/* heading */}
-      <p style={{ fontSize: "1.75rem", fontWeight: 800, color: c.TEXT, marginBottom: 6, marginTop: 0 }}>
+      {/* heading — pad left when global stack back is present */}
+      <p style={{ fontSize: "1.75rem", fontWeight: 800, color: c.TEXT, marginBottom: 6, marginTop: 0, paddingLeft: stackTitlePad(inStack) }}>
         {t("auth.login.title")}
       </p>
       {/* sub */}
@@ -249,7 +249,7 @@ function SignUpView({ onAuth, onBack, c, isDark }) {
   return (
     <AuthScroll>
       <div style={{ marginBottom: 16 }}>
-        <BackBtn c={c} onPress={onBack} />
+        <BackBtn c={c} onPress={onBack} ariaLabel={t("common.go_back")} />
       </div>
 
       <div style={{ display: "flex", justifyContent: "center", marginBottom: 28 }}>
@@ -354,7 +354,7 @@ function ForgotView({ onBack , c, isDark }) {
     <AuthScroll>
       {/* backBtn — marginBottom 24 */}
       <div style={{ marginBottom: 24 }}>
-        <BackBtn c={c} onPress={onBack} />
+        <BackBtn c={c} onPress={onBack} ariaLabel={t("common.go_back")} />
       </div>
 
       {/* iconWrap — 72×72, borderRadius 22, green bg dim, centered, marginBottom 24 */}

@@ -1,8 +1,9 @@
-import { ChevronLeft, Clock, User, Shield, MapPin } from "lucide-react";
+import { Clock, User, Shield, MapPin } from "lucide-react";
 import { useAppState } from "../../state/appState.jsx";
 import { useNavigation } from "../../hooks/useNavigation.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { getColors, Colors } from "../../utils/colors.js";
+import { StackBackButton } from "../../components/navigation/StackBackButton.jsx";
 
 // Map activity icon names (from mobile store ActivityItem) → Lucide components
 const ICON_MAP = {
@@ -55,14 +56,12 @@ export function ActivityScreen({ isOnline, isDark }) {
         className="flex flex-row items-center justify-between px-4 pb-3"
         style={{ paddingTop: 8 }}
       >
-        <button
-          type="button"
+        <StackBackButton
           onClick={goBack}
-          className="flex items-center justify-center"
-          style={{ width: 22, height: 22 }}
-        >
-          <ChevronLeft size={22} color={colors.text} />
-        </button>
+          color={colors.text}
+          variant="chevron"
+          ariaLabel={t("common.go_back")}
+        />
 
         <span
           className="text-[0.8125rem] font-bold tracking-widest"
@@ -72,7 +71,7 @@ export function ActivityScreen({ isOnline, isDark }) {
         </span>
 
         {/* Spacer to balance the back button */}
-        <div style={{ width: 22 }} />
+        <div style={{ width: 44 }} />
       </div>
 
       {/* Scrollable content */}

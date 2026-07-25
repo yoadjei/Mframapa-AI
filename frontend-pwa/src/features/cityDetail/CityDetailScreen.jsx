@@ -19,6 +19,7 @@ import { getColors, Colors, getAQIColor } from "../../utils/colors.js";
 import { aqiCategoryKey } from "../../utils/i18nHelpers.js";
 import { generateInsight, getHistory } from "../../services/api.js";
 import { PrimaryButton } from "../../components/ui/PrimaryButton.jsx";
+import { StackBackButton } from "../../components/navigation/StackBackButton.jsx";
 
 const TREND_DAY_KEYS = [
   "screen.city_detail.day_mon",
@@ -222,25 +223,12 @@ export function CityDetailScreen({ isDark, params }) {
           className="flex items-center justify-between px-4 pb-4"
           style={{ paddingTop: 12 }}
         >
-          {/* Back button */}
-          <button
-            type="button"
+          <StackBackButton
             onClick={goBack}
-            className="flex items-center gap-1 active:opacity-60"
-            style={{ minWidth: 60 }}
-            aria-label={t("common.back")}
-          >
-            <svg width={22} height={22} viewBox="0 0 24 24" fill="none">
-              <path
-                d="M15 18l-6-6 6-6"
-                stroke="#fff"
-                strokeWidth={2.2}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            <span className="text-[1rem] text-white">{t("common.back")}</span>
-          </button>
+            color="#fff"
+            variant="chevron"
+            ariaLabel={t("common.go_back")}
+          />
 
           {/* City name */}
           <h1 className="flex-1 text-center text-[1.125rem] font-bold text-white">

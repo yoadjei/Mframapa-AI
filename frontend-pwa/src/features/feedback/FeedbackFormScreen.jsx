@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { ArrowLeft, Camera, CheckCircle2 } from "lucide-react";
+import { Camera, CheckCircle2 } from "lucide-react";
 import { getColors, Colors } from "../../utils/colors.js";
 import { useNavigation } from "../../hooks/useNavigation.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { sendFeedback } from "../../services/api.js";
+import { StackBackButton } from "../../components/navigation/StackBackButton.jsx";
 
 // the slugs the api stores, in the same order as the labels below
 const CATEGORY_SLUGS = ["bug", "feature", "data", "general"];
@@ -108,13 +109,12 @@ export function FeedbackFormScreen({ params, isOnline, isDark }) {
           borderBottom: `1px solid ${colors.border}`,
         }}
       >
-        <button
-          type="button"
+        <StackBackButton
           onClick={goBack}
-          style={{ background: "none", border: "none", cursor: "pointer", padding: 4 }}
-        >
-          <ArrowLeft size={22} color={colors.text} />
-        </button>
+          color={colors.text}
+          variant="arrow"
+          ariaLabel={t("common.go_back")}
+        />
         <span style={{ fontSize: "1.0625rem", fontWeight: 600, color: colors.text }}>
           {t("screen.feedback.nav_title")}
         </span>

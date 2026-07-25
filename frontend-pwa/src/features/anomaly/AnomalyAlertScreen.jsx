@@ -1,7 +1,8 @@
-import { ArrowLeft, AlertTriangle } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 import { getColors, Colors } from "../../utils/colors.js";
 import { useNavigation } from "../../hooks/useNavigation.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
+import { StackBackButton } from "../../components/navigation/StackBackButton.jsx";
 
 const AQI_HIGH = "#FF8C00";
 
@@ -51,17 +52,16 @@ export function AnomalyAlertScreen({ params, isOnline, isDark }) {
           padding: "8px 16px 12px",
         }}
       >
-        <button
-          type="button"
+        <StackBackButton
           onClick={goBack}
-          style={{ background: "none", border: "none", cursor: "pointer", padding: 4 }}
-        >
-          <ArrowLeft size={22} color={colors.text} />
-        </button>
+          color={colors.text}
+          variant="arrow"
+          ariaLabel={t("common.go_back")}
+        />
         <span style={{ fontSize: "1rem", fontWeight: 700, color: colors.text }}>
           {t("screen.anomaly.title")}
         </span>
-        <div style={{ width: 22 }} />
+        <div style={{ width: 44 }} />
       </div>
 
       {/* Scrollable content */}

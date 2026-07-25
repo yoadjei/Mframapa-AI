@@ -1,8 +1,9 @@
-import { ArrowLeft, ChevronRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { MframapaLogo } from "../../components/brand/MframapaLogo.jsx";
 import { getColors, Colors } from "../../utils/colors.js";
 import { useNavigation } from "../../hooks/useNavigation.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
+import { StackBackButton } from "../../components/navigation/StackBackButton.jsx";
 
 const LINK_KEYS = [
   { key: "settings.about.privacy",  href: "/privacy.html"  },
@@ -35,16 +36,13 @@ export function AboutLegalScreen({ params, isOnline, isDark }) {
           padding: "8px 16px 4px",
         }}
       >
-        <button
-          type="button"
+        <StackBackButton
           onClick={goBack}
-          className="flex items-center justify-center active:opacity-60"
-          style={{ width: 36, height: 36 }}
-          aria-label={t("common.go_back")}
-        >
-          <ArrowLeft size={22} color={colors.text} />
-        </button>
-        <div style={{ width: 36 }} />
+          color={colors.text}
+          variant="arrow"
+          ariaLabel={t("common.go_back")}
+        />
+        <div style={{ width: 44 }} />
       </div>
 
       {/* Scrollable content */}

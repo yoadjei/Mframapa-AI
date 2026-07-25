@@ -472,7 +472,7 @@
   "notif_prefs.all_notifications_explainer": "Pa á láti dáwọ́ gbígba gbogbo ìkìlọ̀ dúró nínú àpù.",
   "notif_prefs.categories": "Àwọn ẹ̀ka",
   "notif_prefs.mark_count_as_read": "Ṣe àmì {{count}} pé a ti kà",
-  "notif_prefs.nothing_unread": "Kò sí ìfitónilétí tí a kò tíì kà",
+  "notif_prefs.nothing_unread": "Kò sí ohun tí a kò kà",
   "settings.title": "Ètò",
   "settings.theme": "Akori",
   "settings.about": "Nípa",
@@ -720,5 +720,10 @@
   "auth.error.password_weak": "Ọ̀rọ̀ aṣínà yẹn rọrùn jù láti fojú yà.",
   "auth.error.generic": "Nǹkan kan ṣẹ̀. Jọ̀wọ́ gbìyànjú lẹ́ẹ̀kan sí i.",
   "screen.feedback.message_required": "Jọ̀wọ́ sọ fún wa ohun tó ṣẹlẹ̀.",
-  "settings.about.credits": "Kirediti & Attribution"
+  "settings.about.credits": "Kirediti & Attribution",
+  "notif_prefs.air_quality_alerts": "Ìkìlọ̀ díẹ̀ nípa ààyè afẹ́fẹ́",
+  "notif_prefs.daily_summaries": "Àkótán ojoojúmọ́",
+  "notif_prefs.air_quality_updates": "Ìsódiwájú ààyè afẹ́fẹ́",
+  "notif_prefs.tips_and_guidance": "ìmọ̀ràn àti ìtọ́sọ́nà",
+  "screen.profile.account_actions": "Àkántì"
 }

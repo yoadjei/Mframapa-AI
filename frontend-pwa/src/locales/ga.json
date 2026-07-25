@@ -424,7 +424,7 @@
   "screen.country.choose_country": "Hala maŋ",
   "screen.country.no_cities": "Maŋ ko a-tooko lolo kɛha nɛkɛ maŋ nɛɛ.",
   "screen.country.urban_cities": "Kutso-mli",
-  "screen.country.rural_cities": "Aklowa",
+  "screen.country.rural_cities": "Rural",
   "delete.title": "Tsumɔ Akaunti",
   "delete.warning_prefix": "Nɛkɛ nitsumɔ nɛɛ",
   "delete.warning_strong": "nyɛɛɛ asaa afee mli dãŋ.",
@@ -465,7 +465,7 @@
   "notif_prefs.all_notifications_explainer": "Gbe gbee koni okpa kaimɔ nii na kɛjɛ app lɛ mli.",
   "notif_prefs.categories": "Henɔi",
   "notif_prefs.mark_count_as_read": "Kadimɔ {{count}} akɛ a-kane",
-  "notif_prefs.nothing_unread": "Kaimɔ nii ko bɛ ni a-kaneee",
+  "notif_prefs.nothing_unread": "Nothing unread",
   "settings.title": "Nii Atootso",
   "settings.theme": "Asɛmti",
   "settings.about": "Nii he",
@@ -709,5 +709,10 @@
   "auth.error.password_weak": "Lɛlɛ password nɛɛ gbo yɛ ko gbɛ.",
   "auth.error.generic": "Nɔ ko yɛ. Ofainɛ ka mli ekoŋŋ.",
   "screen.feedback.message_required": "Ofainɛ gba wɔ nɔ ni ba.",
-  "settings.about.credits": "Credits & Nneɛma a Wɔde Ma"
+  "settings.about.credits": "Credits & Nneɛma a Wɔde Ma",
+  "notif_prefs.air_quality_alerts": "Air quality alerts",
+  "notif_prefs.daily_summaries": "Daily summaries",
+  "notif_prefs.air_quality_updates": "Air quality updates",
+  "notif_prefs.tips_and_guidance": "Tips and guidance",
+  "screen.profile.account_actions": "Account"
 }

@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { iosScreen } from '../lib/ios'
 import { useSiteMotion } from '../lib/motionPreference'
 
-export type PhoneScreen = 'home' | 'map' | 'home-dark'
+export type PhoneScreen = 'home' | 'map' | 'alerts' | 'home-dark'
 
 type Props = {
   screen?: PhoneScreen
@@ -20,6 +20,10 @@ const SHOTS: Record<PhoneScreen, { src: string; alt: string }> = {
   map: {
     src: '/mockups/map-light.png',
     alt: 'Mframapa map of Africa with city readings',
+  },
+  alerts: {
+    src: '/mockups/alerts-light.png',
+    alt: 'Mframapa alerts screen for turning on dust notifications',
   },
   'home-dark': {
     src: '/mockups/home-dark.png',

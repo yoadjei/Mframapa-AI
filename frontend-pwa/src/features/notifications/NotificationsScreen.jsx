@@ -3,6 +3,7 @@ import { Bell, Settings, AlertTriangle, FileText, Cloud, Lightbulb, CheckCheck, 
 import { useAppState } from "../../state/appState.jsx";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { getColors, Colors, liquidGlass } from "../../utils/colors.js";
+import { StackTitle } from "../../components/navigation/StackTitle.jsx";
 
 // ─── Notification Settings Sheet ────────────────────────────────────────────
 
@@ -208,11 +209,15 @@ export function NotificationsScreen({ isOnline, isDark }) {
           className="flex items-center gap-3 px-4 py-3"
           style={{ paddingHorizontal: 16 }}
         >
-          {/* title + unread pill */}
+          {/* title + unread pill — StackTitle clears fixed back when opened from profile */}
           <div className="flex flex-1 min-w-0 items-center gap-[10px]">
-            <h1 className="text-[1.75rem] font-extrabold leading-tight" style={{ color: colors.text }}>
+            <StackTitle
+              as="h1"
+              className="text-[1.75rem] font-extrabold leading-tight"
+              style={{ color: colors.text }}
+            >
               {t("alerts.title")}
-            </h1>
+            </StackTitle>
             {unreadCount > 0 ? (
               <span
                 className="flex h-[22px] min-w-[24px] items-center justify-center rounded-full px-2 text-[0.75rem] font-bold text-white flex-shrink-0"

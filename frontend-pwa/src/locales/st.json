@@ -428,7 +428,7 @@
   "screen.country.choose_country": "Khetha naha",
   "screen.country.no_cities": "Ha ho na litoropo tse boloketsoeng naha ena hajoale.",
   "screen.country.urban_cities": "Teropong",
-  "screen.country.rural_cities": "Mahaeng",
+  "screen.country.rural_cities": "Rural",
   "screen.prediction.range_24h": "Lihora tse 24",
   "screen.prediction.range_48h": "Lihora tse 48",
   "screen.prediction.range_7d": "Matsatsi a 7",
@@ -472,7 +472,7 @@
   "notif_prefs.all_notifications_explainer": "Tima hore u se ke oa fumana litsebiso tsohle tse ka har'a sesebelisoa.",
   "notif_prefs.categories": "Lihlopha",
   "notif_prefs.mark_count_as_read": "Tšoaea {{count}} joalo ka the baliloe",
-  "notif_prefs.nothing_unread": "Ha ho litsebiso tse sa baloang",
+  "notif_prefs.nothing_unread": "Nothing unread",
   "settings.title": "Litlhophiso",
   "settings.theme": "Sehlooho",
   "settings.about": "Mabapi",
@@ -719,5 +719,10 @@
   "auth.error.password_weak": "Phasewete eo ha e bolaoe ke tseo u leotsitseng ka nako e telele.",
   "auth.error.generic": "Karabo ena ha e amoheleheloe. Leka hape.",
   "screen.feedback.message_required": "Ka kopo kenya tlhahisoleseding le thekenoloji.",
-  "settings.about.credits": "Credits & Attribution"
+  "settings.about.credits": "Credits & Attribution",
+  "notif_prefs.air_quality_alerts": "Air quality alerts",
+  "notif_prefs.daily_summaries": "Daily summaries",
+  "notif_prefs.air_quality_updates": "Air quality updates",
+  "notif_prefs.tips_and_guidance": "Tips and guidance",
+  "screen.profile.account_actions": "Account"
 }

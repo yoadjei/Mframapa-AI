@@ -1,10 +1,11 @@
-import { Activity, ArrowLeft, Globe, WifiOff, Gift, UserX, CloudOff } from "lucide-react";
+import { Activity, Globe, WifiOff, Gift, UserX, CloudOff } from "lucide-react";
 import { useAppState } from "../../state/appState.jsx";
 import { MorphBackground, useStaggeredEntrance } from "../../components/background/MorphBackground.jsx";
 import { useNavigation } from "../../hooks/useNavigation.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { getColors, Colors } from "../../utils/colors.js";
 import { PrimaryButton } from "../../components/ui/PrimaryButton.jsx";
+import { StackBackButton } from "../../components/navigation/StackBackButton.jsx";
 import { LivePreviewCard } from "./LivePreviewCard.jsx";
 
 const FEATURE_KEYS = [
@@ -71,16 +72,13 @@ export function LandingMarketingScreen({ params, isOnline, isDark }) {
           padding: "8px 16px 4px",
         }}
       >
-        <button
-          type="button"
+        <StackBackButton
           onClick={goBack}
-          className="flex items-center justify-center active:opacity-60"
-          style={{ width: 36, height: 36 }}
-          aria-label={t("common.go_back")}
-        >
-          <ArrowLeft size={22} color={colors.text} />
-        </button>
-        <div style={{ width: 36 }} />
+          color={colors.text}
+          variant="arrow"
+          ariaLabel={t("common.go_back")}
+        />
+        <div style={{ width: 44 }} />
       </div>
 
       <div

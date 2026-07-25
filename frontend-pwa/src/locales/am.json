@@ -472,7 +472,7 @@
   "notif_prefs.all_notifications_explainer": "ሁሉንም የመተግበሪያ ውስጥ ማንቂያዎች ለማቆም አጥፋ።",
   "notif_prefs.categories": "ምድቦች",
   "notif_prefs.mark_count_as_read": "{{count}} እንደተነበበ ምልክት አድርግ",
-  "notif_prefs.nothing_unread": "ያልተነበቡ ማስታወቂያዎች የሉም",
+  "notif_prefs.nothing_unread": "ያልተነበበ የለም",
   "settings.title": "ቅንብሮች",
   "settings.theme": "ጭብጥ",
   "settings.about": "ስለ",
@@ -720,5 +720,10 @@
   "auth.error.password_weak": "ይህ የይለፍ ቃል ለመገመት በጣም ቀላል ነው።",
   "auth.error.generic": "ችግር ተፈጠረ። እባክህ ደግመህ ሞክር።",
   "screen.feedback.message_required": "እባክህ ምን እንደተፈጠረ ንገረን።",
-  "settings.about.credits": "ምስጋናዎች እና መለያዎች"
+  "settings.about.credits": "ምስጋናዎች እና መለያዎች",
+  "notif_prefs.air_quality_alerts": "የአየር ጥራት ማንቂያዎች",
+  "notif_prefs.daily_summaries": "ዕለታዊ ማጠቃለያዎች",
+  "notif_prefs.air_quality_updates": "የአየር ጥራት ዝማኔዎች",
+  "notif_prefs.tips_and_guidance": "ምክሮች እና መመሪያ",
+  "screen.profile.account_actions": "መለያ"
 }

@@ -427,7 +427,7 @@
   "screen.country.choose_country": "Khetha live",
   "screen.country.no_cities": "Kute emadolobha lagciniwe kuleli live nyalo.",
   "screen.country.urban_cities": "Emadolobheni",
-  "screen.country.rural_cities": "Emaphandleni",
+  "screen.country.rural_cities": "Rural",
   "screen.prediction.range_24h": "Ema-awa lange-24",
   "screen.prediction.range_48h": "Ema-awa lange-48",
   "screen.prediction.range_7d": "Emalanga lasi-7",
@@ -471,7 +471,7 @@
   "notif_prefs.all_notifications_explainer": "Cisha kuze uyekele kutfola tonkhe tatiso te-app.",
   "notif_prefs.categories": "Tigaba",
   "notif_prefs.mark_count_as_read": "Maka ti-{{count}} njengetifundviwe",
-  "notif_prefs.nothing_unread": "Kute tatiso letingakafundvwa",
+  "notif_prefs.nothing_unread": "Nothing unread",
   "settings.title": "Emasethingi",
   "settings.theme": "Ingqikithi",
   "settings.about": "Mayelana",
@@ -719,5 +719,10 @@
   "auth.error.password_weak": "Lephasiwedi ilula kucagela kakhulu.",
   "auth.error.generic": "Kukhona lokungahambanga kahle. Tsatfela futsi.",
   "screen.feedback.message_required": "Uyacelwa utise kutsi kwentekeni.",
-  "settings.about.credits": "Amakhredithi & Ukulinganisa"
+  "settings.about.credits": "Amakhredithi & Ukulinganisa",
+  "notif_prefs.air_quality_alerts": "Air quality alerts",
+  "notif_prefs.daily_summaries": "Daily summaries",
+  "notif_prefs.air_quality_updates": "Air quality updates",
+  "notif_prefs.tips_and_guidance": "Tips and guidance",
+  "screen.profile.account_actions": "Account"
 }

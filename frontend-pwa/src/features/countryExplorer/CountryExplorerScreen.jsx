@@ -5,6 +5,7 @@ import { useNavigation } from "../../hooks/useNavigation.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { getColors, Colors } from "../../utils/colors.js";
 import { fetchCityPrediction } from "../../services/predictionService.js";
+import { StackBackButton } from "../../components/navigation/StackBackButton.jsx";
 
 export function CountryExplorerScreen({ isDark }) {
   const { state, dispatch } = useAppState();
@@ -67,22 +68,20 @@ export function CountryExplorerScreen({ isDark }) {
       {/* Safe area top */}
       <div style={{ height: "env(safe-area-inset-top)" }} />
 
-      {/* Header */}
+      {/* Header title — StackBackButton yields to global fixed back when inStack */}
       <div
-        className="flex items-center"
-        style={{ paddingHorizontal: 8, paddingTop: 4, paddingBottom: 4 }}
+        className="flex items-center gap-2"
+        style={{ paddingTop: 8, paddingBottom: 8, paddingLeft: 16, paddingRight: 16 }}
       >
-        <div className="flex items-center" style={{ padding: 8 }}>
-          <button
-            type="button"
-            onClick={goBack}
-            className="flex items-center justify-center rounded-full"
-            style={{ width: 40, height: 40 }}
-          >
-            <ChevronLeft size={24} color={colors.text} />
-          </button>
-        </div>
-        <div style={{ flex: 1 }} />
+        <StackBackButton
+          onClick={goBack}
+          color={colors.text}
+          variant="chevron"
+          ariaLabel={t("common.go_back")}
+        />
+        <span className="text-[1.375rem] font-extrabold" style={{ color: colors.text }}>
+          {t("screen.profile.link_country")}
+        </span>
       </div>
 
       {/* Scrollable content */}

@@ -5,6 +5,7 @@ import { useNavigation } from "../../hooks/useNavigation.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { getColors, Colors, getAQIColor } from "../../utils/colors.js";
 import { getForecast } from "../../services/api.js";
+import { StackBackButton } from "../../components/navigation/StackBackButton.jsx";
 
 
 
@@ -191,31 +192,12 @@ export function PredictionDashboardScreen({ isOnline, isDark, params }) {
           paddingBottom: 12,
         }}
       >
-        <button
-          type="button"
+        <StackBackButton
           onClick={goBack}
-          style={{
-            background: "none",
-            border: "none",
-            padding: 0,
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <svg
-            width={22}
-            height={22}
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke={colors.text}
-            strokeWidth={2.5}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <polyline points="15 18 9 12 15 6" />
-          </svg>
-        </button>
+          color={colors.text}
+          variant="chevron"
+          ariaLabel={t("common.go_back")}
+        />
         <span
           style={{
             fontSize: "0.8125rem",
@@ -226,7 +208,7 @@ export function PredictionDashboardScreen({ isOnline, isDark, params }) {
         >
           {t("screen.prediction_dashboard.title").toUpperCase()}
         </span>
-        <div style={{ width: 22 }} />
+        <div style={{ width: 44 }} />
       </div>
 
       {/* Scrollable content */}

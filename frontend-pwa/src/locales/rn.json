@@ -428,7 +428,7 @@
   "screen.country.choose_country": "Hitamwo igihugu",
   "screen.country.no_cities": "Nta bisagara byabitswe kuri iki gihugu nubu.",
   "screen.country.urban_cities": "Igisagara",
-  "screen.country.rural_cities": "Icyaro",
+  "screen.country.rural_cities": "Rural",
   "screen.prediction.range_24h": "Amasaha 24",
   "screen.prediction.range_48h": "Amasaha 48",
   "screen.prediction.range_7d": "Iminsi 7",
@@ -472,7 +472,7 @@
   "notif_prefs.all_notifications_explainer": "Zimya ngo ntubandanye uronswa imiburo yose ya application.",
   "notif_prefs.categories": "Ibyiciro",
   "notif_prefs.mark_count_as_read": "Shira ikimenyetso ko ubutumwa {{count}} bwasomwe",
-  "notif_prefs.nothing_unread": "Nta butumwa budasomwe buriho",
+  "notif_prefs.nothing_unread": "Nothing unread",
   "settings.title": "Gutunganya",
   "settings.theme": "Mandhari",
   "settings.about": "Ibijanye na",
@@ -720,5 +720,10 @@
   "auth.error.password_weak": "Ntabwo bikomeye bishobora gutahurwa m'ukutandukira n'abandi.",
   "auth.error.generic": "Habaye akabazo. Uze wongere ugerageze.",
   "screen.feedback.message_required": "Tumenyeshe ico cabaye.",
-  "settings.about.credits": "Mikopo & Sifa"
+  "settings.about.credits": "Mikopo & Sifa",
+  "notif_prefs.air_quality_alerts": "Air quality alerts",
+  "notif_prefs.daily_summaries": "Daily summaries",
+  "notif_prefs.air_quality_updates": "Air quality updates",
+  "notif_prefs.tips_and_guidance": "Tips and guidance",
+  "screen.profile.account_actions": "Account"
 }

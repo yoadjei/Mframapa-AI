@@ -428,7 +428,7 @@
   "screen.country.choose_country": "Khetha izwe",
   "screen.country.no_cities": "Awekho amadolobha alondoloziwe kuleli zwe okwamanje.",
   "screen.country.urban_cities": "Emaphandleni",
-  "screen.country.rural_cities": "Edolobheni",
+  "screen.country.rural_cities": "Emaqanda",
   "screen.prediction.range_24h": "24 a",
   "screen.prediction.range_48h": "48 a",
   "screen.prediction.range_7d": "7 z",
@@ -472,7 +472,7 @@
   "notif_prefs.all_notifications_explainer": "Cisha ukuze uyeke ukuthola zonke izixwayiso zangaphakathi kohlelo lokusebenza.",
   "notif_prefs.categories": "Izigaba",
   "notif_prefs.mark_count_as_read": "Maka i-{{count}} njengefundiwe",
-  "notif_prefs.nothing_unread": "Azikho izaziso ezingafundiwe",
+  "notif_prefs.nothing_unread": "Akukho okungafundiwe",
   "settings.title": "Izilungiselelo",
   "settings.theme": "Ingqikithi",
   "settings.about": "Mayelana",
@@ -720,5 +720,10 @@
   "auth.error.password_weak": "Leyo phasiwedi kulula kakhulu ukuyiqagela.",
   "auth.error.generic": "Kukhona okungahambanga kahle. Sicela uzame futhi.",
   "screen.feedback.message_required": "Sicela usitshele okwenzekile.",
-  "settings.about.credits": "Amakhredithi & Ukulinganisa"
+  "settings.about.credits": "Amakhredithi & Ukulinganisa",
+  "notif_prefs.air_quality_alerts": "Izexwayiso zekhwalithi yomoya",
+  "notif_prefs.daily_summaries": "Izifinyezo zansuku zonke",
+  "notif_prefs.air_quality_updates": "Izibuyekezo zekhwalithi yomoya",
+  "notif_prefs.tips_and_guidance": "Amathiphu nesiqondiso",
+  "screen.profile.account_actions": "I-akhawunti"
 }

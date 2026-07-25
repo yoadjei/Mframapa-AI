@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "../../hooks/useTranslation.js";
-import { ArrowLeft, MapPin, Plane, Info, User } from "lucide-react";
+import { MapPin, Plane, Info, User } from "lucide-react";
 import { getColors, Colors } from "../../utils/colors.js";
 import { useAppState } from "../../state/appState.jsx";
 import { useNavigation } from "../../hooks/useNavigation.js";
+import { StackBackButton } from "../../components/navigation/StackBackButton.jsx";
 import {
   readCachedCityPack,
 } from "../../services/cityPackService.js";
@@ -75,15 +76,12 @@ export function OfflineCityPickerScreen({ params, isOnline, isDark }) {
         className="flex items-center justify-between px-4 py-3"
         style={{ borderBottom: `1px solid ${colors.border}` }}
       >
-        <button
-          type="button"
+        <StackBackButton
           onClick={goBack}
-          className="flex items-center justify-center active:opacity-60"
-          style={{ width: 36, height: 36 }}
-          aria-label={t("common.go_back")}
-        >
-          <ArrowLeft size={22} color={colors.text} />
-        </button>
+          color={colors.text}
+          variant="arrow"
+          ariaLabel={t("common.go_back")}
+        />
         <button>
           <User size={20} color={colors.text} />
         </button>

@@ -465,7 +465,7 @@
   "notif_prefs.all_notifications_explainer": "Désactivez pour ne plus recevoir d'alertes dans l'application.",
   "notif_prefs.categories": "Catégories",
   "notif_prefs.mark_count_as_read": "Marquer {{count}} comme lu(es)",
-  "notif_prefs.nothing_unread": "Aucune notification non lue",
+  "notif_prefs.nothing_unread": "Rien de non lu",
   "settings.title": "Réglages",
   "settings.theme": "Thème",
   "settings.about": "À propos",
@@ -710,5 +710,11 @@
   "auth.error.password_weak": "Ce mot de passe est trop facile à deviner.",
   "auth.error.generic": "Un problème est survenu. Veuillez réessayer.",
   "screen.feedback.message_required": "Veuillez nous dire ce qui s'est passé.",
-  "settings.about.credits": "Crédits et attributions"
+  "settings.about.credits": "Crédits et attributions",
+  "notif_prefs.air_quality_alerts": "Alertes qualité de l'air",
+  "notif_prefs.daily_summaries": "Résumés quotidiens",
+  "notif_prefs.air_quality_updates": "Mises à jour qualité de l'air",
+  "notif_prefs.tips_and_guidance": "Conseils et guidance",
+  "screen.profile.account_actions": "Compte",
+  "screen.country.rural_cities": "Rural"
 }

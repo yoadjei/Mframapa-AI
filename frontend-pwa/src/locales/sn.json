@@ -427,7 +427,7 @@
   "screen.country.choose_country": "Sarudza nyika",
   "screen.country.no_cities": "Hapana maguta akachengetwa muNyika ino parizvino.",
   "screen.country.urban_cities": "Mudhorobha",
-  "screen.country.rural_cities": "Kumaruwa",
+  "screen.country.rural_cities": "Rural",
   "delete.title": "Bvisa Akaunti",
   "delete.warning_prefix": "Kuita uku",
   "delete.warning_strong": "hakugoni kudzoserwa shure.",
@@ -468,7 +468,7 @@
   "notif_prefs.all_notifications_explainer": "Dzima kuti urege kugamuchira ziviso dzose dzomu-app.",
   "notif_prefs.categories": "Zvikamu",
   "notif_prefs.mark_count_as_read": "Tarisa ziviso dzakada kusanoverengwa {{count}} seDziverengwa",
-  "notif_prefs.nothing_unread": "Hapana ziviso isati yaverengwa",
+  "notif_prefs.nothing_unread": "Nothing unread",
   "settings.title": "Zvigadziriso",
   "settings.theme": "Dingindira",
   "settings.about": "Nezveku",
@@ -714,5 +714,10 @@
   "auth.error.password_weak": "Pasiwedi iyi iri nyore kuti vamwe vagoifembera.",
   "auth.error.generic": "Pane zvatadza kushanda. Edza zvekare.",
   "screen.feedback.message_required": "Taudzei chii chaitika.",
-  "settings.about.credits": "Credits & Attribution"
+  "settings.about.credits": "Credits & Attribution",
+  "notif_prefs.air_quality_alerts": "Air quality alerts",
+  "notif_prefs.daily_summaries": "Daily summaries",
+  "notif_prefs.air_quality_updates": "Air quality updates",
+  "notif_prefs.tips_and_guidance": "Tips and guidance",
+  "screen.profile.account_actions": "Account"
 }

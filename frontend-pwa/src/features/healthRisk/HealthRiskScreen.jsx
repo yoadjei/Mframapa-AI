@@ -1,8 +1,8 @@
-import { ChevronLeft } from "lucide-react";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { useNavigation } from "../../hooks/useNavigation.js";
 import { getColors, getAQIColor } from "../../utils/colors.js";
 import { aqiCategoryKey } from "../../utils/i18nHelpers.js";
+import { StackBackButton } from "../../components/navigation/StackBackButton.jsx";
 
 const RISK_KEYS = [
   {
@@ -54,13 +54,12 @@ export function HealthRiskScreen({ isDark, isOnline, params }) {
         className="flex items-center justify-between px-4 py-3"
         style={{ paddingTop: 8 }}
       >
-        <button
-          type="button"
+        <StackBackButton
           onClick={goBack}
-          className="flex items-center justify-center active:opacity-60"
-        >
-          <ChevronLeft size={22} color={colors.text} />
-        </button>
+          color={colors.text}
+          variant="chevron"
+          ariaLabel={t("common.go_back")}
+        />
 
         <span
           className="text-[0.8125rem] font-bold uppercase tracking-widest"
@@ -70,7 +69,7 @@ export function HealthRiskScreen({ isDark, isOnline, params }) {
         </span>
 
         {/* Spacer to keep title centred */}
-        <div style={{ width: 22 }} />
+        <div style={{ width: 44 }} />
       </div>
 
       {/* Risk cards */}

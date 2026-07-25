@@ -1,8 +1,9 @@
-import { ArrowLeft, CloudOff, Leaf, X } from "lucide-react";
+import { CloudOff, Leaf, X } from "lucide-react";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { getColors, Colors } from "../../utils/colors.js";
 import { useAppState } from "../../state/appState.jsx";
 import { useNavigation } from "../../hooks/useNavigation.js";
+import { StackBackButton } from "../../components/navigation/StackBackButton.jsx";
 
 export function ErrorScreen({ params, isOnline, isDark }) {
   const { t } = useTranslation();
@@ -38,16 +39,13 @@ export function ErrorScreen({ params, isOnline, isDark }) {
 
       {/* Header */}
       <div className="flex items-center justify-between py-2">
-        <button
-          type="button"
+        <StackBackButton
           onClick={goBack}
-          className="flex items-center justify-center active:opacity-60"
-          style={{ width: 36, height: 36 }}
-          aria-label={t("common.go_back")}
-        >
-          <ArrowLeft size={22} color={colors.text} />
-        </button>
-        <div style={{ width: 36 }} />
+          color={colors.text}
+          variant="arrow"
+          ariaLabel={t("common.go_back")}
+        />
+        <div style={{ width: 44 }} />
       </div>
 
       {/* Center content */}

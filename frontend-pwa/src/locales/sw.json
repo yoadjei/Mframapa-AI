@@ -470,7 +470,7 @@
   "notif_prefs.all_notifications_explainer": "Zima ili usipokee tahadhari zote ndani ya programu.",
   "notif_prefs.categories": "Kategoria",
   "notif_prefs.mark_count_as_read": "Tia alama {{count}} zimesomwa",
-  "notif_prefs.nothing_unread": "Hakuna arifa ambazo hazijasomwa",
+  "notif_prefs.nothing_unread": "Hakuna visivyosomwa",
   "settings.title": "Mipangilio",
   "settings.theme": "Mandhari",
   "settings.about": "Kuhusu",
@@ -718,5 +718,10 @@
   "auth.error.password_weak": "Nenosiri hilo ni rahisi sana kukisia.",
   "auth.error.generic": "Kuna kitu kimeenda vibaya. Tafadhali jaribu tena.",
   "screen.feedback.message_required": "Tafadhali tuambie kilichotokea.",
-  "settings.about.credits": "Mikopo & Sifa"
+  "settings.about.credits": "Mikopo & Sifa",
+  "notif_prefs.air_quality_alerts": "Tahadhari za ubora wa hewa",
+  "notif_prefs.daily_summaries": "Muhtasari wa kila siku",
+  "notif_prefs.air_quality_updates": "Sasisho za ubora wa hewa",
+  "notif_prefs.tips_and_guidance": "Vidokezo na mwongozo",
+  "screen.profile.account_actions": "Akaunti"
 }

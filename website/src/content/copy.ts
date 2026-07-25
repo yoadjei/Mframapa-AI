@@ -59,7 +59,7 @@ export const copy = {
       },
       {
         id: 'alerts' as const,
-        screen: 'home-dark' as const,
+        screen: 'alerts' as const,
         step: 'Step 3',
         title: 'Turn on dust alerts',
         body: 'We send a phone notification when dusty air is coming to your city.',

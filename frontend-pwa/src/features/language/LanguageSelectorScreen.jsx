@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { ChevronLeft, Search, Check } from "lucide-react";
+import { Search, Check } from "lucide-react";
 import { useAppState } from "../../state/appState.jsx";
 import { useNavigation } from "../../hooks/useNavigation.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { getColors, Colors } from "../../utils/colors.js";
+import { StackBackButton } from "../../components/navigation/StackBackButton.jsx";
 
 const SUPPORTED_LANGUAGES = [
   { code: "ar", name: "Arabic",      flag: "🇪🇬" },
@@ -58,15 +59,14 @@ export function LanguageSelectorScreen({ isDark, isOnline, params }) {
       {/* Safe area top spacer */}
       <div style={{ height: "env(safe-area-inset-top)" }} />
 
-      {/* Header: back button + large title */}
+      {/* Header: large title (StackBackButton yields to global fixed back when inStack) */}
       <div className="flex items-center gap-2 px-4 pt-2 pb-2">
-        <button
-          type="button"
+        <StackBackButton
           onClick={goBack}
-          className="flex items-center justify-center active:opacity-60"
-        >
-          <ChevronLeft size={22} color={colors.text} />
-        </button>
+          color={colors.text}
+          variant="chevron"
+          ariaLabel={t("common.go_back")}
+        />
         <span
           className="flex-1 text-[1.625rem] font-extrabold"
           style={{ color: colors.text }}

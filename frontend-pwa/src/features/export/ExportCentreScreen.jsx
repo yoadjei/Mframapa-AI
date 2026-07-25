@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { ArrowLeft, Download } from "lucide-react";
+import { Download } from "lucide-react";
 import { getColors, Colors } from "../../utils/colors.js";
 import { useNavigation } from "../../hooks/useNavigation.js";
+import { useStackChrome, stackTitlePad } from "../../hooks/useStackChrome.js";
 import { useAppState } from "../../state/appState.jsx";
 import { useTranslation } from "../../hooks/useTranslation.js";
+import { StackBackButton } from "../../components/navigation/StackBackButton.jsx";
 
 // ─── Format builders ──────────────────────────────────────────────────────────
 
@@ -131,6 +133,7 @@ const FORMATS = [
 export function ExportCentreScreen({ params, isOnline, isDark }) {
   const colors = getColors(isDark ?? true);
   const { goBack } = useNavigation();
+  const inStack = useStackChrome();
   const { state } = useAppState();
   const { t } = useTranslation();
 
@@ -190,14 +193,13 @@ export function ExportCentreScreen({ params, isOnline, isDark }) {
 
       {/* Header */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px 4px" }}>
-        <button
-          type="button"
+        <StackBackButton
           onClick={goBack}
-          style={{ background: "none", border: "none", cursor: "pointer", padding: 4 }}
-        >
-          <ArrowLeft size={22} color={colors.text} />
-        </button>
-        <div style={{ width: 22 }} />
+          color={colors.text}
+          variant="arrow"
+          ariaLabel={t("common.go_back")}
+        />
+        <div style={{ width: 44 }} />
       </div>
 
       {/* Scrollable content */}
@@ -212,7 +214,14 @@ export function ExportCentreScreen({ params, isOnline, isDark }) {
           gap: 20,
         }}
       >
-        <span style={{ fontSize: "1.625rem", fontWeight: 800, color: colors.text }}>
+        <span
+          style={{
+            fontSize: "1.625rem",
+            fontWeight: 800,
+            color: colors.text,
+            paddingLeft: stackTitlePad(inStack),
+          }}
+        >
           {t("screen.export.title")}
         </span>
 

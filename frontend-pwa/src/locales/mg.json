@@ -427,7 +427,7 @@
   "screen.country.choose_country": "Mifidiana firenena",
   "screen.country.no_cities": "Tsy mbola misy tanàna voatahiry ho an'ity firenena ity.",
   "screen.country.urban_cities": "Renivohitra",
-  "screen.country.rural_cities": "Ambanivohitra",
+  "screen.country.rural_cities": "Rural",
   "screen.prediction.range_24h": "24ora",
   "screen.prediction.range_48h": "48ora",
   "screen.prediction.range_7d": "7andro",
@@ -471,7 +471,7 @@
   "notif_prefs.all_notifications_explainer": "Atsaharo ny fahazoana fanairana rehetra ao anaty app.",
   "notif_prefs.categories": "Sokajy",
   "notif_prefs.mark_count_as_read": "Marihina {{count}} ho voavaky",
-  "notif_prefs.nothing_unread": "Tsy misy fampilazana tsy voavaky",
+  "notif_prefs.nothing_unread": "Nothing unread",
   "settings.theme": "Lohahevitra",
   "settings.about": "Momba ny",
   "settings.appearance": "Endrika ivelany",
@@ -718,5 +718,10 @@
   "auth.error.password_weak": "Mora fantarina tsotra izao ilay tenimiafina.",
   "auth.error.generic": "Nisy tsy nety nitranga tao. Azafady andramo indray.",
   "screen.feedback.message_required": "Azafady teneno anay izay nitranga.",
-  "settings.about.credits": "Credits & Attribution"
+  "settings.about.credits": "Credits & Attribution",
+  "notif_prefs.air_quality_alerts": "Air quality alerts",
+  "notif_prefs.daily_summaries": "Daily summaries",
+  "notif_prefs.air_quality_updates": "Air quality updates",
+  "notif_prefs.tips_and_guidance": "Tips and guidance",
+  "screen.profile.account_actions": "Account"
 }

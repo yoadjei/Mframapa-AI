@@ -73,6 +73,8 @@ function appReducer(state, action) {
           firstName: action.payload.user?.firstName ?? state.profile.firstName,
           email: action.payload.user?.email ?? state.profile.email,
         },
+        // close the auth stack screen and land on Profile (where sign-in started)
+        ui: { ...state.ui, activeScreen: "profile", screenStack: [] },
         // a home city chosen at sign-up seeds the home screen, but never
         // overrides a city the user has already been looking at on this device.
         homeSummary:

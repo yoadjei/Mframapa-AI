@@ -428,7 +428,7 @@
   "screen.country.choose_country": "Tànnal ab réew",
   "screen.country.no_cities": "Amagul dëkk yiy denc ci réew mii.",
   "screen.country.urban_cities": "Dëkk",
-  "screen.country.rural_cities": "Kaw",
+  "screen.country.rural_cities": "Rural",
   "screen.prediction.range_24h": "24w",
   "screen.prediction.range_48h": "48w",
   "screen.prediction.range_7d": "7b",
@@ -472,7 +472,7 @@
   "notif_prefs.all_notifications_explainer": "Fey ko ngir bañ a joto yégle yépp ci app bi.",
   "notif_prefs.categories": "Càllala yi",
   "notif_prefs.mark_count_as_read": "Fàraas {{count}} ni jàng nañu leen",
-  "notif_prefs.nothing_unread": "Amul yégle yunu jàngul",
+  "notif_prefs.nothing_unread": "Nothing unread",
   "settings.title": "Jekkal yi",
   "settings.theme": "Thème",
   "settings.about": "Ci Lëngoo gi",
@@ -718,5 +718,10 @@
   "auth.error.password_weak": "Baatu-jàll bi yomb na lool a natt.",
   "auth.error.generic": "Jafe-jafe am na. Jëmaatal.",
   "screen.feedback.message_required": "Wax nu li xew.",
-  "settings.about.credits": "Crédits et attributions"
+  "settings.about.credits": "Crédits et attributions",
+  "notif_prefs.air_quality_alerts": "Air quality alerts",
+  "notif_prefs.daily_summaries": "Daily summaries",
+  "notif_prefs.air_quality_updates": "Air quality updates",
+  "notif_prefs.tips_and_guidance": "Tips and guidance",
+  "screen.profile.account_actions": "Account"
 }

@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from "react";
 import {
-  ArrowLeft,
   MapPin,
   Search,
   X,
@@ -13,6 +12,7 @@ import { useNavigation } from "../../hooks/useNavigation.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { getColors, Colors, getAQIColor } from "../../utils/colors.js";
 import { getPrediction, getHistory } from "../../services/api.js";
+import { StackBackButton } from "../../components/navigation/StackBackButton.jsx";
 
 /** days of real history behind each sparkline */
 const TREND_DAYS = 7;
@@ -381,13 +381,16 @@ export function CompareCitiesScreen({ isOnline, isDark, params }) {
           padding: "12px 16px",
         }}
       >
-        <button type="button" onClick={goBack} style={{ background: "none", border: "none", cursor: "pointer", padding: 4 }}>
-          <ArrowLeft size={22} color={colors.text} />
-        </button>
+        <StackBackButton
+          onClick={goBack}
+          color={colors.text}
+          variant="arrow"
+          ariaLabel={t("common.go_back")}
+        />
         <span style={{ fontSize: "1.0625rem", fontWeight: 700, color: colors.text }}>
           {t("screen.compare.title")}
         </span>
-        <div style={{ width: 30 }} />
+        <div style={{ width: 44 }} />
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 16, padding: "4px 16px 40px" }}>
