@@ -15,6 +15,8 @@ export function StackBackButton({
   const inStack = useStackChrome();
   const Icon = variant === "chevron" ? ChevronLeft : ArrowLeft;
 
+  // App.jsx flex header owns back when in stack — keep a spacer so centered
+  // titles that still render [back][title][44] stay balanced.
   if (inStack) {
     return <div aria-hidden style={{ width: 44, height: 44, flexShrink: 0 }} />;
   }

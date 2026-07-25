@@ -288,49 +288,72 @@ export function App() {
         {!onboardingComplete ? (
           <OnboardingScreen canInstall={canInstall} onInstall={promptInstall} />
         ) : StackScreen ? (
-          // Full-screen stack route — no tab bar, safe area insets handled by each screen
+          // Flexible stack chrome: header (safe-area + back) + scrollable body.
+          // Avoids a fixed overlay that covers titles and traps scroll on Android.
           <div
             key={stackTop.name}
             className="mf-screen"
-            style={{ minHeight: "100dvh", backgroundColor: isDark ? "#0A0D12" : "#F8FAFC" }}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              height: "100dvh",
+              maxHeight: "100dvh",
+              backgroundColor: isDark ? "#0A0D12" : "#F8FAFC",
+            }}
           >
-            <StackChromeContext.Provider value={true}>
-              <ScreenSuspense>
-                <StackScreen isOnline={isOnline} params={stackTop.params} isDark={isDark} />
-              </ScreenSuspense>
-            </StackChromeContext.Provider>
-
-            {/* Single, guaranteed back button for every stack screen.
-                Uses onPointerDown (fires before gesture detection on iOS Safari)
-                and a solid background so no duplicate button shows through.
-                Screens under StackChromeContext pad titles/content clear of this. */}
-            <button
-              type="button"
-              onPointerDown={(e) => {
-                e.preventDefault();
-                window.history.back();
-              }}
-              aria-label="Go back"
+            <header
               style={{
-                position: "fixed",
-                top: "calc(env(safe-area-inset-top) + 8px)",
-                left: 12,
-                zIndex: 9999,
-                width: 44,
-                height: 44,
+                flexShrink: 0,
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center",
-                borderRadius: 22,
+                paddingTop: "env(safe-area-inset-top)",
+                paddingLeft: 8,
+                paddingRight: 8,
+                minHeight: "calc(env(safe-area-inset-top) + 52px)",
                 backgroundColor: isDark ? "#0A0D12" : "#F8FAFC",
-                border: `1px solid ${isDark ? "rgba(255,255,255,0.10)" : "rgba(0,0,0,0.08)"}`,
-                cursor: "pointer",
-                touchAction: "manipulation",
-                WebkitTapHighlightColor: "transparent",
+                borderBottom: `1px solid ${isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)"}`,
               }}
             >
-              <ArrowLeft size={22} color={isDark ? "#FFFFFF" : "#0F1419"} />
-            </button>
+              <button
+                type="button"
+                onPointerDown={(e) => {
+                  e.preventDefault();
+                  window.history.back();
+                }}
+                aria-label="Go back"
+                style={{
+                  width: 44,
+                  height: 44,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRadius: 22,
+                  backgroundColor: "transparent",
+                  border: `1px solid ${isDark ? "rgba(255,255,255,0.10)" : "rgba(0,0,0,0.08)"}`,
+                  cursor: "pointer",
+                  touchAction: "manipulation",
+                  WebkitTapHighlightColor: "transparent",
+                }}
+              >
+                <ArrowLeft size={22} color={isDark ? "#FFFFFF" : "#0F1419"} />
+              </button>
+            </header>
+
+            <div
+              style={{
+                flex: 1,
+                minHeight: 0,
+                overflowY: "auto",
+                WebkitOverflowScrolling: "touch",
+                overscrollBehavior: "contain",
+              }}
+            >
+              <StackChromeContext.Provider value={true}>
+                <ScreenSuspense>
+                  <StackScreen isOnline={isOnline} params={stackTop.params} isDark={isDark} />
+                </ScreenSuspense>
+              </StackChromeContext.Provider>
+            </div>
           </div>
         ) : (
           <MobileShell canInstall={canInstall} onInstall={promptInstall} isDark={isDark}>

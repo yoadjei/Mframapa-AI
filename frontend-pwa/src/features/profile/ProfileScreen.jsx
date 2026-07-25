@@ -218,7 +218,7 @@ export function ProfileScreen({ isOnline, isDark }) {
             </p>
             <PrimaryButton
               label={t("screen.profile.sign_in")}
-              onClick={() => navigate("auth")}
+              onClick={() => navigate("auth", { mode: "login" })}
             />
           </div>
         )}
@@ -280,7 +280,7 @@ export function ProfileScreen({ isOnline, isDark }) {
             <div className="flex flex-col items-center">
               <button
                 type="button"
-                onClick={() => navigate("auth")}
+                onClick={() => navigate("auth", { mode: "login" })}
                 className="flex items-center gap-2 rounded-full px-5 py-2.5 text-[0.9375rem] font-semibold active:opacity-70"
                 style={{ backgroundColor: Colors.brandGreen, color: "#00110B" }}
               >

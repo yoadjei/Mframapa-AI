@@ -70,12 +70,15 @@ function Field({ label, placeholder, value, onChange, type = "text", icon: Icon,
   );
 }
 
-// ── Transparent full-height scroll wrapper (matches mobile KeyboardAvoidingView + ScrollView) ──
+// ── Transparent scroll wrapper (matches mobile KeyboardAvoidingView + ScrollView) ──
 function AuthScroll({ children }) {
+  const inStack = useStackChrome();
   return (
     <div style={{
-      minHeight: "100dvh", overflowY: "auto",
-      paddingTop: "env(safe-area-inset-top)",
+      // Parent stack chrome already scrolls + owns safe-area; avoid nested traps.
+      minHeight: inStack ? undefined : "100dvh",
+      overflowY: inStack ? "visible" : "auto",
+      paddingTop: inStack ? 0 : "env(safe-area-inset-top)",
       paddingBottom: "env(safe-area-inset-bottom)",
     }}>
       <div style={{ paddingLeft: 24, paddingRight: 24, paddingTop: 16, paddingBottom: 32 }}>
@@ -427,11 +430,14 @@ function ForgotView({ onBack , c, isDark }) {
 }
 
 /* ── Root ── */
-export function AuthScreen({ isDark = true }) {
+export function AuthScreen({ isDark = true, params }) {
   const { dispatch } = useAppState();
   const c = palette(isDark);
+  // Sign In from Profile always lands on login (email + password only).
   // "login" | "signup" | "forgot"
-  const [screen, setScreen] = useState("login");
+  const initial =
+    params?.mode === "signup" ? "signup" : params?.mode === "forgot" ? "forgot" : "login";
+  const [screen, setScreen] = useState(initial);
 
   function handleAuth(payload) {
     dispatch({ type: "LOGIN_SUCCESS", payload });

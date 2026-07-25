@@ -119,13 +119,20 @@ export function SettingsScreen({ isOnline, isDark }) {
     overflow: "hidden",
   };
 
+  // When opened as a stack screen, the App chrome scrolls — don't nest another
+  // overflow container or reserve tab-bar gap (no tab bar on stack routes).
   return (
     <div
-      className="min-h-[100dvh] overflow-y-auto mf-tab-gap px-4"
-      style={{ backgroundColor: colors.bg }}
+      className={`px-4 ${inStack ? "" : "min-h-[100dvh] overflow-y-auto mf-tab-gap"}`}
+      style={{
+        backgroundColor: colors.bg,
+        paddingTop: stackTopPad(inStack),
+        paddingBottom: inStack ? "calc(24px + env(safe-area-inset-bottom))" : undefined,
+      }}
     >
-      <div style={{ paddingTop: stackTopPad(inStack) }}>
+      <div>
 
+        {/* Title only on tab/settings-as-tab; stack chrome header already has back */}
         <p
           className="text-[1.75rem] font-extrabold mb-5"
           style={{ color: colors.text, paddingLeft: stackTitlePad(inStack) }}
