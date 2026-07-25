@@ -22,7 +22,7 @@ export function MframapaLogo({ size = 'md', markOnly = false }: MframapaLogoProp
 
   return (
     <View style={styles.row}>
-      <CloudIcon size={s.icon} color={colors.accent} />
+      <RaindropIcon size={s.icon} color={colors.accent} />
       {markOnly ? null : (
         <View style={[styles.textRow, { gap: s.gap / 2 }]}>
           <Text style={[styles.name, { fontSize: s.text }]}>
@@ -35,22 +35,10 @@ export function MframapaLogo({ size = 'md', markOnly = false }: MframapaLogoProp
   );
 }
 
-function CloudIcon({ size, color }: { size: number; color: string }) {
+function RaindropIcon({ size, color }: { size: number; color: string }) {
   return (
-    <Svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke={color}
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <Path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242" />
-      <Path d="M8 14v7" />
-      <Path d="M12 16v7" />
-      <Path d="M16 14v7" />
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill={color}>
+      <Path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
     </Svg>
   );
 }
@@ -76,5 +64,3 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
 });
-
-

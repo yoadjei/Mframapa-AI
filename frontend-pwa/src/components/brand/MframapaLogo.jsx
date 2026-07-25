@@ -1,6 +1,5 @@
-// The single Mframapa mark: a rain cloud, matching MframapaLogo.tsx on mobile.
-// `markOnly` drops the wordmark for in-app headers, where repeating the product
-// name on every screen adds nothing and crowds the top bar.
+// Raindrop mark on brand green — matches app icons (white tile + drop).
+// `markOnly` drops the wordmark for in-app headers.
 export function MframapaLogo({ size = "md", isDark = true, markOnly = false }) {
   const dims = {
     sm: { icon: 18, text: 15 },
@@ -17,16 +16,11 @@ export function MframapaLogo({ size = "md", isDark = true, markOnly = false }) {
         width={icon}
         height={icon}
         viewBox="0 0 24 24"
-        fill="none"
-        stroke="#00C896"
-        strokeWidth={2}
-        strokeLinecap="round"
-        strokeLinejoin="round"
+        fill="#00C896"
+        aria-hidden="true"
       >
-        <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242" />
-        <path d="M8 14v7" />
-        <path d="M12 16v7" />
-        <path d="M16 14v7" />
+        {/* Lucide droplet (filled) */}
+        <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
       </svg>
       {markOnly ? null : (
         <span style={{ fontSize: text, fontWeight: 700, letterSpacing: "0.2px" }}>
