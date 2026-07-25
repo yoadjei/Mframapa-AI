@@ -22,7 +22,7 @@ Detailed overview of the current implementation, codebase structure, and feature
 ```
 mobile/
 ├── App.tsx                   # Root shell component, wraps AppNavigator, registers background & bootstrap logic
-├── app.json                  # Native Expo configuration (Bundle IDs, icons, plugins)
+├── app.config.js             # Native Expo configuration (Bundle IDs, icons, plugins)
 ├── app.config.js             # Dynamic configuration (loads .env, translates local IP for devices, configures iOS personal provisioning)
 ├── package.json              # Scripts, dependencies, and type definitions
 ├── tsconfig.json             # TypeScript rules and compiler configuration

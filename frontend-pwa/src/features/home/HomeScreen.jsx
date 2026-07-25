@@ -76,6 +76,26 @@ export function HomeScreen({ isOnline }) {
     bg:      isDark ? "#0A0D12" : "#F8FAFC",
   };
 
+  // Offline: show the last saved reading instead of an empty "--" hero.
+  useEffect(() => {
+    if (isOnline) return;
+    const s = state.homeSummary;
+    if (s?.pm25 == null || !s?.city) return;
+    setPrediction((prev) => {
+      if (prev?.pm25 != null) return prev;
+      return {
+        city: { name: s.city, lat: s.lat, lon: s.lon },
+        pm25: s.pm25,
+        category: s.aqiCategory,
+        aqi_category: s.aqiCategory,
+        degraded: Boolean(s.degraded),
+        timestamp: s.lastUpdated,
+        insight: null,
+        cached: true,
+      };
+    });
+  }, [isOnline, state.homeSummary]);
+
   // Auto-fetch on mount if city is known
   useEffect(() => {
     if (!isOnline) return;
@@ -248,12 +268,16 @@ export function HomeScreen({ isOnline }) {
           <ChevronDown size={14} color={colors.sub} />
         </button>
 
-        {/* ── Offline banner ── */}
+        {/* ── Offline banner — only claim a cached reading when we actually have one ── */}
         {!isOnline && (
           <div className="mx-4 mb-3 flex items-center gap-2 rounded-xl border px-3 py-2.5"
             style={{ backgroundColor: "#F5C51818", borderColor: "#F5C51840", color: "#F5C518" }}>
             <AlertTriangle size={15} />
-            <span className="text-sm font-medium">{t("pwa.home.offline_banner") ?? "Offline — showing cached data"}</span>
+            <span className="text-sm font-medium">
+              {(prediction?.pm25 != null || state.homeSummary?.pm25 != null)
+                ? t("offline.cached_data")
+                : t("offline.no_cache")}
+            </span>
           </div>
         )}
 

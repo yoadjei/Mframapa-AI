@@ -553,7 +553,7 @@ function NoCityListFallback({ cities, loading, onSelectCity, colors, isDark, t, 
             border: "1px solid rgba(245,196,24,0.35)",
           }}
         >
-          {t("core.map_token", "Set VITE_MAPBOX_TOKEN to enable the interactive map. Searching cities still works below.")}
+          {t("core.map_token")}
         </div>
       </div>
       {/* Search bar */}

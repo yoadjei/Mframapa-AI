@@ -130,10 +130,13 @@ def _run_inference(request, feats, region_id, segment, om_pm25):
     if om_pm25 is not None:
         half = manifest_hw or _default_conformal_half_width(om_pm25)
         method = "split_conformal_manifest" if manifest_hw is not None else "heuristic_relative"
-        return om_pm25, half, False, "openmeteo_fallback", method
+        # OpenMeteo is a real secondary source — still mark degraded so clients
+        # show "backup estimate" instead of looking like a full model reading.
+        return om_pm25, half, True, "openmeteo_fallback", method
 
     logger.warning("predict: no model or OpenMeteo pm25 for %s/%s; constant fallback", region_id, segment)
-    return 25.0, _default_conformal_half_width(25.0), False, "fallback_constant", "heuristic_relative"
+    # Never present a hard-coded PM2.5 as a normal reading.
+    return 25.0, _default_conformal_half_width(25.0), True, "fallback_constant", "heuristic_relative"
 
 def _cities() -> list:
     with CITIES_PATH.open(encoding="utf-8") as f:

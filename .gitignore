@@ -107,7 +107,15 @@ docs/AGENT_GUIDE_*.md
 docs/APP_STORE_GUIDE.md
 docs/PHASE1_QUICKSTART.md
 docs/architecture.png
-docs/deployment/
+docs/deployment/*
+!docs/deployment/STORE_SUBMISSION.md
 notebooks/
 
 .superpowers/
+
+# Playwright e2e
+e2e/test-results/
+e2e/playwright-report/
+e2e/blob-report/
+e2e/node_modules/
+

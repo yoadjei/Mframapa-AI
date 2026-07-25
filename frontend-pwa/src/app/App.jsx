@@ -212,7 +212,7 @@ const IS_PREVIEW =
   import.meta.env.DEV && new URLSearchParams(window.location.search).has("preview");
 
 export function App() {
-  const { state: { onboardingComplete, session, ui, preferences }, dispatch } = useAppState();
+  const { state: { onboardingComplete, ui, preferences }, dispatch } = useAppState();
   const isOnline = useOnlineStatus();
   const {
     canInstall,
@@ -363,6 +363,7 @@ export function App() {
             </header>
 
             <div
+              data-testid="stack-scroll"
               style={{
                 flex: 1,
                 minHeight: 0,

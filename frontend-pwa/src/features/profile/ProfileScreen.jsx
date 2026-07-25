@@ -79,7 +79,7 @@ export function ProfileScreen({ isOnline, isDark }) {
   }
   return (
     <div
-      className="min-h-[100dvh] overflow-y-auto mf-tab-gap px-4"
+      className="min-h-[100dvh] mf-tab-gap px-4"
       style={{ backgroundColor: colors.bg }}
     >
       {/* MobileShell already applies safe-area top — only content inset here. */}

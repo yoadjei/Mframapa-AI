@@ -54,7 +54,7 @@ export function HeroStage() {
       {/* Soft CSS atmosphere on mobile — no WebGL (avoids blink / context loss). */}
       {isMobile ? (
         <>
-          <div className="hero-glow hero-glow--mint" />
+          <div data-testid="hero-glow" className="hero-glow hero-glow--mint" />
           <div className="hero-glow hero-glow--blue" />
         </>
       ) : (

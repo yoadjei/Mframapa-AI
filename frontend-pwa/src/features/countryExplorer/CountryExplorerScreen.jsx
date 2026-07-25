@@ -1,10 +1,11 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { ChevronLeft, ChevronsUpDown, MapPin, Building2, Leaf, Check } from "lucide-react";
 import { useAppState } from "../../state/appState.jsx";
 import { useNavigation } from "../../hooks/useNavigation.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { getColors, Colors } from "../../utils/colors.js";
 import { fetchCityPrediction } from "../../services/predictionService.js";
+import { getCachedCities } from "../../services/cityPackService.js";
 import { StackBackButton } from "../../components/navigation/StackBackButton.jsx";
 
 export function CountryExplorerScreen({ isDark }) {
@@ -13,26 +14,40 @@ export function CountryExplorerScreen({ isDark }) {
   const { t } = useTranslation();
   const colors = getColors(isDark ?? true);
 
-  // Use savedCities as the PWA equivalent of mobile's offlineCities
-  const offlineCities = state.savedCities ?? [];
+  // Guests have no saved cities yet — seed from the offline city pack so this
+  // screen is useful on first open, not an empty dead end.
+  const packCities = useMemo(() => getCachedCities(), []);
+  const offlineCities = useMemo(() => {
+    const saved = state.savedCities ?? [];
+    if (saved.length) {
+      const byKey = new Map(
+        packCities.map((c) => [`${c.name}|${c.country}`.toLowerCase(), c]),
+      );
+      for (const c of saved) {
+        byKey.set(`${c.name}|${c.country ?? ""}`.toLowerCase(), c);
+      }
+      return Array.from(byKey.values());
+    }
+    return packCities;
+  }, [state.savedCities, packCities]);
   const language = state.preferences?.language ?? "en";
 
-  // Unique sorted list of countries represented in savedCities
   const countries = useMemo(() => {
     const set = new Set();
     for (const c of offlineCities) if (c.country) set.add(c.country);
     return Array.from(set).sort();
   }, [offlineCities]);
 
-  const [selectedCountry, setSelectedCountry] = useState(() => countries[0] ?? "");
+  const [selectedCountry, setSelectedCountry] = useState("");
   const [pickerOpen, setPickerOpen] = useState(false);
   const [loadingCity, setLoadingCity] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
 
-  // Default to first country once savedCities hydrate
-  if (!selectedCountry && countries.length > 0) {
-    setSelectedCountry(countries[0]);
-  }
+  useEffect(() => {
+    if (!selectedCountry && countries.length > 0) {
+      setSelectedCountry(countries[0]);
+    }
+  }, [countries, selectedCountry]);
 
   const cities = useMemo(
     () => offlineCities.filter((c) => c.country === selectedCountry),

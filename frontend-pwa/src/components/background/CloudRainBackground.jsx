@@ -1,7 +1,7 @@
 import { Cloud, CloudRain, CloudLightning, CloudDrizzle, Cloudy } from "lucide-react";
 
 const ICONS = [Cloud, CloudRain, CloudLightning, CloudDrizzle, Cloudy];
-const CELL = 88;
+const CELL = 120;
 // Virtual canvas — large enough to fill any viewport via percentage positioning.
 const VIRTUAL_W = 1600;
 const VIRTUAL_H = 1200;
@@ -20,7 +20,8 @@ const CLUSTER = (() => {
 
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
-      if (hash(row * 113 + col * 17) < 0.42) continue;
+      // Higher skip → fewer DOM nodes so tab scroll stays smooth on low-end phones.
+      if (hash(row * 113 + col * 17) < 0.58) continue;
 
       const h0 = hash(seed++);
       const h1 = hash(seed++);

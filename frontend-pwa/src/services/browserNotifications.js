@@ -1,7 +1,7 @@
 /**
- * Local browser notifications (PWA). Full Web Push / VAPID can layer on later;
- * this covers in-session OS banners for Did you know and episode-style tips
- * when the user has granted Notification permission.
+ * Local in-session browser notifications (PWA).
+ * Remote Web Push uses VAPID via webPush.js + sw-push.js; this helper only
+ * shows OS banners while the tab/app is open (Did you know, episode tips).
  */
 
 /** Current permission without prompting the OS. */

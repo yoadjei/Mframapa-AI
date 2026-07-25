@@ -13,6 +13,11 @@ export default defineConfig([
     languageOptions: { globals: globals.node },
   },
   {
+    // Classic + Workbox service workers (importScripts, self, clients, …)
+    files: ['public/sw.js', 'public/sw-push.js'],
+    languageOptions: { globals: globals.serviceworker },
+  },
+  {
     files: ['**/*.{js,jsx}'],
     extends: [
       js.configs.recommended,

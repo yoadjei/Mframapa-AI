@@ -4,6 +4,7 @@ import { useNavigation } from "../../hooks/useNavigation.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { getColors, Colors } from "../../utils/colors.js";
 import { StackBackButton } from "../../components/navigation/StackBackButton.jsx";
+import { useStackChrome, stackTopPad } from "../../hooks/useStackChrome.js";
 
 // Map activity icon names (from mobile store ActivityItem) → Lucide components
 const ICON_MAP = {
@@ -42,26 +43,37 @@ export function ActivityScreen({ isOnline, isDark }) {
   const { goBack } = useNavigation();
   const { t } = useTranslation();
   const colors = getColors(isDark ?? true);
+  const inStack = useStackChrome();
 
   // Support both `state.activityFeed` (mobile-aliased) and `state.activity` (PWA-native)
   const feed = state.activityFeed ?? state.activity ?? [];
 
   return (
-    <div style={{ minHeight: "100dvh", display: "flex", flexDirection: "column" }}>
-      {/* Safe-area spacer — MobileShell won't provide it when rendered as a stack screen */}
-      <div style={{ height: "env(safe-area-inset-top)" }} />
+    <div
+      style={{
+        minHeight: inStack ? undefined : "100dvh",
+        display: "flex",
+        flexDirection: "column",
+        paddingTop: inStack ? stackTopPad(true) : undefined,
+      }}
+    >
+      {!inStack && <div style={{ height: "env(safe-area-inset-top)" }} />}
 
-      {/* Header — title centred, left slot reserved for global back button */}
+      {/* Header — App stack chrome already owns back; only show local chrome as a tab. */}
       <div
         className="flex flex-row items-center justify-between px-4 pb-3"
         style={{ paddingTop: 8 }}
       >
-        <StackBackButton
-          onClick={goBack}
-          color={colors.text}
-          variant="chevron"
-          ariaLabel={t("common.go_back")}
-        />
+        {inStack ? (
+          <div style={{ width: 44 }} />
+        ) : (
+          <StackBackButton
+            onClick={goBack}
+            color={colors.text}
+            variant="chevron"
+            ariaLabel={t("common.go_back")}
+          />
+        )}
 
         <span
           className="text-[0.8125rem] font-bold tracking-widest"
@@ -70,18 +82,18 @@ export function ActivityScreen({ isOnline, isDark }) {
           {t("activity.title")}
         </span>
 
-        {/* Spacer to balance the back button */}
         <div style={{ width: 44 }} />
       </div>
 
-      {/* Scrollable content */}
+      {/* Document/stack scroll owns motion — do not nest a second overflow scroller. */}
       <div
-        className="overflow-y-auto"
         style={{
           paddingLeft: 16,
           paddingRight: 16,
           paddingTop: 8,
-          paddingBottom: "calc(env(safe-area-inset-bottom) + 100px)",
+          paddingBottom: inStack
+            ? "calc(24px + env(safe-area-inset-bottom))"
+            : "calc(env(safe-area-inset-bottom) + 100px)",
         }}
       >
         {feed.length === 0 ? (

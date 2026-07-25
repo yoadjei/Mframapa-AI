@@ -63,7 +63,8 @@ function DustField({
   const ref = useRef<THREE.Points>(null)
   const mat = useRef<THREE.PointsMaterial>(null)
   const getBoost = useBoost(scrollBoostRef)
-  const count = 480
+  // Fewer points + staggered updates keep main-thread free for Lenis during scroll.
+  const count = 220
   const positions = useMemo(() => {
     const arr = new Float32Array(count * 3)
     for (let i = 0; i < count; i++) {
@@ -73,6 +74,7 @@ function DustField({
     }
     return arr
   }, [])
+  const phase = useRef(0)
 
   useFrame((_, delta) => {
     if (!ref.current) return
@@ -80,11 +82,13 @@ function DustField({
     const speed = (0.45 + scrollBoost * 1.1) * intensity
     ref.current.rotation.y += delta * 0.1 * intensity
     const pos = ref.current.geometry.attributes.position
-    for (let i = 0; i < count; i++) {
-      let y = pos.getY(i) + delta * speed * (0.18 + (i % 5) * 0.05)
+    phase.current = (phase.current + 1) % 2
+    // Update half the particles each frame (full cycle still looks continuous).
+    for (let i = phase.current; i < count; i += 2) {
+      let y = pos.getY(i) + delta * speed * (0.18 + (i % 5) * 0.05) * 2
       if (y > 3) y = -3
       pos.setY(i, y)
-      let x = pos.getX(i) + delta * speed * 0.15
+      let x = pos.getX(i) + delta * speed * 0.15 * 2
       if (x > 5) x = -5
       pos.setX(i, x)
     }

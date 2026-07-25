@@ -11,12 +11,12 @@ export const copy = {
 
   hero: {
     title: 'Know the quality of your air.',
-    sub: 'Mframapa shows today’s air quality for your city, the next few days, and warns you when dust is coming. Free on your phone and in the browser.',
+    sub: 'Mframapa shows today’s air quality for your city and the next few days — free in your browser, no account required.',
     cta: 'Open the app',
   },
 
   story: {
-    body: 'Air quality, but finally understandable. Open any African city and see if the air is good or bad today, what the next few days look like, and get a phone alert when dusty harmattan air is on the way. Built for people who do not have a sensor on their street.',
+    body: 'Air quality, but finally understandable. Open any African city and see if the air is good or bad today and what the next few days look like. Built for people who do not have a sensor on their street.',
   },
 
   helps: {
@@ -32,11 +32,11 @@ export const copy = {
       },
       {
         title: 'Catch dust early',
-        body: 'A notification when dusty or smoky air is coming. Not daily spam.',
+        body: 'Turn on notifications in the app to get tipped when dusty or smoky air is likely.',
       },
       {
         title: 'Stay ready offline',
-        body: 'Cities you save stay readable when mobile data drops.',
+        body: 'Your last city reading stays on screen when mobile data drops.',
       },
     ],
   },
@@ -61,8 +61,8 @@ export const copy = {
         id: 'alerts' as const,
         screen: 'alerts' as const,
         step: 'Step 3',
-        title: 'Turn on dust alerts',
-        body: 'We send a phone notification when dusty air is coming to your city.',
+        title: 'Turn on alerts',
+        body: 'Allow notifications in the app if you want tips when the air may get worse.',
       },
     ],
   },
@@ -73,8 +73,7 @@ export const copy = {
   },
 
   closing: {
-    title:
-      'Use Mframapa to check air quality, plan the week, and get warned when dust is coming.',
+    title: 'Use Mframapa to check air quality and plan the next few days.',
     cta: 'Open the app',
   },
 

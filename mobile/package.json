@@ -5,7 +5,11 @@
   "scripts": {
     "start": "expo start",
     "android": "expo run:android",
-    "ios": "expo run:ios"
+    "ios": "expo run:ios",
+    "eas:preview": "eas build --platform android --profile preview",
+    "eas:production": "eas build --platform android --profile production",
+    "eas:submit": "eas submit --platform android --profile production",
+    "doctor": "npx expo-doctor"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^2.2.0",
@@ -21,6 +25,7 @@
     "expo-clipboard": "~8.0.8",
     "expo-constants": "~18.0.13",
     "expo-file-system": "~19.0.23",
+    "expo-font": "14.0.12",
     "expo-glass-effect": "~0.1.10",
     "expo-haptics": "~15.0.8",
     "expo-linear-gradient": "~15.0.8",
@@ -38,7 +43,7 @@
     "react-native-svg": "15.12.1",
     "react-native-url-polyfill": "^3.0.0",
     "react-native-webview": "13.15.0",
-    "react-native-worklets": "^0.8.3",
+    "react-native-worklets": "0.5.1",
     "zustand": "^5.0.0"
   },
   "devDependencies": {

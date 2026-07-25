@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { createPortal } from "react-dom";
 import { Bell, X } from "lucide-react";
 import { useTranslation } from "../../hooks/useTranslation.js";
@@ -31,28 +32,63 @@ export function hasSeenPushPrompt() {
  */
 export function NotificationPermissionSheet({ open, onClose, isDark = true }) {
   const { t } = useTranslation();
-  const { state } = useAppState();
+  const { state, dispatch } = useAppState();
   const colors = getColors(isDark);
+  const [busy, setBusy] = useState(false);
+  const [status, setStatus] = useState(null); // null | ok | local_only | denied | error
 
   if (!open) return null;
 
   async function handleAllow() {
     markPushPromptSeen();
+    setBusy(true);
+    setStatus(null);
     try {
-      await ensureNotificationPermission();
+      const permission = await ensureNotificationPermission();
+      if (permission !== "granted") {
+        setStatus("denied");
+        setBusy(false);
+        return;
+      }
       const lat = state.homeSummary?.lat ?? state.ui?.selectedCity?.lat;
       const lon = state.homeSummary?.lon ?? state.ui?.selectedCity?.lon;
-      await subscribeWebPush({ lat, lon });
+      const result = await subscribeWebPush({ lat, lon });
+      if (result?.ok) {
+        dispatch({
+          type: "UPDATE_PREFERENCES",
+          payload: { notificationsEnabled: true },
+        });
+        setStatus("ok");
+        setBusy(false);
+        onClose?.();
+        return;
+      }
+      // OS banners still work in-session; remote dust alerts need VAPID on the API.
+      if (result?.reason === "no_vapid" || result?.reason === "unsupported") {
+        setStatus("local_only");
+      } else {
+        setStatus("error");
+      }
     } catch {
-      /* local banner still works if VAPID is unset */
+      setStatus("error");
+    } finally {
+      setBusy(false);
     }
-    onClose?.();
   }
 
   function handleNotNow() {
     markPushPromptSeen();
     onClose?.();
   }
+
+  const statusCopy =
+    status === "local_only"
+      ? t("push_prompt.local_only")
+      : status === "denied"
+        ? t("push_prompt.denied")
+        : status === "error"
+          ? t("push_prompt.error")
+          : null;
 
   return createPortal(
     <div
@@ -108,14 +144,28 @@ export function NotificationPermissionSheet({ open, onClose, isDark = true }) {
             </button>
           </div>
 
+          {statusCopy && (
+            <p
+              className="mb-3 rounded-xl px-3 py-2 text-[0.8125rem] leading-snug"
+              style={{
+                backgroundColor: isDark ? "rgba(245,197,24,0.12)" : "rgba(245,197,24,0.18)",
+                color: isDark ? "#F5C518" : "#8A6A00",
+              }}
+              role="status"
+            >
+              {statusCopy}
+            </p>
+          )}
+
           <div className="flex flex-col gap-2">
             <button
               type="button"
               onClick={handleAllow}
-              className="w-full rounded-xl py-3 text-[0.9375rem] font-semibold text-white active:opacity-80"
+              disabled={busy}
+              className="w-full rounded-xl py-3 text-[0.9375rem] font-semibold text-white active:opacity-80 disabled:opacity-60"
               style={{ backgroundColor: Colors.brandGreen }}
             >
-              {t("push_prompt.allow")}
+              {busy ? t("common.loading", "Please wait…") : t("push_prompt.allow")}
             </button>
             <button
               type="button"
@@ -123,7 +173,7 @@ export function NotificationPermissionSheet({ open, onClose, isDark = true }) {
               className="w-full rounded-xl py-3 text-[0.9375rem] font-medium active:opacity-70"
               style={{ color: colors.subtext }}
             >
-              {t("push_prompt.not_now")}
+              {status ? t("common.close", "Close") : t("push_prompt.not_now")}
             </button>
           </div>
         </div>

@@ -154,6 +154,7 @@ export function GlassTabBar({ isDark, canInstall, onInstall }) {
                 key={tab.key}
                 type="button"
                 onClick={() => navigate(tab.key)}
+                aria-label={t(tab.labelKey)}
                 className="flex h-14 items-center justify-center px-1.5"
               >
                 <span
@@ -176,6 +177,8 @@ export function GlassTabBar({ isDark, canInstall, onInstall }) {
         <button
           ref={fabRef}
           type="button"
+          data-testid="more-fab"
+          aria-label={menuOpen ? "Close menu" : "More"}
           onClick={() => setMenuOpen((o) => !o)}
           className="flex h-14 w-14 items-center justify-center rounded-full active:scale-95 transition-transform"
           style={{

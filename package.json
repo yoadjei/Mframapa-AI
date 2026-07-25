@@ -1,6 +1,14 @@
 {
+  "name": "mframapa-ai",
+  "private": true,
   "dependencies": {
     "@supabase/ssr": "^0.12.0",
     "@supabase/supabase-js": "^2.108.1"
+  },
+  "scripts": {
+    "e2e": "npm --prefix e2e test",
+    "e2e:website": "npm --prefix e2e run test:website",
+    "e2e:pwa": "npm --prefix e2e run test:pwa",
+    "e2e:install": "npm --prefix e2e install && npx --prefix e2e playwright install chromium"
   }
 }

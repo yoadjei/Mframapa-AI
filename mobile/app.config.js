@@ -32,8 +32,6 @@ if (fs.existsSync(rootEnv)) {
   }
 }
 
-const appJson = require('./app.json');
-
 const mapboxToken =
   process.env.EXPO_PUBLIC_MAPBOX_TOKEN ||
   process.env.VITE_MAPBOX_TOKEN ||
@@ -76,8 +74,86 @@ const apiUrl = resolveApiUrl();
 
 module.exports = {
   expo: {
-    ...appJson.expo,
+    name: 'Mframapa',
+    slug: 'mframapa',
+    scheme: 'mframapa',
+    version: '1.0.0',
+    orientation: 'portrait',
+    icon: './assets/icon.png',
+    userInterfaceStyle: 'automatic',
+    splash: {
+      image: './assets/splash.png',
+      resizeMode: 'contain',
+      backgroundColor: '#06080d',
+    },
+    android: {
+      adaptiveIcon: {
+        foregroundImage: './assets/adaptive-icon.png',
+        backgroundColor: '#06080d',
+      },
+      package: 'ai.mframapa.app',
+      permissions: [
+        'ACCESS_FINE_LOCATION',
+        'ACCESS_COARSE_LOCATION',
+        'POST_NOTIFICATIONS',
+      ],
+    },
+    ios: {
+      bundleIdentifier: 'ai.mframapa.app',
+      supportsTablet: true,
+      infoPlist: {
+        NSLocationWhenInUseUsageDescription:
+          'Mframapa uses your location to show the air quality where you are. You can also search for a city instead.',
+        ITSAppUsesNonExemptEncryption: false,
+        NSAppTransportSecurity: {
+          NSAllowsLocalNetworking: true,
+        },
+      },
+      privacyManifests: {
+        NSPrivacyCollectedDataTypes: [
+          {
+            NSPrivacyCollectedDataType:
+              'NSPrivacyCollectedDataTypePreciseLocation',
+            NSPrivacyCollectedDataTypeLinked: false,
+            NSPrivacyCollectedDataTypeTracking: false,
+            NSPrivacyCollectedDataTypePurposes: [
+              'NSPrivacyCollectedDataTypePurposeAppFunctionality',
+            ],
+          },
+          {
+            NSPrivacyCollectedDataType: 'NSPrivacyCollectedDataTypeEmailAddress',
+            NSPrivacyCollectedDataTypeLinked: true,
+            NSPrivacyCollectedDataTypeTracking: false,
+            NSPrivacyCollectedDataTypePurposes: [
+              'NSPrivacyCollectedDataTypePurposeAppFunctionality',
+            ],
+          },
+        ],
+        NSPrivacyAccessedAPITypes: [
+          {
+            NSPrivacyAccessedAPIType:
+              'NSPrivacyAccessedAPICategoryUserDefaults',
+            NSPrivacyAccessedAPITypeReasons: ['CA92.1'],
+          },
+        ],
+      },
+    },
+    plugins: [
+      'expo-location',
+      [
+        'expo-notifications',
+        {
+          icon: './assets/adaptive-icon.png',
+          color: '#00C896',
+        },
+      ],
+      '@sentry/react-native',
+      stripPushEntitlement,
+    ],
     extra: {
+      ...(process.env.EAS_PROJECT_ID
+        ? { eas: { projectId: process.env.EAS_PROJECT_ID } }
+        : {}),
       mapboxToken,
       apiUrl,
       supabaseUrl: process.env.EXPO_PUBLIC_SUPABASE_URL || '',
@@ -87,18 +163,5 @@ module.exports = {
         '',
       paystackPublicKey: process.env.EXPO_PUBLIC_PAYSTACK_PUBLIC_KEY || '',
     },
-    ios: {
-      ...appJson.expo.ios,
-      infoPlist: {
-        ...(appJson.expo.ios?.infoPlist ?? {}),
-        NSAppTransportSecurity: {
-          NSAllowsLocalNetworking: true,
-        },
-      },
-    },
-    plugins: [
-      ...(appJson.expo.plugins ?? []),
-      stripPushEntitlement,
-    ],
   },
 };

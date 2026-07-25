@@ -37,7 +37,14 @@ self.addEventListener("push", (event) => {
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  const target = "/";
+  const data = event.notification.data || {};
+  // Prefer deep link from payload; fall back to Alerts for episode pushes.
+  let target = "/";
+  if (typeof data.url === "string" && data.url.startsWith("/")) {
+    target = data.url;
+  } else if (data.type === "alert" || data.type === "episode") {
+    target = "/?screen=alerts";
+  }
   event.waitUntil(
     self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((clients) => {
       for (const client of clients) {

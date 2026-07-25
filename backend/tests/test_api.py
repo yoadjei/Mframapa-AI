@@ -229,6 +229,24 @@ def test_batch_predict_success(client):
         app.dependency_overrides.clear()
 
 
+def test_inference_fallbacks_are_marked_degraded():
+    """Users must never see a constant/OpenMeteo-only reading as a normal model hit."""
+    from backend.api.v1.router import _run_inference
+
+    class _Req:
+        class app:
+            class state:
+                models = {}
+
+    _, _, degraded_om, src_om, _ = _run_inference(_Req(), {}, "west_africa", "urban", 40.0)
+    assert degraded_om is True
+    assert src_om == "openmeteo_fallback"
+
+    _, _, degraded_c, src_c, _ = _run_inference(_Req(), {}, "west_africa", "urban", None)
+    assert degraded_c is True
+    assert src_c == "fallback_constant"
+
+
 def test_batch_predict_enforces_cap(client):
     payload = {
         "locations": [

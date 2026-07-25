@@ -1,9 +1,10 @@
 import { motion, useReducedMotion } from 'framer-motion'
-import { STORE_LINKS } from '../lib/constants'
+import { APP_URL, STORE_LINKS } from '../lib/constants'
 
 /**
  * Official store badge artwork (vendor marketing assets), hosted locally.
- * Sources: Apple Media Services, Google Play badges, Huawei AppGallery, Samsung Galaxy Store.
+ * Only show live store links. Dead "#" badges are hidden so users are not
+ * tricked into a broken download — the primary path is the live PWA.
  */
 const BADGES = [
   {
@@ -35,6 +36,25 @@ const BADGES = [
 
 export function StoreBadges() {
   const reduce = useReducedMotion()
+  const live = BADGES.filter((badge) => {
+    const store = STORE_LINKS[badge.id]
+    return store && !store.comingSoon && store.href && store.href !== '#'
+  })
+
+  if (live.length === 0) {
+    return (
+      <motion.a
+        href={APP_URL}
+        className="inline-flex items-center justify-center rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-white"
+        initial={reduce ? false : { opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        whileHover={reduce ? undefined : { y: -2 }}
+        whileTap={reduce ? undefined : { scale: 0.98 }}
+      >
+        Open the free app
+      </motion.a>
+    )
+  }
 
   return (
     <div
@@ -42,23 +62,20 @@ export function StoreBadges() {
       role="list"
       aria-label="Download the app"
     >
-      {BADGES.map((badge, i) => {
+      {live.map((badge, i) => {
         const store = STORE_LINKS[badge.id]
-        const disabled = store.comingSoon || store.href === '#'
         return (
           <motion.a
             key={badge.id}
             role="listitem"
-            href={disabled ? undefined : store.href}
-            aria-disabled={disabled}
-            title={disabled ? `${badge.alt} (coming soon)` : badge.alt}
-            onClick={disabled ? (e) => e.preventDefault() : undefined}
-            className={`inline-flex items-center ${disabled ? 'cursor-default opacity-85' : 'hover:opacity-90'}`}
+            href={store.href}
+            title={badge.alt}
+            className="inline-flex items-center hover:opacity-90"
             initial={reduce ? false : { opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.08 * i, duration: 0.4 }}
-            whileHover={reduce || disabled ? undefined : { y: -2 }}
-            whileTap={reduce || disabled ? undefined : { scale: 0.98 }}
+            whileHover={reduce ? undefined : { y: -2 }}
+            whileTap={reduce ? undefined : { scale: 0.98 }}
           >
             <img
               src={badge.src}

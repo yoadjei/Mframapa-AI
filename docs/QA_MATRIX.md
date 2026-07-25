@@ -231,9 +231,9 @@ For each: (a) it loads, (b) no raw keys, (c) back button does not cover title,
 
 | Check | File | — |
 |---|---|---|
-| Location prompt uses our wording | `mobile/app.json` `NSLocationWhenInUseUsageDescription` | ⚠️ |
-| Privacy manifest present | `mobile/app.json` `privacyManifests` | store-mandatory |
-| No unused permissions requested | `mobile/app.json` | — |
+| Location prompt uses our wording | `mobile/app.config.js` `NSLocationWhenInUseUsageDescription` | ⚠️ |
+| Privacy manifest present | `mobile/app.config.js` `privacyManifests` | store-mandatory |
+| No unused permissions requested | `mobile/app.config.js` | — |
 | Push works on a real build | `mobile/src/services/notifications.ts` | not Expo Go |
 | Large text / rotation don't break layout | every screen | — |
 | Safe-area on Profile header (tier pill under status bar) ⚠️ | `mobile` + `frontend-pwa/src/features/profile/ProfileScreen.jsx` | — |
@@ -244,10 +244,10 @@ For each: (a) it loads, (b) no raw keys, (c) back button does not cover title,
 
 | Check | File | — |
 |---|---|---|
-| `POST_NOTIFICATIONS` permission prompt (Android 13+) | `mobile/app.json` | — |
+| `POST_NOTIFICATIONS` permission prompt (Android 13+) | `mobile/app.config.js` | — |
 | Hardware back button pops the stack, not exits | `src/hooks/useHardwareBack.js` (PWA) / RN native (mobile) | — |
 | Location permission flow | `mobile/src/services/location.ts` | — |
-| Adaptive icon renders correctly | `mobile/app.json` `adaptiveIcon` | — |
+| Adaptive icon renders correctly | `mobile/app.config.js` `adaptiveIcon` | — |
 
 ---
 

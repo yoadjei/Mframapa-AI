@@ -149,7 +149,7 @@ export function SearchScreen({ isOnline, isDark }) {
 
   return (
     <div
-      className="min-h-[100dvh] overflow-y-auto mf-tab-gap"
+      className="min-h-[100dvh] mf-tab-gap"
       style={{ backgroundColor: colors.bg }}
     >
       {/* ── Search bar — pad left when opened as stack from profile ── */}
