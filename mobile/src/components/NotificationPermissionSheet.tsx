@@ -3,12 +3,10 @@ import {
   View,
   Text,
   StyleSheet,
-  Modal,
   TouchableOpacity,
   Platform,
   ActivityIndicator,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import { getColors, Colors } from '../theme';
@@ -19,6 +17,7 @@ import {
   requestPermissions,
   getAndRegisterPushToken,
 } from '../services/notifications';
+import { GlassSheet } from './ui/GlassSheet';
 
 export const PUSH_PROMPT_SEEN_KEY = 'mframapa:push-prompt-seen';
 
@@ -46,7 +45,6 @@ interface Props {
 export function NotificationPermissionSheet({ visible, onClose }: Props) {
   const { isDark } = useTheme();
   const colors = getColors(isDark);
-  const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const lastPrediction = useStore((s) => s.lastPrediction);
   const [busy, setBusy] = useState(false);
@@ -76,68 +74,49 @@ export function NotificationPermissionSheet({ visible, onClose }: Props) {
   }
 
   return (
-    <Modal visible={visible} transparent animationType="slide" onRequestClose={handleNotNow}>
-      <TouchableOpacity style={styles.overlay} activeOpacity={1} onPress={handleNotNow} />
-      <View
-        style={[
-          styles.sheet,
-          { backgroundColor: colors.card, paddingBottom: insets.bottom + 16 },
-        ]}
-      >
-        <View style={[styles.handle, { backgroundColor: colors.border }]} />
+    <GlassSheet visible={visible} onClose={handleNotNow} overlayOpacity={0.45}>
+      <View style={[styles.handle, { backgroundColor: colors.border }]} />
 
-        <View style={styles.header}>
-          <View style={[styles.iconBubble, { backgroundColor: Colors.brandGreen + '22' }]}>
-            <Ionicons name="notifications-outline" size={22} color={Colors.brandGreen} />
-          </View>
-          <TouchableOpacity onPress={handleNotNow} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-            <Ionicons name="close" size={20} color={colors.subtext} />
-          </TouchableOpacity>
+      <View style={styles.header}>
+        <View style={[styles.iconBubble, { backgroundColor: Colors.brandGreen + '22' }]}>
+          <Ionicons name="notifications-outline" size={22} color={Colors.brandGreen} />
         </View>
-
-        <Text style={[styles.title, { color: colors.text }]}>{t('push_prompt.title')}</Text>
-        <Text style={[styles.body, { color: colors.subtext }]}>{t('push_prompt.body')}</Text>
-
-        <TouchableOpacity
-          style={[styles.allowBtn, { backgroundColor: Colors.brandGreen }]}
-          onPress={handleAllow}
-          disabled={busy}
-          activeOpacity={0.85}
-        >
-          {busy ? (
-            <ActivityIndicator color="#fff" />
-          ) : (
-            <Text style={styles.allowText}>{t('push_prompt.allow')}</Text>
-          )}
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.notNowBtn}
-          onPress={handleNotNow}
-          disabled={busy}
-          activeOpacity={0.7}
-        >
-          <Text style={[styles.notNowText, { color: colors.subtext }]}>
-            {t('push_prompt.not_now')}
-          </Text>
+        <TouchableOpacity onPress={handleNotNow} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+          <Ionicons name="close" size={20} color={colors.subtext} />
         </TouchableOpacity>
       </View>
-    </Modal>
+
+      <Text style={[styles.title, { color: colors.text }]}>{t('push_prompt.title')}</Text>
+      <Text style={[styles.body, { color: colors.subtext }]}>{t('push_prompt.body')}</Text>
+
+      <TouchableOpacity
+        style={[styles.allowBtn, { backgroundColor: Colors.brandGreen }]}
+        onPress={handleAllow}
+        disabled={busy}
+        activeOpacity={0.85}
+      >
+        {busy ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.allowText}>{t('push_prompt.allow')}</Text>
+        )}
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.notNowBtn}
+        onPress={handleNotNow}
+        disabled={busy}
+        activeOpacity={0.7}
+      >
+        <Text style={[styles.notNowText, { color: colors.subtext }]}>
+          {t('push_prompt.not_now')}
+        </Text>
+      </TouchableOpacity>
+    </GlassSheet>
   );
 }
 
 const styles = StyleSheet.create({
-  overlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.45)' },
-  sheet: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    paddingHorizontal: 20,
-    paddingTop: 8,
-  },
   handle: {
     width: 40,
     height: 4,

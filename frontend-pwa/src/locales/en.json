@@ -661,7 +661,7 @@
   "push_prompt.body": "Allow notifications so Mframapa can tip you when air quality changes near you and share a daily Did you know.",
   "push_prompt.allow": "Allow",
   "push_prompt.not_now": "Not now",
-  "push_prompt.local_only": "Alerts while the app is open will work. Phone alerts when the app is closed need a server update. Try again later.",
+  "push_prompt.local_only": "Alerts while the app is open will work. Closed-app alerts need Web Push keys on the API (VAPID). Ask your admin to enable them, then try Allow again.",
   "push_prompt.denied": "Notifications are blocked in your browser settings. You can still check air quality anytime.",
   "push_prompt.error": "We could not finish setting up alerts. You can still use the app and try again later.",
   "offline.no_cache": "You're offline and we don't have a saved reading for this city yet. Reconnect to check the air.",

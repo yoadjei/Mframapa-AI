@@ -49,7 +49,8 @@ const AQI_DARK: Record<string, string> = {
   unhealthy: '#E53935', hazardous: '#C043D5',
 };
 const AQI_LIGHT: Record<string, string> = {
-  good: '#008060', moderate: '#8B6E06', sensitive: '#AB5E00',
+  // Moderate: cooler olive (was #8B6E06 gold — read as yellowish wash on light UI).
+  good: '#008060', moderate: '#5F6E28', sensitive: '#AB5E00',
   unhealthy: '#DD211C', hazardous: '#9C27B0',
 };
 

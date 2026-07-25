@@ -26,7 +26,8 @@ const AQI_DARK = {
   unhealthy: "#E53935", hazardous: "#C043D5",
 };
 const AQI_LIGHT = {
-  good: "#008060", moderate: "#8B6E06", sensitive: "#AB5E00",
+  // Moderate: cooler olive (was #8B6E06 gold — yellowish wash on light UI).
+  good: "#008060", moderate: "#5F6E28", sensitive: "#AB5E00",
   unhealthy: "#DD211C", hazardous: "#9C27B0",
 };
 

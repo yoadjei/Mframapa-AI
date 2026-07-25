@@ -4,16 +4,10 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import Constants from 'expo-constants';
-import Constants from 'expo-constants';
 import { useTheme } from '../hooks/useTheme';
 import { getColors } from '../theme';
 import { MframapaLogo } from '../components/MframapaLogo';
 import { useTranslation } from '../hooks/useTranslation';
-
-const APP_VERSION =
-  Constants.expoConfig?.version ??
-  Constants.nativeAppVersion ??
-  '1.0.0';
 
 const APP_VERSION =
   Constants.expoConfig?.version ??
