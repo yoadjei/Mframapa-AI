@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { APP_URL, LINKEDIN_URL } from '../lib/constants'
 import { copy } from '../content/copy'
+import { RainMark } from './RainMark'
 
 const links = [
   { to: '/about', label: 'Company' },
@@ -14,8 +15,8 @@ export function Footer() {
     <footer className="border-t border-line bg-canvas">
       <div className="mx-auto flex max-w-6xl flex-col gap-8 px-5 py-12 md:flex-row md:items-start md:justify-between md:px-8">
         <div>
-          <p className="inline-flex items-center gap-2 font-display text-lg font-bold text-ink">
-            <img src="/logo.png" alt="" width={22} height={22} className="h-[22px] w-[22px]" />
+          <p className="inline-flex items-center gap-2 font-display text-lg font-bold lowercase text-ink">
+            <RainMark size={22} />
             <span>
               <span className="text-mint">m</span>framapa
             </span>
