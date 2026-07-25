@@ -27,7 +27,7 @@ const ti: Record<string, string> = {
   'settings.about': 'ብዛዕባ',
 
   'offline.banner': 'ካብ መስመር ወጻኢ',
-  'offline.cached_data': 'ካብ መስመር ወጻኢ ኢኻ — ናይ መወዳእታ ዝተዓቀበ ንባብካ ይምርኩሰካ ኣሎ',
+  'offline.cached_data': 'ካብ መስመር ወጻኢ ኢኻ. ናይ መወዳእታ ዝተዓቀበ ንባብካ ይምርኩሰካ ኣሎ',
 
   'error.location': 'ቦታኻ ምርካብ ኣይተኻእለን። ፍቓዳት ቦታ ክፈቱ።',
   'error.prediction': 'ናይ ኣየር ጽሬት ዳታ ምምጻእ ኣይተኻእለን። ደጊምካ ፈትን።',
@@ -36,7 +36,7 @@ const ti: Record<string, string> = {
   'error.cached_fallback': 'ናይ መወዳእታ ዝተዓቀበ ንባብካ ይምርኩሰካ ኣሎ።',
   // injected critical keys
   'push_prompt.title': 'Stay ahead of the air',
-  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you — and share a daily Did you know.',
+  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you and share a daily Did you know.',
   'push_prompt.allow': 'Allow',
   'push_prompt.not_now': 'Not now',
   'screen.auth.continue_without_account': 'Continue without account',

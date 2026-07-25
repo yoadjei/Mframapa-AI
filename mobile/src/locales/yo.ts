@@ -62,7 +62,7 @@ const yo: Record<string, string> = {
   'settings.made_with': 'Se pelu ife fun Afirika',
 
   'offline.banner': 'Alaibara',
-  'offline.cached_data': 'O wa laibara — n safihan kika ikehin re ti a fi pamo',
+  'offline.cached_data': 'O wa laibara. n safihan kika ikehin re ti a fi pamo',
 
   'error.location': 'Ko le gba ipo re. Jowo mu awon igbanilaaye ipo sisise.',
   'error.prediction': 'Kuna lati gba data didara afefe. Jowo gbiyanju leekansii.',
@@ -71,7 +71,7 @@ const yo: Record<string, string> = {
   'error.cached_fallback': 'N safihan kika ikehin re ti a fi pamo.',
   // injected critical keys
   'push_prompt.title': 'Stay ahead of the air',
-  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you — and share a daily Did you know.',
+  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you and share a daily Did you know.',
   'push_prompt.allow': 'Allow',
   'push_prompt.not_now': 'Not now',
   'screen.auth.continue_without_account': 'Continue without account',

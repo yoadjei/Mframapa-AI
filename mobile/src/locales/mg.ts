@@ -27,7 +27,7 @@ const mg: Record<string, string> = {
   'settings.about': 'Mikasika',
 
   'offline.banner': 'Tsy Misy Internet',
-  'offline.cached_data': 'Tsy misy internet ianao — mampiseho ny famakiana farany nalahatra',
+  'offline.cached_data': 'Tsy misy internet ianao. mampiseho ny famakiana farany nalahatra',
 
   'error.location': "Tsy azo ny toeranao. Azafady, alefaso ny fahazoan-dalana amin'ny toerana.",
   'error.prediction': "Tsy nahomby ny fitadiavana angona kalitaon'ny rivotra. Azafady, andramo indray.",
@@ -36,7 +36,7 @@ const mg: Record<string, string> = {
   'error.cached_fallback': 'Mampiseho ny famakiana farany nalahatra.',
   // injected critical keys
   'push_prompt.title': 'Stay ahead of the air',
-  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you — and share a daily Did you know.',
+  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you and share a daily Did you know.',
   'push_prompt.allow': 'Allow',
   'push_prompt.not_now': 'Not now',
   'screen.auth.continue_without_account': 'Continue without account',

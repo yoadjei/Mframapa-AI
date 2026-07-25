@@ -27,7 +27,7 @@ const rn: Record<string, string> = {
   'settings.about': 'Ibyerekeye',
 
   'offline.banner': 'Nta Interineti',
-  'offline.cached_data': 'Nta Interineti ufise — aragaragaza isomwa ryawe rya nyuma ryabitswe',
+  'offline.cached_data': 'Nta Interineti ufise. aragaragaza isomwa ryawe rya nyuma ryabitswe',
 
   'error.location': "Ntishoboka kubona aho uri. Ndakwinginze, fungura uburenganzira bw'ahantu uri.",
   'error.prediction': "Ntishoboka kubona amakuru y'umwuka. Ndakwinginze, gerageza nanone.",
@@ -36,7 +36,7 @@ const rn: Record<string, string> = {
   'error.cached_fallback': 'Aragaragaza isomwa ryawe rya nyuma ryabitswe.',
   // injected critical keys
   'push_prompt.title': 'Stay ahead of the air',
-  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you — and share a daily Did you know.',
+  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you and share a daily Did you know.',
   'push_prompt.allow': 'Allow',
   'push_prompt.not_now': 'Not now',
   'screen.auth.continue_without_account': 'Continue without account',

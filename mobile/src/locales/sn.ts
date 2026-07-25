@@ -27,7 +27,7 @@ const sn: Record<string, string> = {
   'settings.about': 'Nezve',
 
   'offline.banner': 'Pasina Netiweki',
-  'offline.cached_data': 'Uri pasina netiweki — unoratidza kuverenga kwako kwekupedzisira kwakachengeterwa',
+  'offline.cached_data': 'Uri pasina netiweki. unoratidza kuverenga kwako kwekupedzisira kwakachengeterwa',
 
   'error.location': 'Haigoni kuwana nzvimbo yako. Ndapota, tumidza mvumo yenzvimbo.',
   'error.prediction': 'Yakashaya kuwana ruzivo rwemhepo. Ndapota, edza zvakare.',
@@ -36,7 +36,7 @@ const sn: Record<string, string> = {
   'error.cached_fallback': 'Unoratidza kuverenga kwako kwekupedzisira kwakachengeterwa.',
   // injected critical keys
   'push_prompt.title': 'Stay ahead of the air',
-  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you — and share a daily Did you know.',
+  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you and share a daily Did you know.',
   'push_prompt.allow': 'Allow',
   'push_prompt.not_now': 'Not now',
   'screen.auth.continue_without_account': 'Continue without account',

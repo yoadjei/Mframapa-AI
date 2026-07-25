@@ -27,7 +27,7 @@ const ss: Record<string, string> = {
   'settings.about': 'Mayelane',
 
   'offline.banner': 'Akukho Inthanethi',
-  'offline.cached_data': 'Awunayo inthanethi — ibonisa kufundza kwakho kokugcina lokugcinwe',
+  'offline.cached_data': 'Awunayo inthanethi. ibonisa kufundza kwakho kokugcina lokugcinwe',
 
   'error.location': 'Akwazange kuthola indzawo yakho. Cela avule imvume tindzawo.',
   'error.prediction': 'Yehlulekile kuthola imininingwane yomoya. Cela uzame futsi.',
@@ -36,7 +36,7 @@ const ss: Record<string, string> = {
   'error.cached_fallback': 'Ibonisa kufundza kwakho kokugcina lokugcinwe.',
   // injected critical keys
   'push_prompt.title': 'Stay ahead of the air',
-  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you — and share a daily Did you know.',
+  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you and share a daily Did you know.',
   'push_prompt.allow': 'Allow',
   'push_prompt.not_now': 'Not now',
   'screen.auth.continue_without_account': 'Continue without account',

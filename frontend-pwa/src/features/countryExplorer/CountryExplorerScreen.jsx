@@ -14,7 +14,7 @@ export function CountryExplorerScreen({ isDark }) {
   const { t } = useTranslation();
   const colors = getColors(isDark ?? true);
 
-  // Guests have no saved cities yet — seed from the offline city pack so this
+  // Guests have no saved cities yet. seed from the offline city pack so this
   // screen is useful on first open, not an empty dead end.
   const packCities = useMemo(() => getCachedCities(), []);
   const offlineCities = useMemo(() => {
@@ -83,7 +83,7 @@ export function CountryExplorerScreen({ isDark }) {
       {/* Safe area top */}
       <div style={{ height: "env(safe-area-inset-top)" }} />
 
-      {/* Header title — StackBackButton yields to global fixed back when inStack */}
+      {/* Header title. StackBackButton yields to global fixed back when inStack */}
       <div
         className="flex items-center gap-2"
         style={{ paddingTop: 8, paddingBottom: 8, paddingLeft: 16, paddingRight: 16 }}
@@ -293,7 +293,7 @@ export function CountryExplorerScreen({ isDark }) {
                 className="text-[0.875rem] text-center py-8"
                 style={{ color: colors.subtext }}
               >
-                No countries yet — save some cities first.
+                No countries yet. save some cities first.
               </p>
             ) : (
               <div className="overflow-y-auto flex flex-col">

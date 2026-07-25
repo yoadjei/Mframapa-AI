@@ -27,7 +27,7 @@ const so: Record<string, string> = {
   'settings.about': 'Ku saabsan',
 
   'offline.banner': 'Xariir La\'aan',
-  'offline.cached_data': 'Xariir ma lihid — muujinaya akhrinta kugu dambeysay ee la keydsaday',
+  'offline.cached_data': 'Xariir ma lihid. muujinaya akhrinta kugu dambeysay ee la keydsaday',
 
   'error.location': 'Goobta lama heli karo. Fadlan fur ogolaanshaha goobta.',
   'error.prediction': 'Xogta hawada la waayay. Fadlan isku day mar kale.',
@@ -36,7 +36,7 @@ const so: Record<string, string> = {
   'error.cached_fallback': 'Muujinaya akhrinta kugu dambeysay ee la keydsaday.',
   // injected critical keys
   'push_prompt.title': 'Stay ahead of the air',
-  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you — and share a daily Did you know.',
+  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you and share a daily Did you know.',
   'push_prompt.allow': 'Allow',
   'push_prompt.not_now': 'Not now',
   'screen.auth.continue_without_account': 'Continue without account',

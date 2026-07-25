@@ -62,7 +62,7 @@ const fr: Record<string, string> = {
   'settings.made_with': "Fait avec amour pour l'Afrique",
 
   'offline.banner': 'Hors ligne',
-  'offline.cached_data': 'Hors ligne — affichage de votre dernière lecture sauvegardée',
+  'offline.cached_data': 'Hors ligne. affichage de votre dernière lecture sauvegardée',
 
   'error.location': "Impossible d'obtenir votre position. Veuillez activer les permissions de localisation.",
   'error.prediction': "Échec de la récupération des données de qualité de l'air. Veuillez réessayer.",

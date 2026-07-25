@@ -27,7 +27,7 @@ const af: Record<string, string> = {
   'settings.about': 'Oor',
 
   'offline.banner': 'Vanlyn',
-  'offline.cached_data': 'Jy is vanlyn — wys jou laaste gestoorde lesing',
+  'offline.cached_data': 'Jy is vanlyn. wys jou laaste gestoorde lesing',
 
   'error.location': 'Kon nie jou ligging kry nie. Aktiveer asseblief liggingtoestemmings.',
   'error.prediction': 'Kon nie luggehalte data ophaal nie. Probeer asseblief weer.',
@@ -36,7 +36,7 @@ const af: Record<string, string> = {
   'error.cached_fallback': 'Wys jou laaste gestoorde lesing.',
   // injected critical keys
   'push_prompt.title': 'Stay ahead of the air',
-  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you — and share a daily Did you know.',
+  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you and share a daily Did you know.',
   'push_prompt.allow': 'Allow',
   'push_prompt.not_now': 'Not now',
   'screen.auth.continue_without_account': 'Continue without account',

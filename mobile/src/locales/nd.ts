@@ -27,7 +27,7 @@ const nd: Record<string, string> = {
   'settings.about': 'Ngoba',
 
   'offline.banner': 'Akukho Inthanethi',
-  'offline.cached_data': 'Awunayo inthanethi — ibonisa ukufunda kwakho okokugcina okugcinwe',
+  'offline.cached_data': 'Awunayo inthanethi. ibonisa ukufunda kwakho okokugcina okugcinwe',
 
   'error.location': 'Akwazanga ukuthola indawo yakho. Sicela uvule izimvume zendawo.',
   'error.prediction': 'Yehlulekile ukuthola imininingwane yomoya. Sicela uzame futhi.',
@@ -36,7 +36,7 @@ const nd: Record<string, string> = {
   'error.cached_fallback': 'Ibonisa ukufunda kwakho okokugcina okugcinwe.',
   // injected critical keys
   'push_prompt.title': 'Stay ahead of the air',
-  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you — and share a daily Did you know.',
+  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you and share a daily Did you know.',
   'push_prompt.allow': 'Allow',
   'push_prompt.not_now': 'Not now',
   'screen.auth.continue_without_account': 'Continue without account',

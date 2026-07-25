@@ -62,7 +62,7 @@ const es: Record<string, string> = {
   'settings.made_with': 'Hecho con amor para África',
 
   'offline.banner': 'Sin conexión',
-  'offline.cached_data': 'Estás sin conexión — mostrando tu última lectura guardada',
+  'offline.cached_data': 'Estás sin conexión. mostrando tu última lectura guardada',
 
   'error.location': 'No se pudo obtener tu ubicación. Por favor, activa los permisos de ubicación.',
   'error.prediction': 'No se pudieron obtener datos de calidad del aire. Por favor, inténtalo de nuevo.',

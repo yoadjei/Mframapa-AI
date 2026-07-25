@@ -120,7 +120,7 @@ export function CoreFeatureScreen({ isOnline, isDark }) {
         label: city.name,
         hasReading: false,
       }));
-    // Coloured AQI readings first — neutrals-first + MapCanvas slice used to
+    // Coloured AQI readings first. neutrals-first + MapCanvas slice used to
     // drop every map-summary city and leave whole countries blank.
     return [...coloured, ...neutral];
   }, [cities, summary, isDark]);
@@ -209,8 +209,8 @@ export function CoreFeatureScreen({ isOnline, isDark }) {
             id: crypto.randomUUID(),
             type: "update",
             title: `${city.name} air quality`,
-            subtitle: `PM2.5 ${Math.round(prediction.pm25)} μg/m³ — ${t(aqiCategoryKey(prediction.category))}`,
-            message: `PM2.5 ${Math.round(prediction.pm25)} μg/m³ — ${t(aqiCategoryKey(prediction.category))}`,
+            subtitle: `PM2.5 ${Math.round(prediction.pm25)} μg/m³. ${t(aqiCategoryKey(prediction.category))}`,
+            message: `PM2.5 ${Math.round(prediction.pm25)} μg/m³. ${t(aqiCategoryKey(prediction.category))}`,
             read: false,
             createdAt: prediction.timestamp,
           },
@@ -260,7 +260,7 @@ export function CoreFeatureScreen({ isOnline, isDark }) {
         return;
       }
     } catch {
-      // Map may not be fully loaded yet — proceed
+      // Map may not be fully loaded yet. proceed
     }
     const city = nearestCity(lat, lon, cities);
     if (city) loadPredictionAndNavigate(city);
@@ -338,7 +338,7 @@ export function CoreFeatureScreen({ isOnline, isDark }) {
         </Suspense>
       </div>
 
-      {/* ── Top chrome overlay — mirrors mobile topChrome ── */}
+      {/* ── Top chrome overlay. mirrors mobile topChrome ── */}
       <div
         className="absolute left-4 right-4 z-20 flex flex-col gap-[10px]"
         style={{ top: "calc(12px + env(safe-area-inset-top))" }}
@@ -454,7 +454,7 @@ export function CoreFeatureScreen({ isOnline, isDark }) {
               border: "1px solid rgba(245,196,24,0.3)",
             }}
           >
-            {t("offline.banner")} — {t("offline.cached_data")}
+            {t("offline.banner")}. {t("offline.cached_data")}
           </div>
         ) : null}
 
@@ -472,7 +472,7 @@ export function CoreFeatureScreen({ isOnline, isDark }) {
           </div>
         ) : null}
 
-        {/* Zoom controls — mirrors mobile zoomStack (alignSelf: flex-end) */}
+        {/* Zoom controls. mirrors mobile zoomStack (alignSelf: flex-end) */}
         <div
           className="self-end overflow-hidden rounded-[10px]"
           style={{

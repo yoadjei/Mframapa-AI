@@ -21,33 +21,33 @@ tracking across apps. No contacts, photos, messages, or files.
 
 ---
 
-## Google Play — Data Safety form
+## Google Play Data Safety form
 
 **Does your app collect or share user data?** Yes, collects. Does not share.
 
 **Location**
-- Approximate location — collected, not shared. Purpose: App functionality.
+- Approximate location: collected, not shared. Purpose: App functionality.
   Not required (app works with city search). Not for tracking.
-- Precise location — collected, not shared. Purpose: App functionality.
+- Precise location: collected, not shared. Purpose: App functionality.
   Not required. Not for tracking.
 
 **Personal info**
-- Email address — collected, not shared. Purpose: Account management, App
+- Email address: collected, not shared. Purpose: Account management, App
   functionality. Optional (anonymous use is the default). Not for tracking.
-- User IDs (the anonymous device id) — collected, not shared. Purpose:
+- User IDs (the anonymous device id): collected, not shared. Purpose:
   Analytics. Not for tracking. Not linked to the user.
 
 **App activity**
-- App interactions (screen views, prediction requests) — collected, not shared.
+- App interactions (screen views, prediction requests): collected, not shared.
   Purpose: Analytics. Not for tracking. Not linked to the user.
 
 **Messages / other**
-- Feedback text — collected, not shared. Purpose: App functionality (support).
+- Feedback text: collected, not shared. Purpose: App functionality (support).
   Optional.
 
 **Security practices**
 - Data is encrypted in transit: **Yes** (HTTPS everywhere).
-- Users can request data deletion: **Yes** — in-app, Profile → Delete account.
+- Users can request data deletion: **Yes** (in-app, Profile → Delete account).
 - Provide the deletion URL if asked: the in-app path plus
   `privacy@mframapa.live`.
 
@@ -56,30 +56,30 @@ privacy policy).
 
 ---
 
-## App Store — Privacy "nutrition labels"
+## App Store Privacy nutrition labels
 
 For each, choose **"Data used to track you": No** for everything (we do not
 track), and link to the account or not as marked.
 
 **Data Linked to You** (only when signed in):
-- Contact Info → Email Address — App Functionality
-- User Content → Other (home city) — App Functionality
+- Contact Info → Email Address. App Functionality
+- User Content → Other (home city). App Functionality
 
 **Data Not Linked to You:**
-- Location → Precise Location — App Functionality
-- Location → Coarse Location — App Functionality
-- Identifiers → Device ID (the anonymous UUID) — Analytics
-- Usage Data → Product Interaction — Analytics
-- User Content → Other (feedback text) — App Functionality (Support)
+- Location → Precise Location. App Functionality
+- Location → Coarse Location. App Functionality
+- Identifiers → Device ID (the anonymous UUID). Analytics
+- Usage Data → Product Interaction. Analytics
+- User Content → Other (feedback text). App Functionality (Support)
 
 **Diagnostics** (if you enable Sentry crash reporting on mobile):
-- Diagnostics → Crash Data — App Functionality. Not linked. Not tracking.
+- Diagnostics → Crash Data. App Functionality. Not linked. Not tracking.
 
 ---
 
-## App Store — review notes (paste into "Notes for Review")
+## App Store review notes (paste into Notes for Review)
 
-> Mframapa works fully without an account — air quality, search, the map and
+> Mframapa works fully without an account. Air quality, search, the map and
 > alerts are all available anonymously, so no demo login is needed to evaluate
 > the core app.
 >
@@ -136,14 +136,14 @@ The listing needs a working support contact. Until the email stack is live,
 | Surface | Package / bundle | Store role |
 |---|---|---|
 | Expo native Android | `ai.mframapa.app` | **Google Play** primary listing (AAB from EAS) |
-| Expo iOS (if ever) | `ai.mframapa.app` | App Store Connect — currently PWA-first; skip $99 unless strategy changes |
+| Expo iOS (if ever) | `ai.mframapa.app` | App Store Connect (currently PWA-first; skip $99 unless strategy changes) |
 | TWA (Bubblewrap) | `ai.mframapa.pwa` | Galaxy Store / other free Android stores wrapping the PWA |
 
 Play and Galaxy should not ship the same package id. Prefer native AAB on Play; TWA elsewhere.
 
 ---
 
-## Google Play — listing copy (paste-ready)
+## Google Play listing copy (paste-ready)
 
 **App name** (≤30 chars): `Mframapa`
 
@@ -156,7 +156,7 @@ Air quality estimates for African cities. Dust alerts. Works offline.
 **Full description**:
 
 ```
-Mframapa shows today’s air quality for cities across Africa — even where there is no local sensor on your street.
+Mframapa shows today’s air quality for cities across Africa, even where there is no local sensor on your street.
 
 Open Accra, Lagos, Nairobi, or search another place. See a clear category for today, a short outlook for the next few days, and get a phone alert when dusty or smoky air is heading your way.
 
@@ -165,7 +165,7 @@ What you get
 • Map of cities across Africa
 • Dust / episode alerts (optional notifications)
 • Offline access for cities you save
-• Optional account to sync saved places — or continue without signing in
+• Optional account to sync saved places, or continue without signing in
 
 Important
 Figures are model-based estimates, not ground-sensor measurements. Every reading includes a confidence range. Mframapa is informational and is not a medical device. It does not replace official monitoring or medical advice.
@@ -183,7 +183,7 @@ Built in Accra, Ghana. Free for everyone.
 
 ---
 
-## App Store — listing copy (if submitting later)
+## App Store listing copy (if submitting later)
 
 **Name:** Mframapa  
 **Subtitle** (≤30): `Air quality for African cities`
@@ -191,7 +191,7 @@ Built in Accra, Ghana. Free for everyone.
 **Promotional text** (optional, updatable):
 
 ```
-Know today’s air quality, plan the next few days, and get dust alerts — built for Africa.
+Know today’s air quality, plan the next few days, and get dust alerts. Built for Africa.
 ```
 
 **Description:** use the same full description as Play (estimates language unchanged).
@@ -204,14 +204,14 @@ air quality,Africa,dust,AQI,harmattan,Accra,PM25,weather,alerts,offline
 
 ---
 
-## Screenshots — shot list
+## Screenshots shot list
 
 Phone frames: 1080×1920 (Play phone) and 1290×2796 (iPhone 6.7") if iOS is submitted. Prefer light mode for store clarity; keep one dark set for marketing.
 
 | # | Screen | Source / how | Caption (on-device text, optional) |
 |---|---|---|---|
-| 1 | Home — city reading | Capture from device or `website/public/mockups/home-light.png` | Today’s air quality for your city |
-| 2 | Map — Africa cities | `website/public/mockups/map-light.png` or live Map tab | Browse cities across Africa |
+| 1 | Home. city reading | Capture from device or `website/public/mockups/home-light.png` | Today’s air quality for your city |
+| 2 | Map. Africa cities | `website/public/mockups/map-light.png` or live Map tab | Browse cities across Africa |
 | 3 | Alerts inbox | `website/public/mockups/alerts-light.png` | Dust and episode alerts |
 | 4 | Search / city pick | Live Search screen | Find any city |
 | 5 | Outlook / detail | City detail with multi-day strip | Plan the next few days |
@@ -221,7 +221,7 @@ Phone frames: 1080×1920 (Play phone) and 1290×2796 (iPhone 6.7") if iOS is sub
 
 Capture scripts (repo): `website/scripts/capture-*-mockup.mjs` for marketing stills. For store assets, prefer real device screenshots from a production or staging build so UI chrome matches the binary under review.
 
-**Feature graphic** (Play, 1024×500): brand wordmark + one home mockup on atmospheric gradient — no fake AQI “100% accurate” badges.
+**Feature graphic** (Play, 1024×500): brand wordmark + one home mockup on atmospheric gradient. no fake AQI “100% accurate” badges.
 
 **Icon:** `mobile/assets/icon.png` / adaptive icon (already in Expo config).
 
@@ -252,13 +252,13 @@ npm run eas:submit
 
 Profiles live in `mobile/eas.json` (`preview` = APK, `production` = app-bundle).
 
-Production env must set `EXPO_PUBLIC_API_URL=https://api.mframapa.live` (or current API host), Mapbox, and Supabase public keys in EAS secrets — not only in local `.env`.
+Production env must set `EXPO_PUBLIC_API_URL=https://api.mframapa.live` (or current API host), Mapbox, and Supabase public keys in EAS secrets. not only in local `.env`.
 
 ---
 
 ## TWA (Bubblewrap) for Galaxy / sideload
 
-Config: `frontend-pwa/twa.config.json` — host and icons point at **`mframapa.live`**, package `ai.mframapa.pwa`.
+Config: `frontend-pwa/twa.config.json`. host and icons point at **`mframapa.live`**, package `ai.mframapa.pwa`.
 
 ```bash
 cd frontend-pwa
@@ -274,7 +274,7 @@ Before first Play/Galaxy TWA upload:
 
 ---
 
-## Parked (post-launch) — do not block store submit
+## Parked (post-launch): do not block store submit
 
 | Item | Why parked |
 |---|---|

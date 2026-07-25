@@ -27,7 +27,7 @@ const ny: Record<string, string> = {
   'settings.about': 'Zokhudza',
 
   'offline.banner': 'Palibe Intaneti',
-  'offline.cached_data': 'Palibe intaneti — ikuonyesa kuwerenga kwanu kotsiriza kokwatidwa',
+  'offline.cached_data': 'Palibe intaneti. ikuonyesa kuwerenga kwanu kotsiriza kokwatidwa',
 
   'error.location': 'Sikutha kupeza malo anu. Chonde, tsegurani mwayi wa malo.',
   'error.prediction': 'Lephera kukweza deta ya ubwino wa mpweya. Chonde, yesaninso.',
@@ -36,7 +36,7 @@ const ny: Record<string, string> = {
   'error.cached_fallback': 'Ikuonyesa kuwerenga kwanu kotsiriza kokwatidwa.',
   // injected critical keys
   'push_prompt.title': 'Stay ahead of the air',
-  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you — and share a daily Did you know.',
+  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you and share a daily Did you know.',
   'push_prompt.allow': 'Allow',
   'push_prompt.not_now': 'Not now',
   'screen.auth.continue_without_account': 'Continue without account',

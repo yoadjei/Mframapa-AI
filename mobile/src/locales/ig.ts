@@ -27,7 +27,7 @@ const ig: Record<string, string> = {
   'settings.about': 'Banyere',
 
   'offline.banner': 'Enweghị Intaneti',
-  'offline.cached_data': 'I nọ na-enweghị intaneti — na-egosi ihe ogugu ikpeazu i chekwara',
+  'offline.cached_data': 'I nọ na-enweghị intaneti. na-egosi ihe ogugu ikpeazu i chekwara',
 
   'error.location': 'Enweghị ike inweta onodu gi. Biko kwado ikike onodu.',
   'error.prediction': 'Enweghị ike inweta data ocha ikuku. Biko nwaa ozo.',
@@ -36,7 +36,7 @@ const ig: Record<string, string> = {
   'error.cached_fallback': 'Na-egosi ihe ogugu ikpeazu i chekwara.',
   // injected critical keys
   'push_prompt.title': 'Stay ahead of the air',
-  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you — and share a daily Did you know.',
+  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you and share a daily Did you know.',
   'push_prompt.allow': 'Allow',
   'push_prompt.not_now': 'Not now',
   'screen.auth.continue_without_account': 'Continue without account',

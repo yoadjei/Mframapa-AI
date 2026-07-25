@@ -27,7 +27,7 @@ const st: Record<string, string> = {
   'settings.about': 'Ka Ga',
 
   'offline.banner': 'Ha o ho Marang-rang',
-  'offline.cached_data': 'Ha o ho marang-rang — e bontsha ho bala ha hao ho qetelang ho bolokilweng',
+  'offline.cached_data': 'Ha o ho marang-rang. e bontsha ho bala ha hao ho qetelang ho bolokilweng',
 
   'error.location': 'E sitwa ho fumana sebaka sa hao. Ke kopa u dumele ditlhompo tsa sebaka.',
   'error.prediction': 'E sitwa ho fumana data ya boleng ba moea. Ke kopa u leke hape.',
@@ -36,7 +36,7 @@ const st: Record<string, string> = {
   'error.cached_fallback': 'E bontsha ho bala ha hao ho qetelang ho bolokilweng.',
   // injected critical keys
   'push_prompt.title': 'Stay ahead of the air',
-  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you — and share a daily Did you know.',
+  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you and share a daily Did you know.',
   'push_prompt.allow': 'Allow',
   'push_prompt.not_now': 'Not now',
   'screen.auth.continue_without_account': 'Continue without account',

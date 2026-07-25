@@ -62,7 +62,7 @@ const ar: Record<string, string> = {
   'settings.made_with': 'صنع بحب لأفريقيا',
 
   'offline.banner': 'غير متصل',
-  'offline.cached_data': 'أنت غير متصل — عرض آخر قراءة محفوظة',
+  'offline.cached_data': 'أنت غير متصل. عرض آخر قراءة محفوظة',
 
   'error.location': 'تعذر الحصول على موقعك. يرجى تفعيل أذونات الموقع.',
   'error.prediction': 'فشل في جلب بيانات جودة الهواء. يرجى المحاولة مجدداً.',

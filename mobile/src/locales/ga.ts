@@ -27,7 +27,7 @@ const ga: Record<string, string> = {
   'settings.about': 'Kɛ',
 
   'offline.banner': 'Internet Hako',
-  'offline.cached_data': 'Internet hako — ŋɛni tɛŋ gbɔŋ tsɔmɔ lɛ mli',
+  'offline.cached_data': 'Internet hako. ŋɛni tɛŋ gbɔŋ tsɔmɔ lɛ mli',
 
   'error.location': 'Miŋ shi mɔ hɛɛ ŋmɛnɛ. Kɛ location tswaa.',
   'error.prediction': 'Ŋɛni kpɔŋ naa hɛɛ ŋmɛnɛ. Hɛɛ bi.',
@@ -36,7 +36,7 @@ const ga: Record<string, string> = {
   'error.cached_fallback': 'Ŋɛni tɛŋ gbɔŋ tsɔmɔ lɛ mli.',
   // injected critical keys
   'push_prompt.title': 'Stay ahead of the air',
-  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you — and share a daily Did you know.',
+  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you and share a daily Did you know.',
   'push_prompt.allow': 'Allow',
   'push_prompt.not_now': 'Not now',
   'screen.auth.continue_without_account': 'Continue without account',

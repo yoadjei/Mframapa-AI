@@ -1,5 +1,5 @@
 /**
- * Marketing copy — Mentismint page rhythm, Mframapa product truth.
+ * Marketing copy. Mentismint page rhythm, Mframapa product truth.
  * Plain language. No long dashes. No leading dots on labels.
  * Say “air quality”, not vague “air”.
  */
@@ -11,7 +11,7 @@ export const copy = {
 
   hero: {
     title: 'Know the quality of your air.',
-    sub: 'Mframapa shows today’s air quality for your city and the next few days — free in your browser, no account required.',
+    sub: 'Mframapa shows today’s air quality for your city and the next few days. Free in your browser, no account required.',
     cta: 'Open the app',
   },
 

@@ -62,7 +62,7 @@ const sw: Record<string, string> = {
   'settings.made_with': 'Imetengenezwa kwa upendo kwa Afrika',
 
   'offline.banner': 'Nje ya mtandao',
-  'offline.cached_data': 'Uko nje ya mtandao — unaonyesha usomaji wako wa mwisho uliohifadhiwa',
+  'offline.cached_data': 'Uko nje ya mtandao. unaonyesha usomaji wako wa mwisho uliohifadhiwa',
 
   'error.location': 'Imeshindwa kupata mahali pako. Tafadhali washa ruhusa za eneo.',
   'error.prediction': 'Imeshindwa kupata data ya ubora wa hewa. Tafadhali jaribu tena.',

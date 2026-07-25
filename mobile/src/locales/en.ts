@@ -116,7 +116,7 @@ const base: Record<string, string> = {
   'notif_prefs.mark_count_as_read': 'Mark {{count}} as read',
   'notif_prefs.nothing_unread': 'No unread notifications',
   'push_prompt.title': 'Stay ahead of the air',
-  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you — and share a daily Did you know.',
+  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you and share a daily Did you know.',
   'push_prompt.allow': 'Allow',
   'push_prompt.not_now': 'Not now',
   'alerts.empty_title': 'No alerts yet',
@@ -375,9 +375,9 @@ const base: Record<string, string> = {
   'screen.health_risk.uv_name': 'UV Index',
   'screen.health_risk.uv_desc': 'Seek shade and wear sunscreen during midday hours.',
   'screen.health_risk.uv_desc_estimate':
-    'No UV sensor data — midday estimate. Seek shade and wear sunscreen when outdoors.',
+    'No UV sensor data. midday estimate. Seek shade and wear sunscreen when outdoors.',
   'screen.city_detail.degraded_banner':
-    'Using backup estimate — satellite model confidence is reduced.',
+    'Using backup estimate. satellite model confidence is reduced.',
 
   'screen.prediction.range_24h': '24h',
   'screen.prediction.range_48h': '48h',

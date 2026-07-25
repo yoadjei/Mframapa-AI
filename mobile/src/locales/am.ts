@@ -62,7 +62,7 @@ const am: Record<string, string> = {
   'settings.made_with': 'ለአፍሪካ ፍቅር ተሰርቷል',
 
   'offline.banner': 'ከመስመር ውጭ',
-  'offline.cached_data': 'ከመስመር ውጭ ነዎት — የተቀመጠውን የመጨረሻ ንባብዎን በማሳየት',
+  'offline.cached_data': 'ከመስመር ውጭ ነዎት. የተቀመጠውን የመጨረሻ ንባብዎን በማሳየት',
 
   'error.location': 'አካባቢዎን ማግኘት አልተቻለም። እባክዎ የቦታ ፍቃዶችን ያብሩ።',
   'error.prediction': 'የአየር ጥራት ውሂብ ማምጣት አልተሳካም። እባክዎ እንደገና ይሞክሩ።',
@@ -71,7 +71,7 @@ const am: Record<string, string> = {
   'error.cached_fallback': 'የተቀመጠውን የመጨረሻ ንባብዎን በማሳየት።',
   // injected critical keys
   'push_prompt.title': 'Stay ahead of the air',
-  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you — and share a daily Did you know.',
+  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you and share a daily Did you know.',
   'push_prompt.allow': 'Allow',
   'push_prompt.not_now': 'Not now',
   'screen.auth.continue_without_account': 'Continue without account',

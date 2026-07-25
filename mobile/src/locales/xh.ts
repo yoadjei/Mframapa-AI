@@ -27,7 +27,7 @@ const xh: Record<string, string> = {
   'settings.about': 'Malunga',
 
   'offline.banner': 'Ayikho Intanethi',
-  'offline.cached_data': 'Awunayo intanethi — ibonisa ukufunda kwakho okufileyo okokugqibela',
+  'offline.cached_data': 'Awunayo intanethi. ibonisa ukufunda kwakho okufileyo okokugqibela',
 
   'error.location': 'Ayikwazanga ukufumana indawo yakho. Nceda vula imvume zendawo.',
   'error.prediction': 'Yehlulekile ukufumana idatha yomgangatho womoya. Nceda uzame kwakhona.',
@@ -36,7 +36,7 @@ const xh: Record<string, string> = {
   'error.cached_fallback': 'Ibonisa ukufunda kwakho okufileyo okokugqibela.',
   // injected critical keys
   'push_prompt.title': 'Stay ahead of the air',
-  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you — and share a daily Did you know.',
+  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you and share a daily Did you know.',
   'push_prompt.allow': 'Allow',
   'push_prompt.not_now': 'Not now',
   'screen.auth.continue_without_account': 'Continue without account',

@@ -733,11 +733,11 @@
   "install.ios_step1_prefix": "Tap",
   "install.ios_step1_suffix": "Share in Safari",
   "install.ios_step2": "Scroll and tap Add to Home Screen",
-  "install.ios_step3": "Tap Add — Mframapa appears on your home screen",
+  "install.ios_step3": "Tap Add. Mframapa appears on your home screen",
   "install.ios_got_it": "Got it",
   "install.menu": "Install app",
   "push_prompt.title": "Stay ahead of the air",
-  "push_prompt.body": "Allow notifications so Mframapa can tip you when air quality changes near you — and share a daily Did you know.",
+  "push_prompt.body": "Allow notifications so Mframapa can tip you when air quality changes near you and share a daily Did you know.",
   "push_prompt.allow": "Allow",
   "push_prompt.not_now": "Not now"
 }

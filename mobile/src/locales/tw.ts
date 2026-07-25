@@ -27,7 +27,7 @@ const tw: Record<string, string> = {
   'settings.about': 'Fa Ho',
 
   'offline.banner': 'Ɛnnioa',
-  'offline.cached_data': 'Wowɔ ɛnnioa — ɛrekyerɛ wo nsɛnkyerɛnne a wosiev ho',
+  'offline.cached_data': 'Wowɔ ɛnnioa. ɛrekyerɛ wo nsɛnkyerɛnne a wosiev ho',
 
   'error.location': 'Wontumi anya wo beae. Yɛsrɛ wo, fa beae tumi to mu.',
   'error.prediction': 'Wontumi anya wim pe nhoma. Yɛsrɛ wo, sɔ bio.',
@@ -36,7 +36,7 @@ const tw: Record<string, string> = {
   'error.cached_fallback': 'Ɛrekyerɛ wo nsɛnkyerɛnne a wosiev ho.',
   // injected critical keys
   'push_prompt.title': 'Stay ahead of the air',
-  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you — and share a daily Did you know.',
+  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you and share a daily Did you know.',
   'push_prompt.allow': 'Allow',
   'push_prompt.not_now': 'Not now',
   'screen.auth.continue_without_account': 'Continue without account',

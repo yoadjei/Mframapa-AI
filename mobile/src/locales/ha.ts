@@ -62,7 +62,7 @@ const ha: Record<string, string> = {
   'settings.made_with': 'An kirkira da kauna domin Afirka',
 
   'offline.banner': 'Ba Layi',
-  'offline.cached_data': 'Kana ba layi — yana nuna karanta karshenka da aka adana',
+  'offline.cached_data': 'Kana ba layi. yana nuna karanta karshenka da aka adana',
 
   'error.location': 'Ba za a iya samun wurinka ba. Da fatan za a kunna izinin wuri.',
   'error.prediction': 'An kasa samun bayanan ingancin iska. Da fatan za a sake gwadawa.',
@@ -71,7 +71,7 @@ const ha: Record<string, string> = {
   'error.cached_fallback': 'Ana nuna karanta karshenka da aka adana.',
   // injected critical keys
   'push_prompt.title': 'Stay ahead of the air',
-  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you — and share a daily Did you know.',
+  'push_prompt.body': 'Allow notifications so Mframapa can tip you when air quality changes near you and share a daily Did you know.',
   'push_prompt.allow': 'Allow',
   'push_prompt.not_now': 'Not now',
   'screen.auth.continue_without_account': 'Continue without account',
