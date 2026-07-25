@@ -15,7 +15,7 @@ import { useStore } from '../../store/useStore';
 import { useTranslation } from '../../hooks/useTranslation';
 
 interface Props {
-  onAuth: () => void;
+  onAuth?: () => void;
 }
 
 export function SignUpScreen({ onAuth }: Props) {
@@ -49,7 +49,8 @@ export function SignUpScreen({ onAuth }: Props) {
       Alert.alert(res.error ?? t('screen.auth.could_not_sign_up'));
       return;
     }
-    onAuth();
+    if (onAuth) onAuth();
+    else if (navigation.canGoBack()) navigation.goBack();
   }
 
   return (

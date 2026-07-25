@@ -39,8 +39,8 @@ export function GlassSheet({
 }: Props) {
   const { isDark } = useTheme();
   const insets = useSafeAreaInsets();
-  const fill = isDark ? 'rgba(12,18,26,0.42)' : 'rgba(255,255,255,0.48)';
-  const border = isDark ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.70)';
+  const fill = isDark ? 'rgba(18,24,34,0.82)' : 'rgba(255,255,255,0.88)';
+  const border = isDark ? 'rgba(255,255,255,0.16)' : 'rgba(15,20,25,0.10)';
 
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>

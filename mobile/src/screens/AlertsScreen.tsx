@@ -29,7 +29,7 @@ export function AlertsScreen() {
 
   function handleMarkAll() {
     if (unreadCount === 0) {
-      Alert.alert(t('alerts.all_caught_up'));
+      Alert.alert(t('notif_prefs.nothing_unread'));
       return;
     }
     markAllNotificationsRead();
@@ -103,7 +103,9 @@ export function AlertsScreen() {
         <View style={styles.headerRight}>
           <TouchableOpacity onPress={handleMarkAll} disabled={unreadCount === 0}>
             <Text style={[styles.markAll, unreadCount === 0 && { opacity: 0.4 }]}>
-              {t('alerts.mark_all')}
+              {unreadCount === 0
+                ? t('notif_prefs.nothing_unread')
+                : t('alerts.mark_all')}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity

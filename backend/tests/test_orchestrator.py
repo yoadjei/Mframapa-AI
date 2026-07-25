@@ -35,7 +35,9 @@ def _make_orchestrator(era5_ok=True, s5p_ok=True, viirs_ok=True, modis_ok=True, 
 
     orch = DataOrchestrator.__new__(DataOrchestrator)
     orch._counters = {n: {"success": 0, "failure": 0}
-                      for n in ["ERA5", "Sentinel-5P", "VIIRS-MAIAC", "MODIS-MAIAC", "OpenMeteo", "NDVI-Composite", "VIIRS-NightLights", "OSM-Roads", "OpenAQ"]}
+                      for n in ["ERA5", "Sentinel-5P", "VIIRS-MAIAC", "MODIS-MAIAC",
+                                "OpenMeteo", "NASA-POWER", "NDVI-Composite",
+                                "VIIRS-NightLights", "OSM-Roads", "OpenAQ"]}
 
     def _mock_src(available, data=None, fail=False):
         m = MagicMock()
@@ -52,6 +54,11 @@ def _make_orchestrator(era5_ok=True, s5p_ok=True, viirs_ok=True, modis_ok=True, 
         "VIIRS-MAIAC": _mock_src(viirs_ok, viirs_data, not viirs_ok),
         "MODIS-MAIAC": _mock_src(modis_ok, modis_data, not modis_ok),
         "OpenMeteo":   _mock_src(om_ok,    om_data,    not om_ok),
+        "NASA-POWER":  _mock_src(True, {
+            "temperature_2m": 26.0, "relative_humidity": 65.0,
+            "u_component_of_wind_10m": 0.8, "v_component_of_wind_10m": -0.4,
+            "surface_pressure": 1010.0, "precipitation": 0.0,
+        }, False),
         "NDVI-Composite": _mock_src(True, {"ndvi": 0.45}, False),
         "VIIRS-NightLights": _mock_src(True, {"night_lights": 12.5}, False),
         "OSM-Roads": _mock_src(True, {"road_density": 0.05}, False),
@@ -94,6 +101,12 @@ class TestDataOrchestrator:
         result = orch.get_features(**ACCRA)
         assert result["temperature_2m"] == pytest.approx(MOCK_OM["temperature_2m"])
 
+    def test_nasa_power_fallback_when_era5_and_openmeteo_fail(self):
+        orch = _make_orchestrator(era5_ok=False, om_ok=False)
+        result = orch.get_features(**ACCRA)
+        assert result["temperature_2m"] == pytest.approx(26.0)
+        assert result["relative_humidity"] == pytest.approx(65.0)
+
     def test_reliability_scores_updated_on_success(self):
         orch = _make_orchestrator()
         orch.get_features(**ACCRA)
@@ -117,6 +130,9 @@ class TestDataOrchestrator:
     def test_all_none_when_all_sources_fail(self):
         orch = _make_orchestrator(era5_ok=False, s5p_ok=False, viirs_ok=False,
                                    modis_ok=False, om_ok=False)
+        orch._sources["NASA-POWER"].fetch_data.side_effect = ConnectionError("down")
+        orch._sources["NASA-POWER"].is_available = True
+        orch._sources["OpenAQ"].fetch_data.side_effect = ConnectionError("down")
         result = orch.get_features(**ACCRA)
         assert result["pblh"] is None
         assert result["temperature_2m"] is None

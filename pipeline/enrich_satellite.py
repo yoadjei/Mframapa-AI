@@ -4,8 +4,9 @@ feasibility: one archive call per unique station location (covering its full act
 range) instead of per station-day, so enrichment finishes in minutes, not weeks.
 static features (population, elevation) are fetched once per location.
 
-weather comes from open-meteo's era5 archive; pollutant columns come from open-meteo
-(cams). real sentinel-5p/viirs satellite columns are a defensibility upgrade handled
+weather comes from open-meteo's era5 archive (incl. surface_pressure + precipitation);
+pollutant columns come from open-meteo cams (incl. dust + openmeteo_pm25 baseline).
+real sentinel-5p/viirs satellite columns are a defensibility upgrade handled
 separately (batch/earth-engine extraction) — not a per-station-day live download.
 """
 
@@ -47,8 +48,10 @@ _AQ_URL = "https://air-quality-api.open-meteo.com/v1/air-quality"
 
 _FEATURES = [
     "pblh", "temperature_2m", "relative_humidity", "u_component_of_wind_10m",
-    "v_component_of_wind_10m", "no2_tropospheric_column", "aerosol_optical_depth",
-    "so2_total_column", "co_total_column", "pm10_surface", "population_density", "elevation",
+    "v_component_of_wind_10m", "surface_pressure", "precipitation",
+    "no2_tropospheric_column", "aerosol_optical_depth",
+    "so2_total_column", "co_total_column", "pm10_surface", "dust_surface",
+    "openmeteo_pm25", "population_density", "elevation",
 ]
 
 
@@ -121,7 +124,11 @@ def _weather_daily(lat: float, lon: float, start: str, end: str) -> dict[str, di
         OPENMETEO_ARCHIVE_URL,
         {
             "latitude": lat, "longitude": lon, "start_date": start, "end_date": end,
-            "hourly": "boundary_layer_height,temperature_2m,relative_humidity_2m,wind_speed_10m,wind_direction_10m",
+            "hourly": (
+                "boundary_layer_height,temperature_2m,relative_humidity_2m,"
+                "surface_pressure,precipitation,"
+                "wind_speed_10m,wind_direction_10m"
+            ),
             "timezone": "UTC",
         },
     )
@@ -134,7 +141,11 @@ def _weather_daily(lat: float, lon: float, start: str, end: str) -> dict[str, di
     frame["u_component_of_wind_10m"] = -speed * radians.apply(math.sin)
     frame["v_component_of_wind_10m"] = -speed * radians.apply(math.cos)
     frame = frame.rename(columns={"boundary_layer_height": "pblh", "relative_humidity_2m": "relative_humidity"})
-    columns = ["pblh", "temperature_2m", "relative_humidity", "u_component_of_wind_10m", "v_component_of_wind_10m"]
+    columns = [
+        "pblh", "temperature_2m", "relative_humidity",
+        "u_component_of_wind_10m", "v_component_of_wind_10m",
+        "surface_pressure", "precipitation",
+    ]
     return _daily_means(frame, columns)
 
 
@@ -144,7 +155,10 @@ def _air_quality_daily(lat: float, lon: float, start: str, end: str) -> dict[str
         _AQ_URL,
         {
             "latitude": lat, "longitude": lon, "start_date": start, "end_date": end,
-            "hourly": "nitrogen_dioxide,sulphur_dioxide,carbon_monoxide,aerosol_optical_depth,pm10,pm2_5",
+            "hourly": (
+                "nitrogen_dioxide,sulphur_dioxide,carbon_monoxide,"
+                "aerosol_optical_depth,pm10,pm2_5,dust"
+            ),
             "timezone": "UTC",
         },
     )
@@ -156,9 +170,13 @@ def _air_quality_daily(lat: float, lon: float, start: str, end: str) -> dict[str
         "sulphur_dioxide": "so2_total_column",
         "carbon_monoxide": "co_total_column",
         "pm10": "pm10_surface",
-        "pm2_5": "openmeteo_pm25",  # cams baseline for the benchmark (not a model feature)
+        "pm2_5": "openmeteo_pm25",  # cams baseline for residual / benchmark
+        "dust": "dust_surface",
     })
-    columns = ["no2_tropospheric_column", "so2_total_column", "co_total_column", "aerosol_optical_depth", "pm10_surface", "openmeteo_pm25"]
+    columns = [
+        "no2_tropospheric_column", "so2_total_column", "co_total_column",
+        "aerosol_optical_depth", "pm10_surface", "openmeteo_pm25", "dust_surface",
+    ]
     return _daily_means(frame, columns)
 
 

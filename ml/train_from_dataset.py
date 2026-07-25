@@ -21,7 +21,12 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
 from ml.derived_features import DERIVED_COLUMNS, add_to_frame
 from ml.ensemble import ensemble_mean
-from ml.features import FEATURE_COLUMNS, TARGET_COLUMN
+from ml.features import (
+    ENRICHED_FEATURE_COLUMNS,
+    ENRICHED_MIN_COVERAGE,
+    FEATURE_COLUMNS,
+    TARGET_COLUMN,
+)
 from ml.model_selection import regional_export_dir
 from ml.static_features import STATIC_COLUMNS
 from ml.static_features import add_to_frame as _static_add
@@ -167,11 +172,29 @@ def main() -> int:
     df = _load(args.dataset)
     for col in _SPATIAL:
         df[col] = pd.to_numeric(df[col], errors="coerce")
+    for col in ENRICHED_FEATURE_COLUMNS:
+        if col in df.columns:
+            df[col] = pd.to_numeric(df[col], errors="coerce")
+    enriched_cols = [
+        c for c in ENRICHED_FEATURE_COLUMNS
+        if c in df.columns and float(df[c].notna().mean()) >= ENRICHED_MIN_COVERAGE
+    ]
+    if enriched_cols:
+        logger.info("using enriched features (≥%.0f%% coverage): %s", ENRICHED_MIN_COVERAGE * 100, enriched_cols)
+    elif any(c in df.columns for c in ENRICHED_FEATURE_COLUMNS):
+        logger.warning(
+            "enriched columns present but below %.0f%% coverage — re-run "
+            "`python -m pipeline.run_pipeline` with force enrich, or train without them",
+            ENRICHED_MIN_COVERAGE * 100,
+        )
     static_cols = STATIC_COLUMNS if _static_available() else []
     if static_cols:
         logger.info("using static grid features: %s", static_cols)
-    with_cols = list(FEATURE_COLUMNS) + _SPATIAL + DERIVED_COLUMNS + static_cols
-    without_cols = [c for c in FEATURE_COLUMNS if c != "pm10_surface"] + _SPATIAL + DERIVED_COLUMNS + static_cols
+    with_cols = list(FEATURE_COLUMNS) + enriched_cols + _SPATIAL + DERIVED_COLUMNS + static_cols
+    without_cols = (
+        [c for c in FEATURE_COLUMNS if c != "pm10_surface"]
+        + enriched_cols + _SPATIAL + DERIVED_COLUMNS + static_cols
+    )
 
     def _fmt(tag: str, m: Dict[str, Any]) -> str:
         return f"  {tag:<12} n_test={m['n_test']:>6}  MAE={m['mae']:.2f}  RMSE={m['rmse']:.2f}  R2={m['r2']:.3f}  ({m['split']})"

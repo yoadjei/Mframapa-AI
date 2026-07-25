@@ -49,7 +49,11 @@ TRAINING_COLUMNS = [
     "pm25_surface", "pblh", "temperature_2m", "relative_humidity",
     "u_component_of_wind_10m", "v_component_of_wind_10m", "no2_tropospheric_column",
     "aerosol_optical_depth", "so2_total_column", "co_total_column", "pm10_surface",
-    "population_density", "elevation", "openmeteo_pm25", "n_obs_pm25", "pm25_source",
+    "population_density", "elevation",
+    # Enriched meteo / dust (Open-Meteo archive + CAMS) — optional at train time
+    "surface_pressure", "precipitation", "dust_surface",
+    # CAMS PM2.5 baseline for residual / benchmark (not a model feature)
+    "openmeteo_pm25", "n_obs_pm25", "pm25_source",
     "aod_source", "qa_flag", "imputed_fields", "pulled_at_utc",
 ]
 

@@ -8,6 +8,8 @@ import { AppNavigator } from './src/navigation/AppNavigator';
 import { navigationRef, navigate } from './src/navigation/navigationRef';
 import { CloudRainBackground } from './src/components/CloudRainBackground';
 import { AppBackgroundColors } from './src/theme/background';
+import { TextScaledRoot } from './src/theme/TextScaledRoot';
+import { loadBootTheme, type BootTheme } from './src/theme/bootTheme';
 import { useTheme } from './src/hooks/useTheme';
 import { getAfricanCities } from './src/services/cities';
 import { saveCities } from './src/services/offline';
@@ -40,16 +42,36 @@ export default function App() {
   const addNotification = useStore((s) => s.addNotification);
   const textScale = useStore((s) => s.textScale);
   const [pushPromptOpen, setPushPromptOpen] = useState(false);
+  const [boot, setBoot] = useState<BootTheme | null>(null);
+  const [storeHydrated, setStoreHydrated] = useState(() => useStore.persist.hasHydrated());
 
-  // Accessibility text size (Settings) — raise OS font scaling ceiling.
+  // PWA-style pre-paint theme: hold the shell until AsyncStorage theme is known.
   useEffect(() => {
-    const max = textScale >= 1.3 ? 1.85 : textScale >= 1.15 ? 1.55 : 1.25;
-    const defaults = { allowFontScaling: true, maxFontSizeMultiplier: max };
+    let cancelled = false;
+    loadBootTheme().then((theme) => {
+      if (!cancelled) setBoot(theme);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (useStore.persist.hasHydrated()) {
+      setStoreHydrated(true);
+      return undefined;
+    }
+    return useStore.persist.onFinishHydration(() => setStoreHydrated(true));
+  }, []);
+
+  // Cap OS Dynamic Type so in-app textScale (TextScaledRoot) owns the size step.
+  useEffect(() => {
+    const defaults = { allowFontScaling: true, maxFontSizeMultiplier: 1.35 };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (Text as any).defaultProps = { ...(Text as any).defaultProps, ...defaults };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (TextInput as any).defaultProps = { ...(TextInput as any).defaultProps, ...defaults };
-  }, [textScale]);
+  }, []);
 
   useEffect(() => {
     trackAppOpen();   // installs / WAU / retention
@@ -134,7 +156,11 @@ export default function App() {
     };
   }, [isAuthenticated]);
 
-  const navTheme = isDark
+  // Prefer boot theme until zustand finishes rehydrate (avoids dark→light flash).
+  const resolvedDark = storeHydrated ? isDark : (boot?.isDark ?? true);
+  const shellBg = resolvedDark ? AppBackgroundColors.dark : AppBackgroundColors.light;
+
+  const navTheme = resolvedDark
     ? {
         ...DarkTheme,
         colors: {
@@ -160,23 +186,28 @@ export default function App() {
         },
       };
 
-  const shellBg = isDark ? AppBackgroundColors.dark : AppBackgroundColors.light;
+  // First frame: solid boot color (no CloudRain / nav) until theme is known.
+  if (!boot) {
+    return <View style={[styles.shell, { backgroundColor: shellBg }]} />;
+  }
 
   return (
     <AppErrorBoundary>
     <SafeAreaProvider>
       <View style={[styles.shell, { backgroundColor: shellBg }]}>
         <CloudRainBackground />
-        <View style={styles.nav}>
-          <NavigationContainer
-            ref={navigationRef}
-            key={isAuthenticated ? 'main' : 'onboarding'}
-            theme={navTheme}
-          >
-            <AppNavigator />
-            <StatusBar style={isDark ? 'light' : 'dark'} />
-          </NavigationContainer>
-        </View>
+        <TextScaledRoot scale={textScale}>
+          <View style={styles.nav}>
+            <NavigationContainer
+              ref={navigationRef}
+              key={isAuthenticated ? 'main' : 'onboarding'}
+              theme={navTheme}
+            >
+              <AppNavigator />
+              <StatusBar style={resolvedDark ? 'light' : 'dark'} />
+            </NavigationContainer>
+          </View>
+        </TextScaledRoot>
         <NotificationPermissionSheet
           visible={pushPromptOpen}
           onClose={() => setPushPromptOpen(false)}

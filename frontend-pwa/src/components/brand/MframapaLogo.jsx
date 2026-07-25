@@ -1,4 +1,4 @@
-// Raindrop mark on brand green — matches app icons (white tile + drop).
+// Raincloud mark — exact paths from website/public/favicon.svg.
 // `markOnly` drops the wordmark for in-app headers.
 export function MframapaLogo({ size = "md", isDark = true, markOnly = false }) {
   const dims = {
@@ -16,11 +16,18 @@ export function MframapaLogo({ size = "md", isDark = true, markOnly = false }) {
         width={icon}
         height={icon}
         viewBox="0 0 24 24"
-        fill="#00C896"
+        fill="none"
+        stroke="#00C896"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
         aria-hidden="true"
       >
-        {/* Lucide droplet (filled) */}
-        <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
+        {/* Exact paths from website/public/favicon.svg */}
+        <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242" />
+        <path d="M8 14v7" />
+        <path d="M12 16v7" />
+        <path d="M16 14v7" />
       </svg>
       {markOnly ? null : (
         <span style={{ fontSize: text, fontWeight: 700, letterSpacing: "0.2px" }}>

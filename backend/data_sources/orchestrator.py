@@ -1,6 +1,6 @@
 """
 DataOrchestrator — resolves all model features using a priority-ordered
-fallback hierarchy across ERA5, Sentinel-5P, MODIS, and Open-Meteo.
+fallback hierarchy across ERA5, Sentinel-5P, MODIS, Open-Meteo, and NASA POWER.
 
 Fallback logic:
     For each required feature, try sources in order until one succeeds.
@@ -15,15 +15,16 @@ Reliability scoring:
 import logging
 from typing import Dict, Any, Optional
 
-from .era5        import ERA5DataSource
-from .sentinel5p  import Sentinel5PDataSource
-from .modis       import MODISDataSource
-from .viirs       import VIIRSDataSource
-from .open_meteo  import OpenMeteoDataSource
-from .ndvi        import NDVIDataSource
+from .era5 import ERA5DataSource
+from .sentinel5p import Sentinel5PDataSource
+from .modis import MODISDataSource
+from .viirs import VIIRSDataSource
+from .open_meteo import OpenMeteoDataSource
+from .nasa_power import NASAPowerDataSource
+from .ndvi import NDVIDataSource
 from .night_lights import NightLightsDataSource
-from .osm_roads   import OSMRoadsDataSource
-from .openaq      import OpenAQDataSource
+from .osm_roads import OSMRoadsDataSource
+from .openaq import OpenAQDataSource
 
 logger = logging.getLogger(__name__)
 
@@ -32,58 +33,89 @@ logger = logging.getLogger(__name__)
 _FALLBACK_PLAN: Dict[str, list] = {
     # ── Planetary boundary layer ──────────────────────────────────────────
     "pblh": [
-        ("ERA5",    "pblh"),
-        ("OpenMeteo", "pblh"),
+        ("ERA5", "pblh"),
     ],
     # ── Meteorology ───────────────────────────────────────────────────────
     "temperature_2m": [
-        ("ERA5",      "temperature_2m"),
+        ("ERA5", "temperature_2m"),
         ("OpenMeteo", "temperature_2m"),
+        ("NASA-POWER", "temperature_2m"),
     ],
     "relative_humidity": [
-        ("ERA5",      "relative_humidity"),
+        ("ERA5", "relative_humidity"),
         ("OpenMeteo", "relative_humidity"),
+        ("NASA-POWER", "relative_humidity"),
     ],
     "u_component_of_wind_10m": [
-        ("ERA5",      "u_component_of_wind_10m"),
+        ("ERA5", "u_component_of_wind_10m"),
         ("OpenMeteo", "u_component_of_wind_10m"),
+        ("NASA-POWER", "u_component_of_wind_10m"),
     ],
     "v_component_of_wind_10m": [
-        ("ERA5",      "v_component_of_wind_10m"),
+        ("ERA5", "v_component_of_wind_10m"),
         ("OpenMeteo", "v_component_of_wind_10m"),
+        ("NASA-POWER", "v_component_of_wind_10m"),
+    ],
+    "surface_pressure": [
+        ("OpenMeteo", "surface_pressure"),
+        ("NASA-POWER", "surface_pressure"),
+    ],
+    "precipitation": [
+        ("OpenMeteo", "precipitation"),
+        ("NASA-POWER", "precipitation"),
+    ],
+    "dew_point_2m": [
+        ("OpenMeteo", "dew_point_2m"),
+    ],
+    "cloud_cover": [
+        ("OpenMeteo", "cloud_cover"),
     ],
     # ── Trace gases ───────────────────────────────────────────────────────
     "no2_tropospheric_column": [
         ("Sentinel-5P", "no2_tropospheric_column"),
-        ("OpenMeteo",   "no2_surface"),
+        ("OpenMeteo", "no2_surface"),
     ],
     "so2_total_column": [
         ("Sentinel-5P", "so2_total_column"),
-        ("OpenMeteo",   "so2_surface"),
+        ("OpenMeteo", "so2_surface"),
     ],
     "co_total_column": [
         ("Sentinel-5P", "co_total_column"),
-        ("OpenMeteo",   "co_surface"),
+        ("OpenMeteo", "co_surface"),
     ],
     # ── Aerosols ──────────────────────────────────────────────────────────
     "aerosol_optical_depth": [
-        ("Sentinel-5P",  "aerosol_optical_depth"),
-        ("VIIRS-MAIAC",  "aerosol_optical_depth"),
-        ("MODIS-MAIAC",  "aerosol_optical_depth"),
-        ("OpenMeteo",    "aerosol_optical_depth"),
+        ("Sentinel-5P", "aerosol_optical_depth"),
+        ("VIIRS-MAIAC", "aerosol_optical_depth"),
+        ("MODIS-MAIAC", "aerosol_optical_depth"),
+        ("OpenMeteo", "aerosol_optical_depth"),
     ],
     # ── Particulates ─────────────────────────────────────────────────────
     "pm10_surface": [
         ("OpenMeteo", "pm10_surface"),
+        ("OpenAQ", "openaq_pm10"),
     ],
     "pm25_surface": [
         ("OpenMeteo", "pm25_surface"),
+        ("OpenAQ", "openaq_pm25"),
     ],
-    # ndvi + night_lights come from the static grid at the router layer; road_density
-    # and openaq_* are not model features — none belong on the live request path.
+    "dust_surface": [
+        ("OpenMeteo", "dust_surface"),
+    ],
 }
 
-_SOURCE_NAMES = ["ERA5", "Sentinel-5P", "VIIRS-MAIAC", "MODIS-MAIAC", "OpenMeteo", "NDVI-Composite", "VIIRS-NightLights", "OSM-Roads", "OpenAQ"]
+_SOURCE_NAMES = [
+    "ERA5",
+    "Sentinel-5P",
+    "VIIRS-MAIAC",
+    "MODIS-MAIAC",
+    "OpenMeteo",
+    "NASA-POWER",
+    "NDVI-Composite",
+    "VIIRS-NightLights",
+    "OSM-Roads",
+    "OpenAQ",
+]
 
 
 class DataOrchestrator:
@@ -97,11 +129,12 @@ class DataOrchestrator:
 
     def __init__(self):
         self._sources = {
-            "ERA5":       ERA5DataSource(),
+            "ERA5": ERA5DataSource(),
             "Sentinel-5P": Sentinel5PDataSource(),
             "VIIRS-MAIAC": VIIRSDataSource(),
             "MODIS-MAIAC": MODISDataSource(),
-            "OpenMeteo":  OpenMeteoDataSource(),
+            "OpenMeteo": OpenMeteoDataSource(),
+            "NASA-POWER": NASAPowerDataSource(),
             "NDVI-Composite": NDVIDataSource(),
             "VIIRS-NightLights": NightLightsDataSource(),
             "OSM-Roads": OSMRoadsDataSource(),
@@ -184,4 +217,3 @@ class DataOrchestrator:
     @property
     def available_sources(self) -> list:
         return [name for name, src in self._sources.items() if src.is_available]
-

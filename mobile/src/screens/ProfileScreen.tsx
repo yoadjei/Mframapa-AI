@@ -8,7 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Avatar } from '../components/ui/Avatar';
 import { Badge } from '../components/ui/Badge';
 import { AvatarPickerSheet, naviiUrl } from '../components/AvatarPickerSheet';
-import { InputField } from '../components/ui/InputField';
+import { PrimaryButton } from '../components/ui/PrimaryButton';
 import { MframapaLogo } from '../components/MframapaLogo';
 import { getColors, Colors } from '../theme';
 import { useTheme } from '../hooks/useTheme';
@@ -22,11 +22,12 @@ export function ProfileScreen() {
   const colors = getColors(isDark);
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<any>();
-  const profile       = useStore((s) => s.profile);
+  const profile = useStore((s) => s.profile);
   const updateProfile = useStore((s) => s.updateProfile);
-  const signOut       = useStore((s) => s.signOut);
+  const signOut = useStore((s) => s.signOut);
+  // Guests also set isAuthenticated to enter MainApp; a real account has email.
+  const hasAccount = Boolean(profile.email?.trim());
 
-  const [email] = useState(profile.email);
   const [pickerVisible, setPickerVisible] = useState(false);
 
   function confirmSignOut() {
@@ -43,6 +44,13 @@ export function ProfileScreen() {
   function handleAvatarSelect(seed: string) {
     void updateProfile({ avatarSeed: seed });
   }
+
+  function goSignIn() {
+    navigation.navigate('Login');
+  }
+
+  const displayName = profile.fullName?.trim() || '';
+  const displayEmail = profile.email?.trim() || '';
 
   return (
     <View style={[styles.root]}>
@@ -75,23 +83,37 @@ export function ProfileScreen() {
           <Badge label={profile.tier.charAt(0).toUpperCase() + profile.tier.slice(1)} variant={profile.tier as any} />
         </View>
 
-        <View style={styles.form}>
-          <InputField
-            label={t('screen.profile.email')}
-            value={email}
-            onChangeText={() => {}}
-            editable={false}
-            placeholder="email@example.com"
-            isDark={isDark}
-            keyboardType="email-address"
-            autoCapitalize="none"
-          />
-          <Text style={[styles.managedNote, { color: colors.muted }]}>
-            {t('screen.profile.managed_note')}
-          </Text>
-        </View>
+        {hasAccount ? (
+          <View style={styles.form}>
+            <Text style={[styles.sectionLabel, { color: colors.subtext }]}>
+              {t('screen.profile.account_details')}
+            </Text>
+            <View style={[styles.detailsCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+              {displayName ? (
+                <View style={[styles.detailRow, { borderBottomColor: colors.border }]}>
+                  <Text style={[styles.detailLabel, { color: colors.subtext }]}>{t('screen.profile.name')}</Text>
+                  <Text style={[styles.detailValue, { color: colors.text }]}>{displayName}</Text>
+                </View>
+              ) : null}
+              <View style={styles.detailRowLast}>
+                <Text style={[styles.detailLabel, { color: colors.subtext }]}>{t('screen.profile.email')}</Text>
+                <Text style={[styles.detailValue, { color: colors.text }]}>
+                  {displayEmail || t('screen.profile.not_set')}
+                </Text>
+              </View>
+            </View>
+            <Text style={[styles.managedNote, { color: colors.muted }]}>
+              {t('screen.profile.managed_note')}
+            </Text>
+          </View>
+        ) : (
+          <View style={[styles.anonCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <Text style={[styles.anonTitle, { color: colors.text }]}>{t('screen.profile.anon_title')}</Text>
+            <Text style={[styles.anonBody, { color: colors.subtext }]}>{t('screen.profile.anon_body')}</Text>
+            <PrimaryButton label={t('screen.profile.sign_in')} onPress={goSignIn} />
+          </View>
+        )}
 
-        {/* Product screens — same discoverability as PWA Profile */}
         <View style={[styles.links, { borderTopColor: colors.border }]}>
           {PROFILE_MENU_ITEMS.map((item) => (
             <TouchableOpacity
@@ -107,37 +129,47 @@ export function ProfileScreen() {
           ))}
         </View>
 
-        {/*
-          HCI: frequent session end (Sign out) is primary; irreversible Delete is
-          separated below a divider with quieter type so the two aren’t one tap-cluster.
-        */}
-        <View style={[styles.accountActions, { borderColor: colors.border, backgroundColor: colors.card }]}>
-          <Text style={[styles.accountActionsLabel, { color: colors.subtext }]}>
-            {t('screen.profile.account_actions')}
-          </Text>
+        <View style={styles.accountActionsWrap}>
+          {hasAccount ? (
+            <View style={[styles.accountActions, { borderColor: colors.border, backgroundColor: colors.card }]}>
+              <Text style={[styles.accountActionsLabel, { color: colors.subtext }]}>
+                {t('screen.profile.account_actions')}
+              </Text>
 
-          <TouchableOpacity
-            onPress={confirmSignOut}
-            style={styles.signOutRow}
-            accessibilityRole="button"
-            accessibilityLabel={t('settings.sign_out')}
-          >
-            <Ionicons name="log-out-outline" size={18} color={Colors.danger} />
-            <Text style={styles.signOutText}>{t('settings.sign_out')}</Text>
-          </TouchableOpacity>
+              <TouchableOpacity
+                onPress={confirmSignOut}
+                style={styles.signOutRow}
+                accessibilityRole="button"
+                accessibilityLabel={t('settings.sign_out')}
+              >
+                <Ionicons name="log-out-outline" size={18} color={Colors.danger} />
+                <Text style={styles.signOutText}>{t('settings.sign_out')}</Text>
+              </TouchableOpacity>
 
-          <View style={[styles.dangerDivider, { backgroundColor: colors.border }]} />
+              <View style={[styles.dangerDivider, { backgroundColor: colors.border }]} />
 
-          <TouchableOpacity
-            onPress={() => navigation.navigate('DeleteAccount')}
-            style={styles.deleteLink}
-            accessibilityRole="button"
-            accessibilityLabel={t('screen.profile.delete_account')}
-          >
-            <Text style={[styles.deleteLinkText, { color: Colors.danger }]}>
-              {t('screen.profile.delete_account')}
-            </Text>
-          </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('DeleteAccount')}
+                style={styles.deleteLink}
+                accessibilityRole="button"
+                accessibilityLabel={t('screen.profile.delete_account')}
+              >
+                <Text style={[styles.deleteLinkText, { color: Colors.danger }]}>
+                  {t('screen.profile.delete_account')}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <TouchableOpacity
+              onPress={goSignIn}
+              style={[styles.signInPill, { backgroundColor: Colors.brandGreen }]}
+              accessibilityRole="button"
+              accessibilityLabel={t('profile.sign_in_prompt')}
+            >
+              <Ionicons name="log-in-outline" size={18} color="#00110B" />
+              <Text style={styles.signInPillText}>{t('profile.sign_in_prompt')}</Text>
+            </TouchableOpacity>
+          )}
         </View>
       </ScrollView>
 
@@ -166,8 +198,43 @@ const styles = StyleSheet.create({
   },
   tierRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 24 },
   tierLabel: { fontSize: 14 },
-  form: { gap: 14, marginBottom: 8 },
-  managedNote: { fontSize: 12, marginTop: 4, lineHeight: 16 },
+  form: { marginBottom: 8 },
+  sectionLabel: {
+    fontSize: 11,
+    fontWeight: '600',
+    letterSpacing: 1.2,
+    textTransform: 'uppercase',
+    marginBottom: 8,
+  },
+  detailsCard: {
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: 16,
+    paddingHorizontal: 16,
+  },
+  detailRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  detailRowLast: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+  },
+  detailLabel: { fontSize: 13 },
+  detailValue: { fontSize: 14, fontWeight: '500', maxWidth: '62%', textAlign: 'right' },
+  managedNote: { fontSize: 12, marginTop: 8, lineHeight: 16 },
+  anonCard: {
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 8,
+  },
+  anonTitle: { fontSize: 15, fontWeight: '600', marginBottom: 4 },
+  anonBody: { fontSize: 13, lineHeight: 19, marginBottom: 12 },
   links: {
     marginTop: 8,
     borderTopWidth: StyleSheet.hairlineWidth,
@@ -180,15 +247,18 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
   linkText: { fontSize: 15 },
-  accountActions: {
+  accountActionsWrap: {
     marginTop: 40,
     marginBottom: 8,
+    alignItems: 'center',
+  },
+  accountActions: {
+    alignSelf: 'stretch',
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: 16,
     paddingTop: 16,
     paddingBottom: 8,
     paddingHorizontal: 16,
-    alignItems: 'stretch',
   },
   accountActionsLabel: {
     fontSize: 11,
@@ -223,5 +293,18 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '400',
     opacity: 0.72,
+  },
+  signInPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    borderRadius: 999,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
+  signInPillText: {
+    color: '#00110B',
+    fontSize: 15,
+    fontWeight: '600',
   },
 });

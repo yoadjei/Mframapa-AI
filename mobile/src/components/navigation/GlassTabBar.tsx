@@ -49,12 +49,13 @@ const MAIN_TAB_CONFIG: {
   { names: ['Profile', 'profile'], labelKey: 'tab.profile', icons: { active: 'person', inactive: 'person-outline' } },
 ];
 
+/** Match PWA liquidGlass opacity so labels stay readable over the pattern bg. */
 function glassFill(isDark: boolean) {
-  return isDark ? 'rgba(12,18,26,0.38)' : 'rgba(255,255,255,0.42)';
+  return isDark ? 'rgba(18,24,34,0.82)' : 'rgba(255,255,255,0.88)';
 }
 
 function glassBorder(isDark: boolean) {
-  return isDark ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.70)';
+  return isDark ? 'rgba(255,255,255,0.16)' : 'rgba(15,20,25,0.10)';
 }
 
 function BarChrome({

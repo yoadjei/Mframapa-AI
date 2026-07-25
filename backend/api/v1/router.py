@@ -41,6 +41,44 @@ REPO_ROOT = repository_root()
 CITIES_PATH = REPO_ROOT / "backend" / "data" / "african_cities.json"
 
 
+def _weather_from_features(feats: Dict[str, Any]) -> Dict[str, Any]:
+    """Build API weather block; missing inputs stay null (never fake zeros)."""
+    temp = feats.get("temperature_2m")
+    rh = feats.get("relative_humidity")
+    u = feats.get("u_component_of_wind_10m")
+    v = feats.get("v_component_of_wind_10m")
+    pressure = feats.get("surface_pressure")
+    precip = feats.get("precipitation")
+    dew = feats.get("dew_point_2m")
+    cloud = feats.get("cloud_cover")
+
+    wind = None
+    if u is not None and v is not None:
+        wind = round((float(u) ** 2 + float(v) ** 2) ** 0.5, 2)
+
+    return {
+        "temp": float(temp) if temp is not None else None,
+        "humidity": float(rh) if rh is not None else None,
+        "wind": wind,
+        "pressure": round(float(pressure), 1) if pressure is not None else None,
+        "precipitation": round(float(precip), 2) if precip is not None else None,
+        "dew_point": round(float(dew), 1) if dew is not None else None,
+        "cloud_cover": round(float(cloud), 0) if cloud is not None else None,
+    }
+
+
+def _factors_from_features(feats: Dict[str, Any]) -> Dict[str, Any]:
+    keys = (
+        "aerosol_optical_depth",
+        "no2_tropospheric_column",
+        "pm10_surface",
+        "dust_surface",
+        "population_density",
+        "elevation",
+    )
+    return {k: feats.get(k) for k in keys if feats.get(k) is not None}
+
+
 @lru_cache(maxsize=12)
 def _load_bundle(region_id: str, segment: str):
     """Load and cache XGBoost + LightGBM models for a region/segment pair."""
@@ -229,36 +267,13 @@ def _build_prediction(
     lower = max(0.0, pm25 - half)
     upper = pm25 + half
 
-    temp = feats.get("temperature_2m")
-    rh = feats.get("relative_humidity")
-    u = feats.get("u_component_of_wind_10m") or 0.0
-    v = feats.get("v_component_of_wind_10m") or 0.0
-    wind_speed = (float(u) ** 2 + float(v) ** 2) ** 0.5
-
-    factors = {
-        k: feats.get(k)
-        for k in (
-            "no2_tropospheric_column",
-            "aerosol_optical_depth",
-            "pm10_surface",
-            "population_density",
-            "elevation",
-        )
-        if feats.get(k) is not None
-    }
-
     uncertainty_method = "split_conformal_manifest" if manifest_hw is not None else "heuristic_relative"
 
     return {
         "pm25": round(pm25, 2),
         "aqi_category": cat,
-        "factors": factors,
-        "weather": {
-            "temp": float(temp) if temp is not None else None,
-            "humidity": float(rh) if rh is not None else None,
-            "wind": round(wind_speed, 2),
-            "pressure": None,
-        },
+        "factors": _factors_from_features(feats),
+        "weather": _weather_from_features(feats),
         "uncertainty": {
             "pm25_lower": round(lower, 2),
             "pm25_upper": round(upper, 2),
@@ -338,28 +353,12 @@ def compute_prediction(
     pm25, half, degraded, source, method = _run_inference(request, feats, region_id, segment, om_pm25)
     pm25 = round(pm25, 2)
 
-    u = feats.get("u_component_of_wind_10m") or 0.0
-    v = feats.get("v_component_of_wind_10m") or 0.0
-    wind_speed = (float(u) ** 2 + float(v) ** 2) ** 0.5
-
-    temp = feats.get("temperature_2m")
-    rh = feats.get("relative_humidity")
-    factors = {
-        k: feats.get(k)
-        for k in ("aerosol_optical_depth", "no2_tropospheric_column", "population_density", "elevation")
-        if feats.get(k) is not None
-    }
-
     return {
         "pm25": pm25,
         "aqi_category": aqi_category_from_pm25(pm25),
         "degraded": degraded,
-        "factors": factors,
-        "weather": {
-            "temp": float(temp) if temp is not None else None,
-            "humidity": float(rh) if rh is not None else None,
-            "wind": round(wind_speed, 2),
-        },
+        "factors": _factors_from_features(feats),
+        "weather": _weather_from_features(feats),
         "uncertainty": {
             "pm25_lower": round(max(0.0, pm25 - half), 2),
             "pm25_upper": round(pm25 + half, 2),

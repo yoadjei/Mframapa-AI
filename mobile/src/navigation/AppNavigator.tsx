@@ -105,6 +105,10 @@ function ProfileStack() {
   return (
     <Stack.Navigator screenOptions={stackScreenOptions}>
       <Stack.Screen name="ProfileMain" component={ProfileScreen} />
+      {/* Guest → account: same auth screens as onboarding, without flipping the root tree */}
+      <Stack.Screen name="Login" children={() => <LoginScreen />} />
+      <Stack.Screen name="SignUp" children={() => <SignUpScreen />} />
+      <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
       <Stack.Screen name="Settings" component={SettingsScreen} />
       <Stack.Screen name="SavedLocations" component={SavedLocationsScreen} />
       <Stack.Screen name="CityDetail" component={CityDetailScreen} />

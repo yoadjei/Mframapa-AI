@@ -15,7 +15,8 @@ import { useStore } from '../../store/useStore';
 import { clearSignOutSession } from '../../session/authSession';
 
 interface Props {
-  onAuth: () => void;
+  /** Onboarding flow: flip root navigator into MainApp. */
+  onAuth?: () => void;
 }
 
 export function LoginScreen({ onAuth }: Props) {
@@ -26,6 +27,7 @@ export function LoginScreen({ onAuth }: Props) {
   const navigation = useNavigation<any>();
   const signIn = useStore((s) => s.signIn);
   const enterAsGuest = useStore((s) => s.enterAsGuest);
+  const alreadyInApp = useStore((s) => s.isAuthenticated);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -42,7 +44,8 @@ export function LoginScreen({ onAuth }: Props) {
       Alert.alert(res.error ?? t('screen.auth.could_not_sign_in'));
       return;
     }
-    onAuth();
+    if (onAuth) onAuth();
+    else if (navigation.canGoBack()) navigation.goBack();
   }
 
   function handleContinueAsGuest() {
@@ -93,11 +96,13 @@ export function LoginScreen({ onAuth }: Props) {
 
         <PrimaryButton label={t('screen.auth.sign_in_btn')} onPress={handleLogin} loading={loading} style={styles.cta} />
 
-        <OutlineButton
-          label={t('screen.auth.continue_without_account')}
-          onPress={handleContinueAsGuest}
-          style={styles.guestCta}
-        />
+        {!alreadyInApp ? (
+          <OutlineButton
+            label={t('screen.auth.continue_without_account')}
+            onPress={handleContinueAsGuest}
+            style={styles.guestCta}
+          />
+        ) : null}
 
         <View style={styles.signupRow}>
           <Text style={[styles.signupPrompt, { color: colors.subtext }]}>{t('screen.auth.no_account')}</Text>

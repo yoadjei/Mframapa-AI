@@ -4,9 +4,9 @@ FeaturePipeline — assembles all ~20 model features for a given point/date.
 Feature groups
 ──────────────
 Dynamic (weather + air quality)  →  DataOrchestrator.get_features()   [6h cache]
-    pblh, temperature_2m, relative_humidity, u/v_component_of_wind_10m,
-    no2_tropospheric_column, so2_total_column, co_total_column,
-    aerosol_optical_depth, pm10_surface, pm25_surface
+    pblh, temperature_2m, relative_humidity, u/v wind, surface_pressure,
+    precipitation, dew_point, cloud_cover, gases, AOD, pm10/pm25, dust
+    (ERA5 → Open-Meteo → NASA POWER for meteo; CAMS / OpenAQ for AQ)
 
 Static demographic               →  WorldPopDataSource   [30d cache]
     population_density  (people/km², WorldPop 2020)
