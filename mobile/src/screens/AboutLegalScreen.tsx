@@ -3,10 +3,22 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-nati
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import Constants from 'expo-constants';
+import Constants from 'expo-constants';
 import { useTheme } from '../hooks/useTheme';
 import { getColors } from '../theme';
 import { MframapaLogo } from '../components/MframapaLogo';
 import { useTranslation } from '../hooks/useTranslation';
+
+const APP_VERSION =
+  Constants.expoConfig?.version ??
+  Constants.nativeAppVersion ??
+  '1.0.0';
+
+const APP_VERSION =
+  Constants.expoConfig?.version ??
+  Constants.nativeAppVersion ??
+  '1.0.0';
 
 const LINK_KEYS = [
   'settings.about.privacy',
@@ -30,7 +42,7 @@ export function AboutLegalScreen() {
       >
         <View style={styles.logoBlock}>
           <MframapaLogo size="lg" />
-          <Text style={[styles.version, { color: colors.muted }]}>{t('about.version')}</Text>
+          <Text style={[styles.version, { color: colors.muted }]}>{`Version ${APP_VERSION}`}</Text>
         </View>
 
         <View style={[styles.linkList, { borderColor: colors.border }]}>

@@ -271,7 +271,11 @@ export function HomeScreen({ isOnline }) {
         {/* ── Offline banner — only claim a cached reading when we actually have one ── */}
         {!isOnline && (
           <div className="mx-4 mb-3 flex items-center gap-2 rounded-xl border px-3 py-2.5"
-            style={{ backgroundColor: "#F5C51818", borderColor: "#F5C51840", color: "#F5C518" }}>
+            style={{
+              backgroundColor: isDark ? "#F5C51818" : "#F5C51828",
+              borderColor: isDark ? "#F5C51840" : "#C9A00655",
+              color: isDark ? "#F5C518" : "#8B6E06",
+            }}>
             <AlertTriangle size={15} />
             <span className="text-sm font-medium">
               {(prediction?.pm25 != null || state.homeSummary?.pm25 != null)

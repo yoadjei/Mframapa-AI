@@ -16,6 +16,11 @@ import { MobileShell } from "../components/layout/MobileShell.jsx";
 import { OnboardingScreen } from "../features/onboarding/OnboardingScreen.jsx";
 import { AuthScreen } from "../features/auth/AuthScreen.jsx";
 import { HomeScreen } from "../features/home/HomeScreen.jsx";
+import { SearchScreen } from "../features/search/SearchScreen.jsx";
+import { ProfileScreen } from "../features/profile/ProfileScreen.jsx";
+import { SettingsScreen } from "../features/settings/SettingsScreen.jsx";
+import { NotificationsScreen } from "../features/notifications/NotificationsScreen.jsx";
+import { ActivityScreen } from "../features/activity/ActivityScreen.jsx";
 import { PreviewGallery } from "../features/preview/PreviewGallery.jsx";
 import { preloadCityPack } from "../services/cityPackService.js";
 import { trackAppOpen } from "../services/analytics.js";
@@ -28,13 +33,16 @@ const CHUNK_RELOAD_KEY = "mframapa:chunk-reload";
 function fallback(name) {
   return () => ({
     default: function ComingSoon() {
+      const dark = document.documentElement.classList.contains("dark");
       return (
         <div className="flex h-full min-h-[60vh] flex-col items-center justify-center gap-3 px-8 text-center">
           <div className="h-12 w-12 rounded-full" style={{ backgroundColor: "rgba(0,200,150,0.12)" }}>
             <span style={{ fontSize: "1.75rem", lineHeight: "48px" }}>🌿</span>
           </div>
-          <p className="font-semibold" style={{ color: "#FFFFFF" }}>{name}</p>
-          <p className="text-sm" style={{ color: "#9AA7B5" }}>This screen could not load. Pull to refresh.</p>
+          <p className="font-semibold" style={{ color: dark ? "#FFFFFF" : "#0F1419" }}>{name}</p>
+          <p className="text-sm" style={{ color: dark ? "#9AA7B5" : "#5C6B7A" }}>
+            This screen could not load. Pull to refresh.
+          </p>
         </div>
       );
     },
@@ -63,29 +71,10 @@ function lazyScreen(importer, name) {
 }
 
 // ── Tab screens ─────────────────────────────────────────────────────────────
+// Map stays lazy (Mapbox). Primary tabs are eager so tab switches stay snappy.
 const CoreFeatureScreen = lazyScreen(
   () => import("../features/core/CoreFeatureScreen.jsx").then((m) => ({ default: m.CoreFeatureScreen })),
   "Map",
-);
-const ActivityScreen = lazyScreen(
-  () => import("../features/activity/ActivityScreen.jsx").then((m) => ({ default: m.ActivityScreen })),
-  "Activity",
-);
-const SearchScreen = lazyScreen(
-  () => import("../features/search/SearchScreen.jsx").then((m) => ({ default: m.SearchScreen })),
-  "Search",
-);
-const ProfileScreen = lazyScreen(
-  () => import("../features/profile/ProfileScreen.jsx").then((m) => ({ default: m.ProfileScreen })),
-  "Profile",
-);
-const SettingsScreen = lazyScreen(
-  () => import("../features/settings/SettingsScreen.jsx").then((m) => ({ default: m.SettingsScreen })),
-  "Settings",
-);
-const NotificationsScreen = lazyScreen(
-  () => import("../features/notifications/NotificationsScreen.jsx").then((m) => ({ default: m.NotificationsScreen })),
-  "Alerts",
 );
 
 // ── Stack screens ───────────────────────────────────────────────────────────
@@ -282,6 +271,26 @@ export function App() {
     preloadCityPack().catch(() => undefined);
   }, [isOnline]);
 
+  // Warm common stack chunks after first paint so Profile links open without a spinner.
+  useEffect(() => {
+    if (!onboardingComplete) return;
+    const warm = () => {
+      import("../features/savedLocations/SavedLocationsScreen.jsx");
+      import("../features/export/ExportCentreScreen.jsx");
+      import("../features/feedback/FeedbackFormScreen.jsx");
+      import("../features/about/AboutLegalScreen.jsx");
+      import("../features/trust/TrustTransparencyScreen.jsx");
+      import("../features/predictionDashboard/PredictionDashboardScreen.jsx");
+      import("../features/cityDetail/CityDetailScreen.jsx");
+    };
+    const ric = window.requestIdleCallback || ((cb) => setTimeout(cb, 400));
+    const id = ric(warm);
+    return () => {
+      if (window.cancelIdleCallback) window.cancelIdleCallback(id);
+      else clearTimeout(id);
+    };
+  }, [onboardingComplete]);
+
   // hooks must run on every render before any early return (rules of hooks)
 
   // the phone back button and gestures pop the screen stack instead of leaving
@@ -314,7 +323,6 @@ export function App() {
           // Flexible stack chrome: header (safe-area + back) + scrollable body.
           // Avoids a fixed overlay that covers titles and traps scroll on Android.
           <div
-            key={stackTop.name}
             className="mf-screen"
             style={{
               display: "flex",

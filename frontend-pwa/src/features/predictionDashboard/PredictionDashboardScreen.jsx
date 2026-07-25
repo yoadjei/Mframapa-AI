@@ -9,26 +9,37 @@ import { StackBackButton } from "../../components/navigation/StackBackButton.jsx
 
 
 
-function SparklineBar({ values, color, height = 80 }) {
+function SparklineBar({ values, barColors, color, height = 80 }) {
   if (!values || values.length === 0) return null;
   const max = Math.max(...values, 1);
   return (
     <div style={{ display: "flex", alignItems: "flex-end", gap: 3, height }}>
-      {values.map((v, i) => (
-        <div
-          key={i}
-          style={{
-            flex: 1,
-            borderRadius: "2px 2px 0 0",
-            height: `${Math.max(4, (v / max) * 100)}%`,
-            backgroundColor:
-              i === values.length - 1 ? color : color + "88",
-          }}
-        />
-      ))}
+      {values.map((v, i) => {
+        const fill = barColors?.[i] ?? color;
+        return (
+          <div
+            key={i}
+            style={{
+              flex: 1,
+              borderRadius: "2px 2px 0 0",
+              height: `${Math.max(4, (v / max) * 100)}%`,
+              backgroundColor: i === values.length - 1 ? fill : `${fill}99`,
+            }}
+          />
+        );
+      })}
     </div>
   );
 }
+
+/** Standard AQI bands — same palette as getAQIColor / map markers. */
+const AQI_LEGEND = [
+  { key: "good", label: "Good" },
+  { key: "moderate", label: "Moderate" },
+  { key: "sensitive", label: "Sensitive" },
+  { key: "unhealthy", label: "Unhealthy" },
+  { key: "hazardous", label: "Hazardous" },
+];
 
 function UncertaintyBar({ low, mid, high, color, colors }) {
   const range = high - low || 1;
@@ -92,16 +103,6 @@ function UncertaintyBar({ low, mid, high, color, colors }) {
   );
 }
 
-const FACTORS_COLORS = [
-  Colors.brandGreen,
-  "#2196F3",
-  "#F5C518",
-  "#FF8C00",
-  "#9C27B0",
-  "#E53935",
-];
-
- 
 export function PredictionDashboardScreen({ isOnline, isDark, params }) {
   const { state } = useAppState();
   const { goBack, navigate } = useNavigation();
@@ -165,6 +166,7 @@ export function PredictionDashboardScreen({ isOnline, isDark, params }) {
   })();
 
   const series = forecast.map((d) => Math.round(d.pm25));
+  const seriesColors = forecast.map((d) => getAQIColor(d.aqi_category, isDark));
   const aqiColor = getAQIColor((selected ?? pred)?.aqi_category, isDark);
   const factors = pred?.factors ?? [];
 
@@ -343,7 +345,12 @@ export function PredictionDashboardScreen({ isOnline, isDark, params }) {
               >
                 PM2.5 Forecast Trend
               </p>
-              <SparklineBar values={series} color={aqiColor} height={96} />
+              <SparklineBar
+                values={series}
+                barColors={seriesColors}
+                color={aqiColor}
+                height={96}
+              />
               <div
                 style={{
                   display: "flex",
@@ -354,6 +361,33 @@ export function PredictionDashboardScreen({ isOnline, isDark, params }) {
               >
                 <span>{series.length ? `${series.length} days` : ""}</span>
                 <span>now</span>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: 10,
+                  marginTop: 4,
+                }}
+              >
+                {AQI_LEGEND.map((band) => (
+                  <div
+                    key={band.key}
+                    style={{ display: "flex", alignItems: "center", gap: 5 }}
+                  >
+                    <div
+                      style={{
+                        width: 8,
+                        height: 8,
+                        borderRadius: 2,
+                        backgroundColor: getAQIColor(band.key, isDark),
+                      }}
+                    />
+                    <span style={{ fontSize: "0.625rem", color: colors.muted }}>
+                      {band.label}
+                    </span>
+                  </div>
+                ))}
               </div>
             </div>
 
@@ -551,8 +585,8 @@ export function PredictionDashboardScreen({ isOnline, isDark, params }) {
                           height: 8,
                           borderRadius: "50%",
                           flexShrink: 0,
-                          backgroundColor:
-                            FACTORS_COLORS[i % FACTORS_COLORS.length],
+                          backgroundColor: aqiColor,
+                          opacity: 1 - i * 0.12,
                         }}
                       />
                       <span style={{ fontSize: "0.8125rem", color: colors.subtext }}>

@@ -48,6 +48,8 @@ const initialState = {
     degraded: false,
   },
   savedCities: [],
+  // recent successful checks — feeds Export Centre + Compare Cities
+  predictionHistory: [],
   activity: [],
   notifications: [],
 };
@@ -158,13 +160,62 @@ function appReducer(state, action) {
       return { ...state, profile: { ...state.profile, ...action.payload } };
     case "UPDATE_PREFERENCES":
       return { ...state, preferences: { ...state.preferences, ...action.payload } };
-    case "SET_HOME_SUMMARY":
-      return { ...state, homeSummary: { ...state.homeSummary, ...action.payload } };
+    case "SET_HOME_SUMMARY": {
+      const homeSummary = { ...state.homeSummary, ...action.payload };
+      let savedCities = state.savedCities;
+      // keep Saved Locations in sync when the same city is refreshed
+      if (homeSummary.city && homeSummary.pm25 != null) {
+        savedCities = state.savedCities.map((c) =>
+          c.name === homeSummary.city
+            ? {
+                ...c,
+                lat: homeSummary.lat ?? c.lat,
+                lon: homeSummary.lon ?? c.lon,
+                lastPm25: Math.round(homeSummary.pm25),
+                lastAqiCategory: homeSummary.aqiCategory ?? c.lastAqiCategory,
+                lastChecked:
+                  homeSummary.lastUpdated ??
+                  new Date().toLocaleString(undefined, {
+                    hour: "numeric",
+                    minute: "2-digit",
+                  }),
+              }
+            : c
+        );
+      }
+      let predictionHistory = state.predictionHistory ?? [];
+      if (homeSummary.city && homeSummary.pm25 != null) {
+        const lat = homeSummary.lat;
+        const lon = homeSummary.lon;
+        const entry = {
+          pm25: homeSummary.pm25,
+          aqi_category: homeSummary.aqiCategory,
+          location: { name: homeSummary.city, lat, lon },
+          timestamp: homeSummary.lastUpdated ?? new Date().toISOString(),
+        };
+        predictionHistory = [
+          entry,
+          ...predictionHistory.filter((p) => {
+            if (lat == null || lon == null) return p.location?.name !== homeSummary.city;
+            const plat = p.location?.lat;
+            const plon = p.location?.lon;
+            if (plat == null || plon == null) return p.location?.name !== homeSummary.city;
+            return Math.abs(plat - lat) > 0.01 || Math.abs(plon - lon) > 0.01;
+          }),
+        ].slice(0, 20);
+      }
+      return { ...state, homeSummary, savedCities, predictionHistory };
+    }
 
     case "SAVE_CITY": {
-      const exists = state.savedCities.find((c) => c.name === action.payload.name);
-      if (exists) return state;
-      return { ...state, savedCities: [action.payload, ...state.savedCities].slice(0, 20) };
+      const payload = action.payload;
+      const idx = state.savedCities.findIndex((c) => c.name === payload.name);
+      if (idx >= 0) {
+        const next = [...state.savedCities];
+        next[idx] = { ...next[idx], ...payload };
+        return { ...state, savedCities: next };
+      }
+      return { ...state, savedCities: [payload, ...state.savedCities].slice(0, 20) };
     }
     case "REMOVE_CITY":
       return { ...state, savedCities: state.savedCities.filter((c) => c.name !== action.payload) };
@@ -215,6 +266,7 @@ function readPersistedState() {
         },
       },
       savedCities: p.savedCities ?? [],
+      predictionHistory: p.predictionHistory ?? [],
       homeSummary: { ...initialState.homeSummary, ...p.homeSummary },
       activity: p.activity ?? [],
       notifications: p.notifications ?? [],
@@ -242,6 +294,7 @@ function persistState(state) {
       profile: state.profile,
       preferences: state.preferences,
       savedCities: state.savedCities,
+      predictionHistory: state.predictionHistory ?? [],
       homeSummary: state.homeSummary,
       activity: state.activity,
       notifications: state.notifications,

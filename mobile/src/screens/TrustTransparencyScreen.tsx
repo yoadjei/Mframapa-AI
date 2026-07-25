@@ -8,9 +8,16 @@ import { getColors } from '../theme';
 import { useTheme } from '../hooks/useTheme';
 import { useTranslation } from '../hooks/useTranslation';
 
-// how the model is built is not a user-facing detail; it invited scrutiny
-// of internals without helping anyone decide whether to go outside.
 const SECTION_IDS = ['calc', 'sources', 'disclaimers'] as const;
+
+const DATA_SOURCES = [
+  { name: 'ERA5', noteKey: 'screen.trust.source_era5' },
+  { name: 'Sentinel-5P', noteKey: 'screen.trust.source_s5p' },
+  { name: 'MODIS', noteKey: 'screen.trust.source_modis' },
+  { name: 'Open-Meteo', noteKey: 'screen.trust.source_openmeteo' },
+  { name: 'WorldPop', noteKey: 'screen.trust.source_worldpop' },
+  { name: 'OpenAQ', noteKey: 'screen.trust.source_openaq' },
+] as const;
 
 export function TrustTransparencyScreen() {
   const { isDark } = useTheme();
@@ -24,10 +31,8 @@ export function TrustTransparencyScreen() {
     disclaimers: false,
   });
 
-  const sources = ['ERA5', 'Sentinel-5P', 'MODIS'];
-
   return (
-    <View style={[styles.root]}>
+    <View style={styles.root}>
       <View style={[styles.header, { paddingTop: insets.top + 8 }]}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="chevron-back" size={22} color={colors.text} />
@@ -40,6 +45,8 @@ export function TrustTransparencyScreen() {
         contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 40 }]}
         showsVerticalScrollIndicator={false}
       >
+        <Text style={[styles.intro, { color: colors.subtext }]}>{t('screen.trust.intro')}</Text>
+
         {SECTION_IDS.map((id) => (
           <View key={id} style={[styles.section, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <TouchableOpacity
@@ -59,32 +66,27 @@ export function TrustTransparencyScreen() {
               <View style={styles.sectionBody}>
                 <View style={[styles.divider, { backgroundColor: colors.border }]} />
                 {id === 'sources' ? (
-                  <View style={{ gap: 8 }}>
-                    {sources.map((src) => (
-                      <View key={src} style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                        <View
-                          style={{
-                            width: 8,
-                            height: 8,
-                            borderRadius: 4,
-                            backgroundColor: Colors.brandGreen,
-                          }}
-                        />
-                        <Text style={{ color: colors.text, fontSize: 14, fontWeight: '600' }}>{src}</Text>
-                        <Ionicons name="checkmark-circle" size={14} color={Colors.brandGreen} />
-                        <Text style={{ color: Colors.brandGreen, fontSize: 14 }}>
-                          {t('screen.trust.source_active')}
-                        </Text>
+                  <View style={{ gap: 12 }}>
+                    {DATA_SOURCES.map((src) => (
+                      <View key={src.name} style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 10 }}>
+                        <Ionicons name="checkmark-circle" size={16} color={Colors.brandGreen} style={{ marginTop: 2 }} />
+                        <View style={{ flex: 1, gap: 2 }}>
+                          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                            <Text style={{ color: colors.text, fontSize: 14, fontWeight: '600' }}>{src.name}</Text>
+                            <Text style={{ color: Colors.brandGreen, fontSize: 12, fontWeight: '600' }}>
+                              {t('screen.trust.source_active')}
+                            </Text>
+                          </View>
+                          <Text style={{ color: colors.muted, fontSize: 12, lineHeight: 16 }}>
+                            {t(src.noteKey)}
+                          </Text>
+                        </View>
                       </View>
                     ))}
                   </View>
                 ) : (
                   <Text style={{ color: colors.subtext, fontSize: 14, lineHeight: 20 }}>
-                    {t(
-                      `screen.trust.${
-                        id === 'calc' ? 'calc' : 'disclaim'
-                      }_body`
-                    )}
+                    {t(`screen.trust.${id === 'calc' ? 'calc' : 'disclaim'}_body`)}
                   </Text>
                 )}
               </View>
@@ -106,6 +108,7 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
   },
   title: { fontSize: 16, fontWeight: '700' },
+  intro: { fontSize: 14, lineHeight: 20, marginBottom: 4 },
   content: { padding: 16, gap: 12 },
   section: { borderRadius: 16, borderWidth: 1, overflow: 'hidden' },
   sectionHeader: {

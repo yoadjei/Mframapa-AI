@@ -611,7 +611,7 @@ def submit_feedback(
     if not body.message.strip():
         raise HTTPException(status_code=422, detail="A message is required")
     try:
-        store.add(
+        feedback_id = store.add(
             category=body.category,
             message=body.message,
             email=body.email,
@@ -622,6 +622,21 @@ def submit_feedback(
     except Exception as exc:
         logger.exception("could not store feedback")
         raise HTTPException(status_code=502, detail="Could not send your feedback") from exc
+
+    # Best-effort inbox notify — storage already succeeded.
+    try:
+        from backend.feedback.notify import notify_feedback_email
+
+        notify_feedback_email(
+            feedback_id=feedback_id,
+            category=body.category,
+            message=body.message,
+            email=body.email,
+            platform=body.platform,
+        )
+    except Exception:
+        logger.exception("feedback email notify failed (report still stored)")
+
     return {"status": "received"}
 
 

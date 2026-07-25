@@ -1,9 +1,13 @@
 import { ChevronRight } from "lucide-react";
 import { MframapaLogo } from "../../components/brand/MframapaLogo.jsx";
-import { getColors, Colors } from "../../utils/colors.js";
+import { getColors } from "../../utils/colors.js";
 import { useNavigation } from "../../hooks/useNavigation.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { StackBackButton } from "../../components/navigation/StackBackButton.jsx";
+import { BUILD_INFO } from "../../buildInfo.js";
+
+// Store listing / TWA / Expo ship as 1.0.0. Keep About in lockstep.
+const APP_VERSION = BUILD_INFO?.version ?? "1.0.0";
 
 const LINK_KEYS = [
   { key: "settings.about.privacy",  href: "/privacy.html"  },
@@ -69,12 +73,8 @@ export function AboutLegalScreen({ params, isOnline, isDark }) {
           }}
         >
           <MframapaLogo size="xl" isDark={isDark} markOnly />
-          {/* the real build, not a number typed into a translation file. this
-              is how we tell whether a deploy actually reached the browser. */}
           <p style={{ fontSize: "0.8125rem", color: colors.muted }}>
-            {/* the commit stays out of the interface; /version.json still
-                reports it so a deploy can be checked from outside. */}
-            {t("about.version")}
+            {`Version ${APP_VERSION}`}
           </p>
         </div>
 

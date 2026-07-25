@@ -6,128 +6,12 @@ import { useStackChrome, stackTitlePad } from "../../hooks/useStackChrome.js";
 import { useAppState } from "../../state/appState.jsx";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { StackBackButton } from "../../components/navigation/StackBackButton.jsx";
-
-// ─── Format builders ──────────────────────────────────────────────────────────
-
-function escapeCsv(value) {
-  if (value === null || value === undefined) return "";
-  const s = String(value);
-  if (s.includes(",") || s.includes('"') || s.includes("\n")) {
-    return `"${s.replace(/"/g, '""')}"`;
-  }
-  return s;
-}
-
-function buildCsv(savedCities, predictionHistory) {
-  const rows = ["source,name,country,lat,lon,pm25,aqi_category,checked_at"];
-  for (const loc of savedCities) {
-    rows.push(
-      [
-        escapeCsv("saved"),
-        escapeCsv(loc.name),
-        escapeCsv(loc.country ?? ""),
-        escapeCsv(loc.lat ?? ""),
-        escapeCsv(loc.lon ?? ""),
-        escapeCsv(loc.lastPm25 ?? ""),
-        escapeCsv(loc.lastAqiCategory ?? ""),
-        escapeCsv(loc.lastChecked ?? ""),
-      ].join(",")
-    );
-  }
-  for (const p of predictionHistory ?? []) {
-    rows.push(
-      [
-        escapeCsv("history"),
-        escapeCsv(p.location?.name ?? ""),
-        escapeCsv(""),
-        escapeCsv(p.location?.lat ?? ""),
-        escapeCsv(p.location?.lon ?? ""),
-        escapeCsv(typeof p.pm25 === "number" ? p.pm25.toFixed(1) : ""),
-        escapeCsv(p.aqi_category ?? ""),
-        escapeCsv(p.timestamp ?? ""),
-      ].join(",")
-    );
-  }
-  return rows.join("\n");
-}
-
-function buildGeoJson(savedCities, predictionHistory) {
-  const features = [];
-  for (const loc of savedCities) {
-    features.push({
-      type: "Feature",
-      geometry: { type: "Point", coordinates: [loc.lon, loc.lat] },
-      properties: {
-        source: "saved",
-        name: loc.name,
-        country: loc.country ?? null,
-        pm25: loc.lastPm25 ?? null,
-        aqi_category: loc.lastAqiCategory ?? null,
-        checked_at: loc.lastChecked ?? null,
-      },
-    });
-  }
-  for (const p of predictionHistory ?? []) {
-    features.push({
-      type: "Feature",
-      geometry: {
-        type: "Point",
-        coordinates: [p.location?.lon, p.location?.lat],
-      },
-      properties: {
-        source: "history",
-        name: p.location?.name,
-        pm25: p.pm25,
-        aqi_category: p.aqi_category,
-        uncertainty: p.uncertainty,
-        weather: p.weather,
-        timestamp: p.timestamp,
-      },
-    });
-  }
-  return JSON.stringify({ type: "FeatureCollection", features }, null, 2);
-}
-
-function buildHtml(savedCities, predictionHistory) {
-  const esc = (s) =>
-    String(s ?? "").replace(
-      /[&<>"']/g,
-      (c) =>
-        ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])
-    );
-  const savedRows = savedCities
-    .map(
-      (l) =>
-        `<tr><td>${esc(l.name)}</td><td>${esc(l.country)}</td><td>${l.lastPm25 ?? "-"}</td><td>${esc(l.lastAqiCategory ?? "-")}</td></tr>`
-    )
-    .join("");
-  const historyRows = (predictionHistory ?? [])
-    .map(
-      (p) =>
-        `<tr><td>${esc(p.location?.name)}</td><td>${typeof p.pm25 === "number" ? p.pm25.toFixed(1) : "-"}</td><td>${esc(p.aqi_category)}</td><td>${esc(p.timestamp)}</td></tr>`
-    )
-    .join("");
-  return `<!doctype html><html><head><meta charset="utf-8"><title>Mframapa Export</title>
-    <style>body{font-family:-apple-system,system-ui,sans-serif;padding:24px;color:#111}
-    h1{font-size:22px} h2{font-size:16px;margin-top:24px}
-    table{border-collapse:collapse;width:100%;font-size:13px}
-    th,td{border:1px solid #ddd;padding:8px;text-align:left}
-    th{background:#f5f5f5}</style></head><body>
-    <h1>Mframapa Air Quality Export</h1>
-    <p>Generated ${new Date().toLocaleString()}</p>
-    <h2>Saved locations (${savedCities.length})</h2>
-    <table><tr><th>Name</th><th>Country</th><th>PM2.5</th><th>Category</th></tr>${savedRows}</table>
-    <h2>Recent checks (${(predictionHistory ?? []).length})</h2>
-    <table><tr><th>City</th><th>PM2.5</th><th>Category</th><th>Time</th></tr>${historyRows}</table>
-  </body></html>`;
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
+import { buildCsv, buildGeoJson, buildHtml } from "../../utils/exportBuilders.js";
 
 const FORMATS = [
-  { key: "CSV",     labelKey: "screen.export.format_csv",     mime: "text/csv",              ext: "csv"     },
-  { key: "GeoJSON", labelKey: "screen.export.format_geojson", mime: "application/geo+json",  ext: "geojson" },
-  { key: "PDF",     labelKey: "screen.export.format_pdf",     mime: "text/html",             ext: "html"    },
+  { key: "CSV", labelKey: "screen.export.format_csv", mime: "text/csv", ext: "csv" },
+  { key: "GeoJSON", labelKey: "screen.export.format_geojson", mime: "application/geo+json", ext: "geojson" },
+  { key: "PDF", labelKey: "screen.export.format_pdf", mime: "text/html", ext: "html" },
 ];
 
 export function ExportCentreScreen({ params, isOnline, isDark }) {
@@ -141,9 +25,9 @@ export function ExportCentreScreen({ params, isOnline, isDark }) {
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState(null);
 
-  const savedCities       = state.savedCities ?? [];
+  const savedCities = state.savedCities ?? [];
   const predictionHistory = state.predictionHistory ?? [];
-  const totalRecords      = savedCities.length + predictionHistory.length;
+  const totalRecords = savedCities.length + predictionHistory.length;
 
   async function handleGenerate() {
     if (generating) return;
@@ -155,26 +39,28 @@ export function ExportCentreScreen({ params, isOnline, isDark }) {
     setGenerating(true);
     try {
       const stamp = new Date().toISOString().replace(/[:.]/g, "-");
-      let body, mime, filename;
+      let body;
+      let mime;
+      let filename;
 
       if (format === "CSV") {
-        body     = buildCsv(savedCities, predictionHistory);
-        mime     = "text/csv";
+        body = buildCsv(savedCities, predictionHistory);
+        mime = "text/csv";
         filename = `mframapa-${stamp}.csv`;
       } else if (format === "GeoJSON") {
-        body     = buildGeoJson(savedCities, predictionHistory);
-        mime     = "application/geo+json";
+        body = buildGeoJson(savedCities, predictionHistory);
+        mime = "application/geo+json";
         filename = `mframapa-${stamp}.geojson`;
       } else {
-        body     = buildHtml(savedCities, predictionHistory);
-        mime     = "text/html";
+        body = buildHtml(savedCities, predictionHistory);
+        mime = "text/html";
         filename = `mframapa-${stamp}.html`;
       }
 
       const blob = new Blob([body], { type: mime });
-      const url  = URL.createObjectURL(blob);
-      const a    = document.createElement("a");
-      a.href     = url;
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
       a.download = filename;
       document.body.appendChild(a);
       a.click();
@@ -188,11 +74,17 @@ export function ExportCentreScreen({ params, isOnline, isDark }) {
   }
 
   return (
-    <div style={{ minHeight: "100dvh" }}>
+    <div style={{ minHeight: "100dvh", backgroundColor: colors.bg }}>
       <div style={{ height: "env(safe-area-inset-top)" }} />
 
-      {/* Header */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px 4px" }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "12px 16px 4px",
+        }}
+      >
         <StackBackButton
           onClick={goBack}
           color={colors.text}
@@ -202,7 +94,6 @@ export function ExportCentreScreen({ params, isOnline, isDark }) {
         <div style={{ width: 44 }} />
       </div>
 
-      {/* Scrollable content */}
       <div
         style={{
           overflowY: "auto",
@@ -225,7 +116,6 @@ export function ExportCentreScreen({ params, isOnline, isDark }) {
           {t("screen.export.title")}
         </span>
 
-        {/* Summary card */}
         <div
           style={{
             borderRadius: 16,
@@ -263,7 +153,6 @@ export function ExportCentreScreen({ params, isOnline, isDark }) {
           </div>
         </div>
 
-        {/* Format picker */}
         <div>
           <p style={{ fontSize: "0.8125rem", fontWeight: 500, color: colors.subtext, marginBottom: 8 }}>
             {t("screen.export.format")}
@@ -311,7 +200,6 @@ export function ExportCentreScreen({ params, isOnline, isDark }) {
           </div>
         </div>
 
-        {/* Generate button */}
         <button
           type="button"
           onClick={handleGenerate}

@@ -158,7 +158,7 @@ const base: Record<string, string> = {
   'settings.location_precise': 'Precise',
   'settings.lite_unavailable': 'Lite mode is unavailable',
   'settings.sign_out': 'Sign out',
-  'settings.version': 'Version 2.0.0',
+  'settings.version': 'Version 1.0.0',
   'settings.about.privacy': 'Privacy Policy',
   'settings.about.terms': 'Terms of Service',
   'settings.about.licenses': 'Open Source Licenses',
@@ -191,7 +191,7 @@ const base: Record<string, string> = {
   'activity.saved_city': 'Saved {{city}}',
   'activity.trial_started': 'Started free trial',
   'activity.no_activity_yet': 'No activity yet. Your recent actions will appear here.',
-  'about.version': 'Version 2.0',
+  'about.version': 'Version 1.0.0',
   'city_picker.search_city_country': 'Search city or country...',
   'time.hours_ago': '{{count}} hours ago',
   'time.days_ago': '{{count}} days ago',
@@ -307,6 +307,14 @@ const base: Record<string, string> = {
   'screen.export.rebuild_required':
     'Export is unavailable in this build. Rebuild the app (npx expo run:ios) to enable it.',
   'screen.trust.title': 'Trust & Transparency',
+  'screen.trust.intro': 'We show estimates from satellites and weather models so you can decide when to go outside. Here is what goes into those estimates.',
+  'screen.trust.source_active': 'In use',
+  'screen.trust.source_era5': 'Hourly weather from Europe\'s climate reanalysis (wind, humidity, temperature).',
+  'screen.trust.source_s5p': 'Satellite gas columns that help spot pollution plumes.',
+  'screen.trust.source_modis': 'Satellite aerosol optical depth for dust and smoke.',
+  'screen.trust.source_openmeteo': 'Fast weather fallback when primary feeds are slow or offline.',
+  'screen.trust.source_worldpop': 'Population density used to classify urban vs rural models.',
+  'screen.trust.source_openaq': 'Ground monitor readings when stations report nearby.',
 
   // See All Plans screen
 

@@ -6,7 +6,6 @@ import { useTranslation } from "../../hooks/useTranslation.js";
 import { sendFeedback } from "../../services/api.js";
 import { StackBackButton } from "../../components/navigation/StackBackButton.jsx";
 
-// the slugs the api stores, in the same order as the labels below
 const CATEGORY_SLUGS = ["bug", "feature", "data", "general"];
 
 const CATEGORY_KEYS = [
@@ -21,23 +20,24 @@ export function FeedbackFormScreen({ params, isOnline, isDark }) {
   const { goBack } = useNavigation();
   const { t } = useTranslation();
 
-  const [categoryIdx, setCategoryIdx] = useState(0);
-  const [message, setMessage]         = useState("");
-  const [email, setEmail]             = useState("");
-  const [submitting, setSubmitting]   = useState(false);
-  const [submitted, setSubmitted]     = useState(false);
-  const [error, setError]             = useState("");
+  const [category, setCategory] = useState("general");
+  const [message, setMessage] = useState("");
+  const [email, setEmail] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
 
   async function handleSubmit() {
     if (submitting) return;
-    if (!message.trim()) { setError(t("screen.feedback.message_required")); return; }
+    if (!message.trim()) {
+      setError(t("screen.feedback.message_required"));
+      return;
+    }
     setSubmitting(true);
     setError("");
     try {
-      // really send it. this form used to wait 800ms and say thanks while
-      // dropping the message, so nobody who reported anything was heard.
       await sendFeedback({
-        category: CATEGORY_SLUGS[categoryIdx] ?? "general",
+        category: CATEGORY_SLUGS.includes(category) ? category : "general",
         message,
         email,
       });
@@ -86,19 +86,16 @@ export function FeedbackFormScreen({ params, isOnline, isDark }) {
             fontWeight: 700,
           }}
         >
-          {t("screen.feedback.submit_btn")}
+          {t("common.done") !== "common.done" ? t("common.done") : "Done"}
         </button>
       </div>
     );
   }
 
-  const category = t(CATEGORY_KEYS[categoryIdx]);
-
   return (
-    <div style={{ minHeight: "100dvh" }}>
+    <div style={{ minHeight: "100dvh", backgroundColor: colors.bg }}>
       <div style={{ height: "env(safe-area-inset-top)" }} />
 
-      {/* Nav bar */}
       <div
         style={{
           display: "flex",
@@ -134,7 +131,6 @@ export function FeedbackFormScreen({ params, isOnline, isDark }) {
         </button>
       </div>
 
-      {/* Scrollable content */}
       <div
         style={{
           overflowY: "auto",
@@ -148,34 +144,45 @@ export function FeedbackFormScreen({ params, isOnline, isDark }) {
           {t("screen.feedback.title")}
         </span>
 
-        {/* Category */}
         <div>
-          <p style={{ fontSize: "0.8125rem", fontWeight: 500, color: colors.subtext, marginBottom: 8 }}>
+          <label
+            htmlFor="feedback-category"
+            style={{
+              display: "block",
+              fontSize: "0.8125rem",
+              fontWeight: 500,
+              color: colors.subtext,
+              marginBottom: 8,
+            }}
+          >
             {t("screen.feedback.category")}
-          </p>
-          <button
-            type="button"
-            onClick={() => setCategoryIdx((categoryIdx + 1) % CATEGORY_KEYS.length)}
+          </label>
+          <select
+            id="feedback-category"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
             style={{
               width: "100%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
               borderRadius: 12,
               border: `1px solid ${colors.border}`,
               backgroundColor: colors.card,
               padding: 14,
+              fontSize: "0.9375rem",
+              fontWeight: 500,
+              color: colors.text,
+              fontFamily: "inherit",
+              appearance: "auto",
               cursor: "pointer",
             }}
           >
-            <span style={{ fontSize: "0.9375rem", fontWeight: 500, color: Colors.brandGreen }}>
-              {category}
-            </span>
-            <span style={{ color: Colors.brandGreen, fontSize: "0.875rem" }}>▾</span>
-          </button>
+            {CATEGORY_SLUGS.map((slug, i) => (
+              <option key={slug} value={slug}>
+                {t(CATEGORY_KEYS[i])}
+              </option>
+            ))}
+          </select>
         </div>
 
-        {/* Message textarea */}
         <div
           style={{
             borderRadius: 12,
@@ -203,7 +210,6 @@ export function FeedbackFormScreen({ params, isOnline, isDark }) {
           />
         </div>
 
-        {/* Attach screenshot */}
         <button
           type="button"
           style={{
@@ -225,9 +231,15 @@ export function FeedbackFormScreen({ params, isOnline, isDark }) {
           </span>
         </button>
 
-        {/* Email */}
         <div>
-          <p style={{ fontSize: "0.8125rem", fontWeight: 500, color: colors.subtext, marginBottom: 8 }}>
+          <p
+            style={{
+              fontSize: "0.8125rem",
+              fontWeight: 500,
+              color: colors.subtext,
+              marginBottom: 8,
+            }}
+          >
             {t("screen.feedback.your_email")}
           </p>
           <div
@@ -258,14 +270,20 @@ export function FeedbackFormScreen({ params, isOnline, isDark }) {
         </div>
 
         {error && (
-          <p role="alert" style={{ fontSize: "0.8125rem", color: "#E53935",
-            backgroundColor: "rgba(229,57,53,0.08)", borderRadius: 10,
-            padding: "10px 14px", marginBottom: 12 }}>
+          <p
+            role="alert"
+            style={{
+              fontSize: "0.8125rem",
+              color: Colors.danger,
+              backgroundColor: "rgba(229,57,53,0.08)",
+              borderRadius: 10,
+              padding: "10px 14px",
+            }}
+          >
             {error}
           </p>
         )}
 
-        {/* Submit button */}
         <button
           type="button"
           onClick={handleSubmit}

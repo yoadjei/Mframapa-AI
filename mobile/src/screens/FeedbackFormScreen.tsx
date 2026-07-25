@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
-  TextInput, KeyboardAvoidingView, Platform, Alert,
+  TextInput, KeyboardAvoidingView, Platform, Alert, Modal, Pressable,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -12,14 +12,14 @@ import { useTheme } from '../hooks/useTheme';
 import { sendFeedback } from '../services/api';
 import { useTranslation } from '../hooks/useTranslation';
 
-// the slugs the api stores, in the same order as the labels below
-const CATEGORY_SLUGS = ['bug', 'feature', 'data', 'general'];
+const CATEGORY_SLUGS = ['bug', 'feature', 'data', 'general'] as const;
 
 const CATEGORY_KEYS = [
   'screen.feedback.cat_bug',
   'screen.feedback.cat_feature',
   'screen.feedback.cat_data',
-  'screen.feedback.cat_general'] as const;
+  'screen.feedback.cat_general',
+] as const;
 
 export function FeedbackFormScreen() {
   const { isDark } = useTheme();
@@ -27,7 +27,8 @@ export function FeedbackFormScreen() {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<any>();
   const { t } = useTranslation();
-  const [categoryIdx, setCategoryIdx] = useState(0);
+  const [category, setCategory] = useState<(typeof CATEGORY_SLUGS)[number]>('general');
+  const [pickerOpen, setPickerOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [email, setEmail] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -40,13 +41,11 @@ export function FeedbackFormScreen() {
     }
     setSubmitting(true);
     try {
-      // really send it; this used to wait 800ms and drop the message.
       await sendFeedback({
-        category: CATEGORY_SLUGS[categoryIdx] ?? 'general',
+        category,
         message,
         email: email || null,
       });
-      // confirm before leaving, so it is clear the report actually went
       Alert.alert(t('screen.feedback.thanks_title'), t('screen.feedback.thanks_body'));
       navigation.goBack();
     } catch {
@@ -56,11 +55,11 @@ export function FeedbackFormScreen() {
     }
   }
 
-  const category = t(CATEGORY_KEYS[categoryIdx]);
+  const categoryLabel = t(CATEGORY_KEYS[CATEGORY_SLUGS.indexOf(category)] ?? CATEGORY_KEYS[3]);
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <View style={[styles.root]}>
+      <View style={[styles.root, { backgroundColor: colors.background === 'transparent' ? undefined : colors.background }]}>
         <View style={[styles.navBar, { paddingTop: insets.top + 8, backgroundColor: colors.card }]}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <Ionicons name="arrow-back" size={22} color={colors.text} />
@@ -82,9 +81,11 @@ export function FeedbackFormScreen() {
             <Text style={[styles.label, { color: colors.subtext }]}>{t('screen.feedback.category')}</Text>
             <TouchableOpacity
               style={[styles.dropdown, { backgroundColor: colors.card, borderColor: colors.border }]}
-              onPress={() => setCategoryIdx((categoryIdx + 1) % CATEGORY_KEYS.length)}
+              onPress={() => setPickerOpen(true)}
+              accessibilityRole="button"
+              accessibilityLabel={t('screen.feedback.category')}
             >
-              <Text style={[styles.dropdownText, { color: Colors.brandGreen }]}>{category}</Text>
+              <Text style={[styles.dropdownText, { color: colors.text }]}>{categoryLabel}</Text>
               <Ionicons name="chevron-down" size={16} color={Colors.brandGreen} />
             </TouchableOpacity>
           </View>
@@ -132,6 +133,35 @@ export function FeedbackFormScreen() {
 
           <Text style={[styles.privacy, { color: colors.muted }]}>{t('screen.feedback.privacy_note')}</Text>
         </ScrollView>
+
+        <Modal visible={pickerOpen} transparent animationType="fade" onRequestClose={() => setPickerOpen(false)}>
+          <Pressable style={styles.modalBackdrop} onPress={() => setPickerOpen(false)}>
+            <View style={[styles.modalCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+              <Text style={[styles.modalTitle, { color: colors.text }]}>{t('screen.feedback.category')}</Text>
+              {CATEGORY_SLUGS.map((slug, i) => (
+                <TouchableOpacity
+                  key={slug}
+                  style={[
+                    styles.modalOption,
+                    { borderBottomColor: colors.border },
+                    i === CATEGORY_SLUGS.length - 1 && styles.modalOptionLast,
+                  ]}
+                  onPress={() => {
+                    setCategory(slug);
+                    setPickerOpen(false);
+                  }}
+                >
+                  <Text style={{ color: category === slug ? Colors.brandGreen : colors.text, fontSize: 16, fontWeight: category === slug ? '700' : '500' }}>
+                    {t(CATEGORY_KEYS[i])}
+                  </Text>
+                  {category === slug ? (
+                    <Ionicons name="checkmark" size={18} color={Colors.brandGreen} />
+                  ) : null}
+                </TouchableOpacity>
+              ))}
+            </View>
+          </Pressable>
+        </Modal>
       </View>
     </KeyboardAvoidingView>
   );
@@ -183,4 +213,31 @@ const styles = StyleSheet.create({
   },
   submitBtnText: { color: '#fff', fontSize: 16, fontWeight: '700' },
   privacy: { fontSize: 12, textAlign: 'center' },
+  modalBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.45)',
+    justifyContent: 'center',
+    padding: 24,
+  },
+  modalCard: {
+    borderRadius: 16,
+    borderWidth: 1,
+    overflow: 'hidden',
+  },
+  modalTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 8,
+  },
+  modalOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  modalOptionLast: { borderBottomWidth: 0 },
 });

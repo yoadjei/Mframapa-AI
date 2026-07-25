@@ -41,7 +41,7 @@ function healthAdviceKey(category) {
 }
 
 // Sparkline bar chart for the 7-day trend, mirrors mobile LineChart height/proportions
-function TrendChart({ data, labels, color }) {
+function TrendChart({ data, labels, color, labelColor }) {
   const max = Math.max(...data, 1);
   return (
     <div className="flex items-end gap-1" style={{ height: 120 }}>
@@ -56,7 +56,7 @@ function TrendChart({ data, labels, color }) {
               opacity: 0.85,
             }}
           />
-          <span className="text-[0.5625rem]" style={{ color: "#9AA7B5" }}>
+          <span className="text-[0.5625rem]" style={{ color: labelColor }}>
             {labels[i]}
           </span>
         </div>
@@ -167,6 +167,12 @@ export function CityDetailScreen({ isDark, params }) {
         lat: city.lat,
         lon: city.lon,
         country: city.country ?? "",
+        lastPm25: Math.round(pm25),
+        lastAqiCategory: category,
+        lastChecked: new Date().toLocaleString(undefined, {
+          hour: "numeric",
+          minute: "2-digit",
+        }),
       },
     });
     setSaving(false);
@@ -376,7 +382,12 @@ export function CityDetailScreen({ isDark, params }) {
         <p className="text-[0.875rem] font-semibold" style={{ color: colors.text }}>
           {t("screen.city_detail.trend_7d")}
         </p>
-        <TrendChart data={trendData} labels={trendLabels} color={aqiColor} />
+        <TrendChart
+          data={trendData}
+          labels={trendLabels}
+          color={aqiColor}
+          labelColor={colors.muted}
+        />
       </div>
 
       {/* ── Contributing factors ── */}

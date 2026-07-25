@@ -5,11 +5,16 @@ import { useTranslation } from "../../hooks/useTranslation.js";
 import { getColors, Colors } from "../../utils/colors.js";
 import { StackBackButton } from "../../components/navigation/StackBackButton.jsx";
 
-// how the model is built is not a user-facing detail; it invited scrutiny
-// of internals without helping anyone decide whether to go outside.
 const SECTION_IDS = ["calc", "sources", "disclaimers"];
 
-const DATA_SOURCES = ["ERA5", "Sentinel-5P", "MODIS"];
+const DATA_SOURCES = [
+  { name: "ERA5", noteKey: "screen.trust.source_era5" },
+  { name: "Sentinel-5P", noteKey: "screen.trust.source_s5p" },
+  { name: "MODIS", noteKey: "screen.trust.source_modis" },
+  { name: "Open-Meteo", noteKey: "screen.trust.source_openmeteo" },
+  { name: "WorldPop", noteKey: "screen.trust.source_worldpop" },
+  { name: "OpenAQ", noteKey: "screen.trust.source_openaq" },
+];
 
 export function TrustTransparencyScreen({ isOnline, isDark, params }) {
   const { goBack } = useNavigation();
@@ -26,7 +31,6 @@ export function TrustTransparencyScreen({ isOnline, isDark, params }) {
     setOpen((prev) => ({ ...prev, [id]: !prev[id] }));
   }
 
-  // Map section id to translation key suffix
   function titleKey(id) {
     if (id === "disclaimers") return "screen.trust.disclaim_title";
     return `screen.trust.${id}_title`;
@@ -39,10 +43,9 @@ export function TrustTransparencyScreen({ isOnline, isDark, params }) {
   }
 
   return (
-    <div style={{ minHeight: "100dvh" }}>
+    <div style={{ minHeight: "100dvh", backgroundColor: colors.bg }}>
       <div style={{ height: "env(safe-area-inset-top)" }} />
 
-      {/* Header */}
       <div
         style={{
           display: "flex",
@@ -63,7 +66,6 @@ export function TrustTransparencyScreen({ isOnline, isDark, params }) {
         <div style={{ width: 44 }} />
       </div>
 
-      {/* Accordion sections */}
       <div
         style={{
           padding: "4px 16px 40px",
@@ -72,6 +74,17 @@ export function TrustTransparencyScreen({ isOnline, isDark, params }) {
           gap: 12,
         }}
       >
+        <p
+          style={{
+            fontSize: "0.875rem",
+            lineHeight: "20px",
+            color: colors.subtext,
+            margin: "0 0 4px",
+          }}
+        >
+          {t("screen.trust.intro")}
+        </p>
+
         {SECTION_IDS.map((id) => (
           <div
             key={id}
@@ -124,27 +137,38 @@ export function TrustTransparencyScreen({ isOnline, isDark, params }) {
                   }}
                 />
                 {id === "sources" ? (
-                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                     {DATA_SOURCES.map((src) => (
                       <div
-                        key={src}
-                        style={{ display: "flex", alignItems: "center", gap: 8 }}
+                        key={src.name}
+                        style={{ display: "flex", alignItems: "flex-start", gap: 10 }}
                       >
-                        <div
-                          style={{
-                            width: 8,
-                            height: 8,
-                            borderRadius: 4,
-                            backgroundColor: Colors.brandGreen,
-                            flexShrink: 0,
-                          }}
+                        <CheckCircle2
+                          size={16}
+                          color={Colors.brandGreen}
+                          style={{ marginTop: 2, flexShrink: 0 }}
                         />
-                        <span
-                          style={{ fontSize: "0.875rem", fontWeight: 600, color: colors.text }}
-                        >
-                          {src}
-                        </span>
-                        <CheckCircle2 size={14} color={Colors.brandGreen} />
+                        <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                            <span
+                              style={{ fontSize: "0.875rem", fontWeight: 600, color: colors.text }}
+                            >
+                              {src.name}
+                            </span>
+                            <span
+                              style={{
+                                fontSize: "0.6875rem",
+                                fontWeight: 600,
+                                color: Colors.brandGreen,
+                              }}
+                            >
+                              {t("screen.trust.source_active")}
+                            </span>
+                          </div>
+                          <span style={{ fontSize: "0.75rem", color: colors.muted, lineHeight: "16px" }}>
+                            {t(src.noteKey)}
+                          </span>
+                        </div>
                       </div>
                     ))}
                   </div>

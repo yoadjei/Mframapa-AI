@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { SegmentedControl } from '../components/ui/SegmentedControl';
 import { LineChart } from '../components/charts/LineChart';
-import { getColors, Colors } from '../theme';
+import { getColors, Colors, getAQIColor } from '../theme';
 import { useTheme } from '../hooks/useTheme';
 import { useTranslation } from '../hooks/useTranslation';
 import { useStore } from '../store/useStore';
@@ -48,6 +48,10 @@ export function PredictionDashboardScreen() {
   const selectedIndex = Math.min(dayIndex, Math.max(0, forecast.length - 1));
   const selected = forecast[selectedIndex];
   const series = forecast.map((d) => Math.round(d.pm25));
+  const chartColor = getAQIColor(
+    selected?.aqi_category ?? lastPrediction?.aqi_category ?? 'moderate',
+    isDark,
+  );
   const reducedConfidence = selected?.inputs === 'reduced';
 
   // the band is the model's own interval for the selected day, used verbatim.
@@ -123,7 +127,13 @@ export function PredictionDashboardScreen() {
 
             {series.length > 1 ? (
               <View style={styles.chartWrap}>
-                <LineChart data={series} labels={rangeLabels} height={200} isDark={isDark} />
+                <LineChart
+                  data={series}
+                  labels={rangeLabels}
+                  height={200}
+                  isDark={isDark}
+                  color={chartColor}
+                />
               </View>
             ) : null}
 
