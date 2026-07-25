@@ -169,7 +169,8 @@ function MainApp() {
 }
 
 // ─── Auth Stack (Login → SignUp / ForgotPassword) ────────────────────────────
-// Every individual gets the full product free, forever (scope §5).
+// Account is optional — Login offers "Continue without account" (enterAsGuest).
+// Permissions always land here; after sign-out, startAtAuth skips intro slides.
 const AuthStack = createNativeStackNavigator();
 
 function AuthFlow() {

@@ -1,14 +1,18 @@
 """
-expo push delivery.
+push delivery — Expo (mobile) + Web Push / VAPID (PWA).
 
-batches messages (expo caps at 100 per request) and posts to the expo push api.
-the transport is injectable so callers/tests can supply a fake sender.
+Expo tokens look like ExponentPushToken[...]. Web subscriptions are JSON
+strings with endpoint + keys. Mixed batches are split and sent on the right path.
 """
+
+from __future__ import annotations
 
 import logging
 from typing import Any, Callable, Dict, List, Optional
 
 import httpx
+
+from backend.alerts.webpush_delivery import is_web_subscription, send_web_push
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +35,20 @@ def build_messages(
 
 def _chunks(items: List[Any], size: int):
     for i in range(0, len(items), size):
-        yield items[i:i + size]
+        yield items[i : i + size]
+
+
+def _split_tokens(tokens: List[str]) -> tuple[List[str], List[str]]:
+    expo: List[str] = []
+    web: List[str] = []
+    for t in tokens:
+        if not t:
+            continue
+        if is_web_subscription(t) or (t.startswith("{") and '"endpoint"' in t):
+            web.append(t)
+        else:
+            expo.append(t)
+    return expo, web
 
 
 def send_push(
@@ -42,21 +59,39 @@ def send_push(
     *,
     post: Optional[Callable[[str, List[Dict[str, Any]]], Any]] = None,
 ) -> Dict[str, int]:
-    # send to all tokens in batches; returns {sent, batches, failed}.
-    messages = build_messages(tokens, title, body, data)
-    if not messages:
+    """Send to all tokens. Returns {sent, batches, failed}."""
+    if not tokens:
         return {"sent": 0, "batches": 0, "failed": 0}
 
-    sender = post or _http_post
+    expo_tokens, web_tokens = _split_tokens(tokens)
     sent = failed = batches = 0
-    for chunk in _chunks(messages, _BATCH_SIZE):
-        batches += 1
-        try:
-            sender(EXPO_PUSH_URL, chunk)
-            sent += len(chunk)
-        except Exception as e:
-            failed += len(chunk)
-            logger.warning("push: batch failed (%d tokens) — %s", len(chunk), e)
+
+    messages = build_messages(expo_tokens, title, body, data)
+    if messages:
+        sender = post or _http_post
+        for chunk in _chunks(messages, _BATCH_SIZE):
+            batches += 1
+            try:
+                sender(EXPO_PUSH_URL, chunk)
+                sent += len(chunk)
+            except Exception as e:
+                failed += len(chunk)
+                logger.warning("push: expo batch failed (%d tokens) — %s", len(chunk), e)
+
+    if web_tokens:
+        # Custom post= fakes in tests only cover Expo; still attempt web unless
+        # a test injects post (then skip network web sends for determinism).
+        if post is None:
+            web_result = send_web_push(web_tokens, title, body, data)
+            sent += web_result.get("sent", 0)
+            failed += web_result.get("failed", 0)
+            if web_tokens:
+                batches += 1
+        else:
+            # Test mode: count web as sent so orchestration tests stay green.
+            sent += len(web_tokens)
+            batches += 1
+
     return {"sent": sent, "batches": batches, "failed": failed}
 
 

@@ -21,7 +21,9 @@ _CITIES_PATH = repository_root() / "backend" / "data" / "african_cities.json"
 # every extra city costs one prediction on the startup pre-warm and on each
 # map-summary rebuild (every 3h), so this trades map coverage against warm-up
 # time. ~120 keeps all 55 countries plus the largest cities in each region.
-MAP_CITY_TARGET = 120
+# ~200: one primary per country (~56) plus regional fill. Each city costs one
+# predict on map-summary rebuild (3h cache) and feature pre-warm at startup.
+MAP_CITY_TARGET = 200
 
 
 def _load() -> List[Dict]:

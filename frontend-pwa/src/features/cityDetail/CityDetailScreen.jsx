@@ -3,13 +3,11 @@ import {
   AlertTriangle,
   CheckCircle2,
   ChevronRight,
-  Cpu,
   Droplets,
   Loader2,
   Share2,
   Sparkles,
   Thermometer,
-  TrendingUp,
   Wind,
 } from "lucide-react";
 import { useAppState } from "../../state/appState.jsx";
@@ -20,6 +18,7 @@ import { aqiCategoryKey } from "../../utils/i18nHelpers.js";
 import { generateInsight, getHistory } from "../../services/api.js";
 import { PrimaryButton } from "../../components/ui/PrimaryButton.jsx";
 import { StackBackButton } from "../../components/navigation/StackBackButton.jsx";
+import { isDegradedPrediction } from "../healthRisk/deriveHealthRisks.js";
 
 const TREND_DAY_KEYS = [
   "screen.city_detail.day_mon",
@@ -250,6 +249,17 @@ export function CityDetailScreen({ isDark, params }) {
 
       {/* ── AQI block (mirrors mobile aqiBlock) ── */}
       <div className="flex flex-col gap-1.5 px-6 py-6" style={{ backgroundColor: aqiColor + "18" }}>
+        {isDegradedPrediction(prediction) ? (
+          <div
+            className="mb-2 flex items-start gap-2 rounded-xl border px-3 py-2.5"
+            style={{ backgroundColor: colors.card, borderColor: colors.border }}
+          >
+            <AlertTriangle size={14} color={colors.muted} style={{ marginTop: 2, flexShrink: 0 }} />
+            <p className="m-0 text-[0.75rem] leading-snug" style={{ color: colors.muted }}>
+              {t("screen.city_detail.degraded_banner")}
+            </p>
+          </div>
+        ) : null}
         <p className="mb-1 text-[0.75rem]" style={{ color: colors.subtext }}>
           {t("screen.city_detail.updated_at", { time: updatedAt })}
         </p>

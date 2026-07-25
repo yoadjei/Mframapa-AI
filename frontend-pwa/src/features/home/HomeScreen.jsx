@@ -302,7 +302,7 @@ export function HomeScreen({ isOnline }) {
             </p>
 
             {/* Big number + badge */}
-            <div className="my-2 flex items-center gap-3">
+            <div className="my-2 flex items-center gap-3 flex-wrap">
               <span
                 aria-hidden="true"
                 className="font-black leading-none"
@@ -319,6 +319,18 @@ export function HomeScreen({ isOnline }) {
                     {aqiSymbol(pred.aqi_category ?? pred.category)}
                   </span>
                   {t(aqiCategoryKey(pred.aqi_category ?? pred.category))}
+                </span>
+              )}
+              {(pred?.degraded || state.homeSummary?.degraded) && (
+                <span
+                  className="rounded-full px-2.5 py-1 text-[0.6875rem] font-semibold"
+                  style={{
+                    backgroundColor: colors.cardAlt,
+                    color: colors.muted,
+                    border: `1px solid ${colors.border}`,
+                  }}
+                >
+                  {t("home.degraded_badge")}
                 </span>
               )}
             </div>

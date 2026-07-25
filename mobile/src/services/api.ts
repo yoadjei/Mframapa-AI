@@ -67,6 +67,13 @@ function mapPrediction(
       ? Object.keys(rawFactors)
       : undefined;
 
+  const modelSource = model?.source ?? '';
+  const degraded = Boolean(
+    data.degraded ||
+      modelSource === 'openmeteo_fallback' ||
+      modelSource === 'fallback_constant'
+  );
+
   return {
     pm25: data.pm25 as number,
     aqi_category: data.aqi_category as string,
@@ -84,6 +91,8 @@ function mapPrediction(
     model: model?.region_id
       ? `${model.region_id} / ${model.segment ?? 'all'}`
       : undefined,
+    modelSource,
+    degraded,
     insight,
   };
 }

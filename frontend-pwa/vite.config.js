@@ -50,6 +50,8 @@ export default defineConfig({
         type: 'module',
       },
       workbox: {
+        // Web Push handlers (push + notificationclick) live beside the generated SW.
+        importScripts: ['/sw-push.js'],
         globPatterns: ['**/*.{css,html,ico,woff2}', 'assets/index-*.js'],
         // never precache these; they are fetched on demand and cached below
         globIgnores: ['**/mapbox-gl-*.js', '**/assets/{af,am,ar,ee,es,fr,ga,ha,ig,mg,nd,ny,pt,rn,rw,sn,so,ss,st,sw,ti,tn,tw,wo,xh,yo,zu}-*.js'],

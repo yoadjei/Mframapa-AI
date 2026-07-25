@@ -45,6 +45,8 @@ earthengine-api>=0.1.400
 # ── Alerts & scheduling ───────────────────────────────────────
 # daily episode-scan / digest cron
 apscheduler>=3.10.0
+# PWA Web Push (VAPID) — Expo remains for mobile
+pywebpush>=2.0.0
 
 # ── Monitoring ────────────────────────────────────────────────
 sentry-sdk[fastapi]>=2.0.0  # error tracking (set SENTRY_DSN env var)

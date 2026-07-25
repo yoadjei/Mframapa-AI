@@ -63,8 +63,9 @@ def build_scheduler(job: Callable[[], None], *, hour: int = 6):
 def main() -> None:  # pragma: no cover — deployment entry point
     logging.basicConfig(level=logging.INFO)
     logger.info(
-        "scheduler ready. inject a redis-backed city_records provider (from the "
-        "precompute job) into run_daily_scan to go live."
+        "scheduler CLI is a stub. production starts APScheduler from "
+        "backend.api.app lifespan when ALERTS_ENABLED=1 "
+        "(city records + Redis history come from backend.alerts.daily)."
     )
 
 

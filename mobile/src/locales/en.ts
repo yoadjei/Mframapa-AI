@@ -261,6 +261,7 @@ const base: Record<string, string> = {
   'screen.error.try_again': 'Try Again',
   'screen.error.go_home': 'Go Home',
   'screen.health_risk.title': 'Health Risk',
+  'screen.health_risk.open_city_first': 'Open a city reading first',
 
   'activity.trial_cancelled': 'Cancelled free trial',
   'screen.feedback.title': 'Feedback Form',
@@ -373,6 +374,10 @@ const base: Record<string, string> = {
   'screen.health_risk.heat_desc': 'Minimal heat-related health risk today.',
   'screen.health_risk.uv_name': 'UV Index',
   'screen.health_risk.uv_desc': 'Seek shade and wear sunscreen during midday hours.',
+  'screen.health_risk.uv_desc_estimate':
+    'No UV sensor data — midday estimate. Seek shade and wear sunscreen when outdoors.',
+  'screen.city_detail.degraded_banner':
+    'Using backup estimate — satellite model confidence is reduced.',
 
   'screen.prediction.range_24h': '24h',
   'screen.prediction.range_48h': '48h',
@@ -441,11 +446,13 @@ const base: Record<string, string> = {
   'screen.auth.placeholder_confirm': 'Confirm Password',
   'screen.auth.no_account': "Don't have an account?",
   'screen.auth.login_sub': 'Sign in to your Mframapa account.',
+  'screen.auth.continue_without_account': 'Continue without account',
   'screen.auth.signup_sub': 'Start monitoring air quality across Africa.',
   'screen.auth.reset_sub': "Enter your email and we'll send a reset link.",
   'screen.auth.reset_sent': "Check your inbox. We've sent you a reset link.",
 
   'screen.anomaly.title': 'Anomaly Alert',
+  'screen.anomaly.empty': 'No active episode alert',
   'screen.anomaly.spike_title': 'Unusual Spike Detected',
   'screen.anomaly.spike_desc':
     'PM2.5 in Lagos jumped to unhealthy levels, 3× above normal. Possible cause: industrial emissions.',

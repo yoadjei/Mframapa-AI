@@ -1,6 +1,6 @@
 {
   "version": "v1",
-  "generatedAt": "2026-07-25T03:33:05.584Z",
+  "generatedAt": "2026-07-25T03:46:33.987Z",
   "count": 280,
   "cities": [
     {
@@ -284,12 +284,6 @@
       "name": "Djibouti City",
       "lat": 11.572,
       "lon": 43.1456
-    },
-    {
-      "country": "Somaliland",
-      "name": "Hargeisa",
-      "lat": 9.5597,
-      "lon": 44.065
     },
     {
       "country": "Gambia",
@@ -929,9 +923,9 @@
     },
     {
       "country": "Somalia",
-      "name": "Kismayo",
-      "lat": -0.3583,
-      "lon": 42.5442
+      "name": "Hargeisa",
+      "lat": 9.5597,
+      "lon": 44.065
     },
     {
       "country": "Egypt",
@@ -965,9 +959,9 @@
     },
     {
       "country": "Somalia",
-      "name": "Baidoa",
-      "lat": 3.1231,
-      "lon": 43.6531
+      "name": "Kismayo",
+      "lat": -0.3583,
+      "lon": 42.5442
     },
     {
       "country": "Egypt",
@@ -1001,9 +995,9 @@
     },
     {
       "country": "Somalia",
-      "name": "Beledweyne",
-      "lat": 4.7359,
-      "lon": 45.2038
+      "name": "Baidoa",
+      "lat": 3.1231,
+      "lon": 43.6531
     },
     {
       "country": "Egypt",
@@ -1037,9 +1031,9 @@
     },
     {
       "country": "Somalia",
-      "name": "Galkayo",
-      "lat": 6.7698,
-      "lon": 47.4306
+      "name": "Beledweyne",
+      "lat": 4.7359,
+      "lon": 45.2038
     },
     {
       "country": "Egypt",
@@ -1073,9 +1067,9 @@
     },
     {
       "country": "Somalia",
-      "name": "Bosaso",
-      "lat": 11.2833,
-      "lon": 49.1833
+      "name": "Galkayo",
+      "lat": 6.7698,
+      "lon": 47.4306
     },
     {
       "country": "Egypt",
@@ -1109,9 +1103,9 @@
     },
     {
       "country": "Somalia",
-      "name": "Garowe",
-      "lat": 8.4059,
-      "lon": 48.4856
+      "name": "Bosaso",
+      "lat": 11.2833,
+      "lon": 49.1833
     },
     {
       "country": "Egypt",
@@ -1145,9 +1139,9 @@
     },
     {
       "country": "Somalia",
-      "name": "Merca",
-      "lat": 1.7122,
-      "lon": 44.7693
+      "name": "Garowe",
+      "lat": 8.4059,
+      "lon": 48.4856
     },
     {
       "country": "Egypt",
@@ -1180,10 +1174,10 @@
       "lon": 30.65
     },
     {
-      "country": "Somaliland",
-      "name": "Burao",
-      "lat": 9.5219,
-      "lon": 45.541
+      "country": "Somalia",
+      "name": "Merca",
+      "lat": 1.7122,
+      "lon": 44.7693
     },
     {
       "country": "Egypt",
@@ -1216,10 +1210,10 @@
       "lon": 33.2026
     },
     {
-      "country": "Somaliland",
-      "name": "Berbera",
-      "lat": 10.4386,
-      "lon": 45.0142
+      "country": "Somalia",
+      "name": "Burao",
+      "lat": 9.5219,
+      "lon": 45.541
     },
     {
       "country": "Algeria",
@@ -1252,10 +1246,10 @@
       "lon": 34.1754
     },
     {
-      "country": "Eritrea",
-      "name": "Massawa",
-      "lat": 15.6096,
-      "lon": 39.4658
+      "country": "Somalia",
+      "name": "Berbera",
+      "lat": 10.4386,
+      "lon": 45.0142
     },
     {
       "country": "Algeria",
@@ -1289,9 +1283,9 @@
     },
     {
       "country": "Eritrea",
-      "name": "Keren",
-      "lat": 15.7764,
-      "lon": 38.4592
+      "name": "Massawa",
+      "lat": 15.6096,
+      "lon": 39.4658
     },
     {
       "country": "Algeria",
@@ -1325,9 +1319,9 @@
     },
     {
       "country": "Eritrea",
-      "name": "Mendefera",
-      "lat": 14.8833,
-      "lon": 38.8167
+      "name": "Keren",
+      "lat": 15.7764,
+      "lon": 38.4592
     },
     {
       "country": "Algeria",
@@ -1361,9 +1355,9 @@
     },
     {
       "country": "Eritrea",
-      "name": "Assab",
-      "lat": 13.0,
-      "lon": 42.7333
+      "name": "Mendefera",
+      "lat": 14.8833,
+      "lon": 38.8167
     },
     {
       "country": "Algeria",
@@ -1396,10 +1390,10 @@
       "lon": 30.2738
     },
     {
-      "country": "Djibouti",
-      "name": "Ali Sabieh",
-      "lat": 11.1556,
-      "lon": 42.7127
+      "country": "Eritrea",
+      "name": "Assab",
+      "lat": 13.0,
+      "lon": 42.7333
     },
     {
       "country": "Algeria",
@@ -1433,9 +1427,9 @@
     },
     {
       "country": "Djibouti",
-      "name": "Tadjourah",
-      "lat": 11.7897,
-      "lon": 42.8844
+      "name": "Ali Sabieh",
+      "lat": 11.1556,
+      "lon": 42.7127
     },
     {
       "country": "Algeria",
@@ -1469,9 +1463,9 @@
     },
     {
       "country": "Djibouti",
-      "name": "Dikhil",
-      "lat": 11.1053,
-      "lon": 42.3697
+      "name": "Tadjourah",
+      "lat": 11.7897,
+      "lon": 42.8844
     },
     {
       "country": "Algeria",
@@ -1504,10 +1498,10 @@
       "lon": 29.7564
     },
     {
-      "country": "Ethiopia",
-      "name": "Gambela",
-      "lat": 8.25,
-      "lon": 34.5833
+      "country": "Djibouti",
+      "name": "Dikhil",
+      "lat": 11.1053,
+      "lon": 42.3697
     },
     {
       "country": "Algeria",
@@ -1541,9 +1535,9 @@
     },
     {
       "country": "Ethiopia",
-      "name": "Assosa",
-      "lat": 10.0667,
-      "lon": 34.5333
+      "name": "Gambela",
+      "lat": 8.25,
+      "lon": 34.5833
     },
     {
       "country": "Tunisia",
@@ -1577,9 +1571,9 @@
     },
     {
       "country": "Ethiopia",
-      "name": "Hosaena",
-      "lat": 7.55,
-      "lon": 37.85
+      "name": "Assosa",
+      "lat": 10.0667,
+      "lon": 34.5333
     },
     {
       "country": "Tunisia",
@@ -1613,9 +1607,9 @@
     },
     {
       "country": "Ethiopia",
-      "name": "Shashamane",
-      "lat": 7.2,
-      "lon": 38.5833
+      "name": "Hosaena",
+      "lat": 7.55,
+      "lon": 37.85
     },
     {
       "country": "Tunisia",
@@ -1649,9 +1643,9 @@
     },
     {
       "country": "Ethiopia",
-      "name": "Debre Birhan",
-      "lat": 9.6833,
-      "lon": 39.5333
+      "name": "Shashamane",
+      "lat": 7.2,
+      "lon": 38.5833
     },
     {
       "country": "Tunisia",
@@ -1682,6 +1676,12 @@
       "name": "Muyinga",
       "lat": -2.85,
       "lon": 30.3333
+    },
+    {
+      "country": "Ethiopia",
+      "name": "Debre Birhan",
+      "lat": 9.6833,
+      "lon": 39.5333
     }
   ]
 }

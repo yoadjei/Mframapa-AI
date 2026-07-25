@@ -725,5 +725,19 @@
   "notif_prefs.daily_summaries": "Taƙaitaccen yau da kullum",
   "notif_prefs.air_quality_updates": "Sabuntawa kan ingancin iska",
   "notif_prefs.tips_and_guidance": "Shawarwari da jagora",
-  "screen.profile.account_actions": "Asusu"
+  "screen.profile.account_actions": "Asusu",
+  "install.title": "Ƙara Mframapa a allon gida",
+  "install.subtitle": "Shigar don samun dama da sauri, offline, da faɗakarwa.",
+  "install.cta": "Shigar a allon gida",
+  "install.not_now": "Ba yanzu ba",
+  "install.ios_step1_prefix": "Tap",
+  "install.ios_step1_suffix": "Share in Safari",
+  "install.ios_step2": "Scroll and tap Add to Home Screen",
+  "install.ios_step3": "Tap Add — Mframapa appears on your home screen",
+  "install.ios_got_it": "Got it",
+  "install.menu": "Shigar da app",
+  "push_prompt.title": "Kasance a gaban iska",
+  "push_prompt.body": "Bada izinin sanarwa don faɗakarwar ingancin iska da shawarar yau.",
+  "push_prompt.allow": "Bada izini",
+  "push_prompt.not_now": "Ba yanzu ba"
 }

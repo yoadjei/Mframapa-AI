@@ -721,5 +721,19 @@
   "notif_prefs.daily_summaries": "Daily summaries",
   "notif_prefs.air_quality_updates": "Air quality updates",
   "notif_prefs.tips_and_guidance": "Tips and guidance",
-  "screen.profile.account_actions": "Account"
+  "screen.profile.account_actions": "Account",
+  "install.title": "Add Mframapa to your home screen",
+  "install.subtitle": "Install for one-tap access, offline checks, and air quality alerts.",
+  "install.cta": "Install on home screen",
+  "install.not_now": "Not now",
+  "install.ios_step1_prefix": "Tap",
+  "install.ios_step1_suffix": "Share in Safari",
+  "install.ios_step2": "Scroll and tap Add to Home Screen",
+  "install.ios_step3": "Tap Add — Mframapa appears on your home screen",
+  "install.ios_got_it": "Got it",
+  "install.menu": "Install app",
+  "push_prompt.title": "Stay ahead of the air",
+  "push_prompt.body": "Allow notifications so Mframapa can tip you when air quality changes near you — and share a daily Did you know.",
+  "push_prompt.allow": "Allow",
+  "push_prompt.not_now": "Not now"
 }

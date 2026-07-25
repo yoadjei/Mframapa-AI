@@ -128,3 +128,10 @@ async function staleWhileRevalidate(request) {
 
   return cached || fetchPromise;
 }
+
+// Web Push — keep in sync with /sw-push.js (Vite Workbox importScripts).
+try {
+  importScripts('/sw-push.js');
+} catch {
+  /* ignore if missing in odd hosts */
+}

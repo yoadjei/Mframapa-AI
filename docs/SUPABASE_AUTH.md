@@ -4,13 +4,22 @@ Code already sends confirmation and password-reset links to
 `window.location.origin` (see `frontend-pwa/src/services/authService.js`).
 That only works if the Supabase project trusts those origins.
 
+## Env vars
+
+| Client | Variables |
+|--------|-----------|
+| PWA | `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` |
+| Mobile | `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY` |
+
+Production builds log an error if `VITE_SUPABASE_URL` contains `localhost`.
+
 ## Required dashboard settings
 
 In **Supabase → Authentication → URL configuration**:
 
 | Setting | Value |
 |---------|--------|
-| **Site URL** | `https://mframapa.live` (PWA product) |
+| **Site URL** | `https://mframapa.live` (PWA product) — **never leave as localhost in prod** |
 | **Redirect URLs** (allow list) | `https://mframapa.live/**` |
 | | `https://www.mframapa.live/**` (if auth is ever opened from marketing) |
 | | `http://localhost:5173/**` and `http://localhost:5174/**` (local Vite) |

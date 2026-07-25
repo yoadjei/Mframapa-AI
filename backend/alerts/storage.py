@@ -11,7 +11,7 @@ import os
 import sqlite3
 import time
 from functools import lru_cache
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +37,17 @@ class PushTokenStore:
                 """
             )
 
-    def register(self, token: str, platform: str, lat: float, lon: float) -> None:
+    def register(
+        self,
+        token: str,
+        platform: str,
+        lat: Optional[float] = None,
+        lon: Optional[float] = None,
+    ) -> None:
+        # lat/lon optional for web subscribe-before-locate; daily facts use all(),
+        # episode targeting uses near() and simply misses 0,0 placeholders.
+        la = float(lat) if lat is not None else 0.0
+        lo = float(lon) if lon is not None else 0.0
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
                 """
@@ -47,7 +57,7 @@ class PushTokenStore:
                     platform=excluded.platform, lat=excluded.lat,
                     lon=excluded.lon, updated_at=excluded.updated_at
                 """,
-                (token, platform, float(lat), float(lon), time.time()),
+                (token, platform, la, lo, time.time()),
             )
 
     def all(self) -> List[Dict[str, Any]]:

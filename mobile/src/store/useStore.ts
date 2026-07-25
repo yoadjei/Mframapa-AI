@@ -40,6 +40,8 @@ export interface PredictionResult {
   location: { name: string; lat: number; lon: number };
   factors?: string[];
   model?: string;
+  modelSource?: string;
+  degraded?: boolean;
   insight?: string;
   timestamp?: string;
 }
@@ -132,6 +134,7 @@ interface AppState {
   // Auth
   isAuthenticated: boolean;
   setAuthenticated: (v: boolean) => void;
+  enterAsGuest: () => void;
   signIn: (email: string, password: string) => Promise<{ ok: boolean; error?: string }>;
   signUp: (
     email: string,
@@ -312,6 +315,22 @@ export const useStore = create<AppState>()(
 
       isAuthenticated: false,
       setAuthenticated: (v) => set({ isAuthenticated: v }),
+
+      enterAsGuest: () => {
+        // Drop any leftover session tokens so guest mode is truly anonymous.
+        void signOutSupabase();
+        set({
+          isAuthenticated: true,
+          profile: {
+            fullName: 'Guest',
+            email: '',
+            organization: '',
+            tier: 'free',
+            initials: 'G',
+            avatarSeed: '',
+          },
+        });
+      },
 
       signIn: async (email, password) => {
         const cleanEmail = email.trim().toLowerCase();

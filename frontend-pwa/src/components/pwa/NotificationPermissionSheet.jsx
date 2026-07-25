@@ -3,6 +3,8 @@ import { Bell, X } from "lucide-react";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { Colors, getColors, liquidGlass } from "../../utils/colors.js";
 import { ensureNotificationPermission } from "../../services/browserNotifications.js";
+import { subscribeWebPush } from "../../services/webPush.js";
+import { useAppState } from "../../state/appState.jsx";
 
 const PUSH_PROMPT_SEEN_KEY = "mframapa:push-prompt-seen";
 
@@ -29,6 +31,7 @@ export function hasSeenPushPrompt() {
  */
 export function NotificationPermissionSheet({ open, onClose, isDark = true }) {
   const { t } = useTranslation();
+  const { state } = useAppState();
   const colors = getColors(isDark);
 
   if (!open) return null;
@@ -37,8 +40,11 @@ export function NotificationPermissionSheet({ open, onClose, isDark = true }) {
     markPushPromptSeen();
     try {
       await ensureNotificationPermission();
+      const lat = state.homeSummary?.lat ?? state.ui?.selectedCity?.lat;
+      const lon = state.homeSummary?.lon ?? state.ui?.selectedCity?.lon;
+      await subscribeWebPush({ lat, lon });
     } catch {
-      /* ignore */
+      /* local banner still works if VAPID is unset */
     }
     onClose?.();
   }

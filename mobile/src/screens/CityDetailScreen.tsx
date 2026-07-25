@@ -23,6 +23,7 @@ import { useTheme } from '../hooks/useTheme';
 import { PredictionResult, useStore } from '../store/useStore';
 import { useTranslation } from '../hooks/useTranslation';
 import { aqiCategoryKey, healthAdviceKey } from '../utils/i18nHelpers';
+import { isDegradedPrediction } from '../utils/deriveHealthRisks';
 import { ShareSheetScreen } from './system/ShareSheetScreen';
 import { generateInsight } from '../services/api';
 import { languageName } from '../utils/constants';
@@ -227,6 +228,14 @@ export function CityDetailScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={[styles.aqiBlock, { backgroundColor: aqiColor + '18' }]}>
+          {isDegradedPrediction(pred) ? (
+            <View style={[styles.degradedBanner, { backgroundColor: colors.card, borderColor: colors.border }]}>
+              <Ionicons name="information-circle-outline" size={16} color={colors.muted} />
+              <Text style={[styles.degradedText, { color: colors.muted }]}>
+                {t('screen.city_detail.degraded_banner')}
+              </Text>
+            </View>
+          ) : null}
           <Text style={[styles.updatedText, { color: colors.subtext }]}>
             {t('screen.city_detail.updated_at', { time: updatedAt })}
           </Text>
@@ -322,7 +331,7 @@ export function CityDetailScreen() {
           <Text style={[styles.sectionTitle, { color: colors.subtext }]}>{t('card.health_guidance')}</Text>
           <Text style={[styles.healthText, { color: colors.text }]}>{healthAdvice}</Text>
           <TouchableOpacity
-            onPress={() => navigation.navigate('HealthRisk')}
+            onPress={() => navigation.navigate('HealthRisk', { prediction: pred })}
             style={styles.healthLink}
           >
             <Text style={[styles.healthLinkText, { color: Colors.brandGreen }]}>
@@ -376,6 +385,18 @@ const styles = StyleSheet.create({
   backText: { color: '#fff', fontSize: 16, fontWeight: '400' },
   headerTitle: { color: '#fff', fontSize: 18, fontWeight: '700', textAlign: 'center', flex: 1 },
   aqiBlock: { padding: 24, alignItems: 'flex-start', gap: 6 },
+  degradedBanner: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 8,
+    borderRadius: 12,
+    borderWidth: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    marginBottom: 8,
+    width: '100%',
+  },
+  degradedText: { fontSize: 12, lineHeight: 17, flex: 1 },
   updatedText: { fontSize: 12, marginBottom: 4 },
   aqiLabel: { fontSize: 13, fontWeight: '500' },
   aqiRow: { flexDirection: 'row', alignItems: 'flex-end', gap: 16, marginTop: 4 },

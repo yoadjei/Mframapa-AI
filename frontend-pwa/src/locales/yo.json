@@ -725,5 +725,19 @@
   "notif_prefs.daily_summaries": "Àkótán ojoojúmọ́",
   "notif_prefs.air_quality_updates": "Ìsódiwájú ààyè afẹ́fẹ́",
   "notif_prefs.tips_and_guidance": "ìmọ̀ràn àti ìtọ́sọ́nà",
-  "screen.profile.account_actions": "Àkántì"
+  "screen.profile.account_actions": "Àkántì",
+  "install.title": "Fi Mframapa kun ojú ìwé ibẹ̀rẹ̀",
+  "install.subtitle": "Fi sórí ẹ̀rọ fún ìráàyèsí kíákíá, offline, àti ìkìlọ̀.",
+  "install.cta": "Fi sórí ojú ìwé ibẹ̀rẹ̀",
+  "install.not_now": "Kì í ṣe nísinsinyìí",
+  "install.ios_step1_prefix": "Tap",
+  "install.ios_step1_suffix": "Share in Safari",
+  "install.ios_step2": "Scroll and tap Add to Home Screen",
+  "install.ios_step3": "Tap Add — Mframapa appears on your home screen",
+  "install.ios_got_it": "Got it",
+  "install.menu": "Fi app sórí ẹ̀rọ",
+  "push_prompt.title": "Dúró níwájú afẹ́fẹ́",
+  "push_prompt.body": "Fàyè gba ìfitónilétí fún ìkìlọ̀ ààyè afẹ́fẹ́ àti ìmọ̀ràn ojoojúmọ́.",
+  "push_prompt.allow": "Fàyè gba",
+  "push_prompt.not_now": "Kì í ṣe nísinsinyìí"
 }

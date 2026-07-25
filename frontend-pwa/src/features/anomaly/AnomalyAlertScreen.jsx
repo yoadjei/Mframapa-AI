@@ -1,8 +1,9 @@
 import { AlertTriangle } from "lucide-react";
-import { getColors, Colors } from "../../utils/colors.js";
+import { getColors } from "../../utils/colors.js";
 import { useNavigation } from "../../hooks/useNavigation.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { StackBackButton } from "../../components/navigation/StackBackButton.jsx";
+import { PrimaryButton } from "../../components/ui/PrimaryButton.jsx";
 
 const AQI_HIGH = "#FF8C00";
 
@@ -20,30 +21,26 @@ export function AnomalyAlertScreen({ params, isOnline, isDark }) {
 
   const alert = params?.alert ?? null;
 
-  const spikeTitle  = alert?.title       ?? t("screen.anomaly.spike_title");
-  const spikeDesc   = alert?.description ?? t("screen.anomaly.spike_desc");
-  const detectedAgo = alert?.detectedAgo ?? t("screen.anomaly.detected_ago");
-
   return (
     <div style={{ minHeight: "100dvh", position: "relative" }}>
       <div style={{ height: "env(safe-area-inset-top)" }} />
 
-      {/* Glow orb */}
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          right: -40,
-          width: 160,
-          height: 160,
-          borderRadius: 80,
-          backgroundColor: AQI_HIGH,
-          opacity: 0.12,
-          pointerEvents: "none",
-        }}
-      />
+      {alert ? (
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            right: -40,
+            width: 160,
+            height: 160,
+            borderRadius: 80,
+            backgroundColor: AQI_HIGH,
+            opacity: 0.12,
+            pointerEvents: "none",
+          }}
+        />
+      ) : null}
 
-      {/* Header */}
       <div
         style={{
           display: "flex",
@@ -64,125 +61,147 @@ export function AnomalyAlertScreen({ params, isOnline, isDark }) {
         <div style={{ width: 44 }} />
       </div>
 
-      {/* Scrollable content */}
-      <div
-        style={{
-          overflowY: "auto",
-          paddingLeft: 16,
-          paddingRight: 16,
-          paddingBottom: 40,
-          display: "flex",
-          flexDirection: "column",
-          gap: 14,
-        }}
-      >
-        {/* Alert banner */}
+      {!alert ? (
         <div
           style={{
-            backgroundColor: AQI_HIGH + "15",
-            border: `1px solid ${AQI_HIGH + "60"}`,
-            borderRadius: 16,
-            padding: 16,
             display: "flex",
             flexDirection: "column",
-            gap: 8,
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 16,
+            padding: "48px 24px",
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <AlertTriangle size={22} color={AQI_HIGH} />
-            <span style={{ fontSize: "1rem", fontWeight: 700, color: colors.text }}>
-              {spikeTitle}
-            </span>
-          </div>
-          <p style={{ fontSize: "0.875rem", lineHeight: "20px", color: colors.subtext }}>
-            {spikeDesc}
+          <p
+            style={{
+              fontSize: "0.9375rem",
+              textAlign: "center",
+              color: colors.subtext,
+              margin: 0,
+            }}
+          >
+            {t("screen.anomaly.empty")}
           </p>
-          <p style={{ fontSize: "0.75rem", color: colors.muted }}>
-            {detectedAgo}
-          </p>
+          <PrimaryButton label={t("common.back")} onClick={goBack} />
         </div>
-
-        {/* Severity section */}
-        <p style={{ fontSize: "1rem", fontWeight: 700, color: colors.text }}>
-          {t("screen.anomaly.severity")}
-        </p>
-
-        {ITEM_KEYS.map((item, i) => (
-          <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 12, padding: "6px 0" }}>
-            <div
-              style={{
-                width: 10,
-                height: 10,
-                borderRadius: 5,
-                backgroundColor: item.color,
-                marginTop: 4,
-                flexShrink: 0,
-              }}
-            />
-            <div style={{ flex: 1 }}>
-              <p style={{ fontSize: "0.9375rem", fontWeight: 600, color: colors.text }}>
-                {t(item.labelKey)}
-              </p>
-              <p style={{ fontSize: "0.75rem", marginTop: 2, color: colors.subtext }}>
-                {t(item.infoKey)}
-              </p>
-            </div>
-          </div>
-        ))}
-
-        {/* Recommended actions (from params) */}
-        {alert?.actions && (
+      ) : (
+        <div
+          style={{
+            overflowY: "auto",
+            paddingLeft: 16,
+            paddingRight: 16,
+            paddingBottom: 40,
+            display: "flex",
+            flexDirection: "column",
+            gap: 14,
+          }}
+        >
           <div
             style={{
-              marginTop: 8,
+              backgroundColor: AQI_HIGH + "15",
+              border: `1px solid ${AQI_HIGH + "60"}`,
               borderRadius: 16,
-              border: `1px solid ${colors.border}`,
-              backgroundColor: colors.card,
               padding: 16,
               display: "flex",
               flexDirection: "column",
               gap: 8,
             }}
           >
-            <p style={{ fontSize: "0.875rem", fontWeight: 700, color: colors.text }}>
-              {t("anomaly.recommended_actions")}
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <AlertTriangle size={22} color={AQI_HIGH} />
+              <span style={{ fontSize: "1rem", fontWeight: 700, color: colors.text }}>
+                {alert.title ?? t("screen.anomaly.spike_title")}
+              </span>
+            </div>
+            <p style={{ fontSize: "0.875rem", lineHeight: "20px", color: colors.subtext }}>
+              {alert.description ?? t("screen.anomaly.spike_desc")}
             </p>
-            {alert.actions.map((action, i) => (
-              <p key={i} style={{ fontSize: "0.875rem", lineHeight: "20px", color: colors.subtext }}>
-                • {action}
+            {alert.detectedAgo ? (
+              <p style={{ fontSize: "0.75rem", color: colors.muted }}>
+                {alert.detectedAgo}
               </p>
-            ))}
+            ) : null}
           </div>
-        )}
 
-        {/* Affected area & time (from params) */}
-        {(alert?.area || alert?.time) && (
-          <div
-            style={{
-              borderRadius: 16,
-              border: `1px solid ${colors.border}`,
-              backgroundColor: colors.card,
-              padding: 16,
-              display: "flex",
-              flexDirection: "column",
-              gap: 6,
-            }}
-          >
-            {alert.area && (
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ fontSize: "0.75rem", color: colors.subtext }}>{t("anomaly.affected_area")}</span>
-                <span style={{ fontSize: "0.75rem", fontWeight: 600, color: colors.text }}>{alert.area}</span>
+          <p style={{ fontSize: "1rem", fontWeight: 700, color: colors.text }}>
+            {t("screen.anomaly.severity")}
+          </p>
+
+          {ITEM_KEYS.map((item, i) => (
+            <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 12, padding: "6px 0" }}>
+              <div
+                style={{
+                  width: 10,
+                  height: 10,
+                  borderRadius: 5,
+                  backgroundColor: item.color,
+                  marginTop: 4,
+                  flexShrink: 0,
+                }}
+              />
+              <div style={{ flex: 1 }}>
+                <p style={{ fontSize: "0.9375rem", fontWeight: 600, color: colors.text }}>
+                  {t(item.labelKey)}
+                </p>
+                <p style={{ fontSize: "0.75rem", marginTop: 2, color: colors.subtext }}>
+                  {t(item.infoKey)}
+                </p>
               </div>
-            )}
-            {alert.time && (
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ fontSize: "0.75rem", color: colors.subtext }}>Time</span>
-                <span style={{ fontSize: "0.75rem", fontWeight: 600, color: colors.text }}>{alert.time}</span>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
+            </div>
+          ))}
+
+          {alert.actions && (
+            <div
+              style={{
+                marginTop: 8,
+                borderRadius: 16,
+                border: `1px solid ${colors.border}`,
+                backgroundColor: colors.card,
+                padding: 16,
+                display: "flex",
+                flexDirection: "column",
+                gap: 8,
+              }}
+            >
+              <p style={{ fontSize: "0.875rem", fontWeight: 700, color: colors.text }}>
+                {t("anomaly.recommended_actions")}
+              </p>
+              {alert.actions.map((action, i) => (
+                <p key={i} style={{ fontSize: "0.875rem", lineHeight: "20px", color: colors.subtext }}>
+                  • {action}
+                </p>
+              ))}
+            </div>
+          )}
+
+          {(alert.area || alert.time) && (
+            <div
+              style={{
+                borderRadius: 16,
+                border: `1px solid ${colors.border}`,
+                backgroundColor: colors.card,
+                padding: 16,
+                display: "flex",
+                flexDirection: "column",
+                gap: 6,
+              }}
+            >
+              {alert.area && (
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <span style={{ fontSize: "0.75rem", color: colors.subtext }}>{t("anomaly.affected_area")}</span>
+                  <span style={{ fontSize: "0.75rem", fontWeight: 600, color: colors.text }}>{alert.area}</span>
+                </div>
+              )}
+              {alert.time && (
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <span style={{ fontSize: "0.75rem", color: colors.subtext }}>Time</span>
+                  <span style={{ fontSize: "0.75rem", fontWeight: 600, color: colors.text }}>{alert.time}</span>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

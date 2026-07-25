@@ -2,11 +2,12 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { Colors } from '../theme/colors';
 import { getColors } from '../theme';
 import { useTheme } from '../hooks/useTheme';
 import { useTranslation } from '../hooks/useTranslation';
+import { PrimaryButton } from '../components/ui/PrimaryButton';
 
 const ITEM_KEYS = [
   { labelKey: 'screen.anomaly.item1_label', infoKey: 'screen.anomaly.item1_info', color: Colors.aqiGood },
@@ -14,16 +15,25 @@ const ITEM_KEYS = [
   { labelKey: 'screen.anomaly.item3_label', infoKey: 'screen.anomaly.item3_info', color: Colors.aqiUnhealthy },
   { labelKey: 'screen.anomaly.item4_label', infoKey: 'screen.anomaly.item4_info', color: Colors.aqiGood }] as const;
 
+type EpisodeAlert = {
+  title?: string;
+  description?: string;
+  detectedAgo?: string;
+};
+
 export function AnomalyAlertScreen() {
   const { isDark } = useTheme();
   const colors = getColors(isDark);
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<any>();
+  const route = useRoute<any>();
   const { t } = useTranslation();
+
+  const alert = (route.params?.alert as EpisodeAlert | undefined) ?? null;
 
   return (
     <View style={[styles.root]}>
-      <View style={styles.glowOrb} />
+      {alert ? <View style={styles.glowOrb} /> : null}
 
       <View style={[styles.header, { paddingTop: insets.top + 8 }]}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -33,30 +43,45 @@ export function AnomalyAlertScreen() {
         <View style={{ width: 22 }} />
       </View>
 
-      <ScrollView
-        contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 40 }]}
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={[styles.alertBanner, { borderColor: Colors.aqiHigh + '60' }]}>
-          <View style={styles.alertTop}>
-            <Ionicons name="warning-outline" size={22} color={Colors.aqiHigh} />
-            <Text style={[styles.alertTitle, { color: colors.text }]}>{t('screen.anomaly.spike_title')}</Text>
-          </View>
-          <Text style={[styles.alertDesc, { color: colors.subtext }]}>{t('screen.anomaly.spike_desc')}</Text>
-          <Text style={[styles.alertTime, { color: colors.muted }]}>{t('screen.anomaly.detected_ago')}</Text>
+      {!alert ? (
+        <View style={styles.emptyBody}>
+          <Text style={[styles.emptyText, { color: colors.subtext }]}>
+            {t('screen.anomaly.empty')}
+          </Text>
+          <PrimaryButton label={t('common.back')} onPress={() => navigation.goBack()} />
         </View>
-
-        <Text style={[styles.sectionLabel, { color: colors.text }]}>{t('screen.anomaly.severity')}</Text>
-        {ITEM_KEYS.map((item, i) => (
-          <View key={i} style={styles.severityRow}>
-            <View style={[styles.severityDot, { backgroundColor: item.color }]} />
-            <View style={{ flex: 1 }}>
-              <Text style={[styles.severityLabel, { color: colors.text }]}>{t(item.labelKey)}</Text>
-              <Text style={[styles.severityInfo, { color: colors.subtext }]}>{t(item.infoKey)}</Text>
+      ) : (
+        <ScrollView
+          contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 40 }]}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={[styles.alertBanner, { borderColor: Colors.aqiHigh + '60' }]}>
+            <View style={styles.alertTop}>
+              <Ionicons name="warning-outline" size={22} color={Colors.aqiHigh} />
+              <Text style={[styles.alertTitle, { color: colors.text }]}>
+                {alert.title ?? t('screen.anomaly.spike_title')}
+              </Text>
             </View>
+            <Text style={[styles.alertDesc, { color: colors.subtext }]}>
+              {alert.description ?? t('screen.anomaly.spike_desc')}
+            </Text>
+            {alert.detectedAgo ? (
+              <Text style={[styles.alertTime, { color: colors.muted }]}>{alert.detectedAgo}</Text>
+            ) : null}
           </View>
-        ))}
-      </ScrollView>
+
+          <Text style={[styles.sectionLabel, { color: colors.text }]}>{t('screen.anomaly.severity')}</Text>
+          {ITEM_KEYS.map((item, i) => (
+            <View key={i} style={styles.severityRow}>
+              <View style={[styles.severityDot, { backgroundColor: item.color }]} />
+              <View style={{ flex: 1 }}>
+                <Text style={[styles.severityLabel, { color: colors.text }]}>{t(item.labelKey)}</Text>
+                <Text style={[styles.severityInfo, { color: colors.subtext }]}>{t(item.infoKey)}</Text>
+              </View>
+            </View>
+          ))}
+        </ScrollView>
+      )}
     </View>
   );
 }
@@ -81,6 +106,14 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
   },
   title: { fontSize: 16, fontWeight: '700' },
+  emptyBody: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 24,
+    gap: 16,
+  },
+  emptyText: { fontSize: 15, textAlign: 'center' },
   content: { paddingHorizontal: 16, gap: 14 },
   alertBanner: {
     backgroundColor: Colors.aqiHigh + '15',
@@ -90,7 +123,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   alertTop: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  alertTitle: { fontSize: 16, fontWeight: '700' },
+  alertTitle: { fontSize: 16, fontWeight: '700', flex: 1 },
   alertDesc: { fontSize: 14, lineHeight: 20 },
   alertTime: { fontSize: 12 },
   sectionLabel: { fontSize: 16, fontWeight: '700' },

@@ -723,5 +723,19 @@
   "notif_prefs.daily_summaries": "Muhtasari wa kila siku",
   "notif_prefs.air_quality_updates": "Sasisho za ubora wa hewa",
   "notif_prefs.tips_and_guidance": "Vidokezo na mwongozo",
-  "screen.profile.account_actions": "Akaunti"
+  "screen.profile.account_actions": "Akaunti",
+  "install.title": "Ongeza Mframapa kwenye skrini ya mwanzo",
+  "install.subtitle": "Sakinisha kwa ufikiaji wa haraka, nje ya mtandao, na tahadhari.",
+  "install.cta": "Sakinisha kwenye skrini ya mwanzo",
+  "install.not_now": "Sio sasa",
+  "install.ios_step1_prefix": "Tap",
+  "install.ios_step1_suffix": "Share in Safari",
+  "install.ios_step2": "Scroll and tap Add to Home Screen",
+  "install.ios_step3": "Tap Add — Mframapa appears on your home screen",
+  "install.ios_got_it": "Got it",
+  "install.menu": "Sakinisha programu",
+  "push_prompt.title": "Kuwa mbele ya hewa",
+  "push_prompt.body": "Ruhusu arifa kwa tahadhari za ubora wa hewa na kidokezo cha kila siku.",
+  "push_prompt.allow": "Ruhusu",
+  "push_prompt.not_now": "Sio sasa"
 }

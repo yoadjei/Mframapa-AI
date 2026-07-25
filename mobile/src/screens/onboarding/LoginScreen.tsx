@@ -6,11 +6,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { InputField } from '../../components/ui/InputField';
 import { PrimaryButton } from '../../components/ui/PrimaryButton';
+import { OutlineButton } from '../../components/ui/OutlineButton';
 import { MframapaLogo } from '../../components/MframapaLogo';
 import { useTheme } from '../../hooks/useTheme';
 import { getColors, Colors } from '../../theme';
 import { useTranslation } from '../../hooks/useTranslation';
 import { useStore } from '../../store/useStore';
+import { clearSignOutSession } from '../../session/authSession';
 
 interface Props {
   onAuth: () => void;
@@ -23,6 +25,7 @@ export function LoginScreen({ onAuth }: Props) {
   const { t } = useTranslation();
   const navigation = useNavigation<any>();
   const signIn = useStore((s) => s.signIn);
+  const enterAsGuest = useStore((s) => s.enterAsGuest);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -40,6 +43,11 @@ export function LoginScreen({ onAuth }: Props) {
       return;
     }
     onAuth();
+  }
+
+  function handleContinueAsGuest() {
+    enterAsGuest();
+    clearSignOutSession();
   }
 
   return (
@@ -85,6 +93,12 @@ export function LoginScreen({ onAuth }: Props) {
 
         <PrimaryButton label={t('screen.auth.sign_in_btn')} onPress={handleLogin} loading={loading} style={styles.cta} />
 
+        <OutlineButton
+          label={t('screen.auth.continue_without_account')}
+          onPress={handleContinueAsGuest}
+          style={styles.guestCta}
+        />
+
         <View style={styles.signupRow}>
           <Text style={[styles.signupPrompt, { color: colors.subtext }]}>{t('screen.auth.no_account')}</Text>
           <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
@@ -106,6 +120,7 @@ const styles = StyleSheet.create({
   forgotWrap: { alignSelf: 'flex-end', marginBottom: 24 },
   forgotText: { fontSize: 14, fontWeight: '500' },
   cta: { marginTop: 4 },
+  guestCta: { marginTop: 12 },
   signupRow: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 24, gap: 6 },
   signupPrompt: { fontSize: 14 },
   signupLink: { fontSize: 14, fontWeight: '600' },

@@ -716,5 +716,19 @@
   "notif_prefs.air_quality_updates": "Mises à jour qualité de l'air",
   "notif_prefs.tips_and_guidance": "Conseils et guidance",
   "screen.profile.account_actions": "Compte",
-  "screen.country.rural_cities": "Rural"
+  "screen.country.rural_cities": "Rural",
+  "install.title": "Ajouter Mframapa à l'écran d'accueil",
+  "install.subtitle": "Installez pour un accès rapide, hors ligne et les alertes.",
+  "install.cta": "Installer sur l'écran d'accueil",
+  "install.not_now": "Pas maintenant",
+  "install.ios_step1_prefix": "Tap",
+  "install.ios_step1_suffix": "Share in Safari",
+  "install.ios_step2": "Scroll and tap Add to Home Screen",
+  "install.ios_step3": "Tap Add — Mframapa appears on your home screen",
+  "install.ios_got_it": "Got it",
+  "install.menu": "Installer l'application",
+  "push_prompt.title": "Restez informé de l'air",
+  "push_prompt.body": "Autorisez les notifications pour les alertes de qualité de l'air et le conseil du jour.",
+  "push_prompt.allow": "Autoriser",
+  "push_prompt.not_now": "Pas maintenant"
 }

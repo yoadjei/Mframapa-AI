@@ -281,10 +281,11 @@ export function App() {
     return () => { cancelled = true; unsubscribe(); };
   }, [dispatch]);
 
+  // City pack is public — preload for guests and signed-in users alike.
   useEffect(() => {
-    if (!session.authenticated || !isOnline) return;
+    if (!isOnline) return;
     preloadCityPack().catch(() => undefined);
-  }, [session.authenticated, isOnline]);
+  }, [isOnline]);
 
   // hooks must run on every render before any early return (rules of hooks)
 

@@ -1,14 +1,14 @@
 {
-  "total": 1000,
+  "total": 1002,
   "regions": {
     "west_africa": 270,
-    "east_africa": 190,
+    "east_africa": 191,
     "north_africa": 160,
-    "central_africa": 140,
+    "central_africa": 141,
     "southern_africa": 160,
     "horn_of_africa": 80
   },
-  "urban": 413,
+  "urban": 415,
   "rural": 587,
   "cities": [
     {
@@ -3613,7 +3613,7 @@
     },
     {
       "name": "Hargeisa",
-      "country": "Somaliland",
+      "country": "Somalia",
       "iso3": "SOM",
       "lat": 9.5597,
       "lon": 44.065,
@@ -3685,7 +3685,7 @@
     },
     {
       "name": "Burao",
-      "country": "Somaliland",
+      "country": "Somalia",
       "iso3": "SOM",
       "lat": 9.5219,
       "lon": 45.541,
@@ -3694,7 +3694,7 @@
     },
     {
       "name": "Berbera",
-      "country": "Somaliland",
+      "country": "Somalia",
       "iso3": "SOM",
       "lat": 10.4386,
       "lon": 45.0142,
@@ -7888,7 +7888,7 @@
     },
     {
       "name": "Kikwit",
-      "country": "Democratic Republic of the Congo",
+      "country": "DR Congo",
       "iso3": "COD",
       "lat": -5.041,
       "lon": 18.8162,
@@ -7906,7 +7906,7 @@
     },
     {
       "name": "Masina",
-      "country": "Democratic Republic of the Congo",
+      "country": "DR Congo",
       "iso3": "COD",
       "lat": -4.3836,
       "lon": 15.3914,
@@ -7924,7 +7924,7 @@
     },
     {
       "name": "Uvira",
-      "country": "Democratic Republic of the Congo",
+      "country": "DR Congo",
       "iso3": "COD",
       "lat": -3.3953,
       "lon": 29.1378,
@@ -7969,7 +7969,7 @@
     },
     {
       "name": "Boma",
-      "country": "Democratic Republic of the Congo",
+      "country": "DR Congo",
       "iso3": "COD",
       "lat": -5.851,
       "lon": 13.0536,
@@ -7978,7 +7978,7 @@
     },
     {
       "name": "Mwene",
-      "country": "Democratic Republic of the Congo",
+      "country": "DR Congo",
       "iso3": "COD",
       "lat": -9.817,
       "lon": 22.8702,
@@ -7987,7 +7987,7 @@
     },
     {
       "name": "Butembo",
-      "country": "Democratic Republic of the Congo",
+      "country": "DR Congo",
       "iso3": "COD",
       "lat": 0.1416,
       "lon": 29.2912,
@@ -8023,7 +8023,7 @@
     },
     {
       "name": "Isiro",
-      "country": "Democratic Republic of the Congo",
+      "country": "DR Congo",
       "iso3": "COD",
       "lat": 2.7739,
       "lon": 27.616,
@@ -8050,7 +8050,7 @@
     },
     {
       "name": "Kindu",
-      "country": "Democratic Republic of the Congo",
+      "country": "DR Congo",
       "iso3": "COD",
       "lat": -2.9437,
       "lon": 25.9224,
@@ -8068,7 +8068,7 @@
     },
     {
       "name": "Kabinda",
-      "country": "Democratic Republic of the Congo",
+      "country": "DR Congo",
       "iso3": "COD",
       "lat": -6.1379,
       "lon": 24.4818,
@@ -8077,7 +8077,7 @@
     },
     {
       "name": "Gandajika",
-      "country": "Democratic Republic of the Congo",
+      "country": "DR Congo",
       "iso3": "COD",
       "lat": -6.745,
       "lon": 23.9533,
@@ -8095,7 +8095,7 @@
     },
     {
       "name": "Bandundu Province",
-      "country": "Democratic Republic of the Congo",
+      "country": "DR Congo",
       "iso3": "COD",
       "lat": -3.3169,
       "lon": 17.3806,
@@ -8113,7 +8113,7 @@
     },
     {
       "name": "Kamina",
-      "country": "Democratic Republic of the Congo",
+      "country": "DR Congo",
       "iso3": "COD",
       "lat": -8.7351,
       "lon": 24.998,
@@ -8122,7 +8122,7 @@
     },
     {
       "name": "Gemena",
-      "country": "Democratic Republic of the Congo",
+      "country": "DR Congo",
       "iso3": "COD",
       "lat": 3.2565,
       "lon": 19.7723,
@@ -8131,7 +8131,7 @@
     },
     {
       "name": "Mwene-Ditu",
-      "country": "Democratic Republic of the Congo",
+      "country": "DR Congo",
       "iso3": "COD",
       "lat": -7.0091,
       "lon": 23.4528,
@@ -8149,7 +8149,7 @@
     },
     {
       "name": "Kipushi",
-      "country": "Democratic Republic of the Congo",
+      "country": "DR Congo",
       "iso3": "COD",
       "lat": -11.761,
       "lon": 27.2513,
@@ -8176,7 +8176,7 @@
     },
     {
       "name": "Bumba",
-      "country": "Democratic Republic of the Congo",
+      "country": "DR Congo",
       "iso3": "COD",
       "lat": 2.1877,
       "lon": 22.4683,
@@ -8194,7 +8194,7 @@
     },
     {
       "name": "Mbanza-Ngungu",
-      "country": "Democratic Republic of the Congo",
+      "country": "DR Congo",
       "iso3": "COD",
       "lat": -5.2584,
       "lon": 14.8584,
@@ -8203,7 +8203,7 @@
     },
     {
       "name": "Beni",
-      "country": "Democratic Republic of the Congo",
+      "country": "DR Congo",
       "iso3": "COD",
       "lat": 0.4911,
       "lon": 29.4731,
@@ -8266,7 +8266,7 @@
     },
     {
       "name": "Aru",
-      "country": "Democratic Republic of the Congo",
+      "country": "DR Congo",
       "iso3": "COD",
       "lat": 2.8622,
       "lon": 30.8414,
@@ -8338,7 +8338,7 @@
     },
     {
       "name": "Kabeya-Kamwanga",
-      "country": "Democratic Republic of the Congo",
+      "country": "DR Congo",
       "iso3": "COD",
       "lat": -5.9988,
       "lon": 23.2539,
@@ -8365,7 +8365,7 @@
     },
     {
       "name": "Lusambo",
-      "country": "Democratic Republic of the Congo",
+      "country": "DR Congo",
       "iso3": "COD",
       "lat": -4.975,
       "lon": 23.4439,
@@ -8401,7 +8401,7 @@
     },
     {
       "name": "Kasongo-Lunda",
-      "country": "Democratic Republic of the Congo",
+      "country": "DR Congo",
       "iso3": "COD",
       "lat": -6.4783,
       "lon": 16.8174,
@@ -8509,7 +8509,7 @@
     },
     {
       "name": "Lukolela",
-      "country": "Democratic Republic of the Congo",
+      "country": "DR Congo",
       "iso3": "COD",
       "lat": -1.0605,
       "lon": 17.1821,
@@ -8518,7 +8518,7 @@
     },
     {
       "name": "Bosobolo",
-      "country": "Democratic Republic of the Congo",
+      "country": "DR Congo",
       "iso3": "COD",
       "lat": 4.1898,
       "lon": 19.8833,
@@ -8545,7 +8545,7 @@
     },
     {
       "name": "Pepa",
-      "country": "Democratic Republic of the Congo",
+      "country": "DR Congo",
       "iso3": "COD",
       "lat": -7.6981,
       "lon": 29.7772,
@@ -8554,7 +8554,7 @@
     },
     {
       "name": "Pweto",
-      "country": "Democratic Republic of the Congo",
+      "country": "DR Congo",
       "iso3": "COD",
       "lat": -8.466,
       "lon": 28.9008,
@@ -8680,7 +8680,7 @@
     },
     {
       "name": "Wamba",
-      "country": "Democratic Republic of the Congo",
+      "country": "DR Congo",
       "iso3": "COD",
       "lat": 2.1484,
       "lon": 27.9947,
@@ -9010,6 +9010,24 @@
       "lon": 37.8981,
       "region": "horn_of_africa",
       "urban": false
+    },
+    {
+      "name": "São Tomé",
+      "country": "São Tomé and Príncipe",
+      "iso3": "STP",
+      "lat": 0.3365,
+      "lon": 6.7273,
+      "region": "central_africa",
+      "urban": true
+    },
+    {
+      "name": "Victoria",
+      "country": "Seychelles",
+      "iso3": "SYC",
+      "lat": -4.6191,
+      "lon": 55.4513,
+      "region": "east_africa",
+      "urban": true
     }
   ]
 }

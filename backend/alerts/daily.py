@@ -54,9 +54,12 @@ def append_history(cache: RedisCache, name: str, pm25: float) -> None:
 def _predict(base_url: str, name: str, lat: float, lon: float) -> Optional[Dict[str, Any]]:
     """today's prediction via our own public endpoint (same model + cache as users)."""
     try:
+        # Prefer the internal key so the scan is not starved by anonymous IP limits.
+        api_key = os.getenv("MFRAMAPA_INTERNAL_KEY", "mframapa-internal-dev-key")
         resp = httpx.get(
             f"{base_url}/api/v1/predict",
             params={"lat": lat, "lon": lon, "name": name},
+            headers={"X-API-Key": api_key},
             timeout=_REQUEST_TIMEOUT,
         )
         resp.raise_for_status()

@@ -868,3 +868,17 @@ def register_push_token(body: PushTokenBody, store=Depends(get_push_store)) -> D
         ) from exc
     logger.info("Push token registered: platform=%s lat=%s lon=%s", body.platform, body.lat, body.lon)
     return {"status": "registered"}
+
+
+@router.get("/vapid-public-key")
+def get_vapid_public_key() -> Dict[str, Any]:
+    """Public VAPID key for PWA Web Push subscribe (safe to expose)."""
+    from backend.alerts.webpush_delivery import vapid_public_key, web_push_configured
+
+    key = vapid_public_key()
+    if not key or not web_push_configured():
+        raise HTTPException(
+            status_code=503,
+            detail="Web Push is not configured (set VAPID_PUBLIC_KEY and VAPID_PRIVATE_KEY)",
+        )
+    return {"publicKey": key, "configured": True}

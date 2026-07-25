@@ -163,11 +163,18 @@ async def lifespan(app: FastAPI):
     app.state.scheduler = None
     if alerts_enabled():
         try:
+            base_url = os.getenv("ALERTS_BASE_URL", "http://127.0.0.1:8000").rstrip("/")
             app.state.scheduler = build_scheduler(
-                lambda: run_daily_job(_PREWARM_CITIES), hour=alerts_hour()
+                lambda: run_daily_job(_PREWARM_CITIES, base_url=base_url),
+                hour=alerts_hour(),
             )
             app.state.scheduler.start()
-            logger.info("alert scheduler started (daily at %02d:00 UTC)", alerts_hour())
+            logger.info(
+                "alert scheduler started (daily at %02d:00 UTC, base=%s, cities=%d)",
+                alerts_hour(),
+                base_url,
+                len(_PREWARM_CITIES),
+            )
         except Exception:
             logger.exception("could not start alert scheduler")
 

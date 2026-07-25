@@ -725,5 +725,19 @@
   "notif_prefs.daily_summaries": "ملخصات يومية",
   "notif_prefs.air_quality_updates": "تحديثات جودة الهواء",
   "notif_prefs.tips_and_guidance": "نصائح وإرشاد",
-  "screen.profile.account_actions": "الحساب"
+  "screen.profile.account_actions": "الحساب",
+  "install.title": "أضف مفرامابا إلى الشاشة الرئيسية",
+  "install.subtitle": "ثبّت للوصول السريع والعمل دون اتصال والتنبيهات.",
+  "install.cta": "تثبيت على الشاشة الرئيسية",
+  "install.not_now": "ليس الآن",
+  "install.ios_step1_prefix": "Tap",
+  "install.ios_step1_suffix": "Share in Safari",
+  "install.ios_step2": "Scroll and tap Add to Home Screen",
+  "install.ios_step3": "Tap Add — Mframapa appears on your home screen",
+  "install.ios_got_it": "Got it",
+  "install.menu": "تثبيت التطبيق",
+  "push_prompt.title": "ابقَ على اطلاع بالهواء",
+  "push_prompt.body": "اسمح بالإشعارات لتنبيهات جودة الهواء ونصيحة اليوم.",
+  "push_prompt.allow": "السماح",
+  "push_prompt.not_now": "ليس الآن"
 }
