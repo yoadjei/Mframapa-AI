@@ -70,38 +70,65 @@ export const PREDICTION_DEDUPE_RADIUS = 0.01;
 export const MIN_ANDROID_SDK = 21;
 export const TARGET_APK_MB = 15;
 
-/** Supported translation languages backed by Gemini + bundled mobile locale files. */
+/**
+ * Supported translation languages. Ordered alphabetically by country,
+ * then by language name. Asante Twi (not Fante); Ga; Setswana; Sesotho; siSwati.
+ */
 export const SUPPORTED_LANGUAGES = [
-  { code: 'ar', name: 'Arabic', flag: '🇪🇬' },
-  { code: 'fr', name: 'French', flag: '🇫🇷' },
-  { code: 'pt', name: 'Portuguese', flag: '🇵🇹' },
-  { code: 'en', name: 'English', flag: '🇬🇧' },
-  { code: 'tn', name: 'Tswana', flag: '🇧🇼' },
-  { code: 'rn', name: 'Kirundi', flag: '🇧🇮' },
-  { code: 'es', name: 'Spanish', flag: '🇪🇸' },
-  { code: 'ti', name: 'Tigrinya', flag: '🇪🇷' },
-  { code: 'ss', name: 'Swati', flag: '🇸🇿' },
-  { code: 'am', name: 'Amharic', flag: '🇪🇹' },
-  { code: 'tw', name: 'Twi', flag: '🇬🇭' },
-  { code: 'sw', name: 'Swahili', flag: '🇰🇪' },
-  { code: 'st', name: 'Sotho', flag: '🇱🇸' },
-  { code: 'mg', name: 'Malagasy', flag: '🇲🇬' },
-  { code: 'ny', name: 'Chichewa', flag: '🇲🇼' },
-  { code: 'ha', name: 'Hausa', flag: '🇳🇬' },
-  { code: 'yo', name: 'Yoruba', flag: '🇳🇬' },
-  { code: 'ig', name: 'Igbo', flag: '🇳🇬' },
-  { code: 'rw', name: 'Kinyarwanda', flag: '🇷🇼' },
-  { code: 'wo', name: 'Wolof', flag: '🇸🇳' },
-  { code: 'so', name: 'Somali', flag: '🇸🇴' },
-  { code: 'zu', name: 'Zulu', flag: '🇿🇦' },
-  { code: 'xh', name: 'Xhosa', flag: '🇿🇦' },
-  { code: 'af', name: 'Afrikaans', flag: '🇿🇦' },
-  { code: 'sn', name: 'Shona', flag: '🇿🇼' },
-  { code: 'nd', name: 'Ndebele', flag: '🇿🇼' },
-  { code: 'ga', name: 'Ga', flag: '🇬🇭' },
+  { code: 'tn', name: 'Setswana', country: 'Botswana', countryKey: 'country.botswana', flag: '🇧🇼' },
+  { code: 'rn', name: 'Kirundi', country: 'Burundi', countryKey: 'country.burundi', flag: '🇧🇮' },
+  { code: 'ar', name: 'Arabic', country: 'Egypt', countryKey: 'country.egypt', flag: '🇪🇬' },
+  { code: 'ti', name: 'Tigrinya', country: 'Eritrea', countryKey: 'country.eritrea', flag: '🇪🇷' },
+  { code: 'ss', name: 'siSwati', country: 'Eswatini', countryKey: 'country.eswatini', flag: '🇸🇿' },
+  { code: 'am', name: 'Amharic', country: 'Ethiopia', countryKey: 'country.ethiopia', flag: '🇪🇹' },
+  { code: 'fr', name: 'French', country: 'France', countryKey: 'country.france', flag: '🇫🇷' },
+  { code: 'ga', name: 'Ga', country: 'Ghana', countryKey: 'country.ghana', flag: '🇬🇭' },
+  { code: 'tw', name: 'Asante Twi', country: 'Ghana', countryKey: 'country.ghana', flag: '🇬🇭' },
+  { code: 'sw', name: 'Swahili', country: 'Kenya', countryKey: 'country.kenya', flag: '🇰🇪' },
+  { code: 'st', name: 'Sesotho', country: 'Lesotho', countryKey: 'country.lesotho', flag: '🇱🇸' },
+  { code: 'mg', name: 'Malagasy', country: 'Madagascar', countryKey: 'country.madagascar', flag: '🇲🇬' },
+  { code: 'ny', name: 'Chichewa', country: 'Malawi', countryKey: 'country.malawi', flag: '🇲🇼' },
+  { code: 'ha', name: 'Hausa', country: 'Nigeria', countryKey: 'country.nigeria', flag: '🇳🇬' },
+  { code: 'ig', name: 'Igbo', country: 'Nigeria', countryKey: 'country.nigeria', flag: '🇳🇬' },
+  { code: 'yo', name: 'Yoruba', country: 'Nigeria', countryKey: 'country.nigeria', flag: '🇳🇬' },
+  { code: 'pt', name: 'Portuguese', country: 'Portugal', countryKey: 'country.portugal', flag: '🇵🇹' },
+  { code: 'rw', name: 'Kinyarwanda', country: 'Rwanda', countryKey: 'country.rwanda', flag: '🇷🇼' },
+  { code: 'wo', name: 'Wolof', country: 'Senegal', countryKey: 'country.senegal', flag: '🇸🇳' },
+  { code: 'so', name: 'Somali', country: 'Somalia', countryKey: 'country.somalia', flag: '🇸🇴' },
+  { code: 'af', name: 'Afrikaans', country: 'South Africa', countryKey: 'country.south_africa', flag: '🇿🇦' },
+  { code: 'xh', name: 'Xhosa', country: 'South Africa', countryKey: 'country.south_africa', flag: '🇿🇦' },
+  { code: 'zu', name: 'Zulu', country: 'South Africa', countryKey: 'country.south_africa', flag: '🇿🇦' },
+  { code: 'es', name: 'Spanish', country: 'Spain', countryKey: 'country.spain', flag: '🇪🇸' },
+  { code: 'en', name: 'English', country: 'United Kingdom', countryKey: 'country.united_kingdom', flag: '🇬🇧' },
+  { code: 'nd', name: 'Northern Ndebele', country: 'Zimbabwe', countryKey: 'country.zimbabwe', flag: '🇿🇼' },
+  { code: 'sn', name: 'Shona', country: 'Zimbabwe', countryKey: 'country.zimbabwe', flag: '🇿🇼' },
 ] as const;
 
 export type LanguageCode = (typeof SUPPORTED_LANGUAGES)[number]['code'];
+
+/** Group languages under country headings for pickers. */
+export function languagesByCountry(
+  languages: readonly (typeof SUPPORTED_LANGUAGES)[number][] = SUPPORTED_LANGUAGES,
+) {
+  const sections: {
+    country: string;
+    countryKey: string;
+    languages: (typeof SUPPORTED_LANGUAGES)[number][];
+  }[] = [];
+  for (const lang of languages) {
+    const last = sections[sections.length - 1];
+    if (last && last.country === lang.country) {
+      last.languages.push(lang);
+    } else {
+      sections.push({
+        country: lang.country,
+        countryKey: lang.countryKey,
+        languages: [lang],
+      });
+    }
+  }
+  return sections;
+}
 
 /** the device language when we support it, else english. used on first launch;
  *  a stored choice always wins. someone whose phone is set to Swahili should

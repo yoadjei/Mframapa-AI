@@ -2,19 +2,23 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useStore } from '../store/useStore';
-import { SUPPORTED_LANGUAGES } from '../utils/constants';
+import { SUPPORTED_LANGUAGES, languagesByCountry } from '../utils/constants';
 import { getColors, spacing, fontSize } from '../theme';
 import { useTheme } from '../hooks/useTheme';
+import { useTranslation } from '../hooks/useTranslation';
 
 export function LanguagePicker() {
   const { isDark } = useTheme();
   const language = useStore((s) => s.language);
   const setLanguage = useStore((s) => s.setLanguage);
   const colors = getColors(isDark);
+  const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
 
   const selected =
     SUPPORTED_LANGUAGES.find((l) => l.code === language) ?? SUPPORTED_LANGUAGES[0];
+  const sections = languagesByCountry();
+  const selectedLabel = t(`lang.${selected.code}`) || selected.name;
 
   return (
     <View>
@@ -25,7 +29,7 @@ export function LanguagePicker() {
         accessibilityState={{ expanded }}
       >
         <Text style={styles.flag}>{selected.flag}</Text>
-        <Text style={[styles.label, { color: colors.text }]}>{selected.name}</Text>
+        <Text style={[styles.label, { color: colors.text }]}>{selectedLabel}</Text>
         <Ionicons
           name={expanded ? 'chevron-up' : 'chevron-down'}
           size={20}
@@ -35,28 +39,38 @@ export function LanguagePicker() {
 
       {expanded ? (
         <View style={[styles.list, { borderColor: colors.border }]}>
-          {SUPPORTED_LANGUAGES.map((lang, index) => (
-            <TouchableOpacity
-              key={lang.code}
-              onPress={() => {
-                setLanguage(lang.code);
-                setExpanded(false);
-              }}
-              style={[
-                styles.option,
-                index < SUPPORTED_LANGUAGES.length - 1 && {
-                  borderBottomWidth: 0.5,
-                  borderBottomColor: colors.border,
-                }]}
-            >
-              <Text style={styles.flag}>{lang.flag}</Text>
-              <Text style={[styles.optionLabel, { color: colors.text }]}>{lang.name}</Text>
-              {language === lang.code ? (
-                <Ionicons name="checkmark" size={20} color={colors.accent} />
-              ) : (
-                <View style={{ width: 20 }} />
-              )}
-            </TouchableOpacity>
+          {sections.map((section) => (
+            <View key={section.countryKey}>
+              <Text style={[styles.country, { color: colors.muted }]}>
+                {t(section.countryKey) || section.country}
+              </Text>
+              {section.languages.map((lang, index) => (
+                <TouchableOpacity
+                  key={lang.code}
+                  onPress={() => {
+                    setLanguage(lang.code);
+                    setExpanded(false);
+                  }}
+                  style={[
+                    styles.option,
+                    index < section.languages.length - 1 && {
+                      borderBottomWidth: StyleSheet.hairlineWidth,
+                      borderBottomColor: colors.border,
+                    },
+                  ]}
+                >
+                  <Text style={styles.flag}>{lang.flag}</Text>
+                  <Text style={[styles.optionLabel, { color: colors.text }]}>
+                    {t(`lang.${lang.code}`) || lang.name}
+                  </Text>
+                  {language === lang.code ? (
+                    <Ionicons name="checkmark" size={20} color={colors.accent} />
+                  ) : (
+                    <View style={{ width: 20 }} />
+                  )}
+                </TouchableOpacity>
+              ))}
+            </View>
           ))}
         </View>
       ) : null}
@@ -85,6 +99,15 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginTop: spacing.xs,
     overflow: 'hidden',
+  },
+  country: {
+    fontSize: 11,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+    paddingHorizontal: spacing.sm,
+    paddingTop: 12,
+    paddingBottom: 4,
   },
   option: {
     flexDirection: 'row',

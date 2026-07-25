@@ -14,7 +14,13 @@ from backend.api.facts import fact_for
 from backend.api.insights import DRY, season_for, variants
 from backend.api import supabase_admin
 from backend.feedback.store import FeedbackStore
-from backend.api.security import _client_ip, authenticate_or_anonymous, current_user_id, require_institutional
+from backend.api.security import (
+    _client_ip,
+    authenticate_or_anonymous,
+    current_user_claims,
+    current_user_id,
+    require_institutional,
+)
 from backend.cache.redis_cache import RedisCache
 from backend.services import gemini_client
 from backend.ml.inference import rectify_prediction, select_bundle
@@ -579,6 +585,33 @@ def delete_account(user_id: Optional[str] = Depends(current_user_id)) -> Dict[st
     if not ok:
         raise HTTPException(status_code=502, detail="Could not delete the account")
     return {"status": "deleted"}
+
+
+@router.post("/auth/welcome")
+def send_welcome(
+    claims: Optional[Dict[str, Any]] = Depends(current_user_claims),
+) -> Dict[str, Any]:
+    """Send the one-time Welcome email after a real signed-in session.
+
+    Call from the app on LOGIN_SUCCESS / first restored session. Deduped per
+    Supabase user id so repeat logins do not spam. Requires RESEND_API_KEY.
+    """
+    if not claims or not claims.get("user_id"):
+        raise HTTPException(status_code=401, detail="Sign in to continue")
+
+    email = claims.get("email")
+    if not email:
+        raise HTTPException(status_code=422, detail="No email on this account")
+
+    try:
+        from backend.email.welcome import send_welcome_email
+
+        status, emailed = send_welcome_email(user_id=claims["user_id"], email=email)
+    except Exception as exc:
+        logger.exception("welcome email failed")
+        raise HTTPException(status_code=502, detail="Could not send welcome email") from exc
+
+    return {"status": status, "emailed": emailed}
 
 
 class FeedbackBody(BaseModel):

@@ -104,7 +104,7 @@ def _decode(token: str) -> Optional[Dict[str, Any]]:
 
 
 def verify_supabase_jwt(token: str) -> Optional[Dict[str, Any]]:
-    """return {"user_id", "tier"} for a valid token, else None.
+    """return {"user_id", "tier", "email"} for a valid token, else None.
 
     the tier is read from app_metadata (server-controlled in supabase); user_metadata
     is client-writable and is deliberately ignored.
@@ -118,7 +118,8 @@ def verify_supabase_jwt(token: str) -> Optional[Dict[str, Any]]:
     tier = (claims.get("app_metadata") or {}).get("tier", _DEFAULT_USER_TIER)
     if tier not in _VALID_TIERS or tier == "internal":
         tier = _DEFAULT_USER_TIER                     # never let a token claim internal
-    return {"user_id": str(claims["sub"]), "tier": tier}
+    email = (claims.get("email") or "").strip() or None
+    return {"user_id": str(claims["sub"]), "tier": tier, "email": email}
 
 
 # ── issued api keys ───────────────────────────────────────────────────────────

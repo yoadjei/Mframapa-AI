@@ -5,6 +5,7 @@ import { useAppState } from "../../state/appState.jsx";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { getColors, Colors, liquidGlass } from "../../utils/colors.js";
 import { StackTitle } from "../../components/navigation/StackTitle.jsx";
+import { Switch } from "../../components/ui/Switch.jsx";
 import { useStackChrome, stackTopPad } from "../../hooks/useStackChrome.js";
 import { getNotificationPermission } from "../../services/browserNotifications.js";
 import {
@@ -110,20 +111,12 @@ function NotificationSettingsSheet({
                 {t("notif_prefs.all_notifications_explainer")}
               </p>
             </div>
-            {/* toggle */}
-            <button
-              type="button"
-              role="switch"
-              aria-checked={alertsEnabled}
-              onClick={() => setAlertsEnabled(!alertsEnabled)}
-              className="relative h-[28px] w-[48px] flex-shrink-0 rounded-full transition-colors duration-200 focus:outline-none"
-              style={{ backgroundColor: alertsEnabled ? Colors.brandGreen : colors.border }}
-            >
-              <span
-                className="absolute top-[3px] h-[22px] w-[22px] rounded-full bg-white shadow transition-transform duration-200"
-                style={{ transform: alertsEnabled ? "translateX(23px)" : "translateX(3px)" }}
-              />
-            </button>
+            <Switch
+              checked={alertsEnabled}
+              onChange={setAlertsEnabled}
+              trackOff={colors.border}
+              ariaLabel={t("notif_prefs.all_notifications")}
+            />
           </div>
 
           {/* per-category section label */}
@@ -154,24 +147,13 @@ function NotificationSettingsSheet({
                 <p className="flex-1 text-[0.9375rem] font-medium" style={{ color: colors.text }}>
                   {t(labelKey)}
                 </p>
-                <button
-                  type="button"
-                  role="switch"
-                  aria-checked={alertsEnabled && on}
+                <Switch
+                  checked={alertsEnabled && on}
                   disabled={!alertsEnabled}
-                  onClick={() => setNotifPref(key, !on)}
-                  className="relative h-[28px] w-[48px] flex-shrink-0 rounded-full transition-colors duration-200 focus:outline-none disabled:cursor-not-allowed"
-                  style={{
-                    backgroundColor: alertsEnabled && on ? Colors.brandGreen : colors.border,
-                  }}
-                >
-                  <span
-                    className="absolute top-[3px] h-[22px] w-[22px] rounded-full bg-white shadow transition-transform duration-200"
-                    style={{
-                      transform: alertsEnabled && on ? "translateX(23px)" : "translateX(3px)",
-                    }}
-                  />
-                </button>
+                  onChange={(val) => setNotifPref(key, val)}
+                  trackOff={colors.border}
+                  ariaLabel={t(labelKey)}
+                />
               </div>
             );
           })}

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 from backend.feedback.notify import notify_feedback_email
 
@@ -26,11 +26,7 @@ def test_notify_posts_to_resend(monkeypatch):
     monkeypatch.setenv("FEEDBACK_TO_EMAIL", "team@example.com")
     monkeypatch.setenv("RESEND_FROM_EMAIL", "Mframapa <alerts@example.com>")
 
-    mock_resp = MagicMock()
-    mock_resp.status_code = 200
-    mock_resp.text = "{}"
-
-    with patch("backend.feedback.notify.requests.post", return_value=mock_resp) as post:
+    with patch("backend.feedback.notify.send_resend_email", return_value=True) as send:
         ok = notify_feedback_email(
             feedback_id=9,
             category="feature",
@@ -39,8 +35,8 @@ def test_notify_posts_to_resend(monkeypatch):
             platform="android",
         )
     assert ok is True
-    assert post.called
-    kwargs = post.call_args.kwargs["json"]
+    assert send.called
+    kwargs = send.call_args.kwargs
     assert kwargs["to"] == ["team@example.com"]
     assert "feature" in kwargs["subject"]
     assert kwargs["reply_to"] == "user@example.com"

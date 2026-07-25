@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   View, Text, StyleSheet, SectionList, TouchableOpacity, TextInput,
 } from 'react-native';
@@ -8,7 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useStore } from '../store/useStore';
 import { useTheme } from '../hooks/useTheme';
 import { getColors, Colors } from '../theme';
-import { SUPPORTED_LANGUAGES } from '../utils/constants';
+import { SUPPORTED_LANGUAGES, languagesByCountry } from '../utils/constants';
 import { useTranslation } from '../hooks/useTranslation';
 import { clearLocaleCache } from '../services/translation';
 
@@ -17,25 +17,35 @@ export function LanguageSelectorScreen() {
   const navigation = useNavigation<any>();
   const { isDark } = useTheme();
   const colors = getColors(isDark);
-  const language    = useStore((s) => s.language);
+  const language = useStore((s) => s.language);
   const setLanguage = useStore((s) => s.setLanguage);
   const [search, setSearch] = useState('');
   const { t } = useTranslation();
 
-  const languageSections = [
-    {
-      title: t('language.supported'),
-      data: SUPPORTED_LANGUAGES.map((item) => ({
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    const matched = !q
+      ? SUPPORTED_LANGUAGES
+      : SUPPORTED_LANGUAGES.filter((l) => {
+          const label = (t(`lang.${l.code}`) || l.name).toLowerCase();
+          const country = (t(l.countryKey) || l.country).toLowerCase();
+          return (
+            label.includes(q) ||
+            country.includes(q) ||
+            l.name.toLowerCase().includes(q) ||
+            l.country.toLowerCase().includes(q) ||
+            l.code.toLowerCase().includes(q)
+          );
+        });
+    return languagesByCountry(matched).map((sec) => ({
+      title: t(sec.countryKey) || sec.country,
+      data: sec.languages.map((item) => ({
         code: item.code,
-        label: item.name,
+        label: t(`lang.${item.code}`) || item.name,
         flag: item.flag,
       })),
-    }];
-
-  const filtered = languageSections.map((sec) => ({
-    ...sec,
-    data: sec.data.filter((l) => !search || l.label.toLowerCase().includes(search.toLowerCase())),
-  })).filter((sec) => sec.data.length > 0);
+    }));
+  }, [search, t]);
 
   return (
     <View style={[styles.root, { paddingTop: insets.top }]}>
@@ -60,8 +70,9 @@ export function LanguageSelectorScreen() {
       <SectionList
         sections={filtered}
         keyExtractor={(item) => item.code}
+        stickySectionHeadersEnabled={false}
         renderSectionHeader={({ section }) => (
-          <Text style={[styles.sectionLabel, { color: colors.text, backgroundColor: colors.card }]}>
+          <Text style={[styles.sectionLabel, { color: colors.muted }]}>
             {section.title}
           </Text>
         )}
@@ -110,8 +121,10 @@ const styles = StyleSheet.create({
   },
   searchInput: { flex: 1, fontSize: 15 },
   sectionLabel: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '700',
+    letterSpacing: 0.6,
+    textTransform: 'uppercase',
     paddingHorizontal: 16,
     paddingTop: 16,
     paddingBottom: 8,

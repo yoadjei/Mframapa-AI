@@ -189,6 +189,16 @@ p a[href], li a[href] {
   min-height: 0;
   min-width: 0;
 }
+/* compact switches keep a fixed track; the 44px rule turns them into circles */
+button.mf-switch,
+[role="switch"].mf-switch {
+  min-height: 28px;
+  min-width: 48px;
+  width: 48px;
+  height: 28px;
+  padding: 0;
+  overflow: hidden;
+}
 
 /* a visible focus ring for anyone navigating by keyboard or switch device */
 :focus-visible {

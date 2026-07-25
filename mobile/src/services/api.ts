@@ -219,6 +219,15 @@ export async function deleteAccount(): Promise<void> {
   await client.delete('/api/v1/account');
 }
 
+/** One-time Welcome email after a real signed-in session. Failures are silent. */
+export async function requestWelcomeEmail(): Promise<void> {
+  try {
+    await client.post('/api/v1/auth/welcome');
+  } catch {
+    /* best-effort */
+  }
+}
+
 export async function generateInsight(body: {
   pm25: number;
   aqi_category: string;

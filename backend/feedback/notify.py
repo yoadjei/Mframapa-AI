@@ -12,7 +12,7 @@ import logging
 import os
 from typing import Optional
 
-import requests
+from backend.email.resend_client import send_resend_email
 
 logger = logging.getLogger(__name__)
 
@@ -66,46 +66,25 @@ def notify_feedback_email(
     email: Optional[str],
     platform: Optional[str],
 ) -> bool:
-    api_key = (os.getenv("RESEND_API_KEY") or "").strip()
+    if not (os.getenv("RESEND_API_KEY") or "").strip():
+        logger.info("feedback #%s stored; RESEND_API_KEY unset so no email sent", feedback_id)
+        return False
+
     to_addr = (os.getenv("FEEDBACK_TO_EMAIL") or "privacy@mframapa.live").strip()
     from_addr = (
         os.getenv("RESEND_FROM_EMAIL") or "Mframapa Feedback <alerts@mframapa.live>"
     ).strip()
-    if not api_key:
-        logger.info("feedback #%s stored; RESEND_API_KEY unset so no email sent", feedback_id)
-        return False
-
-    reply = (email or "").strip()
-    subject = f"[Mframapa feedback] {category} #{feedback_id}"
-    payload = {
-        "from": from_addr,
-        "to": [to_addr],
-        "subject": subject,
-        "html": _feedback_html(
+    reply = (email or "").strip() or None
+    return send_resend_email(
+        to=[to_addr],
+        subject=f"[Mframapa feedback] {category} #{feedback_id}",
+        html=_feedback_html(
             feedback_id=feedback_id,
             category=category,
             message=message,
             email=email,
             platform=platform,
         ),
-    }
-    if reply:
-        payload["reply_to"] = reply
-
-    try:
-        r = requests.post(
-            "https://api.resend.com/emails",
-            headers={
-                "Authorization": f"Bearer {api_key}",
-                "Content-Type": "application/json",
-            },
-            json=payload,
-            timeout=12,
-        )
-        if r.status_code >= 300:
-            logger.warning("Resend feedback email failed %s: %s", r.status_code, r.text[:200])
-            return False
-        return True
-    except Exception:
-        logger.exception("Resend feedback email error")
-        return False
+        from_addr=from_addr,
+        reply_to=reply,
+    )

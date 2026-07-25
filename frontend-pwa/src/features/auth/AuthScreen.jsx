@@ -441,6 +441,8 @@ export function AuthScreen({ isDark = true, params }) {
 
   function handleAuth(payload) {
     dispatch({ type: "LOGIN_SUCCESS", payload });
+    // One-time Resend welcome after a real session (signup with session or login).
+    import("../../services/api.js").then((m) => m.requestWelcomeEmail()).catch(() => undefined);
   }
 
   if (screen === "signup") {

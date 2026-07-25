@@ -356,6 +356,7 @@ export const useStore = create<AppState>()(
           isAuthenticated: true,
           activityFeed: [makeActivity('activity.signed_in', 'lock'), ...s.activityFeed].slice(0, 50),
         }));
+        void import('../services/api').then((m) => m.requestWelcomeEmail()).catch(() => undefined);
         return { ok: true };
       },
 
@@ -377,6 +378,7 @@ export const useStore = create<AppState>()(
           isAuthenticated: true,
           activityFeed: [makeActivity('activity.account_created', 'person'), ...s.activityFeed].slice(0, 50),
         }));
+        void import('../services/api').then((m) => m.requestWelcomeEmail()).catch(() => undefined);
         return { ok: true };
       },
 

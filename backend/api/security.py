@@ -14,7 +14,7 @@ import os
 import time
 import uuid
 from threading import Lock
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 from fastapi import Depends, HTTPException, Request, Security
 from fastapi.security.api_key import APIKeyHeader, APIKeyQuery
@@ -236,6 +236,15 @@ def authenticate_or_anonymous(
     return tier
 
 
+def current_user_claims(
+    bearer: Optional[HTTPAuthorizationCredentials] = Security(_bearer_scheme),
+) -> Optional[Dict[str, Any]]:
+    """full identity from the supabase bearer token, or None."""
+    if not (bearer and bearer.credentials):
+        return None
+    return verify_supabase_jwt(bearer.credentials)
+
+
 def current_user_id(
     bearer: Optional[HTTPAuthorizationCredentials] = Security(_bearer_scheme),
 ) -> Optional[str]:
@@ -245,9 +254,7 @@ def current_user_id(
     needs. anything acting *on* a specific account (deleting it) needs to know
     exactly whose account it is, and must never fall back to a guess.
     """
-    if not (bearer and bearer.credentials):
-        return None
-    claims = verify_supabase_jwt(bearer.credentials)
+    claims = current_user_claims(bearer)
     return claims.get("user_id") if claims else None
 
 

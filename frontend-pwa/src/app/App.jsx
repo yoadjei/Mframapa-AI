@@ -241,7 +241,11 @@ export function App() {
     let cancelled = false;
     restoreSession()
       .then((restored) => {
-        if (!cancelled && restored) dispatch({ type: "RESTORE_SESSION", payload: restored });
+        if (!cancelled && restored) {
+          dispatch({ type: "RESTORE_SESSION", payload: restored });
+          // Confirm-signup / returning session: one-shot Welcome via Resend.
+          import("../services/api.js").then((m) => m.requestWelcomeEmail()).catch(() => undefined);
+        }
       })
       .catch(() => undefined);
 
@@ -258,6 +262,7 @@ export function App() {
             },
           },
         });
+        import("../services/api.js").then((m) => m.requestWelcomeEmail()).catch(() => undefined);
       } else {
         dispatch({ type: "LOGOUT" });
       }

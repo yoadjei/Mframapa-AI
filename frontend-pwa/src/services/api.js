@@ -161,3 +161,12 @@ export async function sendFeedback({ category, message, email }) {
     throw new Error(normalizeError(error, "Could not send your feedback."));
   }
 }
+
+/** One-time Welcome email after a real signed-in session. Failures are silent. */
+export async function requestWelcomeEmail() {
+  try {
+    await httpClient.post("/api/v1/auth/welcome");
+  } catch {
+    /* welcome is best-effort; never block sign-in */
+  }
+}

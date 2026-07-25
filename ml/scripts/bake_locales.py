@@ -44,11 +44,11 @@ MAX_RETRIES = 4
 LANGUAGE_NAMES = {
     "af": "Afrikaans", "am": "Amharic", "ar": "Arabic", "ee": "Ewe",
     "es": "Spanish", "fr": "French", "ga": "Ga", "ha": "Hausa", "ig": "Igbo",
-    "mg": "Malagasy", "nd": "Ndebele", "ny": "Chichewa", "pt": "Portuguese",
-    "rn": "Kirundi", "rw": "Kinyarwanda", "sn": "Shona", "so": "Somali",
-    "ss": "Swati", "st": "Sotho", "sw": "Swahili", "ti": "Tigrinya",
-    "tn": "Tswana", "tw": "Twi", "wo": "Wolof", "xh": "Xhosa",
-    "yo": "Yoruba", "zu": "Zulu",
+    "mg": "Malagasy", "nd": "Northern Ndebele", "ny": "Chichewa",
+    "pt": "Portuguese", "rn": "Kirundi", "rw": "Kinyarwanda", "sn": "Shona",
+    "so": "Somali", "ss": "siSwati", "st": "Sesotho", "sw": "Swahili",
+    "ti": "Tigrinya", "tn": "Setswana", "tw": "Asante Twi", "wo": "Wolof",
+    "xh": "Xhosa", "yo": "Yoruba", "zu": "Zulu",
 }
 
 
