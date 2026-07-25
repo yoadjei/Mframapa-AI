@@ -26,7 +26,7 @@ export function MframapaLogo({ size = 'md', markOnly = false }: MframapaLogoProp
       {markOnly ? null : (
         <View style={[styles.textRow, { gap: s.gap / 2 }]}>
           <Text style={[styles.name, { fontSize: s.text }]}>
-            <Text style={[styles.mLetter, { color: colors.accent }]}>M</Text>
+            <Text style={[styles.mLetter, { color: colors.accent }]}>m</Text>
             <Text style={[styles.rest, { color: colors.text }]}>framapa</Text>
           </Text>
         </View>

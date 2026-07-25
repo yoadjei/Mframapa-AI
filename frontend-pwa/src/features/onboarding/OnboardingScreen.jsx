@@ -90,7 +90,7 @@ function SplashPhase({ onDone }) {
           }}
         >
           <span style={{ fontSize: "1.625rem", fontWeight: 700, letterSpacing: "0.2px", whiteSpace: "nowrap" }}>
-            <span style={{ color: BRAND_GREEN, fontWeight: 800 }}>M</span>
+            <span style={{ color: BRAND_GREEN, fontWeight: 800 }}>m</span>
             <span style={{ color: "#FFFFFF" }}>framapa</span>
           </span>
         </div>

@@ -31,7 +31,7 @@ export function MframapaLogo({ size = "md", isDark = true, markOnly = false }) {
       </svg>
       {markOnly ? null : (
         <span style={{ fontSize: text, fontWeight: 700, letterSpacing: "0.2px" }}>
-          <span style={{ color: "#00C896", fontWeight: 800 }}>M</span>
+          <span style={{ color: "#00C896", fontWeight: 800 }}>m</span>
           <span style={{ color: restColor, fontWeight: 700 }}>framapa</span>
         </span>
       )}
