@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Text, TextInput } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
@@ -38,7 +38,18 @@ export default function App() {
   const language = useStore((s) => s.language);
   const alertsEnabled = useStore((s) => s.alertsEnabled);
   const addNotification = useStore((s) => s.addNotification);
+  const textScale = useStore((s) => s.textScale);
   const [pushPromptOpen, setPushPromptOpen] = useState(false);
+
+  // Accessibility text size (Settings) — raise OS font scaling ceiling.
+  useEffect(() => {
+    const max = textScale >= 1.3 ? 1.85 : textScale >= 1.15 ? 1.55 : 1.25;
+    const defaults = { allowFontScaling: true, maxFontSizeMultiplier: max };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (Text as any).defaultProps = { ...(Text as any).defaultProps, ...defaults };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (TextInput as any).defaultProps = { ...(TextInput as any).defaultProps, ...defaults };
+  }, [textScale]);
 
   useEffect(() => {
     trackAppOpen();   // installs / WAU / retention

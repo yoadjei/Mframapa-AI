@@ -14,6 +14,7 @@ import { useAppState } from "../../state/appState.jsx";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { useNavigation } from "../../hooks/useNavigation.js";
 import { getColors, Colors, getAQIColor } from "../../utils/colors.js";
+import { factorEntries } from "../../utils/factors.js";
 import { aqiCategoryKey } from "../../utils/i18nHelpers.js";
 import { generateInsight, getHistory } from "../../services/api.js";
 import { PrimaryButton } from "../../components/ui/PrimaryButton.jsx";
@@ -41,22 +42,26 @@ function healthAdviceKey(category) {
 }
 
 // Sparkline bar chart for the 7-day trend, mirrors mobile LineChart height/proportions
-function TrendChart({ data, labels, color, labelColor }) {
+function TrendChart({ data, labels, color, labelColor, valueColor }) {
   const max = Math.max(...data, 1);
   return (
-    <div className="flex items-end gap-1" style={{ height: 120 }}>
+    <div className="flex items-end gap-1.5" style={{ height: 140 }}>
       {data.map((val, i) => (
-        <div key={i} className="flex flex-1 flex-col items-center gap-1">
+        <div key={i} className="flex flex-1 flex-col items-center justify-end gap-1">
+          <span
+            className="text-[0.625rem] font-semibold tabular-nums"
+            style={{ color: valueColor ?? labelColor }}
+          >
+            {Math.round(val)}
+          </span>
           <div
             className="w-full rounded-sm"
             style={{
-              height: `${Math.round((val / max) * 80)}px`,
-              minHeight: 4,
+              height: `${Math.max(8, Math.round((val / max) * 88))}px`,
               backgroundColor: color,
-              opacity: 0.85,
             }}
           />
-          <span className="text-[0.5625rem]" style={{ color: labelColor }}>
+          <span className="text-[0.625rem] font-medium" style={{ color: labelColor }}>
             {labels[i]}
           </span>
         </div>
@@ -78,9 +83,9 @@ export function CityDetailScreen({ isDark, params }) {
 
   const pm25 = prediction?.pm25 ?? 0;
   const category = prediction?.category ?? prediction?.aqi_category ?? "good";
-  const weather = prediction?.weather ?? { temp: 0, humidity: 0, wind: 0 };
+  const weather = prediction?.weather ?? {};
   const uncertainty = prediction?.uncertainty ?? null;
-  const factors = prediction?.factors ?? null;
+  const factorList = factorEntries(prediction?.factors);
   const aqiColor = getAQIColor(category, isDark);
   // Soft light wash (avoid olive/yellow slab); dark keeps richer tint.
   const headerWashTop = isDark ? `${aqiColor}CC` : `${aqiColor}33`;
@@ -309,40 +314,42 @@ export function CityDetailScreen({ isDark, params }) {
         ) : null}
       </div>
 
-      {/* ── Weather chips (mirrors mobile weatherRow) ── */}
-      <div className="flex gap-2 px-4 py-3">
-        {[
-          {
-            icon: <Thermometer size={14} color={Colors.brandGreen} />,
-            val: `${Math.round(weather.temp ?? 0)}°C`,
-            label: t("weather.temp"),
-          },
-          {
-            icon: <Droplets size={14} color={Colors.brandGreen} />,
-            val: `${Math.round(weather.humidity ?? 0)}%`,
-            label: t("weather.humidity"),
-          },
-          {
-            icon: <Wind size={14} color={Colors.brandGreen} />,
-            val: t("screen.city_detail.wind_kmh", { speed: Math.round(weather.wind ?? 0).toString() }),
-            label: t("weather.wind"),
-          },
-        ].map(({ icon, val, label }, i) => (
-          <div
-            key={i}
-            className="flex flex-1 flex-col items-center gap-1 rounded-2xl border px-2 py-2.5"
-            style={{ backgroundColor: colors.card, borderColor: colors.border }}
-          >
-            {icon}
-            <span className="text-[0.8125rem] font-bold" style={{ color: colors.text }}>
-              {val}
-            </span>
-            <span className="text-center text-[0.6875rem]" style={{ color: colors.subtext }}>
-              {label}
-            </span>
-          </div>
-        ))}
-      </div>
+      {/* ── Weather chips (omit missing values — never fake 0) ── */}
+      {(weather.temp != null || weather.humidity != null || weather.wind != null) ? (
+        <div className="flex gap-2 px-4 py-3">
+          {[
+            weather.temp != null && {
+              icon: <Thermometer size={14} color={Colors.brandGreen} />,
+              val: `${Math.round(weather.temp)}°C`,
+              label: t("weather.temp"),
+            },
+            weather.humidity != null && {
+              icon: <Droplets size={14} color={Colors.brandGreen} />,
+              val: `${Math.round(weather.humidity)}%`,
+              label: t("weather.humidity"),
+            },
+            weather.wind != null && {
+              icon: <Wind size={14} color={Colors.brandGreen} />,
+              val: t("screen.city_detail.wind_kmh", { speed: Math.round(weather.wind).toString() }),
+              label: t("weather.wind"),
+            },
+          ].filter(Boolean).map(({ icon, val, label }, i) => (
+            <div
+              key={i}
+              className="flex flex-1 flex-col items-center gap-1 rounded-2xl border px-2 py-2.5"
+              style={{ backgroundColor: colors.card, borderColor: colors.border }}
+            >
+              {icon}
+              <span className="text-[0.8125rem] font-bold" style={{ color: colors.text }}>
+                {val}
+              </span>
+              <span className="text-center text-[0.6875rem]" style={{ color: colors.subtext }}>
+                {label}
+              </span>
+            </div>
+          ))}
+        </div>
+      ) : null}
 
       {/* ── AI Insights section header ── */}
       <div className="mt-2 flex items-center gap-2 px-4 pb-1">
@@ -381,24 +388,30 @@ export function CityDetailScreen({ isDark, params }) {
         )}
       </div>
 
-      {/* ── 7-day trend (mirrors mobile LineChart section) ── */}
-      <div
-        className="mx-4 mb-3 flex flex-col gap-2.5 rounded-2xl border p-4"
-        style={{ backgroundColor: colors.card, borderColor: colors.border }}
-      >
-        <p className="text-[0.875rem] font-semibold" style={{ color: colors.text }}>
-          {t("screen.city_detail.trend_7d")}
-        </p>
-        <TrendChart
-          data={trendData}
-          labels={trendLabels}
-          color={aqiColor}
-          labelColor={colors.muted}
-        />
-      </div>
+      {/* ── 7-day trend: estimated PM2.5 (µg/m³) for each of the last 7 days ── */}
+      {trendData.length > 1 ? (
+        <div
+          className="mx-4 mb-3 flex flex-col gap-2.5 rounded-2xl border p-4"
+          style={{ backgroundColor: colors.card, borderColor: colors.border }}
+        >
+          <p className="text-[0.875rem] font-semibold" style={{ color: colors.text }}>
+            {t("screen.city_detail.trend_7d")}
+          </p>
+          <p className="m-0 text-[0.75rem] leading-snug" style={{ color: colors.subtext }}>
+            {t("screen.city_detail.trend_7d_hint")}
+          </p>
+          <TrendChart
+            data={trendData}
+            labels={trendLabels}
+            color={aqiColor}
+            labelColor={colors.subtext}
+            valueColor={colors.text}
+          />
+        </div>
+      ) : null}
 
-      {/* ── Contributing factors ── */}
-      {factors && factors.length > 0 ? (
+      {/* ── Contributing factors (API dict → readable rows) ── */}
+      {factorList.length > 0 ? (
         <div
           className="mx-4 mb-3 flex flex-col gap-2.5 rounded-2xl border p-4"
           style={{ backgroundColor: colors.card, borderColor: colors.border }}
@@ -407,8 +420,8 @@ export function CityDetailScreen({ isDark, params }) {
             {t("card.factors_title")}
           </p>
           <ul className="flex flex-col gap-2">
-            {factors.slice(0, 6).map((factor) => (
-              <li key={factor} className="flex items-center gap-2">
+            {factorList.slice(0, 6).map((factor) => (
+              <li key={factor.key} className="flex items-center gap-2">
                 <span
                   className="h-1.5 w-1.5 flex-shrink-0 rounded-full"
                   style={{ backgroundColor: Colors.brandGreen }}
@@ -417,7 +430,7 @@ export function CityDetailScreen({ isDark, params }) {
                   className="text-[0.875rem] capitalize"
                   style={{ color: colors.text }}
                 >
-                  {factor.replace(/_/g, " ")}
+                  {factor.label}
                 </span>
               </li>
             ))}

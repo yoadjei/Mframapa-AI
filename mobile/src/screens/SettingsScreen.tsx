@@ -27,6 +27,8 @@ export function SettingsScreen() {
   const setLiteMode = useStore((s) => s.setLiteMode);
   const dataAnalytics = useStore((s) => s.dataAnalytics);
   const setDataAnalytics = useStore((s) => s.setDataAnalytics);
+  const textScale = useStore((s) => s.textScale);
+  const setTextScale = useStore((s) => s.setTextScale);
   const locationSharing = useStore((s) => s.locationSharing);
   const setLocationSharing = useStore((s) => s.setLocationSharing);
   const language = useStore((s) => s.language);
@@ -158,6 +160,29 @@ export function SettingsScreen() {
             setLiteMode,
             Platform.OS === 'android' ? t('settings.lite_unavailable') : undefined,
           )}
+        </View>
+
+        {/* Accessibility */}
+        {sectionLabel(t('settings.accessibility'))}
+        <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <View style={[styles.row, { borderBottomWidth: 0, flexDirection: 'column', alignItems: 'stretch', gap: 10 }]}>
+            <View>
+              <Text style={[styles.rowLabel, { color: colors.text }]}>{t('settings.text_size')}</Text>
+              <Text style={[styles.rowSublabel, { color: colors.subtext }]}>{t('a11y.text_size_hint')}</Text>
+            </View>
+            <SegmentedControl
+              options={[
+                t('settings.text_size_normal'),
+                t('settings.text_size_large'),
+                t('settings.text_size_larger'),
+              ]}
+              selectedIndex={
+                Math.abs(textScale - 1.3) < 0.01 ? 2 : Math.abs(textScale - 1.15) < 0.01 ? 1 : 0
+              }
+              onSelectIndex={(i) => setTextScale([1, 1.15, 1.3][i])}
+              isDark={isDark}
+            />
+          </View>
         </View>
       </ScrollView>
     </View>

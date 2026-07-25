@@ -94,7 +94,7 @@ export function CityDetailScreen() {
   const cityName = pred?.location?.name ?? t('home.select_city');
   const pm25 = pred?.pm25 ?? 0;
   const category = pred?.aqi_category ?? 'good';
-  const weather = pred?.weather ?? { temp: 0, humidity: 0, wind: 0 };
+  const weather = pred?.weather ?? { temp: null, humidity: null, wind: null };
   const aqiColor = getAQIColor(category, isDark);
   const pageBg = isDark ? AppBackgroundColors.dark : AppBackgroundColors.light;
   // Light AQI washes are pale — white chrome fails contrast (PWA parity).
@@ -123,10 +123,16 @@ export function CityDetailScreen() {
 
   useEffect(() => {
     setInsight(pred?.insight);
+    setInsightLoading(false);
   }, [pred?.insight, pred?.location?.lat, pred?.location?.lon]);
 
   useEffect(() => {
-    if (!pred || insight) return undefined;
+    if (!pred) return undefined;
+    // Already have insight from predict/cache — don't spin forever.
+    if (pred.insight) {
+      setInsightLoading(false);
+      return undefined;
+    }
 
     let cancelled = false;
     setInsightLoading(true);
@@ -159,7 +165,7 @@ export function CityDetailScreen() {
     return () => {
       cancelled = true;
     };
-  }, [pred, insight, language, lastPrediction, setPrediction]);
+  }, [pred?.location?.lat, pred?.location?.lon, language, pred?.insight]);
 
   async function handleSave() {
     if (!pred || isSaved || saving) return;
@@ -263,26 +269,33 @@ export function CityDetailScreen() {
           </Text>
         </View>
 
-        <View style={styles.weatherRow}>
-          {[
-            { icon: 'thermometer-outline', val: `${weather.temp.toFixed(0)}°C`, label: t('weather.temp') },
-            {
-              icon: 'water-outline',
-              val: `${weather.humidity.toFixed(0)}%`,
-              label: t('weather.humidity'),
-            },
-            {
-              icon: 'speedometer-outline',
-              val: t('screen.city_detail.wind_kmh', { speed: weather.wind.toFixed(0) }),
-              label: t('weather.wind'),
-            }].map((chip, i) => (
-            <View key={i} style={[styles.chip, { backgroundColor: colors.card, borderColor: colors.border }]}>
-              <Ionicons name={chip.icon as any} size={14} color={Colors.brandGreen} />
-              <Text style={[styles.chipVal, { color: colors.text }]}>{chip.val}</Text>
-              <Text style={[styles.chipLabel, { color: colors.subtext }]}>{chip.label}</Text>
-            </View>
-          ))}
-        </View>
+        {(weather.temp != null || weather.humidity != null || weather.wind != null) ? (
+          <View style={styles.weatherRow}>
+            {[
+              weather.temp != null && {
+                icon: 'thermometer-outline' as const,
+                val: `${Number(weather.temp).toFixed(0)}°C`,
+                label: t('weather.temp'),
+              },
+              weather.humidity != null && {
+                icon: 'water-outline' as const,
+                val: `${Number(weather.humidity).toFixed(0)}%`,
+                label: t('weather.humidity'),
+              },
+              weather.wind != null && {
+                icon: 'speedometer-outline' as const,
+                val: t('screen.city_detail.wind_kmh', { speed: Number(weather.wind).toFixed(0) }),
+                label: t('weather.wind'),
+              },
+            ].filter(Boolean).map((chip: any, i) => (
+              <View key={i} style={[styles.chip, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                <Ionicons name={chip.icon} size={14} color={Colors.brandGreen} />
+                <Text style={[styles.chipVal, { color: colors.text }]}>{chip.val}</Text>
+                <Text style={[styles.chipLabel, { color: colors.subtext }]}>{chip.label}</Text>
+              </View>
+            ))}
+          </View>
+        ) : null}
 
         <View style={styles.sectionHeader}>
           <Ionicons name="sparkles" size={18} color={Colors.brandGreen} />
@@ -316,6 +329,9 @@ export function CityDetailScreen() {
         {trendData.length > 1 ? (
           <View style={[styles.section, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <Text style={[styles.sectionTitle, { color: colors.text }]}>{t('screen.city_detail.trend_7d')}</Text>
+            <Text style={[styles.trendHint, { color: colors.subtext }]}>
+              {t('screen.city_detail.trend_7d_hint')}
+            </Text>
             <LineChart data={trendData} labels={trendLabels} isDark={isDark} color={aqiColor} height={120} />
           </View>
         ) : null}
@@ -327,7 +343,7 @@ export function CityDetailScreen() {
               <View key={factor} style={styles.factorRow}>
                 <Ionicons name="ellipse" size={6} color={Colors.brandGreen} />
                 <Text style={[styles.factorText, { color: colors.text }]}>
-                  {factor.replace(/_/g, ' ')}
+                  {typeof factor === 'string' ? factor.replace(/_/g, ' ') : String(factor)}
                 </Text>
               </View>
             ))}
@@ -469,6 +485,7 @@ const styles = StyleSheet.create({
   },
   sourceText: { fontSize: 12, fontWeight: '500' },
   sectionTitle: { fontSize: 14, fontWeight: '600' },
+  trendHint: { fontSize: 12, lineHeight: 16, marginBottom: 8, marginTop: 2 },
   factorRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   factorText: { fontSize: 14, textTransform: 'capitalize' },
   metaPill: {

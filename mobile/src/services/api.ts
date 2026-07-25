@@ -1,6 +1,7 @@
 import axios, { AxiosError } from 'axios';
 import { PredictionResult } from '../store/useStore';
 import { API_BASE_URL, languageName } from '../utils/constants';
+import { factorLabels } from '../utils/factors';
 import { getCurrentSession } from './supabase';
 
 const BASE_URL = API_BASE_URL;
@@ -82,12 +83,12 @@ function mapPrediction(
       pm25_upper: uncertainty?.pm25_upper ?? (data.pm25 as number) * 1.15,
     },
     weather: {
-      temp: weather?.temp ?? 0,
-      humidity: weather?.humidity ?? 0,
-      wind: weather?.wind ?? 0,
+      temp: weather?.temp ?? null,
+      humidity: weather?.humidity ?? null,
+      wind: weather?.wind ?? null,
     },
     location: { name, lat, lon },
-    factors,
+    factors: factorLabels(factors),
     model: model?.region_id
       ? `${model.region_id} / ${model.segment ?? 'all'}`
       : undefined,

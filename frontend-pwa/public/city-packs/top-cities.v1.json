@@ -1,1687 +1,1967 @@
 {
   "version": "v1",
-  "generatedAt": "2026-07-25T03:46:33.987Z",
+  "generatedAt": "2026-07-26T18:51:34.400634Z",
   "count": 280,
   "cities": [
     {
       "country": "Nigeria",
       "name": "Lagos",
       "lat": 6.5244,
-      "lon": 3.3792
+      "lon": 3.3792,
+      "urban": true
     },
     {
       "country": "Ghana",
       "name": "Accra",
       "lat": 5.6037,
-      "lon": -0.187
+      "lon": -0.187,
+      "urban": true
     },
     {
       "country": "Côte d'Ivoire",
       "name": "Abidjan",
       "lat": 5.36,
-      "lon": -4.0083
+      "lon": -4.0083,
+      "urban": true
     },
     {
       "country": "Senegal",
       "name": "Dakar",
       "lat": 14.6928,
-      "lon": -17.4467
+      "lon": -17.4467,
+      "urban": true
     },
     {
       "country": "Guinea",
       "name": "Conakry",
       "lat": 9.6412,
-      "lon": -13.5784
+      "lon": -13.5784,
+      "urban": true
     },
     {
       "country": "Mali",
       "name": "Bamako",
       "lat": 12.6392,
-      "lon": -8.0029
+      "lon": -8.0029,
+      "urban": true
     },
     {
       "country": "Burkina Faso",
       "name": "Ouagadougou",
       "lat": 12.3647,
-      "lon": -1.5353
+      "lon": -1.5353,
+      "urban": true
     },
     {
       "country": "Niger",
       "name": "Niamey",
       "lat": 13.5137,
-      "lon": 2.1098
+      "lon": 2.1098,
+      "urban": true
     },
     {
       "country": "Sierra Leone",
       "name": "Freetown",
       "lat": 8.4657,
-      "lon": -13.2317
+      "lon": -13.2317,
+      "urban": true
     },
     {
       "country": "Liberia",
       "name": "Monrovia",
       "lat": 6.3005,
-      "lon": -10.7969
+      "lon": -10.7969,
+      "urban": true
     },
     {
       "country": "Togo",
       "name": "Lomé",
       "lat": 6.1375,
-      "lon": 1.2123
+      "lon": 1.2123,
+      "urban": true
     },
     {
       "country": "Benin",
       "name": "Cotonou",
       "lat": 6.3703,
-      "lon": 2.3912
+      "lon": 2.3912,
+      "urban": true
     },
     {
       "country": "Mauritania",
       "name": "Nouakchott",
       "lat": 18.0735,
-      "lon": -15.9582
+      "lon": -15.9582,
+      "urban": true
     },
     {
       "country": "Guinea-Bissau",
       "name": "Bissau",
       "lat": 11.8636,
-      "lon": -15.5977
+      "lon": -15.5977,
+      "urban": true
     },
     {
       "country": "Cape Verde",
       "name": "Praia",
       "lat": 14.9315,
-      "lon": -23.5136
+      "lon": -23.5136,
+      "urban": true
     },
     {
       "country": "Kenya",
       "name": "Nairobi",
       "lat": -1.2921,
-      "lon": 36.8219
+      "lon": 36.8219,
+      "urban": true
     },
     {
       "country": "Tanzania",
       "name": "Dar es Salaam",
       "lat": -6.7924,
-      "lon": 39.2083
+      "lon": 39.2083,
+      "urban": true
     },
     {
       "country": "Uganda",
       "name": "Kampala",
       "lat": 0.3476,
-      "lon": 32.5825
+      "lon": 32.5825,
+      "urban": true
     },
     {
       "country": "Rwanda",
       "name": "Kigali",
       "lat": -1.9441,
-      "lon": 30.0619
+      "lon": 30.0619,
+      "urban": true
     },
     {
       "country": "Burundi",
       "name": "Bujumbura",
       "lat": -3.3822,
-      "lon": 29.3644
+      "lon": 29.3644,
+      "urban": true
     },
     {
       "country": "Egypt",
       "name": "Cairo",
       "lat": 30.0444,
-      "lon": 31.2357
+      "lon": 31.2357,
+      "urban": true
     },
     {
       "country": "Morocco",
       "name": "Casablanca",
       "lat": 33.5731,
-      "lon": -7.5898
+      "lon": -7.5898,
+      "urban": true
     },
     {
       "country": "Algeria",
       "name": "Algiers",
       "lat": 36.7372,
-      "lon": 3.0863
+      "lon": 3.0863,
+      "urban": true
     },
     {
       "country": "Tunisia",
       "name": "Tunis",
       "lat": 36.819,
-      "lon": 10.1658
+      "lon": 10.1658,
+      "urban": true
     },
     {
       "country": "Libya",
       "name": "Tripoli",
       "lat": 32.902,
-      "lon": 13.1802
+      "lon": 13.1802,
+      "urban": true
     },
     {
       "country": "Sudan",
       "name": "Khartoum",
       "lat": 15.5007,
-      "lon": 32.5599
+      "lon": 32.5599,
+      "urban": true
     },
     {
       "country": "DR Congo",
       "name": "Kinshasa",
       "lat": -4.3217,
-      "lon": 15.3222
+      "lon": 15.3222,
+      "urban": true
     },
     {
       "country": "Angola",
       "name": "Luanda",
       "lat": -8.8383,
-      "lon": 13.2344
+      "lon": 13.2344,
+      "urban": true
     },
     {
       "country": "Cameroon",
       "name": "Yaoundé",
       "lat": 3.8667,
-      "lon": 11.5167
+      "lon": 11.5167,
+      "urban": true
     },
     {
       "country": "Republic of Congo",
       "name": "Brazzaville",
       "lat": -4.2694,
-      "lon": 15.2716
+      "lon": 15.2716,
+      "urban": true
     },
     {
       "country": "Central African Republic",
       "name": "Bangui",
       "lat": 4.3612,
-      "lon": 18.555
+      "lon": 18.555,
+      "urban": true
     },
     {
       "country": "Chad",
       "name": "N'Djamena",
       "lat": 12.1048,
-      "lon": 15.0445
+      "lon": 15.0445,
+      "urban": true
     },
     {
       "country": "Gabon",
       "name": "Libreville",
       "lat": 0.3901,
-      "lon": 9.4544
+      "lon": 9.4544,
+      "urban": true
     },
     {
       "country": "Equatorial Guinea",
       "name": "Malabo",
       "lat": 3.75,
-      "lon": 8.7833
+      "lon": 8.7833,
+      "urban": true
     },
     {
       "country": "South Africa",
       "name": "Johannesburg",
       "lat": -26.2041,
-      "lon": 28.0473
+      "lon": 28.0473,
+      "urban": true
     },
     {
       "country": "Mozambique",
       "name": "Maputo",
       "lat": -25.9653,
-      "lon": 32.5892
+      "lon": 32.5892,
+      "urban": true
     },
     {
       "country": "Zimbabwe",
       "name": "Harare",
       "lat": -17.8252,
-      "lon": 31.0335
+      "lon": 31.0335,
+      "urban": true
     },
     {
       "country": "Zambia",
       "name": "Lusaka",
       "lat": -15.4167,
-      "lon": 28.2833
+      "lon": 28.2833,
+      "urban": true
     },
     {
       "country": "Botswana",
       "name": "Gaborone",
       "lat": -24.657,
-      "lon": 25.9089
+      "lon": 25.9089,
+      "urban": true
     },
     {
       "country": "Namibia",
       "name": "Windhoek",
       "lat": -22.5597,
-      "lon": 17.0832
+      "lon": 17.0832,
+      "urban": true
     },
     {
       "country": "Eswatini",
       "name": "Mbabane",
       "lat": -26.3186,
-      "lon": 31.141
+      "lon": 31.141,
+      "urban": true
     },
     {
       "country": "Lesotho",
       "name": "Maseru",
       "lat": -29.3151,
-      "lon": 27.4869
+      "lon": 27.4869,
+      "urban": true
     },
     {
       "country": "Madagascar",
       "name": "Antananarivo",
       "lat": -18.9137,
-      "lon": 47.5361
+      "lon": 47.5361,
+      "urban": true
     },
     {
       "country": "Ethiopia",
       "name": "Addis Ababa",
       "lat": 9.032,
-      "lon": 38.7469
+      "lon": 38.7469,
+      "urban": true
     },
     {
       "country": "Somalia",
       "name": "Mogadishu",
       "lat": 2.0469,
-      "lon": 45.3182
+      "lon": 45.3182,
+      "urban": true
     },
     {
       "country": "Eritrea",
       "name": "Asmara",
       "lat": 15.3229,
-      "lon": 38.9251
+      "lon": 38.9251,
+      "urban": true
     },
     {
       "country": "Djibouti",
       "name": "Djibouti City",
       "lat": 11.572,
-      "lon": 43.1456
+      "lon": 43.1456,
+      "urban": true
     },
     {
       "country": "Gambia",
       "name": "Serekunda",
       "lat": 13.4383,
-      "lon": -16.6781
+      "lon": -16.6781,
+      "urban": true
     },
     {
       "country": "Malawi",
       "name": "Lilongwe",
       "lat": -13.9669,
-      "lon": 33.7873
+      "lon": 33.7873,
+      "urban": true
     },
     {
       "country": "Mauritius",
       "name": "Port Louis",
       "lat": -20.1619,
-      "lon": 57.4989
+      "lon": 57.4989,
+      "urban": true
     },
     {
       "country": "Comoros",
       "name": "Koni-Djodjo",
       "lat": -12.2297,
-      "lon": 44.4817
+      "lon": 44.4817,
+      "urban": false
     },
     {
       "country": "Western Sahara",
       "name": "Laayoune",
       "lat": 27.1418,
-      "lon": -13.188
+      "lon": -13.188,
+      "urban": true
     },
     {
       "country": "South Sudan",
       "name": "Juba",
       "lat": 4.8517,
-      "lon": 31.5825
+      "lon": 31.5825,
+      "urban": true
     },
     {
       "country": "São Tomé and Príncipe",
       "name": "São Tomé",
       "lat": 0.3365,
-      "lon": 6.7273
+      "lon": 6.7273,
+      "urban": true
     },
     {
       "country": "Seychelles",
       "name": "Victoria",
       "lat": -4.6191,
-      "lon": 55.4513
+      "lon": 55.4513,
+      "urban": true
     },
     {
       "country": "Cameroon",
       "name": "Douala",
       "lat": 4.05,
-      "lon": 9.7
+      "lon": 9.7,
+      "urban": true
     },
     {
       "country": "Kenya",
       "name": "Mombasa",
       "lat": -4.0435,
-      "lon": 39.6682
+      "lon": 39.6682,
+      "urban": true
     },
     {
       "country": "Ethiopia",
       "name": "Dire Dawa",
       "lat": 9.593,
-      "lon": 41.8661
+      "lon": 41.8661,
+      "urban": true
     },
     {
       "country": "Egypt",
       "name": "Alexandria",
       "lat": 31.2001,
-      "lon": 29.9187
+      "lon": 29.9187,
+      "urban": true
     },
     {
       "country": "South Africa",
       "name": "Cape Town",
       "lat": -33.9249,
-      "lon": 18.4241
+      "lon": 18.4241,
+      "urban": true
     },
     {
       "country": "Nigeria",
       "name": "Kano",
       "lat": 12.0022,
-      "lon": 8.592
+      "lon": 8.592,
+      "urban": true
     },
     {
       "country": "DR Congo",
       "name": "Lubumbashi",
       "lat": -11.6609,
-      "lon": 27.4794
+      "lon": 27.4794,
+      "urban": true
     },
     {
       "country": "Kenya",
       "name": "Kisumu",
       "lat": -0.1022,
-      "lon": 34.7617
+      "lon": 34.7617,
+      "urban": true
     },
     {
       "country": "Ethiopia",
       "name": "Mekelle",
       "lat": 13.4967,
-      "lon": 39.4767
+      "lon": 39.4767,
+      "urban": true
     },
     {
       "country": "Morocco",
       "name": "Rabat",
       "lat": 34.0209,
-      "lon": -6.8416
+      "lon": -6.8416,
+      "urban": true
     },
     {
       "country": "South Africa",
       "name": "Durban",
       "lat": -29.8587,
-      "lon": 31.0218
+      "lon": 31.0218,
+      "urban": true
     },
     {
       "country": "Nigeria",
       "name": "Ibadan",
       "lat": 7.3775,
-      "lon": 3.947
+      "lon": 3.947,
+      "urban": true
     },
     {
       "country": "DR Congo",
       "name": "Mbuji-Mayi",
       "lat": -6.15,
-      "lon": 23.6
+      "lon": 23.6,
+      "urban": true
     },
     {
       "country": "Kenya",
       "name": "Nakuru",
       "lat": -0.3031,
-      "lon": 36.08
+      "lon": 36.08,
+      "urban": false
     },
     {
       "country": "Ethiopia",
       "name": "Gondar",
       "lat": 12.6,
-      "lon": 37.4667
+      "lon": 37.4667,
+      "urban": false
     },
     {
       "country": "Morocco",
       "name": "Fès",
       "lat": 34.0433,
-      "lon": -5.0033
+      "lon": -5.0033,
+      "urban": true
     },
     {
       "country": "South Africa",
       "name": "Pretoria",
       "lat": -25.7479,
-      "lon": 28.2293
+      "lon": 28.2293,
+      "urban": true
     },
     {
       "country": "Ghana",
       "name": "Kumasi",
       "lat": 6.6885,
-      "lon": -1.6244
+      "lon": -1.6244,
+      "urban": true
     },
     {
       "country": "DR Congo",
       "name": "Kananga",
       "lat": -5.8959,
-      "lon": 22.4159
+      "lon": 22.4159,
+      "urban": true
     },
     {
       "country": "Kenya",
       "name": "Eldoret",
       "lat": 0.52,
-      "lon": 35.2699
+      "lon": 35.2699,
+      "urban": false
     },
     {
       "country": "Ethiopia",
       "name": "Hawassa",
       "lat": 7.053,
-      "lon": 38.4627
+      "lon": 38.4627,
+      "urban": true
     },
     {
       "country": "Morocco",
       "name": "Marrakech",
       "lat": 31.6295,
-      "lon": -7.9811
+      "lon": -7.9811,
+      "urban": true
     },
     {
       "country": "South Africa",
       "name": "Port Elizabeth",
       "lat": -33.9608,
-      "lon": 25.6022
+      "lon": 25.6022,
+      "urban": true
     },
     {
       "country": "Nigeria",
       "name": "Abuja",
       "lat": 9.0765,
-      "lon": 7.3986
+      "lon": 7.3986,
+      "urban": true
     },
     {
       "country": "DR Congo",
       "name": "Kisangani",
       "lat": 0.5167,
-      "lon": 25.19
+      "lon": 25.19,
+      "urban": true
     },
     {
       "country": "Kenya",
       "name": "Meru",
       "lat": 0.0468,
-      "lon": 37.649
+      "lon": 37.649,
+      "urban": false
     },
     {
       "country": "Ethiopia",
       "name": "Bahir Dar",
       "lat": 11.5742,
-      "lon": 37.3614
+      "lon": 37.3614,
+      "urban": false
     },
     {
       "country": "Morocco",
       "name": "Tangier",
       "lat": 35.7595,
-      "lon": -5.834
+      "lon": -5.834,
+      "urban": true
     },
     {
       "country": "South Africa",
       "name": "Bloemfontein",
       "lat": -29.0852,
-      "lon": 26.1596
+      "lon": 26.1596,
+      "urban": true
     },
     {
       "country": "Nigeria",
       "name": "Enugu",
       "lat": 6.4584,
-      "lon": 7.5464
+      "lon": 7.5464,
+      "urban": true
     },
     {
       "country": "DR Congo",
       "name": "Bukavu",
       "lat": -2.5083,
-      "lon": 28.8608
+      "lon": 28.8608,
+      "urban": true
     },
     {
       "country": "Kenya",
       "name": "Thika",
       "lat": -1.0332,
-      "lon": 37.0693
+      "lon": 37.0693,
+      "urban": false
     },
     {
       "country": "Ethiopia",
       "name": "Jimma",
       "lat": 7.6667,
-      "lon": 36.8333
+      "lon": 36.8333,
+      "urban": false
     },
     {
       "country": "Morocco",
       "name": "Agadir",
       "lat": 30.4278,
-      "lon": -9.5981
+      "lon": -9.5981,
+      "urban": false
     },
     {
       "country": "South Africa",
       "name": "East London",
       "lat": -33.0292,
-      "lon": 27.8546
+      "lon": 27.8546,
+      "urban": true
     },
     {
       "country": "Nigeria",
       "name": "Port Harcourt",
       "lat": 4.8156,
-      "lon": 7.0498
+      "lon": 7.0498,
+      "urban": true
     },
     {
       "country": "DR Congo",
       "name": "Goma",
       "lat": -1.6794,
-      "lon": 29.2228
+      "lon": 29.2228,
+      "urban": true
     },
     {
       "country": "Kenya",
       "name": "Malindi",
       "lat": -3.2138,
-      "lon": 40.1169
+      "lon": 40.1169,
+      "urban": false
     },
     {
       "country": "Ethiopia",
       "name": "Dessie",
       "lat": 11.1333,
-      "lon": 39.6333
+      "lon": 39.6333,
+      "urban": false
     },
     {
       "country": "Morocco",
       "name": "Meknès",
       "lat": 33.8833,
-      "lon": -5.5667
+      "lon": -5.5667,
+      "urban": false
     },
     {
       "country": "Zimbabwe",
       "name": "Bulawayo",
       "lat": -20.15,
-      "lon": 28.5833
+      "lon": 28.5833,
+      "urban": true
     },
     {
       "country": "Nigeria",
       "name": "Benin City",
       "lat": 6.335,
-      "lon": 5.627
+      "lon": 5.627,
+      "urban": true
     },
     {
       "country": "DR Congo",
       "name": "Bunia",
       "lat": 1.56,
-      "lon": 30.24
+      "lon": 30.24,
+      "urban": false
     },
     {
       "country": "Kenya",
       "name": "Kitale",
       "lat": 1.0154,
-      "lon": 35.0062
+      "lon": 35.0062,
+      "urban": false
     },
     {
       "country": "Ethiopia",
       "name": "Jijiga",
       "lat": 9.35,
-      "lon": 42.8
+      "lon": 42.8,
+      "urban": false
     },
     {
       "country": "Morocco",
       "name": "Oujda",
       "lat": 34.68,
-      "lon": -1.9
+      "lon": -1.9,
+      "urban": false
     },
     {
       "country": "Zimbabwe",
       "name": "Chitungwiza",
       "lat": -18.0127,
-      "lon": 31.0748
+      "lon": 31.0748,
+      "urban": true
     },
     {
       "country": "Nigeria",
       "name": "Kaduna",
       "lat": 10.5222,
-      "lon": 7.4383
+      "lon": 7.4383,
+      "urban": true
     },
     {
       "country": "DR Congo",
       "name": "Matadi",
       "lat": -5.8236,
-      "lon": 13.4597
+      "lon": 13.4597,
+      "urban": false
     },
     {
       "country": "Kenya",
       "name": "Garissa",
       "lat": -0.4532,
-      "lon": 39.6461
+      "lon": 39.6461,
+      "urban": false
     },
     {
       "country": "Ethiopia",
       "name": "Bishoftu",
       "lat": 8.75,
-      "lon": 38.9833
+      "lon": 38.9833,
+      "urban": false
     },
     {
       "country": "Morocco",
       "name": "Kenitra",
       "lat": 34.2541,
-      "lon": -6.5804
+      "lon": -6.5804,
+      "urban": false
     },
     {
       "country": "Zimbabwe",
       "name": "Mutare",
       "lat": -18.9667,
-      "lon": 32.6667
+      "lon": 32.6667,
+      "urban": false
     },
     {
       "country": "Nigeria",
       "name": "Maiduguri",
       "lat": 11.8333,
-      "lon": 13.15
+      "lon": 13.15,
+      "urban": true
     },
     {
       "country": "DR Congo",
       "name": "Mbandaka",
       "lat": 0.0478,
-      "lon": 18.2564
+      "lon": 18.2564,
+      "urban": false
     },
     {
       "country": "Tanzania",
       "name": "Dodoma",
       "lat": -6.1731,
-      "lon": 35.7395
+      "lon": 35.7395,
+      "urban": true
     },
     {
       "country": "Ethiopia",
       "name": "Arba Minch",
       "lat": 6.0333,
-      "lon": 37.55
+      "lon": 37.55,
+      "urban": false
     },
     {
       "country": "Egypt",
       "name": "Giza",
       "lat": 30.0131,
-      "lon": 31.2089
+      "lon": 31.2089,
+      "urban": true
     },
     {
       "country": "Zimbabwe",
       "name": "Gweru",
       "lat": -19.45,
-      "lon": 29.8167
+      "lon": 29.8167,
+      "urban": false
     },
     {
       "country": "Nigeria",
       "name": "Zaria",
       "lat": 11.0851,
-      "lon": 7.7199
+      "lon": 7.7199,
+      "urban": true
     },
     {
       "country": "DR Congo",
       "name": "Kolwezi",
       "lat": -10.7167,
-      "lon": 25.4667
+      "lon": 25.4667,
+      "urban": false
     },
     {
       "country": "Tanzania",
       "name": "Arusha",
       "lat": -3.3869,
-      "lon": 36.683
+      "lon": 36.683,
+      "urban": true
     },
     {
       "country": "Ethiopia",
       "name": "Adama",
       "lat": 8.54,
-      "lon": 39.27
+      "lon": 39.27,
+      "urban": false
     },
     {
       "country": "Egypt",
       "name": "Port Said",
       "lat": 31.2565,
-      "lon": 32.2841
+      "lon": 32.2841,
+      "urban": true
     },
     {
       "country": "Mozambique",
       "name": "Beira",
       "lat": -19.8436,
-      "lon": 34.8389
+      "lon": 34.8389,
+      "urban": true
     },
     {
       "country": "Nigeria",
       "name": "Aba",
       "lat": 5.1066,
-      "lon": 7.3666
+      "lon": 7.3666,
+      "urban": true
     },
     {
       "country": "DR Congo",
       "name": "Likasi",
       "lat": -10.9804,
-      "lon": 26.7322
+      "lon": 26.7322,
+      "urban": false
     },
     {
       "country": "Tanzania",
       "name": "Mwanza",
       "lat": -2.5164,
-      "lon": 32.9175
+      "lon": 32.9175,
+      "urban": true
     },
     {
       "country": "Ethiopia",
       "name": "Sodo",
       "lat": 6.85,
-      "lon": 37.75
+      "lon": 37.75,
+      "urban": false
     },
     {
       "country": "Egypt",
       "name": "Suez",
       "lat": 29.9737,
-      "lon": 32.5263
+      "lon": 32.5263,
+      "urban": true
     },
     {
       "country": "Mozambique",
       "name": "Nampula",
       "lat": -15.1165,
-      "lon": 39.2666
+      "lon": 39.2666,
+      "urban": true
     },
     {
       "country": "Nigeria",
       "name": "Jos",
       "lat": 9.8965,
-      "lon": 8.8583
+      "lon": 8.8583,
+      "urban": true
     },
     {
       "country": "DR Congo",
       "name": "Kalemie",
       "lat": -5.9333,
-      "lon": 29.1833
+      "lon": 29.1833,
+      "urban": false
     },
     {
       "country": "Tanzania",
       "name": "Zanzibar City",
       "lat": -6.1659,
-      "lon": 39.2026
+      "lon": 39.2026,
+      "urban": true
     },
     {
       "country": "Ethiopia",
       "name": "Nekemte",
       "lat": 9.0833,
-      "lon": 36.55
+      "lon": 36.55,
+      "urban": false
     },
     {
       "country": "Egypt",
       "name": "Luxor",
       "lat": 25.6872,
-      "lon": 32.6396
+      "lon": 32.6396,
+      "urban": false
     },
     {
       "country": "Mozambique",
       "name": "Matola",
       "lat": -25.9667,
-      "lon": 32.4667
+      "lon": 32.4667,
+      "urban": true
     },
     {
       "country": "Nigeria",
       "name": "Ilorin",
       "lat": 8.4966,
-      "lon": 4.5421
+      "lon": 4.5421,
+      "urban": false
     },
     {
       "country": "Angola",
       "name": "Benguela",
       "lat": -12.5763,
-      "lon": 13.4055
+      "lon": 13.4055,
+      "urban": false
     },
     {
       "country": "Tanzania",
       "name": "Tanga",
       "lat": -5.0668,
-      "lon": 39.099
+      "lon": 39.099,
+      "urban": false
     },
     {
       "country": "Ethiopia",
       "name": "Debre Markos",
       "lat": 10.35,
-      "lon": 37.7167
+      "lon": 37.7167,
+      "urban": false
     },
     {
       "country": "Egypt",
       "name": "Asyut",
       "lat": 27.1783,
-      "lon": 31.1859
+      "lon": 31.1859,
+      "urban": false
     },
     {
       "country": "Mozambique",
       "name": "Quelimane",
       "lat": -17.8778,
-      "lon": 36.8878
+      "lon": 36.8878,
+      "urban": false
     },
     {
       "country": "Nigeria",
       "name": "Onitsha",
       "lat": 6.1667,
-      "lon": 6.7833
+      "lon": 6.7833,
+      "urban": true
     },
     {
       "country": "Angola",
       "name": "Huambo",
       "lat": -12.7761,
-      "lon": 15.7393
+      "lon": 15.7393,
+      "urban": true
     },
     {
       "country": "Tanzania",
       "name": "Morogoro",
       "lat": -6.82,
-      "lon": 37.66
+      "lon": 37.66,
+      "urban": false
     },
     {
       "country": "Ethiopia",
       "name": "Harar",
       "lat": 9.3121,
-      "lon": 42.1197
+      "lon": 42.1197,
+      "urban": false
     },
     {
       "country": "Egypt",
       "name": "Mansoura",
       "lat": 31.0367,
-      "lon": 31.3783
+      "lon": 31.3783,
+      "urban": true
     },
     {
       "country": "Mozambique",
       "name": "Chimoio",
       "lat": -19.1167,
-      "lon": 33.4667
+      "lon": 33.4667,
+      "urban": false
     },
     {
       "country": "Nigeria",
       "name": "Warri",
       "lat": 5.5167,
-      "lon": 5.75
+      "lon": 5.75,
+      "urban": true
     },
     {
       "country": "Angola",
       "name": "Lobito",
       "lat": -12.35,
-      "lon": 13.55
+      "lon": 13.55,
+      "urban": false
     },
     {
       "country": "Tanzania",
       "name": "Mbeya",
       "lat": -8.9,
-      "lon": 33.45
+      "lon": 33.45,
+      "urban": false
     },
     {
       "country": "Ethiopia",
       "name": "Axum",
       "lat": 14.1167,
-      "lon": 38.7167
+      "lon": 38.7167,
+      "urban": false
     },
     {
       "country": "Egypt",
       "name": "Tanta",
       "lat": 30.7865,
-      "lon": 30.9965
+      "lon": 30.9965,
+      "urban": true
     },
     {
       "country": "Mozambique",
       "name": "Tete",
       "lat": -16.1564,
-      "lon": 33.5872
+      "lon": 33.5872,
+      "urban": false
     },
     {
       "country": "Ghana",
       "name": "Tamale",
       "lat": 9.4008,
-      "lon": -0.8393
+      "lon": -0.8393,
+      "urban": true
     },
     {
       "country": "Angola",
       "name": "Malanje",
       "lat": -9.5333,
-      "lon": 16.35
+      "lon": 16.35,
+      "urban": false
     },
     {
       "country": "Tanzania",
       "name": "Tabora",
       "lat": -5.0168,
-      "lon": 32.8
+      "lon": 32.8,
+      "urban": false
     },
     {
       "country": "Somalia",
       "name": "Hargeisa",
       "lat": 9.5597,
-      "lon": 44.065
+      "lon": 44.065,
+      "urban": true
     },
     {
       "country": "Egypt",
       "name": "Zagazig",
       "lat": 30.5877,
-      "lon": 31.5021
+      "lon": 31.5021,
+      "urban": false
     },
     {
       "country": "Zambia",
       "name": "Kitwe",
       "lat": -12.8167,
-      "lon": 28.2
+      "lon": 28.2,
+      "urban": true
     },
     {
       "country": "Ghana",
       "name": "Sekondi-Takoradi",
       "lat": 4.9016,
-      "lon": -1.7544
+      "lon": -1.7544,
+      "urban": true
     },
     {
       "country": "Angola",
       "name": "Cabinda",
       "lat": -5.55,
-      "lon": 12.2
+      "lon": 12.2,
+      "urban": false
     },
     {
       "country": "Tanzania",
       "name": "Iringa",
       "lat": -7.7673,
-      "lon": 35.6934
+      "lon": 35.6934,
+      "urban": false
     },
     {
       "country": "Somalia",
       "name": "Kismayo",
       "lat": -0.3583,
-      "lon": 42.5442
+      "lon": 42.5442,
+      "urban": false
     },
     {
       "country": "Egypt",
       "name": "Ismailia",
       "lat": 30.5965,
-      "lon": 32.2715
+      "lon": 32.2715,
+      "urban": false
     },
     {
       "country": "Zambia",
       "name": "Ndola",
       "lat": -12.9583,
-      "lon": 28.6369
+      "lon": 28.6369,
+      "urban": true
     },
     {
       "country": "Ghana",
       "name": "Cape Coast",
       "lat": 5.1053,
-      "lon": -1.2466
+      "lon": -1.2466,
+      "urban": false
     },
     {
       "country": "Cameroon",
       "name": "Bafoussam",
       "lat": 5.4736,
-      "lon": 10.4175
+      "lon": 10.4175,
+      "urban": false
     },
     {
       "country": "Tanzania",
       "name": "Kigoma",
       "lat": -4.8769,
-      "lon": 29.6258
+      "lon": 29.6258,
+      "urban": false
     },
     {
       "country": "Somalia",
       "name": "Baidoa",
       "lat": 3.1231,
-      "lon": 43.6531
+      "lon": 43.6531,
+      "urban": false
     },
     {
       "country": "Egypt",
       "name": "Fayyum",
       "lat": 29.3084,
-      "lon": 30.8428
+      "lon": 30.8428,
+      "urban": false
     },
     {
       "country": "Zambia",
       "name": "Kabwe",
       "lat": -14.4469,
-      "lon": 28.4464
+      "lon": 28.4464,
+      "urban": false
     },
     {
       "country": "Ghana",
       "name": "Tema",
       "lat": 5.6698,
-      "lon": -0.0166
+      "lon": -0.0166,
+      "urban": true
     },
     {
       "country": "Cameroon",
       "name": "Bamenda",
       "lat": 5.9597,
-      "lon": 10.146
+      "lon": 10.146,
+      "urban": false
     },
     {
       "country": "Tanzania",
       "name": "Moshi",
       "lat": -3.35,
-      "lon": 37.3333
+      "lon": 37.3333,
+      "urban": false
     },
     {
       "country": "Somalia",
       "name": "Beledweyne",
       "lat": 4.7359,
-      "lon": 45.2038
+      "lon": 45.2038,
+      "urban": false
     },
     {
       "country": "Egypt",
       "name": "Sohag",
       "lat": 26.5591,
-      "lon": 31.6968
+      "lon": 31.6968,
+      "urban": false
     },
     {
       "country": "Zambia",
       "name": "Chingola",
       "lat": -12.5333,
-      "lon": 27.8667
+      "lon": 27.8667,
+      "urban": false
     },
     {
       "country": "Côte d'Ivoire",
       "name": "Bouaké",
       "lat": 7.6833,
-      "lon": -5.0333
+      "lon": -5.0333,
+      "urban": true
     },
     {
       "country": "Cameroon",
       "name": "Garoua",
       "lat": 9.3015,
-      "lon": 13.3953
+      "lon": 13.3953,
+      "urban": false
     },
     {
       "country": "Tanzania",
       "name": "Shinyanga",
       "lat": -3.66,
-      "lon": 33.42
+      "lon": 33.42,
+      "urban": false
     },
     {
       "country": "Somalia",
       "name": "Galkayo",
       "lat": 6.7698,
-      "lon": 47.4306
+      "lon": 47.4306,
+      "urban": false
     },
     {
       "country": "Egypt",
       "name": "Beni Suef",
       "lat": 29.0661,
-      "lon": 31.0994
+      "lon": 31.0994,
+      "urban": false
     },
     {
       "country": "Zambia",
       "name": "Livingstone",
       "lat": -17.8611,
-      "lon": 25.8544
+      "lon": 25.8544,
+      "urban": false
     },
     {
       "country": "Côte d'Ivoire",
       "name": "Yamoussoukro",
       "lat": 6.8276,
-      "lon": -5.2893
+      "lon": -5.2893,
+      "urban": false
     },
     {
       "country": "Cameroon",
       "name": "Maroua",
       "lat": 10.5955,
-      "lon": 14.3153
+      "lon": 14.3153,
+      "urban": false
     },
     {
       "country": "Tanzania",
       "name": "Singida",
       "lat": -4.8167,
-      "lon": 34.75
+      "lon": 34.75,
+      "urban": false
     },
     {
       "country": "Somalia",
       "name": "Bosaso",
       "lat": 11.2833,
-      "lon": 49.1833
+      "lon": 49.1833,
+      "urban": false
     },
     {
       "country": "Egypt",
       "name": "Aswan",
       "lat": 24.0889,
-      "lon": 32.8998
+      "lon": 32.8998,
+      "urban": false
     },
     {
       "country": "Zambia",
       "name": "Solwezi",
       "lat": -12.1869,
-      "lon": 26.3978
+      "lon": 26.3978,
+      "urban": false
     },
     {
       "country": "Senegal",
       "name": "Thiès",
       "lat": 14.7833,
-      "lon": -16.9167
+      "lon": -16.9167,
+      "urban": false
     },
     {
       "country": "Cameroon",
       "name": "Ngaoundéré",
       "lat": 7.3167,
-      "lon": 13.5833
+      "lon": 13.5833,
+      "urban": false
     },
     {
       "country": "Uganda",
       "name": "Gulu",
       "lat": 2.7747,
-      "lon": 32.299
+      "lon": 32.299,
+      "urban": true
     },
     {
       "country": "Somalia",
       "name": "Garowe",
       "lat": 8.4059,
-      "lon": 48.4856
+      "lon": 48.4856,
+      "urban": false
     },
     {
       "country": "Egypt",
       "name": "Minia",
       "lat": 28.087,
-      "lon": 30.7618
+      "lon": 30.7618,
+      "urban": false
     },
     {
       "country": "Botswana",
       "name": "Francistown",
       "lat": -21.1667,
-      "lon": 27.5
+      "lon": 27.5,
+      "urban": false
     },
     {
       "country": "Senegal",
       "name": "Kaolack",
       "lat": 14.1333,
-      "lon": -16.0667
+      "lon": -16.0667,
+      "urban": false
     },
     {
       "country": "Cameroon",
       "name": "Bertoua",
       "lat": 4.5761,
-      "lon": 13.6847
+      "lon": 13.6847,
+      "urban": false
     },
     {
       "country": "Uganda",
       "name": "Mbarara",
       "lat": -0.6167,
-      "lon": 30.65
+      "lon": 30.65,
+      "urban": false
     },
     {
       "country": "Somalia",
       "name": "Merca",
       "lat": 1.7122,
-      "lon": 44.7693
+      "lon": 44.7693,
+      "urban": false
     },
     {
       "country": "Egypt",
       "name": "Damanhur",
       "lat": 31.0339,
-      "lon": 30.4701
+      "lon": 30.4701,
+      "urban": false
     },
     {
       "country": "Botswana",
       "name": "Maun",
       "lat": -19.9833,
-      "lon": 23.4167
+      "lon": 23.4167,
+      "urban": false
     },
     {
       "country": "Senegal",
       "name": "Saint-Louis",
       "lat": 16.0333,
-      "lon": -16.5
+      "lon": -16.5,
+      "urban": false
     },
     {
       "country": "Republic of Congo",
       "name": "Pointe-Noire",
       "lat": -4.7692,
-      "lon": 11.866
+      "lon": 11.866,
+      "urban": true
     },
     {
       "country": "Uganda",
       "name": "Jinja",
       "lat": 0.4478,
-      "lon": 33.2026
+      "lon": 33.2026,
+      "urban": false
     },
     {
       "country": "Somalia",
       "name": "Burao",
       "lat": 9.5219,
-      "lon": 45.541
+      "lon": 45.541,
+      "urban": false
     },
     {
       "country": "Algeria",
       "name": "Oran",
       "lat": 35.6969,
-      "lon": -0.6331
+      "lon": -0.6331,
+      "urban": true
     },
     {
       "country": "Namibia",
       "name": "Walvis Bay",
       "lat": -22.9576,
-      "lon": 14.5053
+      "lon": 14.5053,
+      "urban": false
     },
     {
       "country": "Mali",
       "name": "Sikasso",
       "lat": 11.3167,
-      "lon": -5.6667
+      "lon": -5.6667,
+      "urban": false
     },
     {
       "country": "Gabon",
       "name": "Port-Gentil",
       "lat": -0.7193,
-      "lon": 8.7815
+      "lon": 8.7815,
+      "urban": false
     },
     {
       "country": "Uganda",
       "name": "Mbale",
       "lat": 1.0799,
-      "lon": 34.1754
+      "lon": 34.1754,
+      "urban": false
     },
     {
       "country": "Somalia",
       "name": "Berbera",
       "lat": 10.4386,
-      "lon": 45.0142
+      "lon": 45.0142,
+      "urban": false
     },
     {
       "country": "Algeria",
       "name": "Constantine",
       "lat": 36.365,
-      "lon": 6.6147
+      "lon": 6.6147,
+      "urban": true
     },
     {
       "country": "Namibia",
       "name": "Swakopmund",
       "lat": -22.6783,
-      "lon": 14.5258
+      "lon": 14.5258,
+      "urban": false
     },
     {
       "country": "Mali",
       "name": "Ségou",
       "lat": 13.45,
-      "lon": -6.2667
+      "lon": -6.2667,
+      "urban": false
     },
     {
       "country": "Gabon",
       "name": "Franceville",
       "lat": -1.6333,
-      "lon": 13.5833
+      "lon": 13.5833,
+      "urban": false
     },
     {
       "country": "Uganda",
       "name": "Lira",
       "lat": 2.2499,
-      "lon": 32.8999
+      "lon": 32.8999,
+      "urban": false
     },
     {
       "country": "Eritrea",
       "name": "Massawa",
       "lat": 15.6096,
-      "lon": 39.4658
+      "lon": 39.4658,
+      "urban": false
     },
     {
       "country": "Algeria",
       "name": "Annaba",
       "lat": 36.9,
-      "lon": 7.7667
+      "lon": 7.7667,
+      "urban": true
     },
     {
       "country": "Namibia",
       "name": "Rundu",
       "lat": -17.9333,
-      "lon": 19.7667
+      "lon": 19.7667,
+      "urban": false
     },
     {
       "country": "Mali",
       "name": "Mopti",
       "lat": 14.4833,
-      "lon": -4.1833
+      "lon": -4.1833,
+      "urban": false
     },
     {
       "country": "Equatorial Guinea",
       "name": "Bata",
       "lat": 1.8639,
-      "lon": 9.769
+      "lon": 9.769,
+      "urban": true
     },
     {
       "country": "Uganda",
       "name": "Masaka",
       "lat": -0.3367,
-      "lon": 31.75
+      "lon": 31.75,
+      "urban": false
     },
     {
       "country": "Eritrea",
       "name": "Keren",
       "lat": 15.7764,
-      "lon": 38.4592
+      "lon": 38.4592,
+      "urban": false
     },
     {
       "country": "Algeria",
       "name": "Blida",
       "lat": 36.4703,
-      "lon": 2.8277
+      "lon": 2.8277,
+      "urban": false
     },
     {
       "country": "Namibia",
       "name": "Oshakati",
       "lat": -17.7967,
-      "lon": 15.6945
+      "lon": 15.6945,
+      "urban": false
     },
     {
       "country": "Mali",
       "name": "Timbuktu",
       "lat": 16.7735,
-      "lon": -3.0074
+      "lon": -3.0074,
+      "urban": false
     },
     {
       "country": "Chad",
       "name": "Moundou",
       "lat": 8.5667,
-      "lon": 16.0833
+      "lon": 16.0833,
+      "urban": false
     },
     {
       "country": "Uganda",
       "name": "Arua",
       "lat": 3.021,
-      "lon": 30.91
+      "lon": 30.91,
+      "urban": false
     },
     {
       "country": "Eritrea",
       "name": "Mendefera",
       "lat": 14.8833,
-      "lon": 38.8167
+      "lon": 38.8167,
+      "urban": false
     },
     {
       "country": "Algeria",
       "name": "Batna",
       "lat": 35.5559,
-      "lon": 6.174
+      "lon": 6.174,
+      "urban": false
     },
     {
       "country": "Madagascar",
       "name": "Toamasina",
       "lat": -18.1492,
-      "lon": 49.4022
+      "lon": 49.4022,
+      "urban": false
     },
     {
       "country": "Burkina Faso",
       "name": "Bobo-Dioulasso",
       "lat": 11.1771,
-      "lon": -4.2979
+      "lon": -4.2979,
+      "urban": true
     },
     {
       "country": "Chad",
       "name": "Sarh",
       "lat": 9.15,
-      "lon": 18.3833
+      "lon": 18.3833,
+      "urban": false
     },
     {
       "country": "Uganda",
       "name": "Fort Portal",
       "lat": 0.6592,
-      "lon": 30.2738
+      "lon": 30.2738,
+      "urban": false
     },
     {
       "country": "Eritrea",
       "name": "Assab",
       "lat": 13.0,
-      "lon": 42.7333
+      "lon": 42.7333,
+      "urban": false
     },
     {
       "country": "Algeria",
       "name": "Sétif",
       "lat": 36.1898,
-      "lon": 5.4108
+      "lon": 5.4108,
+      "urban": false
     },
     {
       "country": "Madagascar",
       "name": "Antsirabe",
       "lat": -19.8659,
-      "lon": 47.0333
+      "lon": 47.0333,
+      "urban": false
     },
     {
       "country": "Burkina Faso",
       "name": "Koudougou",
       "lat": 12.25,
-      "lon": -2.3667
+      "lon": -2.3667,
+      "urban": false
     },
     {
       "country": "Chad",
       "name": "Abéché",
       "lat": 13.8279,
-      "lon": 20.8325
+      "lon": 20.8325,
+      "urban": false
     },
     {
       "country": "Uganda",
       "name": "Kabale",
       "lat": -1.25,
-      "lon": 29.9833
+      "lon": 29.9833,
+      "urban": false
     },
     {
       "country": "Djibouti",
       "name": "Ali Sabieh",
       "lat": 11.1556,
-      "lon": 42.7127
+      "lon": 42.7127,
+      "urban": false
     },
     {
       "country": "Algeria",
       "name": "Biskra",
       "lat": 34.85,
-      "lon": 5.7333
+      "lon": 5.7333,
+      "urban": false
     },
     {
       "country": "Madagascar",
       "name": "Mahajanga",
       "lat": -15.7167,
-      "lon": 46.3167
+      "lon": 46.3167,
+      "urban": false
     },
     {
       "country": "Niger",
       "name": "Maradi",
       "lat": 13.5,
-      "lon": 7.1
+      "lon": 7.1,
+      "urban": false
     },
     {
       "country": "Central African Republic",
       "name": "Bangassou",
       "lat": 4.736,
-      "lon": 22.819
+      "lon": 22.819,
+      "urban": false
     },
     {
       "country": "Uganda",
       "name": "Soroti",
       "lat": 1.7135,
-      "lon": 33.611
+      "lon": 33.611,
+      "urban": false
     },
     {
       "country": "Djibouti",
       "name": "Tadjourah",
       "lat": 11.7897,
-      "lon": 42.8844
+      "lon": 42.8844,
+      "urban": false
     },
     {
       "country": "Algeria",
       "name": "Béjaïa",
       "lat": 36.751,
-      "lon": 5.0564
+      "lon": 5.0564,
+      "urban": false
     },
     {
       "country": "Madagascar",
       "name": "Fianarantsoa",
       "lat": -21.45,
-      "lon": 47.0833
+      "lon": 47.0833,
+      "urban": false
     },
     {
       "country": "Niger",
       "name": "Zinder",
       "lat": 13.8,
-      "lon": 8.9833
+      "lon": 8.9833,
+      "urban": false
     },
     {
       "country": "Central African Republic",
       "name": "Berbérati",
       "lat": 4.2611,
-      "lon": 15.7875
+      "lon": 15.7875,
+      "urban": false
     },
     {
       "country": "Rwanda",
       "name": "Gitarama",
       "lat": -2.0746,
-      "lon": 29.7564
+      "lon": 29.7564,
+      "urban": false
     },
     {
       "country": "Djibouti",
       "name": "Dikhil",
       "lat": 11.1053,
-      "lon": 42.3697
+      "lon": 42.3697,
+      "urban": false
     },
     {
       "country": "Algeria",
       "name": "Tlemcen",
       "lat": 34.8828,
-      "lon": -1.3167
+      "lon": -1.3167,
+      "urban": false
     },
     {
       "country": "Madagascar",
       "name": "Toliara",
       "lat": -23.35,
-      "lon": 43.6667
+      "lon": 43.6667,
+      "urban": false
     },
     {
       "country": "Niger",
       "name": "Tahoua",
       "lat": 14.8833,
-      "lon": 5.2667
+      "lon": 5.2667,
+      "urban": false
     },
     {
       "country": "Central African Republic",
       "name": "Bambari",
       "lat": 5.7619,
-      "lon": 20.6722
+      "lon": 20.6722,
+      "urban": false
     },
     {
       "country": "Rwanda",
       "name": "Butare",
       "lat": -2.6,
-      "lon": 29.7333
+      "lon": 29.7333,
+      "urban": false
     },
     {
       "country": "Ethiopia",
       "name": "Gambela",
       "lat": 8.25,
-      "lon": 34.5833
+      "lon": 34.5833,
+      "urban": false
     },
     {
       "country": "Tunisia",
       "name": "Sfax",
       "lat": 34.7406,
-      "lon": 10.7603
+      "lon": 10.7603,
+      "urban": true
     },
     {
       "country": "South Africa",
       "name": "Pietermaritzburg",
       "lat": -29.6167,
-      "lon": 30.3833
+      "lon": 30.3833,
+      "urban": true
     },
     {
       "country": "Niger",
       "name": "Agadez",
       "lat": 16.9742,
-      "lon": 7.9893
+      "lon": 7.9893,
+      "urban": false
     },
     {
       "country": "Central African Republic",
       "name": "Bouar",
       "lat": 5.9367,
-      "lon": 15.5994
+      "lon": 15.5994,
+      "urban": false
     },
     {
       "country": "Rwanda",
       "name": "Gisenyi",
       "lat": -1.6979,
-      "lon": 29.2566
+      "lon": 29.2566,
+      "urban": false
     },
     {
       "country": "Ethiopia",
       "name": "Assosa",
       "lat": 10.0667,
-      "lon": 34.5333
+      "lon": 34.5333,
+      "urban": false
     },
     {
       "country": "Tunisia",
       "name": "Sousse",
       "lat": 35.8333,
-      "lon": 10.6333
+      "lon": 10.6333,
+      "urban": true
     },
     {
       "country": "South Africa",
       "name": "Benoni",
       "lat": -26.1839,
-      "lon": 28.3197
+      "lon": 28.3197,
+      "urban": true
     },
     {
       "country": "Guinea",
       "name": "Kankan",
       "lat": 10.3833,
-      "lon": -9.3
+      "lon": -9.3,
+      "urban": false
     },
     {
       "country": "DR Congo",
       "name": "Tshikapa",
       "lat": -6.4167,
-      "lon": 20.8
+      "lon": 20.8,
+      "urban": false
     },
     {
       "country": "Burundi",
       "name": "Gitega",
       "lat": -3.4272,
-      "lon": 29.925
+      "lon": 29.925,
+      "urban": false
     },
     {
       "country": "Ethiopia",
       "name": "Hosaena",
       "lat": 7.55,
-      "lon": 37.85
+      "lon": 37.85,
+      "urban": false
     },
     {
       "country": "Tunisia",
       "name": "Kairouan",
       "lat": 35.6722,
-      "lon": 10.1
+      "lon": 10.1,
+      "urban": false
     },
     {
       "country": "South Africa",
       "name": "Soweto",
       "lat": -26.2677,
-      "lon": 27.8587
+      "lon": 27.8587,
+      "urban": true
     },
     {
       "country": "Guinea",
       "name": "Nzérékoré",
       "lat": 7.7564,
-      "lon": -8.8175
+      "lon": -8.8175,
+      "urban": false
     },
     {
       "country": "Republic of Congo",
       "name": "Dolisie",
       "lat": -4.1992,
-      "lon": 12.6772
+      "lon": 12.6772,
+      "urban": false
     },
     {
       "country": "Burundi",
       "name": "Ngozi",
       "lat": -2.9072,
-      "lon": 29.8299
+      "lon": 29.8299,
+      "urban": false
     },
     {
       "country": "Ethiopia",
       "name": "Shashamane",
       "lat": 7.2,
-      "lon": 38.5833
+      "lon": 38.5833,
+      "urban": false
     },
     {
       "country": "Tunisia",
       "name": "Bizerte",
       "lat": 37.2744,
-      "lon": 9.8739
+      "lon": 9.8739,
+      "urban": false
     },
     {
       "country": "South Africa",
       "name": "Polokwane",
       "lat": -23.9045,
-      "lon": 29.4688
+      "lon": 29.4688,
+      "urban": true
     },
     {
       "country": "Guinea",
       "name": "Labé",
       "lat": 11.3167,
-      "lon": -12.3
+      "lon": -12.3,
+      "urban": false
     },
     {
       "country": "Central African Republic",
       "name": "Nola",
       "lat": 3.5264,
-      "lon": 16.0594
+      "lon": 16.0594,
+      "urban": false
     },
     {
       "country": "Burundi",
       "name": "Muyinga",
       "lat": -2.85,
-      "lon": 30.3333
+      "lon": 30.3333,
+      "urban": false
     },
     {
       "country": "Ethiopia",
       "name": "Debre Birhan",
       "lat": 9.6833,
-      "lon": 39.5333
+      "lon": 39.5333,
+      "urban": false
     }
   ]
 }

@@ -22,7 +22,7 @@ export function HealthRiskScreen() {
 
   const raw = route.params?.prediction?.prediction ?? route.params?.prediction ?? null;
   const prediction = (raw as PredictionResult | null) ?? null;
-  const risks = deriveHealthRisks(prediction);
+  const risks = deriveHealthRisks(prediction as Parameters<typeof deriveHealthRisks>[0]);
   const cityName = prediction?.location?.name?.split(',')[0]?.trim() ?? '';
 
   if (!prediction || !risks) {

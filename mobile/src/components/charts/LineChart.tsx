@@ -85,10 +85,20 @@ export function LineChart({
             <Circle key={`s${i}`} cx={p.x} cy={p.y} r={4} fill={secondaryColor} />
           ))}
       </Svg>
+      <View style={[styles.valueRow, { width: W, paddingHorizontal: padH }]}>
+        {data.map((v, i) => (
+          <Text
+            key={`v${i}`}
+            style={[styles.value, { color: isDark ? Colors.textSecondary : '#5C6B7A' }]}
+          >
+            {Math.round(v)}
+          </Text>
+        ))}
+      </View>
       {labels && labels.length > 0 ? (
         <View style={[styles.labelRow, { width: W, paddingHorizontal: padH }]}>
           {labels.map((l, i) => (
-            <Text key={i} style={[styles.label, { color: isDark ? Colors.textMuted : '#9CAFaa' }]}>
+            <Text key={i} style={[styles.label, { color: isDark ? Colors.textMuted : '#5C6B7A' }]}>
               {l}
             </Text>
           ))}
@@ -99,12 +109,25 @@ export function LineChart({
 }
 
 const styles = StyleSheet.create({
+  valueRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 6,
+  },
+  value: {
+    fontSize: 10,
+    fontWeight: '600',
+    flex: 1,
+    textAlign: 'center',
+  },
   labelRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 4,
+    marginTop: 2,
   },
   label: {
     fontSize: 11,
+    flex: 1,
+    textAlign: 'center',
   },
 });

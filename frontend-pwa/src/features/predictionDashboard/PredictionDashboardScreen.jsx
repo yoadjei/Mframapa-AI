@@ -4,6 +4,7 @@ import { useAppState } from "../../state/appState.jsx";
 import { useNavigation } from "../../hooks/useNavigation.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { getColors, Colors, getAQIColor } from "../../utils/colors.js";
+import { factorLabels } from "../../utils/factors.js";
 import { getForecast } from "../../services/api.js";
 import { StackBackButton } from "../../components/navigation/StackBackButton.jsx";
 
@@ -168,7 +169,7 @@ export function PredictionDashboardScreen({ isOnline, isDark, params }) {
   const series = forecast.map((d) => Math.round(d.pm25));
   const seriesColors = forecast.map((d) => getAQIColor(d.aqi_category, isDark));
   const aqiColor = getAQIColor((selected ?? pred)?.aqi_category, isDark);
-  const factors = pred?.factors ?? [];
+  const factors = factorLabels(pred?.factors);
 
   // labels reflect the real days we can forecast, not fixed 24h/48h/7d claims
   const rangeLabels = forecast.map((d, i) =>

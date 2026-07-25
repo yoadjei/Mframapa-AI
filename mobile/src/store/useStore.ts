@@ -36,7 +36,7 @@ export interface PredictionResult {
   pm25: number;
   aqi_category: string;
   uncertainty: { pm25_lower: number; pm25_upper: number };
-  weather: { temp: number; humidity: number; wind: number };
+  weather: { temp: number | null; humidity: number | null; wind: number | null };
   location: { name: string; lat: number; lon: number };
   factors?: string[];
   model?: string;
@@ -213,6 +213,8 @@ interface AppState {
   liteMode: boolean;
   setLiteMode: (v: boolean) => void;
   dataAnalytics: boolean;
+  textScale: number;
+  setTextScale: (v: number) => void;
   setDataAnalytics: (v: boolean) => void;
   locationSharing: 'off' | 'balanced' | 'precise';
   setLocationSharing: (v: 'off' | 'balanced' | 'precise') => void;
@@ -644,8 +646,10 @@ export const useStore = create<AppState>()(
         set((s) => ({ notifPrefs: { ...s.notifPrefs, [key]: value } })),
       liteMode: false,
       setLiteMode: (v) => set({ liteMode: v }),
-      dataAnalytics: false,
+      dataAnalytics: true,
       setDataAnalytics: (v) => set({ dataAnalytics: v }),
+      textScale: 1,
+      setTextScale: (v) => set({ textScale: v }),
       locationSharing: 'balanced',
       setLocationSharing: (v) => set({ locationSharing: v }),
     }),
@@ -682,6 +686,7 @@ export const useStore = create<AppState>()(
         paymentCurrency: state.paymentCurrency,
         liteMode: state.liteMode,
         dataAnalytics: state.dataAnalytics,
+        textScale: state.textScale,
         locationSharing: state.locationSharing,
         trialStartedAt: state.trialStartedAt,
         trialEndsAt: state.trialEndsAt,

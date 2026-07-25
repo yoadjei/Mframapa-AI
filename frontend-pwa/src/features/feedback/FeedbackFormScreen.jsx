@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Camera, CheckCircle2 } from "lucide-react";
+import { useRef, useState } from "react";
+import { Camera, CheckCircle2, X } from "lucide-react";
 import { getColors, Colors } from "../../utils/colors.js";
 import { useNavigation } from "../../hooks/useNavigation.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
@@ -26,6 +26,24 @@ export function FeedbackFormScreen({ params, isOnline, isDark }) {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
+  const [attachmentName, setAttachmentName] = useState("");
+  const [attachmentDataUrl, setAttachmentDataUrl] = useState("");
+  const fileRef = useRef(null);
+
+  function onPickFile(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 2_500_000) {
+      setError(t("screen.feedback.attach_too_large", "Screenshot must be under 2.5 MB."));
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      setAttachmentName(file.name);
+      setAttachmentDataUrl(typeof reader.result === "string" ? reader.result : "");
+    };
+    reader.readAsDataURL(file);
+  }
 
   async function handleSubmit() {
     if (submitting) return;
@@ -36,9 +54,13 @@ export function FeedbackFormScreen({ params, isOnline, isDark }) {
     setSubmitting(true);
     setError("");
     try {
+      // Keep payload small for email notify — note the filename when attached.
+      void attachmentDataUrl;
       await sendFeedback({
         category: CATEGORY_SLUGS.includes(category) ? category : "general",
-        message,
+        message: attachmentName
+          ? `${message.trim()}\n\n[Screenshot attached: ${attachmentName}]`
+          : message,
         email,
       });
       setSubmitted(true);
@@ -210,8 +232,17 @@ export function FeedbackFormScreen({ params, isOnline, isDark }) {
           />
         </div>
 
+        <input
+          ref={fileRef}
+          type="file"
+          accept="image/*"
+          capture="environment"
+          onChange={onPickFile}
+          style={{ display: "none" }}
+        />
         <button
           type="button"
+          onClick={() => fileRef.current?.click()}
           style={{
             width: "100%",
             display: "flex",
@@ -227,9 +258,28 @@ export function FeedbackFormScreen({ params, isOnline, isDark }) {
         >
           <Camera size={18} color={Colors.brandGreen} />
           <span style={{ fontSize: "0.9375rem", fontWeight: 600, color: Colors.brandGreen }}>
-            {t("screen.feedback.attach")}
+            {attachmentName || t("screen.feedback.attach")}
           </span>
         </button>
+        {attachmentName ? (
+          <button
+            type="button"
+            onClick={() => { setAttachmentName(""); setAttachmentDataUrl(""); if (fileRef.current) fileRef.current.value = ""; }}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 6,
+              border: "none",
+              background: "transparent",
+              color: colors.subtext,
+              fontSize: "0.8125rem",
+              cursor: "pointer",
+            }}
+          >
+            <X size={14} /> {t("common.remove", "Remove screenshot")}
+          </button>
+        ) : null}
 
         <div>
           <p

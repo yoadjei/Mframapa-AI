@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Home, Map, User, Plus, X, Search, Bell, Activity, Settings, Download } from "lucide-react";
+import { Home, Map, User, Plus, X, Search, Activity, Settings, Download } from "lucide-react";
 import { useAppState } from "../../state/appState.jsx";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { liquidGlass } from "../../utils/colors.js";
@@ -10,11 +10,11 @@ const MAIN_TABS = [
   { key: "profile", icon: User,  labelKey: "tab.profile" },
 ];
 
+// Alerts/notifications: Home bell only (avoid FAB + bell redundancy).
 const MORE_ITEMS = [
-  { key: "search",        icon: Search,   labelKey: "pwa.nav.search" },
-  { key: "notifications", icon: Bell,     labelKey: "pwa.nav.alerts" },
-  { key: "activity",      icon: Activity, labelKey: "pwa.quick.activity" },
-  { key: "settings",      icon: Settings, labelKey: "pwa.nav.settings" },
+  { key: "search",   icon: Search,   labelKey: "pwa.nav.search" },
+  { key: "activity", icon: Activity, labelKey: "pwa.quick.activity" },
+  { key: "settings", icon: Settings, labelKey: "pwa.nav.settings" },
 ];
 
 

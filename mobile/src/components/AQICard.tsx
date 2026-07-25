@@ -56,18 +56,24 @@ export function AQICard({ prediction, isDark }: AQICardProps) {
           })}
         </Text>
 
-        <View style={styles.weatherRow}>
-          <WeatherChip
-            icon="water-outline"
-            label={t('weather.humidity')}
-            value={`${prediction.weather.humidity.toFixed(0)}%`}
-          />
-          <WeatherChip
-            icon="navigate-outline"
-            label={t('weather.wind')}
-            value={`${prediction.weather.wind.toFixed(1)} m/s`}
-          />
-        </View>
+        {(prediction.weather.humidity != null || prediction.weather.wind != null) ? (
+          <View style={styles.weatherRow}>
+            {prediction.weather.humidity != null ? (
+              <WeatherChip
+                icon="water-outline"
+                label={t('weather.humidity')}
+                value={`${prediction.weather.humidity.toFixed(0)}%`}
+              />
+            ) : null}
+            {prediction.weather.wind != null ? (
+              <WeatherChip
+                icon="navigate-outline"
+                label={t('weather.wind')}
+                value={`${prediction.weather.wind.toFixed(1)} m/s`}
+              />
+            ) : null}
+          </View>
+        ) : null}
       </LinearGradient>
 
       <View style={styles.detailRow}>
@@ -81,9 +87,11 @@ export function AQICard({ prediction, isDark }: AQICardProps) {
         <DetailCard
           title={t('card.main_pollutant')}
           value={t('card.pm25')}
-          subtitle={t('card.weather_suffix', {
-            temp: prediction.weather.temp.toFixed(0),
-          })}
+          subtitle={
+            prediction.weather.temp != null
+              ? t('card.weather_suffix', { temp: prediction.weather.temp.toFixed(0) })
+              : t('card.pm25')
+          }
           colors={colors}
           valueColor={colors.text}
         />

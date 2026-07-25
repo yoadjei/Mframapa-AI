@@ -62,7 +62,7 @@ export function deriveHealthRisks(prediction: {
   category?: string;
   pm25?: number;
   factors?: string[] | Record<string, unknown>;
-  weather?: { temp?: number; uv?: number };
+  weather?: { temp?: number | null; humidity?: number | null; wind?: number | null; uv?: number | null };
   uv_index?: number;
   uv?: number;
 } | null): HealthRiskRow[] | null {

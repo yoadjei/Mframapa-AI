@@ -86,6 +86,9 @@ export function ProfileScreen() {
             keyboardType="email-address"
             autoCapitalize="none"
           />
+          <Text style={[styles.managedNote, { color: colors.muted }]}>
+            {t('screen.profile.managed_note')}
+          </Text>
         </View>
 
         {/* Product screens — same discoverability as PWA Profile */}
@@ -164,6 +167,7 @@ const styles = StyleSheet.create({
   tierRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 24 },
   tierLabel: { fontSize: 14 },
   form: { gap: 14, marginBottom: 8 },
+  managedNote: { fontSize: 12, marginTop: 4, lineHeight: 16 },
   links: {
     marginTop: 8,
     borderTopWidth: StyleSheet.hairlineWidth,

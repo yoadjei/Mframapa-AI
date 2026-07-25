@@ -35,10 +35,9 @@ export const PROFILE_MENU_ITEMS: ProfileMenuItem[] = [
   { id: 'feedback', labelKey: 'screen.profile.link_feedback', screen: 'FeedbackForm' },
 ];
 
-/** PWA-parity FAB overflow: quick nav, not product deep-links. */
+/** PWA-parity FAB: quick nav. Alerts/notifications live on the Home bell only. */
 export const FAB_MORE_ITEMS: FabMoreItem[] = [
   { id: 'search', labelKey: 'tab.search', icon: 'search-outline', route: 'Search' },
-  { id: 'alerts', labelKey: 'tab.alerts', icon: 'notifications-outline', route: 'Alerts' },
   {
     id: 'activity',
     labelKey: 'screen.profile.link_activity_feed',

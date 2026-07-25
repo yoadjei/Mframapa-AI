@@ -6,6 +6,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import * as ImagePicker from 'expo-image-picker';
 import { Colors } from '../theme/colors';
 import { getColors } from '../theme';
 import { useTheme } from '../hooks/useTheme';
@@ -32,6 +33,23 @@ export function FeedbackFormScreen() {
   const [message, setMessage] = useState('');
   const [email, setEmail] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [attachmentName, setAttachmentName] = useState('');
+
+  async function handleAttach() {
+    const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!perm.granted) {
+      Alert.alert(t('screen.feedback.attach'), t('error.location')); // reuse generic denial tone
+      return;
+    }
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      quality: 0.7,
+      allowsEditing: false,
+    });
+    if (result.canceled || !result.assets?.[0]) return;
+    const asset = result.assets[0];
+    setAttachmentName(asset.fileName || asset.uri.split('/').pop() || 'screenshot.jpg');
+  }
 
   async function handleSubmit() {
     if (submitting) return;
@@ -43,7 +61,9 @@ export function FeedbackFormScreen() {
     try {
       await sendFeedback({
         category,
-        message,
+        message: attachmentName
+          ? `${message.trim()}\n\n[Screenshot attached: ${attachmentName}]`
+          : message,
         email: email || null,
       });
       Alert.alert(t('screen.feedback.thanks_title'), t('screen.feedback.thanks_body'));
@@ -103,9 +123,15 @@ export function FeedbackFormScreen() {
             />
           </View>
 
-          <TouchableOpacity style={[styles.attachBtn, { borderColor: Colors.brandGreen }]}>
+          <TouchableOpacity
+            style={[styles.attachBtn, { borderColor: Colors.brandGreen }]}
+            onPress={handleAttach}
+            accessibilityRole="button"
+          >
             <Ionicons name="camera-outline" size={18} color={Colors.brandGreen} />
-            <Text style={styles.attachText}>{t('screen.feedback.attach')}</Text>
+            <Text style={styles.attachText}>
+              {attachmentName || t('screen.feedback.attach')}
+            </Text>
           </TouchableOpacity>
 
           <View>

@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
   View, Text, TouchableOpacity, ActivityIndicator, ScrollView, StyleSheet,
-  Animated, Platform,
+  Animated,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -118,7 +118,7 @@ export function HomeScreen() {
 
   const heroCardContent = (
     <>
-      <Text style={[styles.pm25Label, { color: colors.subtext }]}>{t('card.pm25')}</Text>
+      <Text style={[styles.pm25Label, { color: colors.subtext }]}>{t('home.air_now')}</Text>
       <View style={styles.aqiRow}>
         <Text style={[styles.aqiNumber, { color: colors.text }]}>{pred ? displayNum : '--'}</Text>
         {pred ? (
@@ -203,20 +203,11 @@ export function HomeScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Secondary Stat Cards */}
-        {pred ? (
-          <View style={styles.statRow}>
-            <View style={[styles.statCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-              <Text style={[styles.statLabel, { color: colors.subtext }]}>{t('card.aqi_level')}</Text>
-              <Text style={[styles.statValue, { color: colors.text }]}>{pred.pm25.toFixed(0)}</Text>
-              <Text style={[styles.statSub, { color: getAQIColor(pred.aqi_category, isDark) }]}>
-                ({t(aqiCategoryKey(pred.aqi_category))})
-              </Text>
-            </View>
-            <View style={[styles.statCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-              <Text style={[styles.statLabel, { color: colors.subtext }]}>{t('card.main_pollutant')}</Text>
-              <Text style={[styles.statValue, { color: colors.text }]}>{t('card.pm25')}</Text>
-            </View>
+        {/* What to do — AI guidance (PWA parity) */}
+        {pred?.insight ? (
+          <View style={[styles.factCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <Text style={[styles.factLabel, { color: colors.subtext }]}>{t('home.advice_title')}</Text>
+            <Text style={[styles.factBody, { color: colors.text }]}>{pred.insight}</Text>
           </View>
         ) : null}
 
@@ -262,30 +253,39 @@ export function HomeScreen() {
           ))}
         </View>
 
-        {/* Weather Stats (Android-style row, shown on Android) */}
-        {pred && Platform.OS === 'android' ? (
-          <View style={styles.weatherRow}>
-            <View style={[styles.weatherCard, { backgroundColor: colors.card }]}>
-              <Ionicons name="water-outline" size={20} color={Colors.brandGreen} />
-              <Text style={[styles.weatherValue, { color: colors.text }]}>
-                {pred.weather.humidity.toFixed(0)}%
-              </Text>
-              <Text style={[styles.weatherLabel, { color: colors.subtext }]}>{t('weather.humidity')}</Text>
-            </View>
-            <View style={[styles.weatherCard, { backgroundColor: colors.card }]}>
-              <Ionicons name="speedometer-outline" size={20} color={Colors.brandGreen} />
-              <Text style={[styles.weatherValue, { color: colors.text }]}>
-                {pred.weather.wind.toFixed(1)} m/h
-              </Text>
-              <Text style={[styles.weatherLabel, { color: colors.subtext }]}>{t('home.wind_speed')}</Text>
-            </View>
-          </View>
-        ) : null}
-
         {fact ? (
           <View style={[styles.factCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <Text style={[styles.factLabel, { color: colors.subtext }]}>{t('home.did_you_know')}</Text>
             <Text style={[styles.factBody, { color: colors.text }]}>{fact}</Text>
+          </View>
+        ) : null}
+
+        {/* Weather strip — all platforms (PWA parity); hide missing values */}
+        {pred?.weather && (pred.weather.humidity != null || pred.weather.wind != null || pred.weather.temp != null) ? (
+          <View style={styles.weatherRow}>
+            {[
+              pred.weather.humidity != null && {
+                icon: 'water-outline' as const,
+                value: `${Number(pred.weather.humidity).toFixed(0)}%`,
+                label: t('weather.humidity'),
+              },
+              pred.weather.wind != null && {
+                icon: 'speedometer-outline' as const,
+                value: `${Number(pred.weather.wind).toFixed(1)} m/s`,
+                label: t('weather.wind'),
+              },
+              pred.weather.temp != null && {
+                icon: 'thermometer-outline' as const,
+                value: `${Number(pred.weather.temp).toFixed(0)}°C`,
+                label: t('weather.temp'),
+              },
+            ].filter(Boolean).map((w: any, i) => (
+              <View key={i} style={[styles.weatherCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                <Ionicons name={w.icon} size={20} color={Colors.brandGreen} />
+                <Text style={[styles.weatherValue, { color: colors.text }]}>{w.value}</Text>
+                <Text style={[styles.weatherLabel, { color: colors.subtext }]}>{w.label}</Text>
+              </View>
+            ))}
           </View>
         ) : null}
       </ScrollView>
@@ -419,6 +419,7 @@ const styles = StyleSheet.create({
     padding: 14,
     alignItems: 'center',
     gap: 4,
+    borderWidth: StyleSheet.hairlineWidth,
   },
   weatherValue: { fontSize: 18, fontWeight: '700' },
   weatherLabel: { fontSize: 12 },
