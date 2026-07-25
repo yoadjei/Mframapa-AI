@@ -7,13 +7,130 @@ import {
 } from 'framer-motion'
 import { PhoneMockup, type PhoneScreen } from '../components/PhoneMockup'
 import { copy } from '../content/copy'
-import { iosScreen } from '../lib/ios'
+import { iosScreen, iosSoft } from '../lib/ios'
 import { useSiteMotion } from '../lib/motionPreference'
+import { useIsMobile } from '../hooks/useIsMobile'
 
 /**
- * Tall sticky scrub section — scroll drives the story (invested scrolling).
+ * Desktop: tall sticky scroll-scrub.
+ * Mobile: tap steps + auto-cycle (sticky 280vh fights mobile nav / viewport).
  */
 export function HowItWorks() {
+  const isMobile = useIsMobile()
+  return isMobile ? <HowItWorksMobile /> : <HowItWorksDesktop />
+}
+
+function HowItWorksMobile() {
+  const steps = copy.how.steps
+  const [active, setActive] = useState(0)
+  const [paused, setPaused] = useState(false)
+  const step = steps[active]!
+
+  useEffect(() => {
+    if (paused) return
+    const id = window.setInterval(() => {
+      setActive((a) => (a + 1) % steps.length)
+    }, 3600)
+    return () => window.clearInterval(id)
+  }, [paused, steps.length])
+
+  useEffect(() => {
+    if (!paused) return
+    const id = window.setTimeout(() => setPaused(false), 8000)
+    return () => window.clearTimeout(id)
+  }, [paused])
+
+  return (
+    <section className="border-t border-line bg-white py-16 sm:py-20">
+      <div className="mx-auto max-w-6xl px-4 sm:px-5">
+        <p className="text-[12px] font-semibold tracking-[0.16em] text-mint-dark uppercase">
+          How it works
+        </p>
+
+        <div className="relative mx-auto mt-8 flex min-h-[360px] items-center justify-center">
+          <div
+            className="absolute inset-10 rounded-full bg-[radial-gradient(circle,rgba(0,200,150,0.14)_0%,transparent_68%)]"
+            aria-hidden
+          />
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={step.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -16 }}
+              transition={iosScreen}
+            >
+              <PhoneMockup
+                screen={step.screen as PhoneScreen}
+                floating={false}
+                size="md"
+              />
+            </motion.div>
+          </AnimatePresence>
+        </div>
+
+        {/* Step chips — clear mobile navigation */}
+        <div className="mt-8 flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {steps.map((s, i) => {
+            const on = i === active
+            return (
+              <button
+                key={s.id}
+                type="button"
+                onClick={() => {
+                  setActive(i)
+                  setPaused(true)
+                }}
+                className={`shrink-0 rounded-full px-4 py-2 text-sm font-semibold transition ${
+                  on
+                    ? 'bg-ink text-white'
+                    : 'bg-canvas text-muted ring-1 ring-line'
+                }`}
+              >
+                {s.step}
+              </button>
+            )
+          })}
+        </div>
+
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={step.id}
+            className="mt-5"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={iosSoft}
+          >
+            <h3 className="font-display text-2xl font-bold tracking-tight text-ink">
+              {step.title}
+            </h3>
+            <p className="mt-2 text-[15px] leading-relaxed text-muted">{step.body}</p>
+          </motion.div>
+        </AnimatePresence>
+
+        <div className="mt-6 flex gap-1.5">
+          {steps.map((s, i) => (
+            <button
+              key={s.id}
+              type="button"
+              aria-label={`Go to ${s.step}`}
+              onClick={() => {
+                setActive(i)
+                setPaused(true)
+              }}
+              className={`h-1.5 flex-1 rounded-full transition ${
+                i === active ? 'bg-mint' : 'bg-line'
+              }`}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function HowItWorksDesktop() {
   const { intensity } = useSiteMotion()
   const sectionRef = useRef<HTMLElement>(null)
   const steps = copy.how.steps

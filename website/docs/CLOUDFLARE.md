@@ -42,6 +42,39 @@ Leave the existing Pages project (or host) for the PWA on `mframapa.live`.
 Use `https://www.mframapa.live` on the deck, LinkedIn, and emails.  
 “Open the app” buttons still go to `https://mframapa.live`.
 
-## 5. Optional: redirect old marketing domain
+## 5. Redirect old marketing domain on Porkbun (`mframapaai.health`)
 
-If `mframapaai.health` still works for a while, add a redirect rule there → `https://www.mframapa.live` so old links don’t die quietly.
+`mframapaai.health` is registered at **Porkbun**, not Cloudflare. Use Porkbun URL forwarding.
+
+### Steps
+
+1. Log in at [porkbun.com](https://porkbun.com) → **Domain Management**
+2. Find **`mframapaai.health`** → click the domain
+3. Open **URL Forwarding** (sometimes under **Details** / **Redirects**)
+4. Add forwarding:
+
+   | Field | Value |
+   |-------|--------|
+   | Subdomain | leave blank (apex) **and** optionally add another row for `www` |
+   | Destination URL | `https://www.mframapa.live` |
+   | Type | **Permanent (301)** |
+   | Include path | **Yes** if Porkbun offers it (so `/about` → `/about`) |
+
+5. Save. DNS may show Porkbun’s forwarding records (`URL` / `ALIAS`) — that’s expected.
+6. Wait a few minutes (up to an hour for DNS).
+
+Also forward **`www.mframapaai.health`** the same way if you use that hostname.
+
+### Quick check
+
+```bash
+curl -I https://mframapaai.health/
+```
+
+Expect `301` (or `302` if Porkbun only offers temporary) and `Location: https://www.mframapa.live/`.
+
+### Notes
+
+- URL forwarding only works while the domain uses **Porkbun nameservers**.
+- When the domain expires and you don’t renew, the redirect dies with it — that’s fine; pitch on `www.mframapa.live` from now on.
+- If you ever move `.health` DNS to Cloudflare later, use a Cloudflare Redirect Rule instead (same destination).

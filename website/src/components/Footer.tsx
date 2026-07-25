@@ -14,8 +14,11 @@ export function Footer() {
     <footer className="border-t border-line bg-canvas">
       <div className="mx-auto flex max-w-6xl flex-col gap-8 px-5 py-12 md:flex-row md:items-start md:justify-between md:px-8">
         <div>
-          <p className="font-display text-lg font-bold text-ink">
-            <span className="text-mint">M</span>framapa
+          <p className="inline-flex items-center gap-2 font-display text-lg font-bold text-ink">
+            <img src="/logo.png" alt="" width={22} height={22} className="h-[22px] w-[22px]" />
+            <span>
+              <span className="text-mint">m</span>framapa
+            </span>
           </p>
           <p className="mt-2 text-sm text-muted">© {new Date().getFullYear()}</p>
           <a

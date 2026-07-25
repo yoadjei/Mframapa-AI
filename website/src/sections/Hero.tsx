@@ -6,10 +6,12 @@ import { StoreBadges } from '../components/StoreBadges'
 import { APP_URL } from '../lib/constants'
 import { copy } from '../content/copy'
 import { useSiteMotion } from '../lib/motionPreference'
+import { useIsMobile } from '../hooks/useIsMobile'
 import { iosFadeUp, iosSoft, iosStagger } from '../lib/ios'
 
 export function Hero() {
   const { intensity, soft } = useSiteMotion()
+  const isMobile = useIsMobile()
   const sectionRef = useRef<HTMLElement>(null)
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -92,12 +94,17 @@ export function Hero() {
 
         <motion.div
           className="relative z-10"
-          style={{ y: phoneY, rotate: phoneRotate }}
+          style={isMobile ? undefined : { y: phoneY, rotate: phoneRotate }}
           initial={{ opacity: 0, y: 56, scale: 0.92 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ ...iosSoft, delay: 0.1 }}
         >
-          <PhoneMockup screen="home" floating tilted size="lg" />
+          <PhoneMockup
+            screen="home"
+            floating
+            tilted={!isMobile}
+            size={isMobile ? 'md' : 'lg'}
+          />
         </motion.div>
       </div>
 

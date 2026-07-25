@@ -1,11 +1,15 @@
-import { useMemo, useRef } from 'react'
+import { useMemo, useRef, type RefObject } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { Float } from '@react-three/drei'
 import * as THREE from 'three'
 
 type Props = {
   intensity?: number
-  scrollBoost?: number
+  scrollBoostRef?: RefObject<number>
+}
+
+function useBoost(ref?: RefObject<number>) {
+  return () => ref?.current ?? 0
 }
 
 function Globe({ intensity = 1 }: { intensity?: number }) {
@@ -51,12 +55,14 @@ function Globe({ intensity = 1 }: { intensity?: number }) {
 
 function DustField({
   intensity = 1,
-  scrollBoost = 0,
+  scrollBoostRef,
 }: {
   intensity?: number
-  scrollBoost?: number
+  scrollBoostRef?: RefObject<number>
 }) {
   const ref = useRef<THREE.Points>(null)
+  const mat = useRef<THREE.PointsMaterial>(null)
+  const getBoost = useBoost(scrollBoostRef)
   const count = 480
   const positions = useMemo(() => {
     const arr = new Float32Array(count * 3)
@@ -70,6 +76,7 @@ function DustField({
 
   useFrame((_, delta) => {
     if (!ref.current) return
+    const scrollBoost = getBoost()
     const speed = (0.45 + scrollBoost * 1.1) * intensity
     ref.current.rotation.y += delta * 0.1 * intensity
     const pos = ref.current.geometry.attributes.position
@@ -82,6 +89,10 @@ function DustField({
       pos.setX(i, x)
     }
     pos.needsUpdate = true
+    if (mat.current) {
+      mat.current.size = 0.038 + scrollBoost * 0.025
+      mat.current.opacity = 0.6 + scrollBoost * 0.28
+    }
   })
 
   return (
@@ -90,10 +101,11 @@ function DustField({
         <bufferAttribute attach="attributes-position" args={[positions, 3]} />
       </bufferGeometry>
       <pointsMaterial
-        size={0.038 + scrollBoost * 0.025}
+        ref={mat}
+        size={0.038}
         color="#d4a574"
         transparent
-        opacity={0.6 + scrollBoost * 0.28}
+        opacity={0.6}
         depthWrite={false}
         sizeAttenuation
       />
@@ -135,12 +147,13 @@ function Clouds({ intensity = 1 }: { intensity?: number }) {
 
 function WindRibbons({
   intensity = 1,
-  scrollBoost = 0,
+  scrollBoostRef,
 }: {
   intensity?: number
-  scrollBoost?: number
+  scrollBoostRef?: RefObject<number>
 }) {
   const group = useRef<THREE.Group>(null)
+  const getBoost = useBoost(scrollBoostRef)
   const geos = useMemo(() => {
     return [0, 1, 2].map((i) => {
       const y = -0.55 + i * 0.42
@@ -158,11 +171,12 @@ function WindRibbons({
   useFrame((state) => {
     if (!group.current) return
     const t = state.clock.elapsedTime
+    const scrollBoost = getBoost()
     group.current.position.x = Math.sin(t * 0.5 * intensity) * 0.15
     group.current.children.forEach((child, i) => {
       const mesh = child as THREE.Mesh
-      const mat = mesh.material as THREE.MeshBasicMaterial
-      mat.opacity =
+      const m = mesh.material as THREE.MeshBasicMaterial
+      m.opacity =
         0.2 + Math.sin(t * (1.3 + i * 0.25) + i) * 0.1 + scrollBoost * 0.15
     })
   })
@@ -183,7 +197,7 @@ function WindRibbons({
   )
 }
 
-export function ClimateScene({ intensity = 1, scrollBoost = 0 }: Props) {
+export function ClimateScene({ intensity = 1, scrollBoostRef }: Props) {
   return (
     <>
       <ambientLight intensity={0.7} />
@@ -191,8 +205,8 @@ export function ClimateScene({ intensity = 1, scrollBoost = 0 }: Props) {
       <directionalLight position={[-4, 2, -2]} intensity={0.65} color="#7dd3c0" />
       <Globe intensity={intensity} />
       <Clouds intensity={intensity} />
-      <DustField intensity={intensity} scrollBoost={scrollBoost} />
-      <WindRibbons intensity={intensity} scrollBoost={scrollBoost} />
+      <DustField intensity={intensity} scrollBoostRef={scrollBoostRef} />
+      <WindRibbons intensity={intensity} scrollBoostRef={scrollBoostRef} />
     </>
   )
 }
