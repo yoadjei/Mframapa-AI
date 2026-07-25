@@ -82,7 +82,8 @@ export function ProfileScreen({ isOnline, isDark }) {
       className="min-h-[100dvh] overflow-y-auto mf-tab-gap px-4"
       style={{ backgroundColor: colors.bg }}
     >
-      <div style={{ paddingTop: "calc(env(safe-area-inset-top) + 12px)" }}>
+      {/* MobileShell already applies safe-area top — only content inset here. */}
+      <div style={{ paddingTop: 12 }}>
 
         {/* Header: Logo */}
         <div className="flex justify-center mb-2">

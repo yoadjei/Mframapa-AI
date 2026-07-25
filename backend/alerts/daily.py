@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import logging
 import os
+from datetime import date
 from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 import httpx
@@ -140,9 +141,9 @@ def send_daily_fact(*, sender=None) -> Dict[str, int]:
 
     result = send_push(
         tokens,
-        title="Mframapa",
+        title="Did you know",
         body=fact_for(),
-        data={"type": "daily_fact"},
+        data={"type": "daily_fact", "id": f"daily-fact-{date.today().isoformat()}"},
         post=sender,
     )
     logger.info("daily fact pushed to %d device(s)", result.get("sent", 0))

@@ -7,6 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useStore } from '../store/useStore';
 import { getDailyFact } from '../services/api';
 import { fetchPredictionAtCoords } from '../services/prediction';
@@ -31,15 +32,40 @@ export function HomeScreen() {
   const lastPrediction = useStore((s) => s.lastPrediction);
   const offlineCities  = useStore((s) => s.offlineCities);
   const language       = useStore((s) => s.language);
+  const addNotification = useStore((s) => s.addNotification);
   const unreadCount    = useStore((s) => s.notifications.filter((n) => !n.read).length);
 
-  // the same fact the notification carries, so the app and the alert agree
+  // Same fact as the quiet-day push — surface on Home and once/day in Alerts.
   const [fact, setFact] = useState('');
   useEffect(() => {
     let active = true;
-    getDailyFact(language).then((f) => { if (active) setFact(f); }).catch(() => {});
+    getDailyFact(language)
+      .then(async (f) => {
+        if (!active || !f) return;
+        setFact(f);
+
+        const now = new Date();
+        const day = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+        const seenKey = `mframapa:daily-fact-seen:${day}`;
+        const seen = await AsyncStorage.getItem(seenKey);
+        if (seen) return;
+
+        const { alertsEnabled, notifPrefs } = useStore.getState();
+        if (!alertsEnabled || notifPrefs.tip === false) return;
+
+        addNotification({
+          id: `daily-fact-${day}`,
+          type: 'tip',
+          title: t('home.did_you_know'),
+          subtitle: f,
+          timestamp: new Date().toISOString(),
+          read: false,
+        });
+        await AsyncStorage.setItem(seenKey, '1');
+      })
+      .catch(() => {});
     return () => { active = false; };
-  }, [language]);
+  }, [language, addNotification, t]);
 
   const [loading, setLoading] = useState(false);
   const [error, setError]     = useState<string | null>(null);

@@ -109,11 +109,20 @@ export function CoreFeatureScreen({ isOnline, isDark }) {
       color: getAQIColor(r.aqi_category, isDark),
       size: r.pm25 >= 55 ? 20 : r.pm25 >= 35 ? 17 : 14,
       label: `${r.name}: ${Math.round(r.pm25)} µg/m³`,
+      hasReading: true,
     }));
     const neutral = cities
       .filter((c) => !named.has(String(c.name).toLowerCase()))
-      .map((city) => ({ ...city, color: UNKNOWN_DOT, size: 9, label: city.name }));
-    return [...neutral, ...coloured];
+      .map((city) => ({
+        ...city,
+        color: UNKNOWN_DOT,
+        size: 9,
+        label: city.name,
+        hasReading: false,
+      }));
+    // Coloured AQI readings first — neutrals-first + MapCanvas slice used to
+    // drop every map-summary city and leave whole countries blank.
+    return [...coloured, ...neutral];
   }, [cities, summary, isDark]);
 
   const [search, setSearch] = useState("");
@@ -198,7 +207,9 @@ export function CoreFeatureScreen({ isOnline, isDark }) {
           type: "ADD_NOTIFICATION",
           payload: {
             id: crypto.randomUUID(),
+            type: "update",
             title: `${city.name} air quality`,
+            subtitle: `PM2.5 ${Math.round(prediction.pm25)} μg/m³ — ${t(aqiCategoryKey(prediction.category))}`,
             message: `PM2.5 ${Math.round(prediction.pm25)} μg/m³ — ${t(aqiCategoryKey(prediction.category))}`,
             read: false,
             createdAt: prediction.timestamp,

@@ -1,8 +1,14 @@
-import React, { Suspense, useEffect, useMemo } from "react";
+import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { useAppState } from "../state/appState.jsx";
 import { useOnlineStatus } from "../hooks/useOnlineStatus.js";
 import { useInstallPrompt } from "../hooks/useInstallPrompt.js";
+import { InstallHomeScreenPrompt } from "../components/pwa/InstallHomeScreenPrompt.jsx";
+import {
+  NotificationPermissionSheet,
+  hasSeenPushPrompt,
+} from "../components/pwa/NotificationPermissionSheet.jsx";
+import { getNotificationPermission } from "../services/browserNotifications.js";
 import { StackChromeContext } from "../hooks/useStackChrome.js";
 import { CloudRainBackground } from "../components/background/CloudRainBackground.jsx";
 import { NetworkBanner } from "../components/feedback/NetworkBanner.jsx";
@@ -207,22 +213,43 @@ function ScreenSuspense({ children }) {
   );
 }
 
-const IS_PREVIEW = new URLSearchParams(window.location.search).has("preview");
+const IS_PREVIEW =
+  import.meta.env.DEV && new URLSearchParams(window.location.search).has("preview");
 
 export function App() {
   const { state: { onboardingComplete, session, ui, preferences }, dispatch } = useAppState();
   const isOnline = useOnlineStatus();
-  const { canInstall, promptInstall } = useInstallPrompt();
+  const {
+    canInstall,
+    promptInstall,
+    showBanner: showInstallBanner,
+    dismiss: dismissInstall,
+    isIos: isIosInstall,
+  } = useInstallPrompt({
+    // Wait until onboarding finishes so the sheet doesn't cover first-run slides.
+    autoPrompt: onboardingComplete,
+  });
 
   const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
   const isDark =
     preferences.theme === "dark" ||
     (preferences.theme === "system" && prefersDark);
 
+  const [pushPromptOpen, setPushPromptOpen] = useState(false);
+
   // once per load, before auth — drives installs / WAU / retention
   useEffect(() => {
     trackAppOpen();
   }, []);
+
+  // Soft push explainer after onboarding + install sheet (never cold-prompt OS).
+  useEffect(() => {
+    if (!onboardingComplete || showInstallBanner) return undefined;
+    if (hasSeenPushPrompt()) return undefined;
+    if (getNotificationPermission() !== "default") return undefined;
+    const timer = window.setTimeout(() => setPushPromptOpen(true), 2800);
+    return () => window.clearTimeout(timer);
+  }, [onboardingComplete, showInstallBanner]);
 
   // supabase persists the session; restore it on load and follow sign-in/out so a
   // signed-in user is not dropped back to the start screen on every relaunch.
@@ -362,6 +389,21 @@ export function App() {
             </ScreenSuspense>
           </MobileShell>
         )}
+
+        {/* Auto-triggers once the browser marks the PWA installable (or on iOS). */}
+        <InstallHomeScreenPrompt
+          open={showInstallBanner && !pushPromptOpen}
+          onInstall={promptInstall}
+          onDismiss={dismissInstall}
+          isIos={isIosInstall}
+          isDark={isDark}
+        />
+
+        <NotificationPermissionSheet
+          open={pushPromptOpen}
+          onClose={() => setPushPromptOpen(false)}
+          isDark={isDark}
+        />
       </div>
     </>
   );

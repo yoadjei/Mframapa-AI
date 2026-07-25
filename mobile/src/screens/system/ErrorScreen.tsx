@@ -30,10 +30,17 @@ export function ErrorScreen() {
         <Text style={[styles.subtitle, { color: colors.subtext }]}>{t('screen.error.subtitle')}</Text>
 
         <View style={styles.buttons}>
-          <PrimaryButton label={t('screen.error.try_again')} onPress={() => {}} style={styles.btn} />
+          <PrimaryButton
+            label={t('screen.error.try_again')}
+            onPress={() => {
+              if (navigation.canGoBack()) navigation.goBack();
+              else navigation.navigate('MainApp', { screen: 'Home' });
+            }}
+            style={styles.btn}
+          />
           <OutlineButton
             label={t('screen.error.go_home')}
-            onPress={() => navigation.navigate('Home')}
+            onPress={() => navigation.navigate('MainApp', { screen: 'Home' })}
             color={colors.text}
             style={styles.btn}
           />

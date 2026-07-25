@@ -13,8 +13,12 @@ export function MapCanvas({
   liteMode,
   onMarkerClick,
 }) {
-  const markerLimit = liteMode ? 40 : 140;
-  const markers = cities.slice(0, markerLimit);
+  // Always keep every AQI reading. Cap only unknown fillers so lite mode /
+  // marker budget never blank out countries that have a summary reading.
+  const coloured = (cities ?? []).filter((c) => c.hasReading);
+  const neutral = (cities ?? []).filter((c) => !c.hasReading);
+  const neutralBudget = Math.max(0, (liteMode ? 40 : 160) - coloured.length);
+  const markers = [...coloured, ...neutral.slice(0, neutralBudget)];
 
   return (
     <Map
@@ -60,7 +64,12 @@ export function MapCanvas({
               }}
             />
           ) : (
-            <span className="block h-2.5 w-2.5 rounded-full bg-emerald-400/90 shadow-[0_0_18px_rgba(16,185,129,0.7)]" />
+            // Neutral slate — never default green (green = "Good" in the legend).
+            <span
+              title={city.label ?? city.name}
+              className="block h-2.5 w-2.5 rounded-full shadow-[0_0_12px_rgba(100,116,139,0.55)]"
+              style={{ backgroundColor: "#64748B", border: "1px solid rgba(255,255,255,0.45)" }}
+            />
           )}
         </Marker>
       ))}

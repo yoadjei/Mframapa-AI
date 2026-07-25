@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 import { useTheme } from '../hooks/useTheme';
 import { getColors, Colors } from '../theme';
 import { PrimaryButton } from '../components/ui/PrimaryButton';
@@ -14,6 +15,7 @@ const FEATURE_KEYS = [
 
 export function LandingMarketingScreen() {
   const insets = useSafeAreaInsets();
+  const navigation = useNavigation<any>();
   const { isDark } = useTheme();
   const colors = getColors(isDark);
   const { t } = useTranslation();
@@ -29,7 +31,14 @@ export function LandingMarketingScreen() {
         <View style={styles.heroBlock}>
           <Text style={[styles.heroText, { color: colors.text }]}>{t('screen.landing.hero')}</Text>
           <Text style={[styles.heroParagraph, { color: colors.subtext }]}>{t('screen.landing.hero_sub')}</Text>
-          <PrimaryButton label={t('screen.landing.get_started')} onPress={() => {}} style={styles.cta} />
+          <PrimaryButton
+            label={t('screen.landing.get_started')}
+            onPress={() => {
+              if (navigation.canGoBack()) navigation.goBack();
+              else navigation.navigate('MainApp', { screen: 'Home' });
+            }}
+            style={styles.cta}
+          />
         </View>
 
         <View style={styles.featuresRow}>

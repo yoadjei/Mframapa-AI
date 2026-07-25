@@ -5,6 +5,18 @@ import { useNavigation } from "../../hooks/useNavigation.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { fetchCityPrediction, fetchPredictionAtCoords } from "../../services/predictionService.js";
 import { getDailyFact } from "../../services/api.js";
+import {
+  getNotificationPermission,
+  showBrowserNotification,
+} from "../../services/browserNotifications.js";
+
+function localCalendarDate() {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
 import { MframapaLogo } from "../../components/brand/MframapaLogo.jsx";
 import { getAQIColor, aqiSymbol } from "../../utils/colors.js";
 
@@ -83,15 +95,47 @@ export function HomeScreen({ isOnline }) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOnline, state.homeSummary?.city, state.preferences.language]);
 
-  // the same fact that goes out as the daily notification, so the app and the
-  // notification never disagree about what today's is.
+  // the same fact that goes out as the daily push, so home + inbox never disagree.
   const [fact, setFact] = useState("");
   useEffect(() => {
     let active = true;
-    getDailyFact(state.preferences.language ?? "en")
-      .then((f) => { if (active) setFact(f); })
+    const lang = state.preferences.language ?? "en";
+    getDailyFact(lang)
+      .then(async (f) => {
+        if (!active || !f) return;
+        setFact(f);
+
+        // Once per local calendar day: in-app Alerts tip + optional browser banner.
+        const day = localCalendarDate();
+        const seenKey = `mframapa:daily-fact-seen:${day}`;
+        if (localStorage.getItem(seenKey)) return;
+
+        const tipOn = state.preferences.notifPrefs?.tip !== false;
+        const masterOn = state.preferences.notificationsEnabled !== false;
+        if (!masterOn || !tipOn) return;
+
+        const title = t("home.did_you_know");
+        dispatch({
+          type: "ADD_NOTIFICATION",
+          payload: {
+            id: `daily-fact-${day}`,
+            type: "tip",
+            title,
+            subtitle: f,
+            message: f,
+            read: false,
+            createdAt: new Date().toISOString(),
+          },
+        });
+        localStorage.setItem(seenKey, "1");
+
+        if (getNotificationPermission() === "granted") {
+          showBrowserNotification({ title, body: f, tag: `daily-fact-${day}` });
+        }
+      })
       .catch(() => {});
     return () => { active = false; };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.preferences.language]);
 
   function updateSummary(r) {
@@ -174,7 +218,7 @@ export function HomeScreen({ isOnline }) {
           <MframapaLogo size="sm" isDark={isDark} markOnly />
           <button
             type="button"
-            onClick={() => dispatch({ type: "SET_ACTIVE_SCREEN", payload: "notifications" })}
+            onClick={() => dispatch({ type: "NAVIGATE", payload: { name: "notifications", params: {} } })}
             className="relative p-1"
             aria-label={t("a11y.notifications", { count: unreadCount })}
           >
@@ -193,7 +237,7 @@ export function HomeScreen({ isOnline }) {
         {/* ── Location chip ── */}
         <button
           type="button"
-          onClick={() => dispatch({ type: "SET_ACTIVE_SCREEN", payload: "search" })}
+          onClick={() => dispatch({ type: "NAVIGATE", payload: { name: "search", params: {} } })}
           className="mx-4 mb-3 flex items-center gap-1.5 self-start rounded-full border px-3 py-2"
           style={{ backgroundColor: colors.card, borderColor: colors.border }}
         >
@@ -328,14 +372,14 @@ export function HomeScreen({ isOnline }) {
             {
               icon: Search,
               label: t("tab.search") ?? "Search",
-              action: () => dispatch({ type: "SET_ACTIVE_SCREEN", payload: "search" }),
+              action: () => dispatch({ type: "NAVIGATE", payload: { name: "search", params: {} } }),
               loading: false,
               color: "#00C896",
             },
             {
               icon: Bell,
               label: t("tab.alerts") ?? "Alerts",
-              action: () => dispatch({ type: "SET_ACTIVE_SCREEN", payload: "notifications" }),
+              action: () => dispatch({ type: "NAVIGATE", payload: { name: "notifications", params: {} } }),
               loading: false,
               color: "#00C896",
             },

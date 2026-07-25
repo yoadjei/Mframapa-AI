@@ -79,10 +79,8 @@ export function MapScreen() {
 
   const mapMarkers: MapMarker[] = useMemo(() => {
     const limit = liteMode ? 80 : 250;
-    // every city we have a reading for is drawn coloured. these come from the
-    // continental summary, which covers all 55 countries, so no country is a
-    // blank space. offline cities without a reading fill in as neutral dots for
-    // density, and are skipped if they duplicate a reading we already show.
+    // Coloured summary first so every country with a reading stays on the map;
+    // neutrals only fill density and never displace AQI markers.
     const named = new Set(summary.map((r) => r.name.toLowerCase()));
     const coloured: MapMarker[] = summary.map((r) => ({
       name: r.name,
@@ -94,7 +92,7 @@ export function MapScreen() {
       .filter((c) => !named.has(c.name.toLowerCase()))
       .slice(0, limit)
       .map((c) => ({ name: c.name, lat: c.lat, lon: c.lon, color: UNKNOWN_DOT }));
-    return [...neutral, ...coloured];   // readings render on top
+    return [...coloured, ...neutral];
   }, [offlineCities, liteMode, summary, isDark]);
 
   // ── Search suggestions (offline-instant + debounced Mapbox enrich) ────────

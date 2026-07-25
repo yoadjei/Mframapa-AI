@@ -24,10 +24,12 @@ export default defineConfig({
         start_url: '/',
         scope: '/',
         display: 'standalone',
+        display_override: ['standalone', 'minimal-ui'],
         orientation: 'portrait-primary',
         categories: ['health', 'weather', 'utilities'],
         lang: 'en',
         dir: 'ltr',
+        prefer_related_applications: false,
         icons: [
           { src: 'icons/icon-72.png',  sizes: '72x72',   type: 'image/png', purpose: 'any' },
           { src: 'icons/icon-96.png',  sizes: '96x96',   type: 'image/png', purpose: 'any' },

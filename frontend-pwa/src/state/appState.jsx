@@ -25,6 +25,8 @@ const initialState = {
     // first run follows the device; a stored choice overrides it below
     language: detectDeviceLanguage(),
     notificationsEnabled: true,
+    // per-category inbox + browser banner gates (alert / summary / update / tip)
+    notifPrefs: { alert: true, summary: true, update: true, tip: true },
     privacyMode: "balanced",
     liteMode: false,
     // 1 is the browser default; larger values scale every rem in the app
@@ -169,8 +171,17 @@ function appReducer(state, action) {
 
     case "ADD_ACTIVITY":
       return { ...state, activity: [action.payload, ...state.activity].slice(0, 50) };
-    case "ADD_NOTIFICATION":
-      return { ...state, notifications: [action.payload, ...state.notifications].slice(0, 80) };
+    case "ADD_NOTIFICATION": {
+      if (!state.preferences.notificationsEnabled) return state;
+      const type = action.payload?.type ?? "update";
+      const prefs = state.preferences.notifPrefs ?? {};
+      if (prefs[type] === false) return state;
+      if (state.notifications.some((n) => n.id === action.payload?.id)) return state;
+      return {
+        ...state,
+        notifications: [{ ...action.payload, type }, ...state.notifications].slice(0, 80),
+      };
+    }
     case "MARK_NOTIFICATION_READ":
       return {
         ...state,
@@ -195,7 +206,14 @@ function readPersistedState() {
       ...initialState,
       onboardingComplete: p.onboardingComplete ?? false,
       profile: { ...initialState.profile, ...p.profile },
-      preferences: { ...initialState.preferences, ...p.preferences },
+      preferences: {
+        ...initialState.preferences,
+        ...p.preferences,
+        notifPrefs: {
+          ...initialState.preferences.notifPrefs,
+          ...(p.preferences?.notifPrefs ?? {}),
+        },
+      },
       savedCities: p.savedCities ?? [],
       homeSummary: { ...initialState.homeSummary, ...p.homeSummary },
       activity: p.activity ?? [],

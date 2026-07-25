@@ -1,9 +1,16 @@
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import { Bell, Settings, AlertTriangle, FileText, Cloud, Lightbulb, CheckCheck, X } from "lucide-react";
 import { useAppState } from "../../state/appState.jsx";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { getColors, Colors, liquidGlass } from "../../utils/colors.js";
 import { StackTitle } from "../../components/navigation/StackTitle.jsx";
+import { useStackChrome, stackTopPad } from "../../hooks/useStackChrome.js";
+import { getNotificationPermission } from "../../services/browserNotifications.js";
+import {
+  NotificationPermissionSheet,
+  hasSeenPushPrompt,
+} from "../../components/pwa/NotificationPermissionSheet.jsx";
 
 // ─── Notification Settings Sheet ────────────────────────────────────────────
 
@@ -14,23 +21,45 @@ const CATEGORIES = [
   { key: "tip",     labelKey: "notif_prefs.tips_and_guidance",   Icon: Lightbulb },
 ];
 
-function NotificationSettingsSheet({ visible, onClose, onMarkAllRead, isDark, unreadCount }) {
+function NotificationSettingsSheet({
+  visible,
+  onClose,
+  onMarkAllRead,
+  isDark,
+  unreadCount,
+  onRequestPushPermission,
+}) {
   const { state, dispatch } = useAppState();
   const { t } = useTranslation();
   const colors = getColors(isDark);
 
   const alertsEnabled = state.preferences.notificationsEnabled ?? true;
+  const notifPrefs = {
+    alert: true,
+    summary: true,
+    update: true,
+    tip: true,
+    ...(state.preferences.notifPrefs ?? {}),
+  };
 
   function setAlertsEnabled(val) {
     dispatch({ type: "UPDATE_PREFERENCES", payload: { notificationsEnabled: val } });
+    if (val) onRequestPushPermission?.();
+  }
+
+  function setNotifPref(key, val) {
+    dispatch({
+      type: "UPDATE_PREFERENCES",
+      payload: { notifPrefs: { ...notifPrefs, [key]: val } },
+    });
   }
 
   if (!visible) return null;
 
-  return (
-    /* overlay */
+  return createPortal(
+    /* overlay — z-[90] above GlassTabBar (z-50) and install prompt (z-80) */
     <div
-      className="fixed inset-0 z-50 flex flex-col justify-end"
+      className="fixed inset-0 z-[90] flex flex-col justify-end"
       style={{ background: "rgba(0,0,0,0.42)", backdropFilter: "blur(4px)", WebkitBackdropFilter: "blur(4px)" }}
       onClick={onClose}
     >
@@ -105,41 +134,47 @@ function NotificationSettingsSheet({ visible, onClose, onMarkAllRead, isDark, un
             {t("notif_prefs.categories")}
           </p>
 
-          {CATEGORIES.map(({ key, labelKey, Icon }) => (
-            <div
-              key={key}
-              className="flex items-center gap-3 py-[14px]"
-              style={{
-                borderBottom: `1px solid ${colors.border}`,
-                opacity: alertsEnabled ? 1 : 0.5,
-              }}
-            >
+          {CATEGORIES.map(({ key, labelKey, Icon }) => {
+            const on = Boolean(notifPrefs[key]);
+            return (
               <div
-                className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full"
-                style={{ backgroundColor: Colors.brandGreen + "22" }}
+                key={key}
+                className="flex items-center gap-3 py-[14px]"
+                style={{
+                  borderBottom: `1px solid ${colors.border}`,
+                  opacity: alertsEnabled ? 1 : 0.5,
+                }}
               >
-                <Icon size={18} color={Colors.brandGreen} />
+                <div
+                  className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full"
+                  style={{ backgroundColor: Colors.brandGreen + "22" }}
+                >
+                  <Icon size={18} color={Colors.brandGreen} />
+                </div>
+                <p className="flex-1 text-[0.9375rem] font-medium" style={{ color: colors.text }}>
+                  {t(labelKey)}
+                </p>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={alertsEnabled && on}
+                  disabled={!alertsEnabled}
+                  onClick={() => setNotifPref(key, !on)}
+                  className="relative h-[28px] w-[48px] flex-shrink-0 rounded-full transition-colors duration-200 focus:outline-none disabled:cursor-not-allowed"
+                  style={{
+                    backgroundColor: alertsEnabled && on ? Colors.brandGreen : colors.border,
+                  }}
+                >
+                  <span
+                    className="absolute top-[3px] h-[22px] w-[22px] rounded-full bg-white shadow transition-transform duration-200"
+                    style={{
+                      transform: alertsEnabled && on ? "translateX(23px)" : "translateX(3px)",
+                    }}
+                  />
+                </button>
               </div>
-              <p className="flex-1 text-[0.9375rem] font-medium" style={{ color: colors.text }}>
-                {t(labelKey)}
-              </p>
-              {/* category toggles are display-only in PWA (no per-category state yet) */}
-              <button
-                type="button"
-                role="switch"
-                aria-checked={alertsEnabled}
-                disabled={!alertsEnabled}
-                onClick={() => {}}
-                className="relative h-[28px] w-[48px] flex-shrink-0 rounded-full transition-colors duration-200 focus:outline-none disabled:cursor-not-allowed"
-                style={{ backgroundColor: alertsEnabled ? Colors.brandGreen : colors.border }}
-              >
-                <span
-                  className="absolute top-[3px] h-[22px] w-[22px] rounded-full bg-white shadow transition-transform duration-200"
-                  style={{ transform: alertsEnabled ? "translateX(23px)" : "translateX(3px)" }}
-                />
-              </button>
-            </div>
-          ))}
+            );
+          })}
 
           {/* mark all read action */}
           <button
@@ -158,7 +193,8 @@ function NotificationSettingsSheet({ visible, onClose, onMarkAllRead, isDark, un
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
@@ -172,17 +208,52 @@ function iconForType(type) {
   return Bell;
 }
 
+function shouldOfferPushPrompt() {
+  const perm = getNotificationPermission();
+  if (perm === "granted" || perm === "unsupported" || perm === "denied") return false;
+  return !hasSeenPushPrompt();
+}
+
 // ─── Main Screen ────────────────────────────────────────────────────────────
 
 export function NotificationsScreen({ isOnline, isDark }) {
   const { state, dispatch } = useAppState();
   const { t } = useTranslation();
+  const inStack = useStackChrome();
   const colors = getColors(isDark);
 
   const notifications = state.notifications ?? [];
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [pushPromptOpen, setPushPromptOpen] = useState(false);
+  const [reopenSettingsAfterPrompt, setReopenSettingsAfterPrompt] = useState(false);
+
+  function offerPushPromptIfNeeded() {
+    if (!shouldOfferPushPrompt()) return;
+    // Settings sheet is z-90; close it so this z-85 prompt is interactive.
+    setSettingsOpen(false);
+    setPushPromptOpen(true);
+  }
+
+  function openSettings() {
+    // Soft prompt the first time Alerts settings opens (if master on / default).
+    const masterOn = state.preferences.notificationsEnabled !== false;
+    if (masterOn && shouldOfferPushPrompt()) {
+      setReopenSettingsAfterPrompt(true);
+      setPushPromptOpen(true);
+      return;
+    }
+    setSettingsOpen(true);
+  }
+
+  function handlePushPromptClose() {
+    setPushPromptOpen(false);
+    if (reopenSettingsAfterPrompt) {
+      setReopenSettingsAfterPrompt(false);
+      setSettingsOpen(true);
+    }
+  }
 
   function handleMarkAll() {
     if (unreadCount === 0) return;
@@ -194,21 +265,22 @@ export function NotificationsScreen({ isOnline, isDark }) {
   }
 
   return (
-    <div style={{ minHeight: "100dvh" }}>
-      {/* Safe-area spacer — needed when rendered as stack screen outside MobileShell */}
-      <div style={{ height: "env(safe-area-inset-top)" }} />
+    <div
+      className={inStack ? "" : "min-h-[100dvh]"}
+      style={{
+        paddingTop: stackTopPad(inStack),
+      }}
+    >
       <div
-        className="overflow-y-auto"
+        className={inStack ? "" : "overflow-y-auto"}
         style={{
-          paddingTop: 12,
-          paddingBottom: "calc(env(safe-area-inset-bottom) + 100px)",
+          paddingBottom: inStack
+            ? "calc(24px + env(safe-area-inset-bottom))"
+            : "calc(env(safe-area-inset-bottom) + 100px)",
         }}
       >
         {/* ── Header ── */}
-        <div
-          className="flex items-center gap-3 px-4 py-3"
-          style={{ paddingHorizontal: 16 }}
-        >
+        <div className="flex items-center gap-3 px-4 py-3">
           {/* title + unread pill — StackTitle clears fixed back when opened from profile */}
           <div className="flex flex-1 min-w-0 items-center gap-[10px]">
             <StackTitle
@@ -242,7 +314,7 @@ export function NotificationsScreen({ isOnline, isDark }) {
             <button
               type="button"
               aria-label={t("alerts.open_settings")}
-              onClick={() => setSettingsOpen(true)}
+              onClick={openSettings}
               className="active:opacity-60"
             >
               <Settings size={20} color={colors.subtext} />
@@ -297,7 +369,7 @@ export function NotificationsScreen({ isOnline, isDark }) {
                   <button
                     type="button"
                     onClick={() => handleMarkRead(item.id)}
-                    className="flex w-full items-center gap-3 px-4 py-[14px] text-left active:opacity-70"
+                    className="relative z-0 flex w-full items-center gap-3 px-4 py-[14px] text-left active:opacity-70"
                     style={{
                       backgroundColor: isUnread ? Colors.brandGreen + "12" : "transparent",
                       borderLeft: isUnread
@@ -351,13 +423,20 @@ export function NotificationsScreen({ isOnline, isDark }) {
         )}
       </div>
 
-      {/* ── Notification Settings Sheet ── */}
+      {/* ── Notification Settings Sheet (portaled) ── */}
       <NotificationSettingsSheet
         visible={settingsOpen}
         onClose={() => setSettingsOpen(false)}
         onMarkAllRead={handleMarkAll}
         isDark={isDark}
         unreadCount={unreadCount}
+        onRequestPushPermission={offerPushPromptIfNeeded}
+      />
+
+      <NotificationPermissionSheet
+        open={pushPromptOpen}
+        onClose={handlePushPromptClose}
+        isDark={isDark}
       />
     </div>
   );

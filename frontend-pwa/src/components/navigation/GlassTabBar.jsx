@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Home, Map, User, Plus, X, Search, Bell, Activity, Settings } from "lucide-react";
+import { Home, Map, User, Plus, X, Search, Bell, Activity, Settings, Download } from "lucide-react";
 import { useAppState } from "../../state/appState.jsx";
 import { useTranslation } from "../../hooks/useTranslation.js";
 
@@ -35,13 +35,19 @@ function liquidGlass(isDark) {
       };
 }
 
-export function GlassTabBar({ isDark }) {
+export function GlassTabBar({ isDark, canInstall, onInstall }) {
   const { state, dispatch } = useAppState();
   const { t } = useTranslation();
   const active = state.ui.activeScreen;
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
   const fabRef  = useRef(null);
+
+  async function handleInstall() {
+    setMenuOpen(false);
+    // Chrome/Android: native home-screen sheet. iOS: opens Add-to-Home steps.
+    await onInstall?.();
+  }
 
   function navigate(key) {
     dispatch({ type: "SET_ACTIVE_SCREEN", payload: key });
@@ -95,6 +101,7 @@ export function GlassTabBar({ isDark }) {
         >
           {MORE_ITEMS.map((item, i) => {
             const Icon = item.icon;
+            const last = i === MORE_ITEMS.length - 1 && !canInstall;
             return (
               <button
                 key={item.key}
@@ -102,7 +109,7 @@ export function GlassTabBar({ isDark }) {
                 onClick={() => navigateToStack(item.key)}
                 className="flex w-full items-center gap-3 px-4 py-3.5 text-left active:opacity-70"
                 style={{
-                  borderBottom: i < MORE_ITEMS.length - 1
+                  borderBottom: !last
                     ? `0.5px solid ${isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.07)"}`
                     : "none",
                   color: isDark ? "#FFFFFF" : "#0F1419",
@@ -113,6 +120,19 @@ export function GlassTabBar({ isDark }) {
               </button>
             );
           })}
+          {canInstall ? (
+            <button
+              type="button"
+              onClick={handleInstall}
+              className="flex w-full items-center gap-3 px-4 py-3.5 text-left active:opacity-70"
+              style={{ color: isDark ? "#FFFFFF" : "#0F1419" }}
+            >
+              <Download size={18} color="#00C896" />
+              <span className="text-[0.9375rem] font-medium">
+                {t("install.menu", "Install app")}
+              </span>
+            </button>
+          ) : null}
         </div>
       )}
 

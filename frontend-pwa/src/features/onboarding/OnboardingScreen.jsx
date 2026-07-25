@@ -250,9 +250,13 @@ function SlidesPhase({ onDone }) {
 }
 
 /* ─────────────────────────────────────────────────────── Permissions phase ── */
-function PermissionsPhase({ onDone }) {
+function PermissionsPhase({ onDone, canInstall, onInstall }) {
   const [requesting, setRequesting] = useState(false);
   const t = useT();
+
+  async function handleInstall() {
+    await onInstall?.();
+  }
 
   async function handleAllow() {
     if (requesting) return;
@@ -340,6 +344,17 @@ function PermissionsPhase({ onDone }) {
           color={MUTED}
         />
 
+        {canInstall ? (
+          <button
+            type="button"
+            onClick={handleInstall}
+            className="text-[0.875rem] font-semibold active:opacity-70"
+            style={{ color: BRAND_GREEN }}
+          >
+            {t("onboarding.install", "Install app")}
+          </button>
+        ) : null}
+
         {/* Progress dots (two dots — permissions is step 2 of 2 post-slides) */}
         <div className="flex gap-2 mt-1">
           <div style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: BRAND_GREEN }} />
@@ -360,7 +375,7 @@ function PermissionsPhase({ onDone }) {
 }
 
 /* ──────────────────────────────────────────────────── OnboardingScreen root ── */
-export function OnboardingScreen() {
+export function OnboardingScreen({ canInstall, onInstall }) {
   const { state, dispatch } = useAppState();
   const [phase, setPhase] = useState("splash"); // "splash" | "slides" | "permissions"
   const liteMode = state.preferences?.liteMode ?? false;
@@ -380,7 +395,11 @@ export function OnboardingScreen() {
         ) : phase === "slides" ? (
           <SlidesPhase onDone={() => setPhase("permissions")} />
         ) : (
-          <PermissionsPhase onDone={completeOnboarding} />
+          <PermissionsPhase
+            onDone={completeOnboarding}
+            canInstall={canInstall}
+            onInstall={onInstall}
+          />
         )}
       </div>
     </>

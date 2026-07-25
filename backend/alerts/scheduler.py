@@ -8,6 +8,7 @@ deploy time; ``run_daily_scan`` itself is pure orchestration and fully testable.
 """
 
 import logging
+from datetime import date
 from typing import Any, Callable, Dict, List, Optional
 
 from backend.alerts.episode_detector import scan_cities
@@ -29,6 +30,7 @@ def run_daily_scan(
     episodes = scan_cities(city_records)
     store = store or get_push_store()
     send = push or send_push
+    day = date.today().isoformat()
     for ep in episodes:
         tokens = [t["token"] for t in store.near(ep["lat"], ep["lon"])]
         if tokens:
@@ -36,7 +38,12 @@ def run_daily_scan(
                 tokens,
                 f"Air quality alert: {ep['name']}",
                 f"PM2.5 {ep['today_pm25']} — {ep['category']}. Take precautions.",
-                data={"city": ep["name"], "pm25": ep["today_pm25"]},
+                data={
+                    "type": "alert",
+                    "city": ep["name"],
+                    "pm25": ep["today_pm25"],
+                    "id": f"episode-{ep['name']}-{day}",
+                },
             )
     bulletin = format_bulletin(episodes)
     if digest_sink:

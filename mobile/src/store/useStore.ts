@@ -215,94 +215,29 @@ interface AppState {
   setLocationSharing: (v: 'off' | 'balanced' | 'precise') => void;
 }
 
-const DEFAULT_NOTIFICATIONS: Notification[] = [
-  {
-    id: '1',
-    title: 'AQI Alert: Accra',
-    subtitle: 'PM2.5 has risen to unhealthy levels',
-    timestamp: '2 hours ago',
-    read: false,
-    type: 'alert',
-    titleKey: 'alerts.sample.aqi_alert',
-    titleParams: { city: 'Accra' },
-    subtitleKey: 'alerts.sample.pm25_risen',
-    timestampKey: 'time.hours_ago',
-    timestampParams: { count: '2' },
-  },
-  {
-    id: '2',
-    title: 'Daily AQI Summary',
-    subtitle: 'Terna',
-    timestamp: '4 hours ago',
-    read: false,
-    type: 'summary',
-    titleKey: 'alerts.sample.daily_summary',
-    timestampKey: 'time.hours_ago',
-    timestampParams: { count: '4' },
-  },
-  {
-    id: '3',
-    title: 'Air Quality Update',
-    subtitle: 'Kumasi',
-    timestamp: '1 day ago',
-    read: true,
-    type: 'update',
-    titleKey: 'alerts.sample.air_quality_update',
-    timestampKey: 'time.day_ago',
-    timestampParams: { count: '1' },
-  },
-  {
-    id: '4',
-    title: 'Mframapa Tips',
-    subtitle: 'Kumasi',
-    timestamp: '2 days ago',
-    read: true,
-    type: 'tip',
-    titleKey: 'alerts.sample.tips',
-    timestampKey: 'time.days_ago',
-    timestampParams: { count: '2' },
-  },
-];
+// Real inbox only — push (episode + Did you know) and local adds populate this.
+const DEFAULT_NOTIFICATIONS: Notification[] = [];
 
-const DEFAULT_ACTIVITY_FEED: ActivityItem[] = [
-  {
-    id: '1',
-    action: 'Checked Accra: 42 μg/m³',
-    timestamp: '12:39 AM',
-    icon: 'clock',
-    actionKey: 'activity.checked_city',
-    actionParams: { city: 'Accra', value: '42' },
-  },
-  {
-    id: '2',
-    action: 'Profile updated',
-    timestamp: '12:39 AM',
-    icon: 'person',
-    actionKey: 'activity.profile_updated',
-  },
-  {
-    id: '3',
-    action: 'Signed in',
-    timestamp: '12:39 AM',
-    icon: 'lock',
-    actionKey: 'activity.signed_in',
-  },
-  {
-    id: '4',
-    action: 'Checked Accra: 42 μg/m³',
-    timestamp: '12:39 AM',
-    icon: 'clock',
-    actionKey: 'activity.checked_city',
-    actionParams: { city: 'Accra', value: '42' },
-  },
-  {
-    id: '5',
-    action: 'Signed in',
-    timestamp: '12:39 AM',
-    icon: 'lock',
-    actionKey: 'activity.signed_in',
-  },
-];
+function isSampleNotification(n: Notification): boolean {
+  return Boolean(n.titleKey?.startsWith('alerts.sample.'));
+}
+
+const DEFAULT_ACTIVITY_FEED: ActivityItem[] = [];
+
+const SEEDED_ACTIVITY_IDS = new Set(['1', '2', '3', '4', '5']);
+
+function isSeededActivityItem(item: ActivityItem): boolean {
+  if (SEEDED_ACTIVITY_IDS.has(item.id)) return true;
+  // Demo Accra reading that shipped in the old DEFAULT_ACTIVITY_FEED.
+  if (
+    item.actionKey === 'activity.checked_city' &&
+    item.actionParams?.city === 'Accra' &&
+    item.actionParams?.value === '42'
+  ) {
+    return true;
+  }
+  return false;
+}
 
 function migrateNotification(notification: Notification): Notification {
   const next = { ...notification };
@@ -656,6 +591,7 @@ export const useStore = create<AppState>()(
           // categories never enter the inbox in the first place.
           if (!state.alertsEnabled) return state;
           if (state.notifPrefs[n.type] === false) return state;
+          if (state.notifications.some((x) => x.id === n.id)) return state;
           return { notifications: [n, ...state.notifications].slice(0, 100) };
         }),
       markNotificationRead: (id) =>
@@ -694,15 +630,19 @@ export const useStore = create<AppState>()(
     }),
     {
       name: 'mframapa-persist',
-      version: 5,
+      version: 7,
       storage: createJSONStorage(() => AsyncStorage),
       migrate: (persistedState, version) => {
         const state = (persistedState ?? {}) as Partial<AppState> & { isDark?: boolean };
+        const notifications = (state.notifications?.map(migrateNotification) ?? DEFAULT_NOTIFICATIONS)
+          .filter((n) => !isSampleNotification(n));
+        const activityFeed = (state.activityFeed?.map(migrateActivityItem) ?? DEFAULT_ACTIVITY_FEED)
+          .filter((item) => !isSeededActivityItem(item));
         return {
           ...state,
           themeMode: state.themeMode ?? (state.isDark ? 'dark' : 'system'),
-          notifications: state.notifications?.map(migrateNotification) ?? DEFAULT_NOTIFICATIONS,
-          activityFeed: state.activityFeed?.map(migrateActivityItem) ?? DEFAULT_ACTIVITY_FEED,
+          notifications,
+          activityFeed,
         };
       },
       partialize: (state) => ({
