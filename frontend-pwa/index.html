@@ -1,12 +1,42 @@
 <!doctype html>
-<html lang="en" class="dark">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
-    <!-- PWA / theme -->
-    <meta name="theme-color" content="#06080d" />
+    <!-- PWA / theme (boot script below updates these to match saved preference) -->
+    <meta name="theme-color" content="#0A0D12" />
     <meta name="color-scheme" content="dark light" />
+
+    <!--
+      Apply saved theme BEFORE React paints. Without this, index used to ship
+      class="dark" then flip to light after hydration (dark flash + mixed CSS/JS).
+    -->
+    <script>
+      (function () {
+        try {
+          var theme = "system";
+          var raw = localStorage.getItem("mframapa:v2:pwa-state");
+          if (raw) {
+            var p = JSON.parse(raw);
+            if (p && p.preferences && p.preferences.theme) theme = p.preferences.theme;
+          }
+          var dark =
+            theme === "dark" ||
+            (theme !== "light" &&
+              window.matchMedia("(prefers-color-scheme: dark)").matches);
+          var root = document.documentElement;
+          root.classList.toggle("dark", dark);
+          root.dataset.theme = dark ? "dark" : "light";
+          root.style.colorScheme = dark ? "dark" : "light";
+          var meta = document.querySelector('meta[name="theme-color"]');
+          if (meta) meta.setAttribute("content", dark ? "#0A0D12" : "#E8ECF2");
+        } catch (e) {
+          document.documentElement.classList.add("dark");
+          document.documentElement.dataset.theme = "dark";
+        }
+      })();
+    </script>
 
     <!-- Standard icons -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />

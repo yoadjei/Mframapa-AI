@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Home, Map, User, Plus, X, Search, Bell, Activity, Settings, Download } from "lucide-react";
 import { useAppState } from "../../state/appState.jsx";
 import { useTranslation } from "../../hooks/useTranslation.js";
+import { liquidGlass } from "../../utils/colors.js";
 
 const MAIN_TABS = [
   { key: "home",    icon: Home,  labelKey: "tab.home" },
@@ -16,24 +17,6 @@ const MORE_ITEMS = [
   { key: "settings",      icon: Settings, labelKey: "pwa.nav.settings" },
 ];
 
-// iOS 26 Liquid Glass — minimal shadow
-function liquidGlass(isDark) {
-  return isDark
-    ? {
-        background: "rgba(12,18,26,0.30)",
-        backdropFilter: "blur(52px) saturate(210%) brightness(1.06)",
-        WebkitBackdropFilter: "blur(52px) saturate(210%) brightness(1.06)",
-        border: "1px solid rgba(255,255,255,0.14)",
-        boxShadow: "0 6px 20px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.12)",
-      }
-    : {
-        background: "rgba(255,255,255,0.38)",
-        backdropFilter: "blur(52px) saturate(180%) brightness(1.14)",
-        WebkitBackdropFilter: "blur(52px) saturate(180%) brightness(1.14)",
-        border: "1px solid rgba(255,255,255,0.70)",
-        boxShadow: "0 4px 14px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.88)",
-      };
-}
 
 export function GlassTabBar({ isDark, canInstall, onInstall }) {
   const { state, dispatch } = useAppState();

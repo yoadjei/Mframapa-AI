@@ -26,7 +26,6 @@ import { preloadCityPack } from "../services/cityPackService.js";
 import { trackAppOpen } from "../services/analytics.js";
 import { restoreSession, onAuthChange } from "../services/authService.js";
 import { useHardwareBack } from "../hooks/useHardwareBack.js";
-
 const CHUNK_RELOAD_KEY = "mframapa:chunk-reload";
 
 // ── Lazy load helpers (hoisted; used by the React.lazy() declarations below) ─
@@ -214,10 +213,19 @@ export function App() {
     autoPrompt: onboardingComplete,
   });
 
-  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  // Re-render when OS theme flips so "system" preference stays consistent with CSS.
+  const [systemDark, setSystemDark] = useState(
+    () => window.matchMedia("(prefers-color-scheme: dark)").matches,
+  );
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    const onChange = () => setSystemDark(mq.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
   const isDark =
     preferences.theme === "dark" ||
-    (preferences.theme === "system" && prefersDark);
+    (preferences.theme === "system" && systemDark);
 
   const [pushPromptOpen, setPushPromptOpen] = useState(false);
 

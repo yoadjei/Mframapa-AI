@@ -72,7 +72,8 @@ export function CloudRainBackground({ isDark }) {
               position: "absolute",
               left:     `${leftPct}%`,
               top:      `${topPct}%`,
-              opacity:  isDark ? 0.14 + opacityBase * 0.06 : 0.12 + opacityBase * 0.06,
+              // Keep watermark soft so cards/text stay the readable layer.
+              opacity:  isDark ? 0.10 + opacityBase * 0.04 : 0.08 + opacityBase * 0.04,
               transform: `rotate(${rotate}deg)`,
               color:    iconColor,
             }}

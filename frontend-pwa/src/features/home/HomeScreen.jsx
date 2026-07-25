@@ -18,7 +18,7 @@ function localCalendarDate() {
   return `${y}-${m}-${day}`;
 }
 import { MframapaLogo } from "../../components/brand/MframapaLogo.jsx";
-import { getAQIColor, aqiSymbol } from "../../utils/colors.js";
+import { getAQIColor, aqiSymbol, resolveIsDark } from "../../utils/colors.js";
 
 // ── AQI helpers ───────────────────────────────────────────────────────────────
 
@@ -52,12 +52,15 @@ function useCountUp(target, duration = 600) {
 
 // ── Screen ─────────────────────────────────────────────────────────────────
 
-export function HomeScreen({ isOnline }) {
+export function HomeScreen({ isOnline, isDark: isDarkProp }) {
   const { state, dispatch } = useAppState();
   const { navigate } = useNavigation();
   const { t } = useTranslation();
-  const isDark = state.preferences.theme === "dark" ||
-    (state.preferences.theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+  // Prefer App-resolved theme so CSS class + inline colors stay in lockstep.
+  const isDark =
+    typeof isDarkProp === "boolean"
+      ? isDarkProp
+      : resolveIsDark(state.preferences.theme);
 
   const [loading, setLoading]     = useState(false);
   const [locating, setLocating]   = useState(false);

@@ -44,25 +44,48 @@ export function aqiSymbol(category) {
   }[aqiBand(category)];
 }
 
+/** Resolve dark/light from preference + OS (single source of truth). */
+export function resolveIsDark(theme = "system") {
+  if (theme === "dark") return true;
+  if (theme === "light") return false;
+  if (typeof window === "undefined") return true;
+  return window.matchMedia("(prefers-color-scheme: dark)").matches;
+}
+
+/**
+ * Apply html class / data-theme / theme-color before or after paint.
+ * Keeps CSS (.mf-glass) and JS (getColors) from disagreeing.
+ */
+export function applyDocumentTheme(isDark) {
+  if (typeof document === "undefined") return;
+  const root = document.documentElement;
+  root.classList.toggle("dark", isDark);
+  root.dataset.theme = isDark ? "dark" : "light";
+  root.style.colorScheme = isDark ? "dark" : "light";
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute("content", isDark ? "#0A0D12" : "#E8ECF2");
+}
+
 /**
  * iOS 26 Liquid Glass surface — returns inline style object.
  * Apply as: <div style={{ ...liquidGlass(isDark), borderRadius: 20 }}>
+ * Opacity is high enough that labels stay readable over the pattern bg.
  */
 export function liquidGlass(isDark) {
   return isDark
     ? {
-        background: "rgba(12,18,26,0.30)",
-        backdropFilter: "blur(52px) saturate(210%) brightness(1.06)",
-        WebkitBackdropFilter: "blur(52px) saturate(210%) brightness(1.06)",
-        border: "1px solid rgba(255,255,255,0.14)",
-        boxShadow: "0 6px 20px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.12)",
+        background: "rgba(18,24,34,0.82)",
+        backdropFilter: "blur(40px) saturate(180%)",
+        WebkitBackdropFilter: "blur(40px) saturate(180%)",
+        border: "1px solid rgba(255,255,255,0.16)",
+        boxShadow: "0 6px 20px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.10)",
       }
     : {
-        background: "rgba(255,255,255,0.38)",
-        backdropFilter: "blur(52px) saturate(180%) brightness(1.14)",
-        WebkitBackdropFilter: "blur(52px) saturate(180%) brightness(1.14)",
-        border: "1px solid rgba(255,255,255,0.70)",
-        boxShadow: "0 4px 14px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.88)",
+        background: "rgba(255,255,255,0.88)",
+        backdropFilter: "blur(40px) saturate(160%)",
+        WebkitBackdropFilter: "blur(40px) saturate(160%)",
+        border: "1px solid rgba(15,20,25,0.10)",
+        boxShadow: "0 4px 14px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.95)",
       };
 }
 

@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useReducer } from "react";
 
 import { detectDeviceLanguage } from "../i18n/languages.js";
+import { applyDocumentTheme, resolveIsDark } from "../utils/colors.js";
 
 const PERSISTENCE_KEY = "mframapa:v2:pwa-state";
 export const SESSION_KEY = "mframapa:v2:session-token";
@@ -316,12 +317,7 @@ export function AppStateProvider({ children }) {
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
-    const apply = () => {
-      const dark =
-        state.preferences.theme === "dark" ||
-        (state.preferences.theme === "system" && mq.matches);
-      document.documentElement.classList.toggle("dark", dark);
-    };
+    const apply = () => applyDocumentTheme(resolveIsDark(state.preferences.theme));
     apply();
     mq.addEventListener("change", apply);
     return () => mq.removeEventListener("change", apply);
