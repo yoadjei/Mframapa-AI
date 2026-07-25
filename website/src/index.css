@@ -1,0 +1,101 @@
+@import "tailwindcss";
+@import "lenis/dist/lenis.css";
+
+@theme {
+  --color-canvas: #f6f7f9;
+  --color-ink: #0a0a0a;
+  --color-muted: #6b7280;
+  --color-dim: #9ca3af;
+  --color-line: #e8eaee;
+  --color-mint: #00c896;
+  --color-mint-dark: #008060;
+  --color-night: #0a0d12;
+  --color-night-card: #171e28;
+  --color-night-muted: #9aa7b5;
+  --color-accent: #1d4ed8;
+  --font-display: "Syne", system-ui, sans-serif;
+  --font-body: "DM Sans", system-ui, sans-serif;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  font-family: var(--font-body);
+  color: var(--color-ink);
+  background: var(--color-canvas);
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  min-height: 100dvh;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-mint) 35%, white);
+}
+
+/* —— iOS-ish phone idle (CSS = reliable) —— */
+@keyframes phone-float-ios {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -22px, 0);
+  }
+}
+
+@keyframes phone-tilt-idle {
+  0%,
+  100% {
+    transform: perspective(1200px) rotateY(-6deg) rotateX(3deg) translate3d(0, 0, 0);
+  }
+  50% {
+    transform: perspective(1200px) rotateY(-6deg) rotateX(3deg) translate3d(0, -22px, 0);
+  }
+}
+
+@keyframes shadow-pulse {
+  0%,
+  100% {
+    transform: translateX(-50%) scaleX(1);
+    opacity: 0.28;
+  }
+  50% {
+    transform: translateX(-50%) scaleX(0.82);
+    opacity: 0.16;
+  }
+}
+
+.phone-float:not(.phone-tilt) {
+  animation: phone-float-ios 3.6s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  will-change: transform;
+}
+
+.phone-tilt {
+  transform-style: preserve-3d;
+  animation: phone-tilt-idle 3.6s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  will-change: transform;
+}
+
+.phone-shadow-pulse {
+  animation: shadow-pulse 3.6s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+/* Softened path when OS reduce is on — still moves, never frozen */
+.phone-soft.phone-float:not(.phone-tilt) {
+  animation-duration: 5.5s;
+}
+
+.phone-soft.phone-tilt {
+  animation-duration: 5.5s;
+}
+
+.phone-soft.phone-shadow-pulse {
+  animation-duration: 5.5s;
+}
