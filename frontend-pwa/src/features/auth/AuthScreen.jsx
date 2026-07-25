@@ -27,7 +27,7 @@ const GREEN = "#00C896";
 function palette(isDark) {
   return isDark
     ? { TEXT: "#FFFFFF", SUBTEXT: "#9AA7B5", MUTED: "#647182", BORDER: "#25303C", SURFACE: "#1E2733", BG: "#0A0D12" }
-    : { TEXT: "#0F1419", SUBTEXT: "#5C6B7A", MUTED: "#7B8A99", BORDER: "#D4DAE3", SURFACE: "#FFFFFF", BG: "#F8FAFC" };
+    : { TEXT: "#0F1419", SUBTEXT: "#5C6B7A", MUTED: "#7B8A99", BORDER: "#D4DAE3", SURFACE: "#FFFFFF", BG: "#E8ECF2" };
 }
 
 // ── Shared field ──────────────────────────────────────────────────────────────

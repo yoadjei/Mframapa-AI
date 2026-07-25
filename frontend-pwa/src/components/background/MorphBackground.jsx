@@ -25,7 +25,7 @@ export function MorphBackground({ isDark = true, liteMode = false }) {
   }, []);
 
   const still = liteMode || reduceMotion;
-  const base = isDark ? "#0A0D12" : "#F8FAFC";
+  const base = isDark ? "#0A0D12" : "#E8ECF2";
   const strength = isDark ? 0.22 : 0.14;
 
   const blobs = [

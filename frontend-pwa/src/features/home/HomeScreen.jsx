@@ -73,7 +73,7 @@ export function HomeScreen({ isOnline }) {
     text:    isDark ? "#FFFFFF" : "#0F1419",
     sub:     isDark ? "#9AA7B5" : "#5C6B7A",
     muted:   isDark ? "#647182" : "#7B8A99",
-    bg:      isDark ? "#0A0D12" : "#F8FAFC",
+    bg:      isDark ? "#0A0D12" : "#E8ECF2",
   };
 
   // Offline: show the last saved reading instead of an empty "--" hero.

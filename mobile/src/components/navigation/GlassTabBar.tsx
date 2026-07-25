@@ -7,10 +7,10 @@ import {
   Platform,
   Keyboard,
   Modal,
-  ScrollView,
   LayoutAnimation,
   UIManager,
 } from 'react-native';
+import { BlurView } from 'expo-blur';
 import { GlassView, isGlassEffectAPIAvailable } from 'expo-glass-effect';
 import * as Haptics from 'expo-haptics';
 import { Ionicons } from '@expo/vector-icons';
@@ -19,7 +19,7 @@ import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { Colors, getColors } from '../../theme';
 import { useTheme } from '../../hooks/useTheme';
 import { useTranslation } from '../../hooks/useTranslation';
-import { MORE_MENU_ITEMS } from '../../navigation/profileMenuItems';
+import { FAB_MORE_ITEMS } from '../../navigation/profileMenuItems';
 
 if (
   Platform.OS === 'android' &&
@@ -46,21 +46,37 @@ const MAIN_TAB_CONFIG: {
 }[] = [
   { names: ['Home', 'index'], labelKey: 'tab.home', icons: { active: 'home', inactive: 'home-outline' } },
   { names: ['Map', 'map'], labelKey: 'tab.map', icons: { active: 'map', inactive: 'map-outline' } },
-  { names: ['Profile', 'profile'], labelKey: 'tab.profile', icons: { active: 'person', inactive: 'person-outline' } }];
+  { names: ['Profile', 'profile'], labelKey: 'tab.profile', icons: { active: 'person', inactive: 'person-outline' } },
+];
+
+function glassFill(isDark: boolean) {
+  return isDark ? 'rgba(12,18,26,0.38)' : 'rgba(255,255,255,0.42)';
+}
+
+function glassBorder(isDark: boolean) {
+  return isDark ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.70)';
+}
 
 function BarChrome({
   children,
   style,
   isDark,
-  fallbackBg,
 }: {
   children: React.ReactNode;
   style?: object;
   isDark: boolean;
-  fallbackBg: string;
 }) {
   return (
-    <View style={[style, { overflow: 'hidden' }]}>
+    <View
+      style={[
+        style,
+        {
+          overflow: 'hidden',
+          borderWidth: StyleSheet.hairlineWidth,
+          borderColor: glassBorder(isDark),
+        },
+      ]}
+    >
       {useNativeGlass ? (
         <GlassView
           style={StyleSheet.absoluteFill}
@@ -68,7 +84,16 @@ function BarChrome({
           colorScheme={isDark ? 'dark' : 'light'}
         />
       ) : (
-        <View style={[StyleSheet.absoluteFill, { backgroundColor: fallbackBg }]} />
+        <>
+          <BlurView
+            intensity={isDark ? 48 : 64}
+            tint={isDark ? 'dark' : 'light'}
+            style={StyleSheet.absoluteFill}
+          />
+          <View
+            style={[StyleSheet.absoluteFill, { backgroundColor: glassFill(isDark) }]}
+          />
+        </>
       )}
       {children}
     </View>
@@ -119,15 +144,20 @@ export function GlassTabBar({ state, descriptors, navigation }: BottomTabBarProp
     }
   }
 
-  function openProfileScreen(screen: string) {
+  function openFabItem(item: (typeof FAB_MORE_ITEMS)[number]) {
     setMenuOpen(false);
-    navigation.navigate('Profile', { screen });
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    if (item.viaProfile) {
+      navigation.navigate('Profile', { screen: item.route });
+      return;
+    }
+    navigation.navigate(item.route);
   }
 
   if (keyboardVisible) return null;
 
-  const fallbackSurface = isDark ? colors.card : '#FFFFFF';
   const bottom = Math.max(16, insets.bottom + 8);
+  const rowDivider = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.07)';
 
   return (
     <>
@@ -138,33 +168,34 @@ export function GlassTabBar({ state, descriptors, navigation }: BottomTabBarProp
         onRequestClose={() => setMenuOpen(false)}
       >
         <Pressable style={styles.menuBackdrop} onPress={() => setMenuOpen(false)}>
+          {Platform.OS === 'ios' ? (
+            <BlurView intensity={12} tint="dark" style={StyleSheet.absoluteFill} />
+          ) : (
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0,0,0,0.35)' }]} />
+          )}
           <Pressable
             style={[styles.menuPanel, { bottom: bottom + BAR_HEIGHT + 16, right: 16 }]}
             onPress={(e) => e.stopPropagation()}
           >
-            <BarChrome
-              isDark={isDark}
-              fallbackBg={fallbackSurface}
-              style={[styles.menuChrome, { borderRadius: 16 }]}
-            >
-              <ScrollView
-                style={styles.menuScroll}
-                showsVerticalScrollIndicator={false}
-                bounces={false}
-              >
-                {MORE_MENU_ITEMS.map((item) => (
+            <BarChrome isDark={isDark} style={styles.menuChrome}>
+              {FAB_MORE_ITEMS.map((item, i) => {
+                const last = i === FAB_MORE_ITEMS.length - 1;
+                return (
                   <Pressable
                     key={item.id}
-                    style={[styles.menuRow, { borderBottomColor: colors.border }]}
-                    onPress={() => openProfileScreen(item.screen)}
+                    style={[
+                      styles.menuRow,
+                      !last && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: rowDivider },
+                    ]}
+                    onPress={() => openFabItem(item)}
                   >
+                    <Ionicons name={item.icon} size={18} color={Colors.brandGreen} />
                     <Text style={[styles.menuRowText, { color: colors.text }]}>
                       {t(item.labelKey)}
                     </Text>
-                    <Ionicons name="chevron-forward" size={16} color={colors.subtext} />
                   </Pressable>
-                ))}
-              </ScrollView>
+                );
+              })}
             </BarChrome>
           </Pressable>
         </Pressable>
@@ -174,9 +205,10 @@ export function GlassTabBar({ state, descriptors, navigation }: BottomTabBarProp
         <View
           style={[
             styles.capsuleShadow,
-            { shadowOpacity: isDark ? 0.32 : 0.12 }]}
+            { shadowOpacity: isDark ? 0.32 : 0.12 },
+          ]}
         >
-          <BarChrome isDark={isDark} fallbackBg={fallbackSurface} style={styles.capsule}>
+          <BarChrome isDark={isDark} style={styles.capsule}>
             <View style={styles.capsuleInner}>
               {MAIN_TAB_CONFIG.map((cfg, i) => {
                 const route = mainRoutes[i];
@@ -205,7 +237,8 @@ export function GlassTabBar({ state, descriptors, navigation }: BottomTabBarProp
                     <View
                       style={[
                         styles.tabPill,
-                        focused && { backgroundColor: pillBg }]}
+                        focused && { backgroundColor: pillBg },
+                      ]}
                     >
                       <Ionicons
                         name={focused ? icons.active : icons.inactive}
@@ -229,13 +262,14 @@ export function GlassTabBar({ state, descriptors, navigation }: BottomTabBarProp
           style={({ pressed }) => [
             styles.fabShadow,
             styles.fab,
-            pressed && styles.fabPressed]}
+            pressed && styles.fabPressed,
+          ]}
           onPress={() => {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
             setMenuOpen((open) => !open);
           }}
           accessibilityRole="button"
-          accessibilityLabel="More options"
+          accessibilityLabel={menuOpen ? 'Close menu' : 'More options'}
         >
           <Ionicons
             name={menuOpen ? 'close' : 'add'}
@@ -319,30 +353,25 @@ const styles = StyleSheet.create({
   },
   menuBackdrop: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.35)',
+    backgroundColor: Platform.OS === 'ios' ? 'rgba(0,0,0,0.22)' : 'transparent',
   },
   menuPanel: {
     position: 'absolute',
-    width: 280,
-    maxHeight: 360,
+    width: 256,
   },
   menuChrome: {
     borderRadius: 16,
-    maxHeight: 360,
-  },
-  menuScroll: {
-    maxHeight: 360,
   },
   menuRow: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 14,
     paddingHorizontal: 16,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    gap: 8,
+    gap: 12,
   },
   menuRowText: {
     flex: 1,
     fontSize: 15,
+    fontWeight: '500',
   },
 });

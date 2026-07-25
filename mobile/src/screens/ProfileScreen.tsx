@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Alert,
 } from 'react-native';
@@ -26,12 +26,8 @@ export function ProfileScreen() {
   const updateProfile = useStore((s) => s.updateProfile);
   const signOut       = useStore((s) => s.signOut);
 
-  // Initialise from the actual signed-in profile. Effect below keeps these
-  // in sync if profile is re-hydrated (e.g. after sign-in completes).
-  const [email]                     = useState(profile.email); // read-only (auth identity)
+  const [email] = useState(profile.email);
   const [pickerVisible, setPickerVisible] = useState(false);
-
-
 
   function confirmSignOut() {
     Alert.alert(
@@ -45,7 +41,6 @@ export function ProfileScreen() {
   }
 
   function handleAvatarSelect(seed: string) {
-    // Fire-and-forget — picker closes immediately, sync happens in background.
     void updateProfile({ avatarSeed: seed });
   }
 
@@ -55,13 +50,11 @@ export function ProfileScreen() {
         contentContainerStyle={[styles.content, { paddingTop: insets.top + 12, paddingBottom: insets.bottom + 24 }]}
         showsVerticalScrollIndicator={false}
       >
-        {/* Header */}
         <View style={styles.header}>
-          <MframapaLogo size="sm" />
+          <MframapaLogo size="sm" markOnly />
         </View>
         <Text style={[styles.pageTitle, { color: colors.text }]}>{t('screen.profile.title')}</Text>
 
-        {/* Avatar */}
         <TouchableOpacity style={styles.avatarWrap} onPress={() => setPickerVisible(true)} activeOpacity={0.8}>
           {profile.avatarSeed ? (
             <Image
@@ -77,14 +70,11 @@ export function ProfileScreen() {
           </View>
         </TouchableOpacity>
 
-        {/* Tier badge */}
         <View style={styles.tierRow}>
           <Text style={[styles.tierLabel, { color: colors.subtext }]}>{t('screen.profile.account_tier')}</Text>
           <Badge label={profile.tier.charAt(0).toUpperCase() + profile.tier.slice(1)} variant={profile.tier as any} />
         </View>
 
-        {/* Account: read-only. identity comes from the provider, and the app
-            never used organization, so neither is an editable field here. */}
         <View style={styles.form}>
           <InputField
             label={t('screen.profile.email')}
@@ -98,29 +88,50 @@ export function ProfileScreen() {
           />
         </View>
 
-        {/* Profile links */}
-        <View style={styles.links}>
+        {/* Product screens — same discoverability as PWA Profile */}
+        <View style={[styles.links, { borderTopColor: colors.border }]}>
           {PROFILE_MENU_ITEMS.map((item) => (
             <TouchableOpacity
               key={item.screen}
               onPress={() => navigation.navigate(item.screen)}
               style={[styles.link, { borderBottomColor: colors.border }]}
+              accessibilityRole="button"
+              accessibilityLabel={t(item.labelKey)}
             >
               <Text style={[styles.linkText, { color: colors.text }]}>{t(item.labelKey)}</Text>
-              <Text style={[styles.linkChevron, { color: colors.subtext }]}>›</Text>
+              <Ionicons name="chevron-forward" size={18} color={colors.subtext} />
             </TouchableOpacity>
           ))}
         </View>
 
+        {/*
+          HCI: frequent session end (Sign out) is primary; irreversible Delete is
+          separated below a divider with quieter type so the two aren’t one tap-cluster.
+        */}
         <View style={[styles.accountActions, { borderColor: colors.border, backgroundColor: colors.card }]}>
           <Text style={[styles.accountActionsLabel, { color: colors.subtext }]}>
             {t('screen.profile.account_actions')}
           </Text>
-          <TouchableOpacity onPress={confirmSignOut} style={styles.signOut}>
+
+          <TouchableOpacity
+            onPress={confirmSignOut}
+            style={styles.signOutRow}
+            accessibilityRole="button"
+            accessibilityLabel={t('settings.sign_out')}
+          >
+            <Ionicons name="log-out-outline" size={18} color={Colors.danger} />
             <Text style={styles.signOutText}>{t('settings.sign_out')}</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate('DeleteAccount')} style={styles.deleteLink}>
-            <Text style={[styles.deleteLinkText, { color: Colors.danger, opacity: 0.75 }]}>
+
+          <View style={[styles.dangerDivider, { backgroundColor: colors.border }]} />
+
+          <TouchableOpacity
+            onPress={() => navigation.navigate('DeleteAccount')}
+            style={styles.deleteLink}
+            accessibilityRole="button"
+            accessibilityLabel={t('screen.profile.delete_account')}
+          >
+            <Text style={[styles.deleteLinkText, { color: Colors.danger }]}>
               {t('screen.profile.delete_account')}
             </Text>
           </TouchableOpacity>
@@ -152,9 +163,11 @@ const styles = StyleSheet.create({
   },
   tierRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 24 },
   tierLabel: { fontSize: 14 },
-  form: { gap: 14, marginBottom: 24 },
-  saveBtn: {},
-  links: { marginTop: 24 },
+  form: { gap: 14, marginBottom: 8 },
+  links: {
+    marginTop: 8,
+    borderTopWidth: StyleSheet.hairlineWidth,
+  },
   link: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -163,32 +176,48 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
   linkText: { fontSize: 15 },
-  linkChevron: { fontSize: 22, fontWeight: '300' },
   accountActions: {
-    marginTop: 32,
+    marginTop: 40,
     marginBottom: 8,
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: 16,
-    paddingVertical: 16,
+    paddingTop: 16,
+    paddingBottom: 8,
     paddingHorizontal: 16,
-    alignItems: 'center',
-    gap: 12,
+    alignItems: 'stretch',
   },
   accountActionsLabel: {
     fontSize: 11,
     fontWeight: '600',
     letterSpacing: 1.2,
     textTransform: 'uppercase',
-    marginBottom: 4,
+    textAlign: 'center',
+    marginBottom: 12,
   },
-  deleteLink: { alignItems: 'center', paddingVertical: 4 },
-  deleteLinkText: { fontSize: 13 },
-  signOut: {
-    alignSelf: 'center',
+  signOutRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    paddingVertical: 12,
   },
   signOutText: {
     color: Colors.danger,
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: '600',
+  },
+  dangerDivider: {
+    height: StyleSheet.hairlineWidth,
+    marginVertical: 4,
+    marginHorizontal: 24,
+  },
+  deleteLink: {
+    alignItems: 'center',
+    paddingVertical: 14,
+  },
+  deleteLinkText: {
+    fontSize: 13,
+    fontWeight: '400',
+    opacity: 0.72,
   },
 });

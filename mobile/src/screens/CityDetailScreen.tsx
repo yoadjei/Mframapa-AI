@@ -17,7 +17,7 @@ import { AQIBadge } from '../components/ui/AQIBadge';
 import { PrimaryButton } from '../components/ui/PrimaryButton';
 import { LineChart } from '../components/charts/LineChart';
 import { getHistory } from '../services/api';
-import { getColors, Colors } from '../theme';
+import { getColors, Colors, AppBackgroundColors } from '../theme';
 import { getAQIColor } from '../theme/colors';
 import { useTheme } from '../hooks/useTheme';
 import { PredictionResult, useStore } from '../store/useStore';
@@ -96,6 +96,12 @@ export function CityDetailScreen() {
   const category = pred?.aqi_category ?? 'good';
   const weather = pred?.weather ?? { temp: 0, humidity: 0, wind: 0 };
   const aqiColor = getAQIColor(category, isDark);
+  const pageBg = isDark ? AppBackgroundColors.dark : AppBackgroundColors.light;
+  // Light AQI washes are pale — white chrome fails contrast (PWA parity).
+  const chromeColor = isDark ? '#FFFFFF' : colors.text;
+  const headerGradient = isDark
+    ? [aqiColor + 'CC', aqiColor + '66', pageBg]
+    : [aqiColor + '33', aqiColor + '14', pageBg];
   const categoryLabel = t(aqiCategoryKey(category));
   const healthAdvice = t(healthAdviceKey(category));
   const trendLabels = TREND_DAY_KEYS.map((key) => t(key));
@@ -200,7 +206,7 @@ export function CityDetailScreen() {
   return (
     <View style={[styles.root]}>
       <LinearGradient
-        colors={[aqiColor + 'CC', aqiColor + '66', colors.background]}
+        colors={headerGradient as [string, string, string]}
         style={[styles.header, { paddingTop: insets.top }]}
       >
         <TouchableOpacity
@@ -209,17 +215,19 @@ export function CityDetailScreen() {
           accessibilityRole="button"
           accessibilityLabel={t('common.back')}
         >
-          <Ionicons name="chevron-back" size={22} color="#fff" />
-          {Platform.OS === 'ios' ? <Text style={styles.backText}>{t('common.back')}</Text> : null}
+          <Ionicons name="chevron-back" size={22} color={chromeColor} />
+          {Platform.OS === 'ios' ? (
+            <Text style={[styles.backText, { color: chromeColor }]}>{t('common.back')}</Text>
+          ) : null}
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>{cityName}</Text>
+        <Text style={[styles.headerTitle, { color: chromeColor }]}>{cityName}</Text>
         <TouchableOpacity
           onPress={() => setShareVisible(true)}
           style={styles.shareBtn}
           accessibilityRole="button"
           accessibilityLabel={t('screen.share.title')}
         >
-          <Ionicons name="share-outline" size={22} color="#fff" />
+          <Ionicons name="share-outline" size={22} color={chromeColor} />
         </TouchableOpacity>
       </LinearGradient>
 
@@ -382,8 +390,8 @@ const styles = StyleSheet.create({
   },
   backBtn: { flexDirection: 'row', alignItems: 'center', gap: 4, minWidth: 60 },
   shareBtn: { minWidth: 60, alignItems: 'flex-end' },
-  backText: { color: '#fff', fontSize: 16, fontWeight: '400' },
-  headerTitle: { color: '#fff', fontSize: 18, fontWeight: '700', textAlign: 'center', flex: 1 },
+  backText: { fontSize: 16, fontWeight: '400' },
+  headerTitle: { fontSize: 18, fontWeight: '700', textAlign: 'center', flex: 1 },
   aqiBlock: { padding: 24, alignItems: 'flex-start', gap: 6 },
   degradedBanner: {
     flexDirection: 'row',

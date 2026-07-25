@@ -144,7 +144,7 @@ export function HomeScreen() {
 
         {/* Header */}
         <View style={styles.header}>
-          <MframapaLogo size="sm" />
+          <MframapaLogo size="sm" markOnly />
           <TouchableOpacity onPress={() => navigation.navigate('Alerts')} style={styles.bellBtn}>
             <Ionicons name="notifications-outline" size={22} color={colors.text} />
             {unreadCount > 0 ? (

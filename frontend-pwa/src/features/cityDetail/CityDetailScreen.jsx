@@ -82,6 +82,10 @@ export function CityDetailScreen({ isDark, params }) {
   const uncertainty = prediction?.uncertainty ?? null;
   const factors = prediction?.factors ?? null;
   const aqiColor = getAQIColor(category, isDark);
+  // Soft light wash (avoid olive/yellow slab); dark keeps richer tint.
+  const headerWashTop = isDark ? `${aqiColor}CC` : `${aqiColor}33`;
+  const headerWashMid = isDark ? `${aqiColor}66` : `${aqiColor}14`;
+  const chromeColor = isDark ? "#FFFFFF" : colors.text;
   const categoryLabel = t(aqiCategoryKey(category));
   const healthAdvice = t(healthAdviceKey(category));
   const trendLabels = TREND_DAY_KEYS.map((key) => t(key));
@@ -198,7 +202,7 @@ export function CityDetailScreen({ isDark, params }) {
         <div style={{ height: "env(safe-area-inset-top)" }} />
         <div
           className="flex flex-col items-center justify-center gap-4 px-6 py-16"
-          style={{ backgroundColor: colors.background }}
+          style={{ backgroundColor: colors.bg }}
         >
           <p className="text-center text-[0.9375rem]" style={{ color: colors.subtext }}>
             {t("home.tap_check")}
@@ -213,14 +217,14 @@ export function CityDetailScreen({ isDark, params }) {
     <div
       className="min-h-[100dvh] overflow-y-auto"
       style={{
-        backgroundColor: colors.background,
+        backgroundColor: colors.bg,
         paddingBottom: "calc(env(safe-area-inset-bottom) + 100px)",
       }}
     >
       {/* ── Gradient header (mirrors mobile LinearGradient + paddingTop: insets.top) ── */}
       <div
         style={{
-          background: `linear-gradient(180deg, ${aqiColor}CC 0%, ${aqiColor}66 55%, ${colors.background} 100%)`,
+          background: `linear-gradient(180deg, ${headerWashTop} 0%, ${headerWashMid} 55%, ${colors.bg} 100%)`,
           paddingTop: "env(safe-area-inset-top)",
         }}
       >
@@ -230,13 +234,16 @@ export function CityDetailScreen({ isDark, params }) {
         >
           <StackBackButton
             onClick={goBack}
-            color="#fff"
+            color={chromeColor}
             variant="chevron"
             ariaLabel={t("common.go_back")}
           />
 
           {/* City name */}
-          <h1 className="flex-1 text-center text-[1.125rem] font-bold text-white">
+          <h1
+            className="flex-1 text-center text-[1.125rem] font-bold"
+            style={{ color: chromeColor }}
+          >
             {cityName}
           </h1>
 
@@ -248,7 +255,7 @@ export function CityDetailScreen({ isDark, params }) {
             style={{ minWidth: 60 }}
             aria-label={t("screen.share.title")}
           >
-            <Share2 size={22} color="#fff" />
+            <Share2 size={22} color={chromeColor} />
           </button>
         </div>
       </div>

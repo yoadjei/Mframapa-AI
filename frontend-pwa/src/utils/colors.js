@@ -79,10 +79,11 @@ export function getColors(isDark) {
         accentDim: "rgba(0,200,150,0.12)",
       }
     : {
-        bg:       "#F8FAFC",
+        // Match mobile AppBackgroundColors.light — cool slate, not warm cream.
+        bg:       "#E8ECF2",
         card:     "#FFFFFF",
         cardAlt:  "#F1F5F9",
-        surface:  "#E9EEF4",
+        surface:  "#E2E8F0",
         border:   "#D4DAE3",
         text:     "#0F1419",
         subtext:  "#5C6B7A",
