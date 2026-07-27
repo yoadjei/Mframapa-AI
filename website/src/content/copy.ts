@@ -61,15 +61,15 @@ export const copy = {
         id: 'alerts' as const,
         screen: 'alerts' as const,
         step: 'Step 3',
-        title: 'Turn on alerts',
-        body: 'Allow notifications in the app if you want tips when the air may get worse.',
+        title: 'Turn on dust alerts',
+        body: 'We send a phone notification when dusty air is coming to your city.',
       },
     ],
   },
 
   locations: {
     label: 'Locations',
-    title: 'Team in Accra, Ghana. Cities covered across Africa.',
+    title: 'Team in Accra, Ghana.\nCities covered across Africa.',
   },
 
   closing: {

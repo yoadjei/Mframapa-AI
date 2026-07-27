@@ -135,6 +135,6 @@ If the OS shows a push-permission dialog, allow it once **before** the marketing
 
 ## After files land
 
-Wire `PhoneMockup` to play these clips (`autoplay muted loop playsInline`, WebM + MP4 source). Point How it works step 3 at the alerts clip — not `home-dark.png`.
+Wired: `PhoneMockup` plays these clips in **How it works** (`media="video"`, `autoplay muted loop playsInline`, WebM + MP4). Hero keeps the still (`media` default `image`). Step 3 uses the alerts clip, not `home-dark.png`.
 
-Until then, do not ship fake motion; keep stills only as a temporary placeholder, and replace step 3’s still with a real **Alerts** frame if you must show something before video is ready.
+Local check: from `website/`, `npm run dev`, scroll to **How it works**, confirm all three clips loop and read clearly inside the phone bezel.

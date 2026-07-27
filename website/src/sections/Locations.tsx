@@ -16,7 +16,7 @@ export function Locations() {
           transition={iosSoft}
         >
           <SectionLabel>{copy.locations.label}</SectionLabel>
-          <h2 className="max-w-2xl font-display text-3xl font-bold tracking-tight text-ink sm:text-4xl md:text-[2.75rem]">
+          <h2 className="max-w-2xl whitespace-pre-line font-display text-3xl font-bold tracking-tight text-ink sm:text-4xl md:text-[2.75rem]">
             {copy.locations.title}
           </h2>
         </motion.div>
@@ -38,7 +38,7 @@ export function Locations() {
               Ghana
             </h3>
             <div className="space-y-1.5 text-[15px] text-muted">
-              <p>Mframapa</p>
+              <p>mframapa</p>
               <p>Accra</p>
               <p>Greater Accra</p>
               <p>Ghana</p>

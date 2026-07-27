@@ -55,7 +55,7 @@ export function Hero() {
         </motion.div>
       </motion.div>
 
-      <div className="relative flex min-h-[62vh] items-center justify-center px-4 pt-6 pb-6 sm:min-h-[70vh] md:min-h-[78vh] md:pb-10">
+      <div className="relative flex min-h-[52vh] items-center justify-center px-4 pt-4 pb-4 sm:min-h-[62vh] sm:pt-6 sm:pb-6 md:min-h-[72vh] md:pb-10">
         <HeroStage />
 
         <motion.div
@@ -93,15 +93,16 @@ export function Hero() {
         </motion.div>
 
         <motion.div
-          className="relative z-10"
+          className="relative z-10 w-full max-w-[min(92vw,340px)]"
           style={isMobile ? undefined : { y: phoneY, rotate: phoneRotate }}
-          initial={{ opacity: 0, y: 56, scale: 0.92 }}
+          initial={false}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ ...iosSoft, delay: 0.1 }}
         >
           <PhoneMockup
             screen="home"
-            floating
+            floating={!isMobile}
+            frame
             tilted={!isMobile}
             size={isMobile ? 'md' : 'lg'}
           />
