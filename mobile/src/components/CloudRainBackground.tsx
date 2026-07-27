@@ -6,18 +6,17 @@ import { AppBackgroundColors } from '../theme/background';
 
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 
+/** Match PWA Lucide set: cloud / rain / lightning / drizzle / cloudy. */
 const ICON_VARIANTS: IoniconName[] = [
-  'rainy',
-  'rainy-outline',
-  'cloud',
   'cloud-outline',
-  'cloudy',
-  'cloudy-outline',
+  'rainy-outline',
   'thunderstorm-outline',
+  'cloudy-outline',
+  'cloud',
 ];
 
-/** Spacing between icon anchors — larger = fewer icons. */
-const CELL = 88;
+/** Spacing between icon anchors — match PWA CELL=120 (sparser than old 88). */
+const CELL = 120;
 
 function hash(n: number): number {
   const x = Math.sin(n * 127.1 + 311.7) * 43758.5453;
@@ -42,8 +41,8 @@ function buildCluster(width: number, height: number, isDark: boolean): PlacedIco
 
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
-      const slot = hash(row * 113 + col * 17);
-      if (slot < 0.42) continue;
+      // Higher skip → fewer icons (PWA uses 0.58).
+      if (hash(row * 113 + col * 17) < 0.58) continue;
 
       const h0 = hash(seed++);
       const h1 = hash(seed++);
@@ -53,7 +52,7 @@ function buildCluster(width: number, height: number, isDark: boolean): PlacedIco
       const left = col * CELL + (h0 - 0.5) * CELL * 0.55;
       const top = row * CELL + (h1 - 0.5) * CELL * 0.55;
       const size = 34 + Math.floor(h2 * 18);
-      const opacity = isDark ? 0.14 + h3 * 0.06 : 0.12 + h3 * 0.06;
+      const opacity = isDark ? 0.10 + h3 * 0.04 : 0.08 + h3 * 0.04;
 
       items.push({
         key: `${row}-${col}`,

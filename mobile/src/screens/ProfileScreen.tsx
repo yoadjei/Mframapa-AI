@@ -49,7 +49,6 @@ export function ProfileScreen() {
     navigation.navigate('Login');
   }
 
-  const displayName = profile.fullName?.trim() || '';
   const displayEmail = profile.email?.trim() || '';
 
   return (
@@ -89,12 +88,7 @@ export function ProfileScreen() {
               {t('screen.profile.account_details')}
             </Text>
             <View style={[styles.detailsCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-              {displayName ? (
-                <View style={[styles.detailRow, { borderBottomColor: colors.border }]}>
-                  <Text style={[styles.detailLabel, { color: colors.subtext }]}>{t('screen.profile.name')}</Text>
-                  <Text style={[styles.detailValue, { color: colors.text }]}>{displayName}</Text>
-                </View>
-              ) : null}
+              {/* Email only — matches PWA account details (name often missing from auth). */}
               <View style={styles.detailRowLast}>
                 <Text style={[styles.detailLabel, { color: colors.subtext }]}>{t('screen.profile.email')}</Text>
                 <Text style={[styles.detailValue, { color: colors.text }]}>

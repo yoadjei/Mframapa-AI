@@ -59,8 +59,11 @@ Rebuilds labels + Open-Meteo weather/AQ (now including pressure, precip, dust, C
 python -m pipeline.build_static_grid
 
 # 2) Pull OpenAQ (+ AirQo if configured) → enrich → QA → training_dataset.csv
-#    To force re-enrich after schema changes:
+#    To force re-enrich after schema changes (wipes checkpoints):
 python -c "from pipeline.enrich_satellite import enrich; raise SystemExit(0 if enrich(force=True) else 1)"
+#    If Open-Meteo DNS/timeouts flake mid-run, just resume (no force) — failed
+#    locations are left incomplete and retried:
+python -c "from pipeline.enrich_satellite import enrich; raise SystemExit(0 if enrich() else 1)"
 python -m pipeline.run_pipeline
 
 # 3) Train continental + regionals (keeps regional only if it beats continental)
@@ -112,6 +115,21 @@ ssh -i $env:MFRAMAPA_KEY ubuntu@$env:MFRAMAPA_HOST "cd ~/mframapa && docker comp
 ```
 
 Serving image reads exports from the mounted `ml/exports` volume; restart is enough (no image rebuild).
+
+---
+
+## Enrichment network flakes
+
+`enrich_satellite` talks to `archive-api.open-meteo.com`, CAMS AQ, WorldPop, and OpenTopoData. On flaky Wi‑Fi/DNS you may see `getaddrinfo failed`, connect timeouts, or WorldPop/SRTM resets.
+
+What the pipeline does now:
+
+- Splits each location’s date range into **14-day chunks** (long windows often time out).
+- Retries DNS/connect/429/5xx with exponential backoff (5 attempts).
+- Does **not** mark a location complete when weather+AQ both fail — next `enrich()` resumes those.
+- `force=True` clears `pipeline/output/checkpoints/enrichment*.json|csv` and the enriched file so rebuilds are honest.
+
+Tips: prefer a stable network / Ethernet; if DNS keeps failing, switch DNS (e.g. 1.1.1.1) or retry later. Do not `force=True` after a partial success unless you want a full rebuild.
 
 ---
 

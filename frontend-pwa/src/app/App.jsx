@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect, useMemo, useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { useAppState } from "../state/appState.jsx";
 import { useOnlineStatus } from "../hooks/useOnlineStatus.js";
 import { useInstallPrompt } from "../hooks/useInstallPrompt.js";
@@ -379,7 +379,7 @@ export function App() {
                   WebkitTapHighlightColor: "transparent",
                 }}
               >
-                <ArrowLeft size={22} color={isDark ? "#FFFFFF" : "#0F1419"} />
+                <ChevronLeft size={22} color={isDark ? "#FFFFFF" : "#0F1419"} />
               </button>
             </header>
 

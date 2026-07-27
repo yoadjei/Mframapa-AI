@@ -51,6 +51,11 @@ export function PhoneMockup({
   return (
     <div
       className={`relative mx-auto ${WIDTH[size]} ${floatClass} ${softClass} ${className}`}
+      style={{
+        // Cap height on short laptops; width follows aspect so the mockup never clips.
+        maxHeight: 'min(72dvh, 620px)',
+        width: 'min(100%, calc(min(72dvh, 620px) * 9 / 19.2))',
+      }}
     >
       <div
         className={`pointer-events-none absolute -bottom-7 left-1/2 h-11 w-[72%] -translate-x-1/2 rounded-[100%] bg-ink/20 blur-2xl ${
@@ -60,16 +65,18 @@ export function PhoneMockup({
       />
 
       <div
-        className="relative overflow-hidden rounded-[2.7rem] p-[11px] ring-1 ring-black/20"
+        className="relative h-full w-full overflow-hidden rounded-[2.7rem] p-[11px] ring-1 ring-black/20"
         style={{
           background:
             'linear-gradient(160deg, #2a2a2e 0%, #141416 45%, #0a0a0c 100%)',
           boxShadow:
             '0 50px 100px -36px rgba(10,10,10,0.55), 0 20px 40px -18px rgba(10,10,10,0.3), inset 0 1px 0 rgba(255,255,255,0.12)',
+          aspectRatio: '9 / 19.2',
+          maxHeight: 'inherit',
         }}
       >
         <div className="absolute top-[13px] left-1/2 z-20 h-[24px] w-[104px] -translate-x-1/2 rounded-full bg-black" />
-        <div className="aspect-[9/19.2] overflow-hidden rounded-[2.15rem] bg-white">
+        <div className="h-full w-full overflow-hidden rounded-[2.15rem] bg-white">
           <AnimatePresence mode="wait">
             <motion.img
               key={shot.src}

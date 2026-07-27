@@ -108,9 +108,9 @@ OPENMETEO_ARCHIVE_URL = "https://archive-api.open-meteo.com/v1/archive"
 #   requests with >10 variables or >2 weeks count as multiple calls
 #   we fetch 6 variables per request so each counts as 1 call
 #   our 2s delay = ~30 req/min = safely under the 600/min limit
-OPENMETEO_DELAY_SECONDS = 2.0    # 2s between requests (~30/min, limit is 600/min)
-OPENMETEO_RETRY_DELAY = 30       # base wait on 429 (doubles each retry)
-OPENMETEO_MAX_RETRIES = 3        # max retries per request on 429/5xx
+OPENMETEO_DELAY_SECONDS = 2.5    # pause between chunk/location calls
+OPENMETEO_RETRY_DELAY = 20       # base wait on DNS/connect/429 (doubles each retry)
+OPENMETEO_MAX_RETRIES = 5        # more attempts — archive DNS flakes are common on Win/Wi‑Fi
 
 # weather variables to fetch (must match training dataset columns)
 WEATHER_VARIABLES = [

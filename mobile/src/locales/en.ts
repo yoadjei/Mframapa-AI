@@ -50,13 +50,12 @@ const base: Record<string, string> = {
   'aqi.very_unhealthy': 'Very Unhealthy',
   'aqi.hazardous': 'Hazardous',
 
-  'advice.good': 'Air quality is satisfactory. Enjoy outdoor activities.',
-  'advice.moderate': 'Unusually sensitive people should consider reducing prolonged exertion.',
-  'advice.sensitive': 'Sensitive groups should limit prolonged outdoor exertion.',
-  'advice.unhealthy':
-    'Everyone may experience health effects. Sensitive groups face serious risk.',
-  'advice.very_unhealthy': 'Health alert: everyone may experience serious health effects.',
-  'advice.hazardous': 'Everyone should avoid all outdoor activities.',
+  'advice.good': 'Air quality is good. Enjoy outdoor activities.',
+  'advice.moderate': 'Air quality is moderate. Sensitive people should limit long outdoor time.',
+  'advice.sensitive': 'Sensitive groups should limit outdoor exertion. Wear a mask if needed.',
+  'advice.unhealthy': 'Air quality is poor. Reduce outdoor activity.',
+  'advice.very_unhealthy': 'Everyone may experience serious health effects. Stay indoors when you can.',
+  'advice.hazardous': 'Everyone should avoid outdoor activities.',
 
   'weather.temp': 'Temp',
   'weather.humidity': 'Humidity',
@@ -426,7 +425,7 @@ const base: Record<string, string> = {
   'settings.text_size_larger': 'Larger',
   'a11y.text_size_hint': 'Scales the whole app interface (like browser zoom), not only system fonts.',
   'push_prompt.local_only':
-    'Alerts work while the app is open. Phone alerts when the app is closed are not available on this server yet — try again after the next update.',
+    'Alerts work while the app is open. Phone alerts when the app is closed are not available on this server yet. Try again after the next update.',
   'screen.city_detail.air_quality': 'Air quality',
   'screen.city_detail.how_guidance': 'How guidance',
   'screen.city_detail.guidance_good': 'Air quality is good for all groups.',

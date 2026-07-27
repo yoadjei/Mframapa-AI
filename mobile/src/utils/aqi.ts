@@ -47,14 +47,14 @@ export function pm25ToAQI(pm25: number): number {
 
 export function getHealthAdvice(category: string): string {
   const lower = category.toLowerCase();
-  if (lower.includes('hazardous')) return 'Everyone should avoid all outdoor activities.';
+  if (lower.includes('hazardous')) return 'Everyone should avoid outdoor activities.';
   if (lower.includes('very unhealthy') || lower.includes('very_unhealthy'))
-    return 'Health alert: everyone may experience serious health effects.';
+    return 'Everyone may experience serious health effects. Stay indoors when you can.';
   if (lower.includes('unhealthy') && !lower.includes('sensitive'))
-    return 'Everyone may experience health effects. Sensitive groups face serious risk.';
+    return 'Air quality is poor. Reduce outdoor activity.';
   if (lower.includes('sensitive'))
-    return 'Sensitive groups should limit prolonged outdoor exertion.';
+    return 'Sensitive groups should limit outdoor exertion. Wear a mask if needed.';
   if (lower.includes('moderate'))
-    return 'Unusually sensitive people should consider reducing prolonged exertion.';
-  return 'Air quality is satisfactory. Enjoy outdoor activities.';
+    return 'Air quality is moderate. Sensitive people should limit long outdoor time.';
+  return 'Air quality is good. Enjoy outdoor activities.';
 }

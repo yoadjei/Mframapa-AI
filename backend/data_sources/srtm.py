@@ -15,7 +15,7 @@ from .base import DataSource
 logger = logging.getLogger(__name__)
 
 _API_URL = "https://api.opentopodata.org/v1/srtm90m"
-_TIMEOUT = 30
+_TIMEOUT = 60
 
 
 class SRTMDataSource(DataSource):
@@ -45,6 +45,5 @@ class SRTMDataSource(DataSource):
             data = r.json()
             elevation = data["results"][0]["elevation"]
             return {"elevation": round(float(elevation), 1) if elevation is not None else None}
-        except Exception as e:
-            logger.warning("Failed to fetch SRTM data: %s", e)
-            return {"elevation": None}
+        except requests.RequestException as e:
+            raise ConnectionError(f"SRTM: request failed — {e}") from e

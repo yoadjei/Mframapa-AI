@@ -35,7 +35,7 @@ export function AboutLegalScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.logoBlock}>
-          <MframapaLogo size="lg" />
+          <MframapaLogo size="lg" markOnly />
           <Text style={[styles.version, { color: colors.muted }]}>{`Version ${APP_VERSION}`}</Text>
         </View>
 

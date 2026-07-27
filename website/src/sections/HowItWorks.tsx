@@ -10,14 +10,16 @@ import { copy } from '../content/copy'
 import { iosScreen, iosSoft } from '../lib/ios'
 import { useSiteMotion } from '../lib/motionPreference'
 import { useIsMobile } from '../hooks/useIsMobile'
+import { useShortViewport } from '../hooks/useShortViewport'
 
 /**
- * Desktop: tall sticky scroll-scrub.
- * Mobile: tap steps + auto-cycle (sticky 280vh fights mobile nav / viewport).
+ * Desktop: tall sticky scroll-scrub (only when width + height can fit the phone).
+ * Mobile / short laptops: tap steps + auto-cycle so nothing clips.
  */
 export function HowItWorks() {
   const isMobile = useIsMobile()
-  return isMobile ? <HowItWorksMobile /> : <HowItWorksDesktop />
+  const isShort = useShortViewport(900)
+  return isMobile || isShort ? <HowItWorksMobile /> : <HowItWorksDesktop />
 }
 
 function HowItWorksMobile() {
@@ -47,7 +49,7 @@ function HowItWorksMobile() {
           How it works
         </p>
 
-        <div className="relative mx-auto mt-8 flex min-h-[360px] items-center justify-center">
+        <div className="relative mx-auto mt-8 flex min-h-[280px] max-h-[min(58dvh,480px)] items-center justify-center sm:min-h-[360px]">
           <div
             className="absolute inset-10 rounded-full bg-[radial-gradient(circle,rgba(0,200,150,0.14)_0%,transparent_68%)]"
             aria-hidden
@@ -59,17 +61,18 @@ function HowItWorksMobile() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -16 }}
               transition={iosScreen}
+              className="max-h-full"
             >
               <PhoneMockup
                 screen={step.screen as PhoneScreen}
                 floating={false}
                 size="md"
+                className="max-h-[min(58dvh,480px)]"
               />
             </motion.div>
           </AnimatePresence>
         </div>
 
-        {/* Step chips — clear mobile navigation */}
         <div className="mt-8 flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {steps.map((s, i) => {
             const on = i === active
@@ -142,8 +145,8 @@ function HowItWorksDesktop() {
   })
 
   const stepIndex = useTransform(scrollYProgress, [0, 0.35, 0.7, 1], [0, 1, 2, 2])
-  const phoneScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.92, 1, 1.04])
-  const phoneY = useTransform(scrollYProgress, [0, 1], [40 * intensity, -20 * intensity])
+  const phoneScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.9, 0.96, 1])
+  const phoneY = useTransform(scrollYProgress, [0, 1], [24 * intensity, -12 * intensity])
   const dustOpacity = useTransform(scrollYProgress, [0.55, 0.9], [0, 0.55])
   const progressWidth = useTransform(scrollYProgress, [0, 1], ['0%', '100%'])
 
@@ -156,20 +159,20 @@ function HowItWorksDesktop() {
   const step = steps[active]!
 
   return (
-    <section ref={sectionRef} className="relative h-[280vh] bg-white">
-      <div className="sticky top-0 flex min-h-dvh items-center overflow-hidden">
+    <section ref={sectionRef} className="relative h-[240vh] bg-white lg:h-[280vh]">
+      <div className="sticky top-0 flex min-h-dvh items-center overflow-x-hidden overflow-y-auto py-8 md:py-12">
         <motion.div
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_70%_40%,rgba(212,165,116,0.35),transparent_60%)]"
           style={{ opacity: dustOpacity }}
           aria-hidden
         />
 
-        <div className="relative z-10 mx-auto grid w-full max-w-6xl items-center gap-10 px-4 py-16 sm:px-5 md:grid-cols-2 md:gap-16 md:px-8">
+        <div className="relative z-10 mx-auto grid w-full max-w-6xl items-center gap-8 px-4 sm:px-5 lg:grid-cols-2 lg:gap-14 lg:px-8">
           <div>
             <p className="text-[12px] font-semibold tracking-[0.16em] text-mint-dark uppercase">
               How it works
             </p>
-            <div className="mt-6 space-y-8">
+            <div className="mt-6 space-y-6 lg:space-y-8">
               {steps.map((s, i) => {
                 const on = i === active
                 return (
@@ -186,7 +189,7 @@ function HowItWorksDesktop() {
                       {s.step}
                     </p>
                     <h3
-                      className={`mt-1.5 font-display text-2xl font-bold tracking-tight sm:text-3xl ${
+                      className={`mt-1.5 font-display text-xl font-bold tracking-tight sm:text-2xl lg:text-3xl ${
                         on ? 'text-ink' : 'text-ink/50'
                       }`}
                     >
@@ -211,13 +214,13 @@ function HowItWorksDesktop() {
               })}
             </div>
 
-            <div className="mt-10 h-1 overflow-hidden rounded-full bg-line">
+            <div className="mt-8 h-1 overflow-hidden rounded-full bg-line lg:mt-10">
               <motion.div className="h-full bg-mint" style={{ width: progressWidth }} />
             </div>
           </div>
 
           <motion.div
-            className="relative flex min-h-[420px] items-center justify-center"
+            className="relative flex max-h-[min(72dvh,620px)] min-h-[280px] items-center justify-center"
             style={{ scale: phoneScale, y: phoneY }}
           >
             <motion.div
@@ -233,11 +236,13 @@ function HowItWorksDesktop() {
                 animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
                 exit={{ opacity: 0, x: -40, filter: 'blur(8px)' }}
                 transition={iosScreen}
+                className="max-h-full w-full flex justify-center"
               >
                 <PhoneMockup
                   screen={step.screen as PhoneScreen}
                   floating={false}
                   size="lg"
+                  className="max-h-[min(72dvh,620px)] w-auto"
                 />
               </motion.div>
             </AnimatePresence>

@@ -47,6 +47,18 @@ client.interceptors.response.use(
       const retryAfterMs = parseFloat(retryAfterHeader) * 1000;
       _rateLimitListeners.forEach((fn) => fn(retryAfterMs));
     }
+    // Stale/expired Supabase JWT → 401. Core routes allow anonymous access; retry
+    // once without the bearer so iOS does not get stuck on cached offline readings
+    // (PWA httpClient does the same).
+    const original = err.config as (typeof err.config & { _retriedAnon?: boolean }) | undefined;
+    if (err.response?.status === 401 && original && !original._retriedAnon) {
+      original._retriedAnon = true;
+      if (original.headers) {
+        delete original.headers.Authorization;
+        delete original.headers.authorization;
+      }
+      return client.request(original);
+    }
     return Promise.reject(err);
   },
 );

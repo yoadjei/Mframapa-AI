@@ -5,7 +5,7 @@ import {
   ChevronRight,
   Droplets,
   Loader2,
-  Share2,
+  Share,
   Sparkles,
   Thermometer,
   Wind,
@@ -260,7 +260,7 @@ export function CityDetailScreen({ isDark, params }) {
             style={{ minWidth: 60 }}
             aria-label={t("screen.share.title")}
           >
-            <Share2 size={22} color={chromeColor} />
+            <Share size={22} color={chromeColor} />
           </button>
         </div>
       </div>

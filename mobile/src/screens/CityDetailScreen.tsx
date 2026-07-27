@@ -5,7 +5,6 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
-  Platform,
   ActivityIndicator,
   Alert,
 } from 'react-native';
@@ -221,10 +220,8 @@ export function CityDetailScreen() {
           accessibilityRole="button"
           accessibilityLabel={t('common.back')}
         >
+          {/* Chevron only — match PWA StackBackButton variant="chevron". */}
           <Ionicons name="chevron-back" size={22} color={chromeColor} />
-          {Platform.OS === 'ios' ? (
-            <Text style={[styles.backText, { color: chromeColor }]}>{t('common.back')}</Text>
-          ) : null}
         </TouchableOpacity>
         <Text style={[styles.headerTitle, { color: chromeColor }]}>{cityName}</Text>
         <TouchableOpacity
@@ -233,6 +230,7 @@ export function CityDetailScreen() {
           accessibilityRole="button"
           accessibilityLabel={t('screen.share.title')}
         >
+          {/* iOS-style share (box+arrow) — PWA uses Lucide Share, not Share2. */}
           <Ionicons name="share-outline" size={22} color={chromeColor} />
         </TouchableOpacity>
       </LinearGradient>
@@ -404,9 +402,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingBottom: 16,
   },
-  backBtn: { flexDirection: 'row', alignItems: 'center', gap: 4, minWidth: 60 },
-  shareBtn: { minWidth: 60, alignItems: 'flex-end' },
-  backText: { fontSize: 16, fontWeight: '400' },
+  backBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', minWidth: 44, minHeight: 44 },
+  shareBtn: { minWidth: 44, minHeight: 44, alignItems: 'flex-end', justifyContent: 'center' },
   headerTitle: { fontSize: 18, fontWeight: '700', textAlign: 'center', flex: 1 },
   aqiBlock: { padding: 24, alignItems: 'flex-start', gap: 6 },
   degradedBanner: {

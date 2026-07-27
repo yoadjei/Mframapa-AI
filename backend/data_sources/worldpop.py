@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 _STATS_URL = "https://api.worldpop.org/v1/services/stats"
 _DATASET   = "wpgppop"   # population count mosaic; the old 'wpgp' alias 422s
 _YEAR      = "2020"
-_TIMEOUT   = 30
+_TIMEOUT   = 60
 _DELTA     = 0.01        # ~1.1 km half-box around the point
 
 

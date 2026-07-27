@@ -234,7 +234,7 @@ export function HomeScreen({ isOnline, isDark: isDarkProp }) {
   const unreadCount = state.notifications?.filter((n) => !n.read).length ?? 0;
 
   return (
-    <div className="flex flex-col mf-tab-gap min-h-[100dvh]" style={{ backgroundColor: colors.bg }}>
+    <div className="flex flex-col mf-tab-gap min-h-[100dvh]" style={{ backgroundColor: "transparent" }}>
 
         {/* ── Header ── */}
         <div className="flex items-center justify-between px-4 py-3">

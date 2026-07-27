@@ -150,7 +150,7 @@ export function SearchScreen({ isOnline, isDark }) {
   return (
     <div
       className="min-h-[100dvh] mf-tab-gap"
-      style={{ backgroundColor: colors.bg }}
+      style={{ backgroundColor: "transparent" }}
     >
       {/* ── Search bar — pad left when opened as stack from profile ── */}
       <div className="px-4 py-3" style={{ paddingLeft: Math.max(16, stackTitlePad(inStack) || 16) }}>

@@ -80,7 +80,7 @@ export function ProfileScreen({ isOnline, isDark }) {
   return (
     <div
       className="min-h-[100dvh] mf-tab-gap px-4"
-      style={{ backgroundColor: colors.bg }}
+      style={{ backgroundColor: "transparent" }}
     >
       {/* MobileShell already applies safe-area top — only content inset here. */}
       <div style={{ paddingTop: 12 }}>
@@ -187,7 +187,6 @@ export function ProfileScreen({ isOnline, isDark }) {
               style={{ backgroundColor: colors.card, borderColor: colors.border }}
             >
               {[
-                ...(displayName ? [{ label: t("screen.profile.name"), value: displayName }] : []),
                 { label: t("screen.profile.email"), value: displayEmail },
               ].map((row, i) => (
                 <div
