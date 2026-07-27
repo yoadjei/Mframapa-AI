@@ -101,7 +101,7 @@ export function Hero() {
         >
           <PhoneMockup
             screen="home"
-            floating={!isMobile}
+            floating
             frame
             tilted={!isMobile}
             size={isMobile ? 'md' : 'lg'}
