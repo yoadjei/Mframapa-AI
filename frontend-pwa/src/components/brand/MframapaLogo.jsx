@@ -1,6 +1,6 @@
 // Raincloud mark — exact paths from website/public/favicon.svg.
 // `markOnly` drops the wordmark for in-app headers.
-export function MframapaLogo({ size = "md", isDark = true, markOnly = false }) {
+export function MframapaLogo({ size = "md", isDark = true, markOnly = true }) {
   const dims = {
     sm: { icon: 18, text: 15 },
     md: { icon: 24, text: 20 },

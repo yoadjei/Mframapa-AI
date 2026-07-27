@@ -885,7 +885,18 @@ def generate_insight(body: InsightBody, request: Request) -> Dict[str, str]:
     who = _client_ip(request)
     seed = f"{who}:{key}:{season}:{dt_date.today().isoformat()}"
     index = int(hashlib.sha1(seed.encode()).hexdigest()[:8], 16)
-    return {"insight": lines[index % len(lines)]}
+    return {"insight": _clean_guidance(lines[index % len(lines)])}
+
+
+def _clean_guidance(text: str) -> str:
+    """Strip separator punctuation from health lines shown in What to do."""
+    import re
+
+    out = text.replace("\u2014", " ").replace("\u2013", " ").replace("—", " ").replace("–", " ")
+    out = re.sub(r"\s*[-–—]\s*", " ", out)
+    out = re.sub(r"[;:]", ".", out)
+    out = re.sub(r"\.{2,}", ".", out)
+    return re.sub(r"\s+", " ", out).strip()
 
 
 # Push token registration — use persistent store if available

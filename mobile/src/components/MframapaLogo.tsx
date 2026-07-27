@@ -15,7 +15,7 @@ const SIZES = {
   lg: { icon: 32, text: 26, gap: 10 },
 };
 
-export function MframapaLogo({ size = 'md', markOnly = false }: MframapaLogoProps) {
+export function MframapaLogo({ size = 'md', markOnly = true }: MframapaLogoProps) {
   const s = SIZES[size];
   const { isDark } = useTheme();
   const colors = getColors(isDark);

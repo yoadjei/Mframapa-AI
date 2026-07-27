@@ -4,10 +4,12 @@ import { PhoneMockup, type PhoneScreen } from '../components/PhoneMockup'
 import { copy } from '../content/copy'
 import { iosScreen, iosSoft } from '../lib/ios'
 import { useIsMobile } from '../hooks/useIsMobile'
+import { useShortViewport } from '../hooks/useShortViewport'
 
 /**
  * Desktop: two-column scrub list + phone.
  * Mobile: phone first, then chips + one active step (no faded stack).
+ * Short laptops: tighter padding + smaller phone so the section fits one screen.
  */
 export function HowItWorks() {
   const isMobile = useIsMobile()
@@ -128,16 +130,26 @@ function HowItWorksMobile() {
 
 function HowItWorksDesktop() {
   const { steps, active, step, go, onClipEnded } = useHowSteps()
+  const short = useShortViewport(860)
+  const compact = useShortViewport(780)
 
   return (
-    <section className="border-t border-line bg-white py-16 sm:py-20 lg:py-24">
-      <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 sm:px-5 lg:grid-cols-2 lg:gap-16 lg:px-8">
+    <section
+      className={`border-t border-line bg-white ${
+        compact ? 'py-10' : short ? 'py-12 sm:py-14' : 'py-16 sm:py-20 lg:py-24'
+      }`}
+    >
+      <div
+        className={`mx-auto grid max-w-6xl items-center px-4 sm:px-5 lg:grid-cols-2 lg:px-8 ${
+          compact ? 'gap-6' : short ? 'gap-8 lg:gap-10' : 'gap-10 lg:gap-16'
+        }`}
+      >
         <div>
           <p className="text-[12px] font-semibold tracking-[0.16em] text-mint-dark uppercase">
             How it works
           </p>
 
-          <div className="mt-6 space-y-5 lg:space-y-7">
+          <div className={`mt-5 ${compact ? 'space-y-3' : short ? 'space-y-4' : 'space-y-5 lg:space-y-7'}`}>
             {steps.map((s, i) => {
               const on = i === active
               return (
@@ -158,9 +170,13 @@ function HowItWorksDesktop() {
                       {s.step}
                     </p>
                     <h3
-                      className={`mt-1.5 font-display text-xl font-bold tracking-tight sm:text-2xl lg:text-3xl ${
-                        on ? 'text-ink' : 'text-ink/50'
-                      }`}
+                      className={`mt-1 font-display font-bold tracking-tight ${
+                        compact
+                          ? 'text-lg'
+                          : short
+                            ? 'text-xl sm:text-2xl'
+                            : 'text-xl sm:text-2xl lg:text-3xl'
+                      } ${on ? 'text-ink' : 'text-ink/50'}`}
                     >
                       {s.title}
                     </h3>
@@ -168,7 +184,9 @@ function HowItWorksDesktop() {
                       {on ? (
                         <motion.p
                           key={s.id}
-                          className="mt-2 max-w-md text-[15px] leading-relaxed text-muted"
+                          className={`mt-1.5 max-w-md leading-relaxed text-muted ${
+                            compact ? 'text-[13px]' : 'text-[15px]'
+                          }`}
                           initial={{ opacity: 0, y: 10, height: 0 }}
                           animate={{ opacity: 1, y: 0, height: 'auto' }}
                           exit={{ opacity: 0, y: -6, height: 0 }}
@@ -184,7 +202,7 @@ function HowItWorksDesktop() {
             })}
           </div>
 
-          <div className="mt-8 flex gap-1.5">
+          <div className={`${compact ? 'mt-5' : 'mt-8'} flex gap-1.5`}>
             {steps.map((s, i) => (
               <button
                 key={s.id}
@@ -199,7 +217,15 @@ function HowItWorksDesktop() {
           </div>
         </div>
 
-        <div className="relative flex min-h-[320px] items-center justify-center overflow-visible lg:min-h-[420px]">
+        <div
+          className={`relative flex items-center justify-center overflow-visible ${
+            compact
+              ? 'min-h-[240px]'
+              : short
+                ? 'min-h-[280px] lg:min-h-[320px]'
+                : 'min-h-[320px] lg:min-h-[420px]'
+          }`}
+        >
           <div
             className="absolute inset-8 rounded-full bg-[radial-gradient(circle,rgba(0,200,150,0.14)_0%,transparent_68%)]"
             aria-hidden
@@ -218,9 +244,15 @@ function HowItWorksDesktop() {
                 floating={false}
                 frame
                 media="video"
-                size="lg"
+                size={compact || short ? 'md' : 'lg'}
                 onEnded={onClipEnded}
-                className="lg:max-w-[340px]"
+                className={
+                  compact
+                    ? 'max-w-[220px]'
+                    : short
+                      ? 'max-w-[260px] lg:max-w-[280px]'
+                      : 'lg:max-w-[340px]'
+                }
               />
             </motion.div>
           </AnimatePresence>

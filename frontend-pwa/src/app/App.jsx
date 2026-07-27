@@ -342,7 +342,8 @@ export function App() {
               flexDirection: "column",
               height: "100dvh",
               maxHeight: "100dvh",
-              backgroundColor: isDark ? "#0A0D12" : "#E8ECF2",
+              // Transparent so CloudRainBackground matches iOS (icons show through).
+              backgroundColor: "transparent",
             }}
           >
             <header
@@ -354,7 +355,7 @@ export function App() {
                 paddingLeft: 8,
                 paddingRight: 8,
                 minHeight: "calc(env(safe-area-inset-top) + 52px)",
-                backgroundColor: isDark ? "#0A0D12" : "#E8ECF2",
+                backgroundColor: "transparent",
                 borderBottom: `1px solid ${isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)"}`,
               }}
             >

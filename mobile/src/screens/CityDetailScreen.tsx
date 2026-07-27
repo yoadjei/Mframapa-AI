@@ -22,6 +22,7 @@ import { useTheme } from '../hooks/useTheme';
 import { PredictionResult, useStore } from '../store/useStore';
 import { useTranslation } from '../hooks/useTranslation';
 import { aqiCategoryKey, healthAdviceKey } from '../utils/i18nHelpers';
+import { cleanGuidanceText } from '../utils/cleanGuidanceText';
 import { isDegradedPrediction } from '../utils/deriveHealthRisks';
 import { ShareSheetScreen } from './system/ShareSheetScreen';
 import { generateInsight } from '../services/api';
@@ -102,7 +103,7 @@ export function CityDetailScreen() {
     ? [aqiColor + 'CC', aqiColor + '66', pageBg]
     : [aqiColor + '33', aqiColor + '14', pageBg];
   const categoryLabel = t(aqiCategoryKey(category));
-  const healthAdvice = t(healthAdviceKey(category));
+  const healthAdvice = cleanGuidanceText(t(healthAdviceKey(category)));
   const trendLabels = TREND_DAY_KEYS.map((key) => t(key));
   // real recent days rather than today's number times fixed multipliers
   const [trendData, setTrendData] = useState<number[]>([]);
@@ -230,8 +231,8 @@ export function CityDetailScreen() {
           accessibilityRole="button"
           accessibilityLabel={t('screen.share.title')}
         >
-          {/* iOS-style share (box+arrow) — PWA uses Lucide Share, not Share2. */}
-          <Ionicons name="share-outline" size={22} color={chromeColor} />
+          {/* Network share nodes — matches Lucide Share on PWA (not iOS box+arrow). */}
+          <Ionicons name="share-social-outline" size={22} color={chromeColor} />
         </TouchableOpacity>
       </LinearGradient>
 
@@ -315,7 +316,9 @@ export function CityDetailScreen() {
               </Text>
             </View>
           ) : insight ? (
-            <Text style={[styles.insightBody, { color: colors.text }]}>{insight}</Text>
+            <Text style={[styles.insightBody, { color: colors.text }]}>
+              {cleanGuidanceText(insight)}
+            </Text>
           ) : (
             <Text style={[styles.insightBody, { color: colors.subtext }]}>
               {t('screen.ai_insights.no_insights_yet')}

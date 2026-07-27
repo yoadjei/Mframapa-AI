@@ -15,6 +15,7 @@ import { useTranslation } from "../../hooks/useTranslation.js";
 import { useNavigation } from "../../hooks/useNavigation.js";
 import { getColors, Colors, getAQIColor } from "../../utils/colors.js";
 import { factorEntries } from "../../utils/factors.js";
+import { cleanGuidanceText } from "../../utils/cleanGuidanceText.js";
 import { aqiCategoryKey } from "../../utils/i18nHelpers.js";
 import { generateInsight, getHistory } from "../../services/api.js";
 import { PrimaryButton } from "../../components/ui/PrimaryButton.jsx";
@@ -92,7 +93,7 @@ export function CityDetailScreen({ isDark, params }) {
   const headerWashMid = isDark ? `${aqiColor}66` : `${aqiColor}14`;
   const chromeColor = isDark ? "#FFFFFF" : colors.text;
   const categoryLabel = t(aqiCategoryKey(category));
-  const healthAdvice = t(healthAdviceKey(category));
+  const healthAdvice = cleanGuidanceText(t(healthAdviceKey(category)));
   const trendLabels = TREND_DAY_KEYS.map((key) => t(key));
   // real recent days rather than multipliers applied to today's number
   const [trendData, setTrendData] = useState([]);
@@ -207,7 +208,7 @@ export function CityDetailScreen({ isDark, params }) {
         <div style={{ height: "env(safe-area-inset-top)" }} />
         <div
           className="flex flex-col items-center justify-center gap-4 px-6 py-16"
-          style={{ backgroundColor: colors.bg }}
+          style={{ backgroundColor: "transparent" }}
         >
           <p className="text-center text-[0.9375rem]" style={{ color: colors.subtext }}>
             {t("home.tap_check")}
@@ -222,14 +223,14 @@ export function CityDetailScreen({ isDark, params }) {
     <div
       className="min-h-[100dvh] overflow-y-auto"
       style={{
-        backgroundColor: colors.bg,
+        backgroundColor: "transparent",
         paddingBottom: "calc(env(safe-area-inset-bottom) + 100px)",
       }}
     >
       {/* ── Gradient header (mirrors mobile LinearGradient + paddingTop: insets.top) ── */}
       <div
         style={{
-          background: `linear-gradient(180deg, ${headerWashTop} 0%, ${headerWashMid} 55%, ${colors.bg} 100%)`,
+          background: `linear-gradient(180deg, ${headerWashTop} 0%, ${headerWashMid} 55%, transparent 100%)`,
           paddingTop: "env(safe-area-inset-top)",
         }}
       >
@@ -260,7 +261,8 @@ export function CityDetailScreen({ isDark, params }) {
             style={{ minWidth: 60 }}
             aria-label={t("screen.share.title")}
           >
-            <Share size={22} color={chromeColor} />
+            {/* Lucide Share (nodes) — same glyph family as mobile share-social-outline */}
+            <Share size={22} color={chromeColor} strokeWidth={2} />
           </button>
         </div>
       </div>
@@ -379,7 +381,7 @@ export function CityDetailScreen({ isDark, params }) {
           </div>
         ) : insight ? (
           <p className="text-[0.9375rem] leading-relaxed" style={{ color: colors.text }}>
-            {insight}
+            {cleanGuidanceText(insight)}
           </p>
         ) : (
           <p className="text-[0.9375rem] leading-relaxed" style={{ color: colors.subtext }}>

@@ -2,7 +2,7 @@ import axios, { AxiosError } from 'axios';
 import { PredictionResult } from '../store/useStore';
 import { API_BASE_URL, languageName } from '../utils/constants';
 import { factorLabels } from '../utils/factors';
-import { getCurrentSession } from './supabase';
+import { getCurrentSession, getSupabase } from './supabase';
 
 const BASE_URL = API_BASE_URL;
 
@@ -57,6 +57,8 @@ client.interceptors.response.use(
         delete original.headers.Authorization;
         delete original.headers.authorization;
       }
+      // Clear stale JWT locally so subsequent requests stay anonymous.
+      void getSupabase()?.auth.signOut({ scope: 'local' }).catch(() => undefined);
       return client.request(original);
     }
     return Promise.reject(err);

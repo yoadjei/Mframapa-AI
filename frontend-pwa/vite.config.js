@@ -50,6 +50,8 @@ export default defineConfig({
         type: 'module',
       },
       workbox: {
+        // Bump when shipping visual parity so installed PWAs drop stale caches.
+        cacheId: 'mframapa-pwa-v1.0.1',
         // Web Push handlers (push + notificationclick) live beside the generated SW.
         importScripts: ['/sw-push.js'],
         globPatterns: ['**/*.{css,html,ico,woff2}', 'assets/index-*.js'],

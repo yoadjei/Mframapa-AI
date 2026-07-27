@@ -35,11 +35,17 @@ httpClient.interceptors.request.use(async (config) => {
 // once anonymously so core (public) features keep working instead of getting stuck.
 httpClient.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
     const original = error.config;
     if (error?.response?.status === 401 && original && !original._retriedAnon) {
       original._retriedAnon = true;
       if (original.headers) delete original.headers.Authorization;
+      // Drop a stale JWT so later calls stay anonymous (same as mobile).
+      try {
+        await supabase?.auth.signOut({ scope: "local" });
+      } catch {
+        /* ignore */
+      }
       return httpClient(original);
     }
     return Promise.reject(error);

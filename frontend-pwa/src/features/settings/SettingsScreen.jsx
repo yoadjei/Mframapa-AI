@@ -86,7 +86,7 @@ export function SettingsScreen({ isOnline, isDark }) {
     <div
       className={`px-4 ${inStack ? "" : "min-h-[100dvh] overflow-y-auto mf-tab-gap"}`}
       style={{
-        backgroundColor: colors.bg,
+        backgroundColor: "transparent",
         paddingTop: stackTopPad(inStack),
         paddingBottom: inStack ? "calc(24px + env(safe-area-inset-bottom))" : undefined,
       }}

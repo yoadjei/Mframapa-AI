@@ -19,6 +19,7 @@ import { getAQIColor } from '../theme/colors';
 import { useTheme } from '../hooks/useTheme';
 import { useTranslation } from '../hooks/useTranslation';
 import { aqiCategoryKey } from '../utils/i18nHelpers';
+import { cleanGuidanceText } from '../utils/cleanGuidanceText';
 import { MframapaLogo } from '../components/MframapaLogo';
 import { useRateLimit } from '../hooks/useRateLimit';
 
@@ -207,7 +208,9 @@ export function HomeScreen() {
         {pred?.insight ? (
           <View style={[styles.factCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <Text style={[styles.factLabel, { color: colors.subtext }]}>{t('home.advice_title')}</Text>
-            <Text style={[styles.factBody, { color: colors.text }]}>{pred.insight}</Text>
+            <Text style={[styles.factBody, { color: colors.text }]}>
+              {cleanGuidanceText(pred.insight)}
+            </Text>
           </View>
         ) : null}
 

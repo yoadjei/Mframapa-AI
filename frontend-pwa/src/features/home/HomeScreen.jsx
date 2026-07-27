@@ -19,6 +19,7 @@ function localCalendarDate() {
 }
 import { MframapaLogo } from "../../components/brand/MframapaLogo.jsx";
 import { getAQIColor, aqiSymbol, resolveIsDark } from "../../utils/colors.js";
+import { cleanGuidanceText } from "../../utils/cleanGuidanceText.js";
 
 // ── AQI helpers ───────────────────────────────────────────────────────────────
 
@@ -397,7 +398,7 @@ export function HomeScreen({ isOnline, isDark: isDarkProp }) {
               {t("home.advice_title")}
             </p>
             <p className="text-[0.9375rem] leading-[22px] m-0" style={{ color: colors.text }}>
-              {pred.insight}
+              {cleanGuidanceText(pred.insight)}
             </p>
           </div>
         )}
