@@ -6,12 +6,13 @@ import { StoreBadges } from '../components/StoreBadges'
 import { APP_URL } from '../lib/constants'
 import { copy } from '../content/copy'
 import { useSiteMotion } from '../lib/motionPreference'
-import { useIsMobile } from '../hooks/useIsMobile'
+import { useIsCompact } from '../hooks/useIsMobile'
 import { iosFadeUp, iosSoft, iosStagger } from '../lib/ios'
 
 export function Hero() {
   const { intensity, soft } = useSiteMotion()
-  const isMobile = useIsMobile()
+  // Phone + iPad portrait: keep the hero phone centered and un-tilted until lg.
+  const isCompact = useIsCompact()
   const sectionRef = useRef<HTMLElement>(null)
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -32,7 +33,7 @@ export function Hero() {
       >
         <motion.h1
           variants={iosFadeUp}
-          className="font-display text-[2.35rem] leading-[1.08] font-extrabold tracking-[-0.035em] text-ink sm:text-5xl md:text-[3.75rem]"
+          className="font-display text-[2.35rem] leading-[1.08] font-extrabold tracking-[-0.035em] text-ink sm:text-5xl md:text-[3.25rem] lg:text-[3.75rem]"
         >
           {copy.hero.title}
         </motion.h1>
@@ -55,7 +56,7 @@ export function Hero() {
         </motion.div>
       </motion.div>
 
-      <div className="relative flex min-h-[52vh] items-center justify-center px-4 pt-4 pb-4 sm:min-h-[62vh] sm:pt-6 sm:pb-6 md:min-h-[72vh] md:pb-10">
+      <div className="relative flex min-h-[52vh] items-center justify-center px-4 pt-4 pb-4 sm:min-h-[58vh] sm:pt-6 sm:pb-6 md:min-h-[56vh] md:pb-8 lg:min-h-[72vh] lg:pb-10">
         <HeroStage />
 
         <motion.div
@@ -93,8 +94,8 @@ export function Hero() {
         </motion.div>
 
         <motion.div
-          className="relative z-10 w-full max-w-[min(92vw,340px)]"
-          style={isMobile ? undefined : { y: phoneY, rotate: phoneRotate }}
+          className="relative z-10 w-full max-w-[min(92vw,300px)] md:max-w-[min(56vw,320px)] lg:max-w-[min(92vw,340px)]"
+          style={isCompact ? undefined : { y: phoneY, rotate: phoneRotate }}
           initial={false}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ ...iosSoft, delay: 0.1 }}
@@ -103,8 +104,8 @@ export function Hero() {
             screen="home"
             floating
             frame
-            tilted={!isMobile}
-            size={isMobile ? 'md' : 'lg'}
+            tilted={!isCompact}
+            size={isCompact ? 'md' : 'lg'}
           />
         </motion.div>
       </div>

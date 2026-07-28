@@ -3,17 +3,19 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { PhoneMockup, type PhoneScreen } from '../components/PhoneMockup'
 import { copy } from '../content/copy'
 import { iosScreen, iosSoft } from '../lib/ios'
-import { useIsMobile } from '../hooks/useIsMobile'
+import { useIsCompact } from '../hooks/useIsMobile'
 import { useShortViewport } from '../hooks/useShortViewport'
 
 /**
- * Desktop: two-column scrub list + phone.
- * Mobile: phone first, then chips + one active step (no faded stack).
+ * Desktop (lg+): two-column scrub list + phone.
+ * Phone + tablet (< lg): phone first, chips, one active step.
  * Short laptops: tighter padding + smaller phone so the section fits one screen.
  */
 export function HowItWorks() {
-  const isMobile = useIsMobile()
-  return isMobile ? <HowItWorksMobile /> : <HowItWorksDesktop />
+  // iPad portrait (~768–834) must not use Desktop: that layout is single-column
+  // until lg, so tablets got a tall scrub list stacked above a giant phone.
+  const isCompact = useIsCompact()
+  return isCompact ? <HowItWorksMobile /> : <HowItWorksDesktop />
 }
 
 function useHowSteps() {
@@ -39,14 +41,14 @@ function HowItWorksMobile() {
   const { steps, active, step, go, onClipEnded } = useHowSteps()
 
   return (
-    <section className="border-t border-line bg-white py-14">
-      <div className="mx-auto max-w-lg px-4">
+    <section className="border-t border-line bg-white py-14 md:py-16">
+      <div className="mx-auto max-w-lg px-4 md:max-w-xl md:px-6">
         <p className="text-center text-[12px] font-semibold tracking-[0.16em] text-mint-dark uppercase">
           How it works
         </p>
 
-        {/* Phone first — primary content on a phone viewport. */}
-        <div className="relative mt-8 flex min-h-[300px] items-center justify-center">
+        {/* Phone first — primary content; slightly larger on iPad portrait. */}
+        <div className="relative mt-8 flex min-h-[300px] items-center justify-center md:min-h-[360px]">
           <div
             className="absolute inset-6 rounded-full bg-[radial-gradient(circle,rgba(0,200,150,0.14)_0%,transparent_68%)]"
             aria-hidden
@@ -67,13 +69,14 @@ function HowItWorksMobile() {
                 media="video"
                 size="md"
                 onEnded={onClipEnded}
+                className="md:max-w-[300px]"
               />
             </motion.div>
           </AnimatePresence>
         </div>
 
-        {/* Step chips — one row, clear tap targets. */}
-        <div className="mt-8 flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {/* Step chips — centered row on tablet, scrollable on narrow phones. */}
+        <div className="mt-8 flex justify-start gap-2 overflow-x-auto pb-1 md:justify-center [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {steps.map((s, i) => {
             const on = i === active
             return (
@@ -81,7 +84,7 @@ function HowItWorksMobile() {
                 key={s.id}
                 type="button"
                 onClick={() => go(i)}
-                className={`shrink-0 rounded-full px-4 py-2 text-sm font-semibold transition ${
+                className={`shrink-0 rounded-full px-4 py-2 text-sm font-semibold transition md:px-5 ${
                   on ? 'bg-ink text-white' : 'bg-canvas text-muted ring-1 ring-line'
                 }`}
               >
@@ -101,10 +104,10 @@ function HowItWorksMobile() {
             exit={{ opacity: 0, y: -8 }}
             transition={iosSoft}
           >
-            <h3 className="font-display text-2xl font-bold tracking-tight text-ink">
+            <h3 className="font-display text-2xl font-bold tracking-tight text-ink md:text-3xl">
               {step.title}
             </h3>
-            <p className="mx-auto mt-2 max-w-sm text-[15px] leading-relaxed text-muted">
+            <p className="mx-auto mt-2 max-w-sm text-[15px] leading-relaxed text-muted md:max-w-md md:text-base">
               {step.body}
             </p>
           </motion.div>

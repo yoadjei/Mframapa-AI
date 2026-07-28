@@ -155,7 +155,7 @@ export function PhoneMockup({
   if (!frame) {
     return (
       <div
-        className={`relative mx-auto isolate h-[min(58dvh,520px)] overflow-hidden rounded-[2.4rem] shadow-[0_28px_64px_-30px_rgba(10,10,10,0.5)] sm:h-[min(65dvh,580px)] md:h-[min(70dvh,620px)] ${className}`}
+        className={`relative mx-auto isolate h-[min(58dvh,520px)] overflow-hidden rounded-[2.4rem] shadow-[0_28px_64px_-30px_rgba(10,10,10,0.5)] sm:h-[min(62dvh,560px)] md:h-[min(52dvh,540px)] lg:h-[min(70dvh,620px)] ${className}`}
         style={style}
       >
         <PhoneScreenMedia
@@ -170,7 +170,7 @@ export function PhoneMockup({
 
   return (
     <div
-      className={`relative mx-auto h-[min(58dvh,520px)] sm:h-[min(65dvh,580px)] md:h-[min(70dvh,620px)] ${floatOk} ${softClass} ${className}`}
+      className={`relative mx-auto h-[min(58dvh,520px)] sm:h-[min(62dvh,560px)] md:h-[min(52dvh,540px)] lg:h-[min(70dvh,620px)] ${floatOk} ${softClass} ${className}`}
       style={style}
     >
       {floating ? (
