@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Linking } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -14,12 +14,12 @@ const APP_VERSION =
   Constants.nativeAppVersion ??
   '1.0.0';
 
-const LINK_KEYS = [
-  'settings.about.privacy',
-  'settings.about.terms',
-  'settings.about.licenses',
-  'settings.about.contact',
-];
+const LINK_ITEMS = [
+  { key: 'settings.about.privacy', sectionId: 'privacy' },
+  { key: 'settings.about.terms', sectionId: 'terms' },
+  { key: 'settings.about.licenses', sectionId: 'licenses' },
+  { key: 'settings.about.contact', mailto: 'mailto:hello@mframapa.live' },
+] as const;
 
 export function AboutLegalScreen() {
   const insets = useSafeAreaInsets();
@@ -40,15 +40,22 @@ export function AboutLegalScreen() {
         </View>
 
         <View style={[styles.linkList, { borderColor: colors.border }]}>
-          {LINK_KEYS.map((linkKey, i) => (
+          {LINK_ITEMS.map((item, i) => (
             <TouchableOpacity
-              key={linkKey}
+              key={item.key}
+              onPress={() => {
+                if ('mailto' in item) {
+                  Linking.openURL(item.mailto);
+                  return;
+                }
+                navigation.navigate('LegalDetail', { sectionId: item.sectionId });
+              }}
               style={[
                 styles.linkRow,
                 { backgroundColor: colors.card, borderBottomColor: colors.border },
-                i === LINK_KEYS.length - 1 && styles.linkRowLast]}
+                i === LINK_ITEMS.length - 1 && styles.linkRowLast]}
             >
-              <Text style={[styles.linkText, { color: colors.text }]}>{t(linkKey)}</Text>
+              <Text style={[styles.linkText, { color: colors.text }]}>{t(item.key)}</Text>
               <Ionicons name="chevron-forward" size={16} color={colors.muted} />
             </TouchableOpacity>
           ))}

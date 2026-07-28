@@ -11,9 +11,10 @@ export const LEGAL_SECTIONS: LegalSection[] = [
     body: `Mframapa AI respects your privacy. This policy explains what we collect, why we collect it, and how you can control your data.
 
 What we collect
-• Location coordinates when you tap "Check now", search for a city, or interact with the map — used only to fetch air-quality estimates for that point.
-• App preferences such as theme, language, and notification settings — stored on your device.
-• Anonymous usage events (screen views, prediction requests) if analytics are enabled — never sold to third parties.
+• Location coordinates when you tap "Check now", search for a city, or interact with the map, used only to fetch air-quality estimates for that point.
+• App preferences such as theme, language, and notification settings, stored on your device.
+• Anonymous usage events (screen views, prediction requests) tied only to a random device identifier, never to your name or account, never sold to third parties.
+• If you turn on air-quality alerts, a push notification token and the approximate area you want alerts for, so we can notify you about pollution episodes nearby. You can turn alerts off at any time.
 
 What we do not collect
 • We do not require an account for basic use.
@@ -40,7 +41,7 @@ Questions about privacy: privacy@mframapa.live`,
     body: `By using Mframapa AI you agree to these terms. If you do not agree, please uninstall the app.
 
 Service description
-Mframapa provides estimated PM2.5 and air-quality categories for locations across Africa, derived from satellite data and machine-learning models. Estimates are informational — not certified measurements for medical, legal, or regulatory decisions.
+Mframapa provides estimated PM2.5 and air-quality categories for locations across Africa, derived from satellite data and machine-learning models. Estimates are informational, not certified measurements for medical, legal, or regulatory decisions.
 
 Acceptable use
 • Use the app for personal, educational, research, or advocacy purposes.
@@ -64,32 +65,26 @@ These terms are governed by applicable law in the jurisdiction of the project ma
   },
   {
     id: 'licenses',
-    title: 'Open Source Licenses',
-    body: `Mframapa AI is built with open-source and commercial components. Key dependencies include:
+    title: 'Licenses and attribution',
+    body: `Mframapa is built on public research data and open source software. The providers below require attribution, and we are glad to give it.
 
-Mobile app
-• React Native & Expo — MIT License
-• React Navigation — MIT License
-• Zustand — MIT License
-• Axios — MIT License
-• react-native-webview — MIT License
-• @react-native-community/netinfo — MIT License
-• expo-location — Expo / MIT
+Air quality and weather data
+• Copernicus Climate Data Store (ERA5). Contains modified Copernicus Climate Change Service information. Neither the European Commission nor ECMWF is responsible for any use of this data.
+• Copernicus Sentinel 5P. Contains modified Copernicus Sentinel data, processed by Mframapa.
+• NASA Earthdata. Aerosol and land products courtesy of NASA.
+• Open Meteo. Weather and air quality forecasts, used under their open licence.
+• OpenAQ. Ground station measurements used to train and check our estimates.
+• WorldPop for population density, and SRTM for elevation.
 
 Maps
-• Mapbox GL JS — Mapbox Terms of Service (map tiles and SDK)
-• Map data © OpenStreetMap contributors
+• Mapbox provides map rendering and tiles, under the Mapbox Terms of Service.
+• Map data is by OpenStreetMap contributors, available under the Open Database Licence.
 
-Backend & ML
-• Python, FastAPI — MIT / BSD-style licenses
-• XGBoost — Apache License 2.0
-• LightGBM — MIT License
-• Scientific Python stack (NumPy, pandas, scikit-learn, etc.)
+Software
+The app and its backend are built with open source projects including React, Vite, FastAPI, XGBoost, LightGBM, scikit learn, pandas and NumPy, each used under its own licence. Full licence texts ship with the source of those projects.
 
-Data sources (see Credits)
-Sentinel-5P, ERA5/MERRA-2, MODIS, WorldPop, SRTM, and other geospatial feeds are subject to their respective provider terms (ESA, Copernicus, NASA, etc.).
-
-Full license texts for bundled libraries are available in the project repository under each package's LICENSE file. For Mapbox, see https://www.mapbox.com/legal/tos`,
+A note on the estimates
+The data above is used to produce estimates. None of these providers endorse Mframapa or are responsible for what we publish.`,
   },
   {
     id: 'contact',

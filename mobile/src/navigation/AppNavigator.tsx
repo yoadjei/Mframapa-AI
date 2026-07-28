@@ -43,6 +43,7 @@ import { ExportCentreScreen } from '../screens/ExportCentreScreen';
 import { LanguageSelectorScreen } from '../screens/LanguageSelectorScreen';
 import { DeleteAccountScreen } from '../screens/DeleteAccountScreen';
 import { AboutLegalScreen } from '../screens/AboutLegalScreen';
+import { LegalDetailScreen } from '../screens/LegalDetailScreen';
 import { FeedbackFormScreen } from '../screens/FeedbackFormScreen';
 
 // System screens
@@ -123,6 +124,7 @@ function ProfileStack() {
       <Stack.Screen name="LanguageSelector" component={LanguageSelectorScreen} />
       <Stack.Screen name="DeleteAccount" component={DeleteAccountScreen} />
       <Stack.Screen name="AboutLegal" component={AboutLegalScreen} />
+      <Stack.Screen name="LegalDetail" component={LegalDetailScreen} />
       <Stack.Screen name="FeedbackForm" component={FeedbackFormScreen} />
       <Stack.Screen name="OfflineCityPicker" component={OfflineCityPickerScreen} />
       <Stack.Screen name="Error" component={ErrorScreen} />

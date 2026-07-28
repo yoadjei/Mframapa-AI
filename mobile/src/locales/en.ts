@@ -160,7 +160,7 @@ const base: Record<string, string> = {
   'settings.version': 'Version 1.0.0',
   'settings.about.privacy': 'Privacy Policy',
   'settings.about.terms': 'Terms of Service',
-  'settings.about.licenses': 'Open Source Licenses',
+  'settings.about.licenses': 'Licenses and attribution',
   'settings.about.contact': 'Contact & Feedback',
   'settings.about.credits': 'Credits & Attribution',
   'settings.region.international': 'International',
