@@ -515,6 +515,34 @@
       "urban": true
     },
     {
+      "country": "Ghana",
+      "name": "Kejetia",
+      "lat": 6.6985,
+      "lon": -1.6248,
+      "urban": true
+    },
+    {
+      "country": "Ghana",
+      "name": "Manso",
+      "lat": 5.0833,
+      "lon": -1.8333,
+      "urban": false
+    },
+    {
+      "country": "Ghana",
+      "name": "Nsuta",
+      "lat": 5.269,
+      "lon": -1.973,
+      "urban": false
+    },
+    {
+      "country": "Ghana",
+      "name": "Damongo",
+      "lat": 9.083,
+      "lon": -1.818,
+      "urban": false
+    },
+    {
       "country": "DR Congo",
       "name": "Kananga",
       "lat": -5.8959,

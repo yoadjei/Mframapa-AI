@@ -134,6 +134,10 @@ export const AFRICAN_CITIES: City[] = [
   // Ghana
   { name: 'Accra', country: 'Ghana', lat: 5.6037, lon: -0.1870, urban: true },
   { name: 'Kumasi', country: 'Ghana', lat: 6.6885, lon: -1.6244, urban: true },
+  { name: 'Kejetia', country: 'Ghana', lat: 6.6985, lon: -1.6248, urban: true },
+  { name: 'Manso', country: 'Ghana', lat: 5.0833, lon: -1.8333, urban: false },
+  { name: 'Nsuta', country: 'Ghana', lat: 5.269, lon: -1.973, urban: false },
+  { name: 'Damongo', country: 'Ghana', lat: 9.083, lon: -1.818, urban: false },
   { name: 'Tamale', country: 'Ghana', lat: 9.4075, lon: -0.8533, urban: true },
   { name: 'Sekondi-Takoradi', country: 'Ghana', lat: 4.9340, lon: -1.7139, urban: true },
   { name: 'Cape Coast', country: 'Ghana', lat: 5.1053, lon: -1.2466, urban: true },

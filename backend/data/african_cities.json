@@ -75,6 +75,42 @@
       "urban": true
     },
     {
+      "name": "Kejetia",
+      "country": "Ghana",
+      "iso3": "GHA",
+      "lat": 6.6985,
+      "lon": -1.6248,
+      "region": "west_africa",
+      "urban": true
+    },
+    {
+      "name": "Manso",
+      "country": "Ghana",
+      "iso3": "GHA",
+      "lat": 5.0833,
+      "lon": -1.8333,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Nsuta",
+      "country": "Ghana",
+      "iso3": "GHA",
+      "lat": 5.269,
+      "lon": -1.973,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
+      "name": "Damongo",
+      "country": "Ghana",
+      "iso3": "GHA",
+      "lat": 9.083,
+      "lon": -1.818,
+      "region": "west_africa",
+      "urban": false
+    },
+    {
       "name": "Conakry",
       "country": "Guinea",
       "iso3": "GIN",

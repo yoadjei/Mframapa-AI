@@ -10,6 +10,11 @@ from pydantic import BaseModel, Field
 
 from backend.api.aqi import aqi_category_from_pm25
 from backend.api.cities import MAJOR_CITIES, PLAYBACK_CITIES
+from backend.api.demo_overrides import (
+    insight_for_site,
+    match_demo_site,
+    prediction_payload as demo_prediction_payload,
+)
 from backend.api.facts import fact_for
 from backend.api.insights import DRY, season_for, variants
 from backend.api import supabase_admin
@@ -334,6 +339,10 @@ def compute_prediction(
     # readings, so raw coordinates made the number change on every refresh of
     # the same spot. anything finer than this is false precision anyway.
     lat, lon = round(lat, 2), round(lon, 2)
+
+    demo = match_demo_site(lat, lon, name)
+    if demo is not None:
+        return demo_prediction_payload(demo, name, lat, lon)
 
     result = None
     # assemble features and run inference pipeline
@@ -853,6 +862,12 @@ def generate_insight(body: InsightBody, request: Request) -> Dict[str, str]:
         if body.lat is not None and body.lon is not None
         else DRY
     )
+
+    # Pitch demo sites: fixed guidance that matches the forced AQI / story.
+    if body.lat is not None and body.lon is not None:
+        demo = match_demo_site(float(body.lat), float(body.lon), None)
+        if demo is not None and language in ("en", ""):
+            return {"insight": _clean_guidance(insight_for_site(demo))}
 
     cache = RedisCache()
     lines = variants(key, season)
