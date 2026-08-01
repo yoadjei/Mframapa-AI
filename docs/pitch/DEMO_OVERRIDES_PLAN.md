@@ -31,7 +31,7 @@ Kumasi proper (6.69) does **not** steal Kejetia (6.70).
 
 Gaussian kernels around curated prone sites (Highveld coal belt, Copperbelt, Lagos, Niger Delta, Cairo, Accra/Tema, etc.) plus a soft Sahel dust band and a clean rural baseline. Cap stays in Unhealthy — no theatrical Hazardous.
 
-**Map vs search:** map-summary keeps ~**200** major dots. Search / city pack uses the full ~**1000** named places with baked **usual** Aug–Dec afternoon temp, humidity, and typical AQI (UI picks the current month; live predict only when you open a city).
+**Map vs search:** map-summary keeps ~**200** major dots. Search / city pack uses ~**5300** named places (GeoNames pop >5k + curated), with baked **usual** Aug–Dec afternoon temp, humidity, and typical AQI (UI picks the current month; live predict only when you open a city).
 
 ---
 

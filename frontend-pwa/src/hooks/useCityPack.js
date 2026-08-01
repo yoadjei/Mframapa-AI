@@ -26,10 +26,10 @@ export function useCityPack(isOnline) {
         if (active) setLoading(false);
       });
 
-    // Quiet upgrade to v3 when online and cache is stale — no spinner.
+    // Quiet upgrade when online and in-memory pack is missing / stale.
     if (isOnline) {
       const cached = readCachedCityPack();
-      if (!cached || cached.version !== "v4") {
+      if (!cached || cached.version !== "v5") {
         preloadCityPack()
           .then((pack) => {
             if (!active || !pack?.cities?.length) return;

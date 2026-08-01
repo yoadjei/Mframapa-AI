@@ -17,7 +17,7 @@ const PRECACHE_URLS = [
   '/manifest.json',
   '/icons/icon-192x192.png',
   '/icons/icon-512x512.png',
-  '/city-packs/top-cities.v4.json',
+  '/city-packs/top-cities.v5.json',
 ];
 
 self.addEventListener('install', (event) => {

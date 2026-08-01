@@ -1,7 +1,10 @@
 import { africanCities } from "../data/africanCities.js";
 
-const CITY_PACK_URL = "/city-packs/top-cities.v4.json";
-const CITY_PACK_STORAGE_KEY = "mframapa:v2:city-pack:v4";
+const CITY_PACK_URL = "/city-packs/top-cities.v5.json";
+const PACK_VERSION = "v5";
+
+/** In-memory only — full packs exceed localStorage quotas (~5MB). */
+let memoryPack = null;
 
 function dedupeCities(cities) {
   const seen = new Set();
@@ -55,37 +58,25 @@ export function formatUsualPreview(city) {
 }
 
 export function readCachedCityPack() {
-  try {
-    const raw = localStorage.getItem(CITY_PACK_STORAGE_KEY);
-    if (!raw) return null;
-    const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed?.cities)) return null;
-    return parsed;
-  } catch {
-    return null;
-  }
+  return memoryPack;
 }
 
 export function getCachedCities() {
-  const cached = readCachedCityPack();
-  return cached?.cities ?? fallbackCities();
+  return memoryPack?.cities ?? fallbackCities();
 }
 
 export function cacheCityPack(pack) {
-  try {
-    localStorage.setItem(CITY_PACK_STORAGE_KEY, JSON.stringify(pack));
-  } catch {
-    // Ignore write failures in constrained browsers.
-  }
+  memoryPack = pack;
 }
 
-export async function preloadCityPack() {
-  const response = await fetch(CITY_PACK_URL, { cache: "no-cache" });
+async function fetchPackFromNetwork() {
+  // Prefer HTTP/SW cache so the large JSON isn't re-downloaded every session.
+  const response = await fetch(CITY_PACK_URL, { cache: "force-cache" });
   if (!response.ok) throw new Error("City pack unavailable");
   const payload = await response.json();
   const cities = dedupeCities(payload?.cities ?? []);
   const pack = {
-    version: payload?.version ?? "v4",
+    version: payload?.version ?? PACK_VERSION,
     generatedAt: payload?.generatedAt ?? new Date().toISOString(),
     count: cities.length,
     cities: cities.length ? cities : fallbackCities(),
@@ -94,22 +85,23 @@ export async function preloadCityPack() {
   return pack;
 }
 
+export async function preloadCityPack() {
+  return fetchPackFromNetwork();
+}
+
 export async function loadCityPack({ preferFresh = false } = {}) {
-  if (!preferFresh) {
-    const cached = readCachedCityPack();
-    if (cached?.cities?.length) return cached;
-  }
+  if (!preferFresh && memoryPack?.cities?.length) return memoryPack;
 
   try {
-    return await preloadCityPack();
+    return await fetchPackFromNetwork();
   } catch {
-    const cached = readCachedCityPack();
-    if (cached?.cities?.length) return cached;
+    if (memoryPack?.cities?.length) return memoryPack;
+    const cities = fallbackCities();
     return {
       version: "fallback",
       generatedAt: new Date().toISOString(),
-      count: fallbackCities().length,
-      cities: fallbackCities(),
+      count: cities.length,
+      cities,
     };
   }
 }

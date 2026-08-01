@@ -79,18 +79,10 @@ def _usual_for(lat: float, lon: float, name: str) -> dict | None:
 
 
 def _usual_js(usual: dict) -> str:
-    months = usual.get("months") or {}
-    month_parts = []
-    for k in sorted(months, key=int):
-        m = months[k]
-        month_parts.append(
-            f'{k}: {{ pm25: {m["pm25"]}, aqi_category: "{m["aqi_category"]}", '
-            f'temp: {m["temp"]}, humidity: {m["humidity"]} }}'
-        )
-    months_js = "{ " + ", ".join(month_parts) + " }"
+    """Bundle fallback: top-level usual only (months live in the JSON pack)."""
     return (
         f'usual: {{ pm25: {usual["pm25"]}, aqi_category: "{usual["aqi_category"]}", '
-        f'temp: {usual["temp"]}, humidity: {usual["humidity"]}, months: {months_js} }}'
+        f'temp: {usual["temp"]}, humidity: {usual["humidity"]} }}'
     )
 
 
@@ -143,14 +135,14 @@ def main() -> None:
         pack.append(row)
 
     out = {
-        "version": "v4",
+        "version": "v5",
         "generatedAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z",
         "count": len(pack),
         "cities": pack,
         "usualNote": "Aug–Dec afternoon climatology + typical PM2.5; UI picks current month",
         "usualMonths": [8, 9, 10, 11, 12],
     }
-    pack_path = repository_root() / "frontend-pwa" / "public" / "city-packs" / "top-cities.v4.json"
+    pack_path = repository_root() / "frontend-pwa" / "public" / "city-packs" / "top-cities.v5.json"
     pack_path.write_text(json.dumps(out, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"pack={out['count']} usual={with_usual} -> {pack_path.name}")
 

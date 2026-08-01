@@ -13,7 +13,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'icons/*.png', 'splash/*.png', 'city-packs/top-cities.v4.json'],
+      includeAssets: ['favicon.svg', 'icons/*.png', 'splash/*.png', 'city-packs/top-cities.v5.json'],
       manifest: {
         id: '/',
         name: 'Mframapa Air Quality',
