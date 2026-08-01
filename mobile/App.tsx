@@ -75,11 +75,10 @@ export default function App() {
 
   useEffect(() => {
     trackAppOpen();   // installs / WAU / retention
-    if (offlineCities.length < 500) {
-      const cities = getAfricanCities();
-      setOfflineCities(cities);
-      saveCities(cities).catch(() => undefined);
-    }
+    // Always hydrate from the bundled catalog so usual climate fields stay current.
+    const cities = getAfricanCities();
+    setOfflineCities(cities);
+    saveCities(cities).catch(() => undefined);
   }, []);
 
   // Mirror OS push (episode alerts + Did you know) into the in-app Alerts inbox.

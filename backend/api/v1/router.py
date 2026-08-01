@@ -15,6 +15,7 @@ from backend.api.demo_overrides import (
     match_demo_site,
     prediction_payload as demo_prediction_payload,
 )
+from backend.api import mock_aq
 from backend.api.facts import fact_for
 from backend.api.insights import DRY, season_for, variants
 from backend.api import supabase_admin
@@ -344,6 +345,12 @@ def compute_prediction(
     if demo is not None:
         return demo_prediction_payload(demo, name, lat, lon)
 
+    # Continent-wide spatial mock (pitch / demo). Exact demo sites above win first.
+    mock = mock_aq.prediction_payload(lat, lon, name, d)
+    if mock is not None:
+        mock.pop("_mock_kind", None)
+        return mock
+
     result = None
     # assemble features and run inference pipeline
     feats = pipeline.get_features(lat, lon, d)
@@ -543,12 +550,14 @@ def map_history(
 def build_map_summary(request, pipeline: FeaturePipeline) -> Dict[str, Any]:
     """build (or reuse) today's continental summary.
 
-    shared with the startup pre-warm: building 120 cities takes far longer than
+    shared with the startup pre-warm: building ~200 cities takes far longer than
     nginx will wait, so the first user must never be the one who pays for it.
+    Search uses the full city dataset; the map stays on this warm major set.
     """
     day = dt_date.today().isoformat()
     cache = RedisCache()
-    cache_key = f"map:summary:{day}"
+    mock_on = mock_aq.mock_aq_enabled()
+    cache_key = f"map:summary:mock:{day}" if mock_on else f"map:summary:{day}"
     hit = cache.get(cache_key)
     if hit and hit.get("cities"):
         return hit
@@ -868,6 +877,9 @@ def generate_insight(body: InsightBody, request: Request) -> Dict[str, str]:
         demo = match_demo_site(float(body.lat), float(body.lon), None)
         if demo is not None and language in ("en", ""):
             return {"insight": _clean_guidance(insight_for_site(demo))}
+        mock_line = mock_aq.insight_for_point(float(body.lat), float(body.lon), language)
+        if mock_line:
+            return {"insight": _clean_guidance(mock_line)}
 
     cache = RedisCache()
     lines = variants(key, season)

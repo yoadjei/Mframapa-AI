@@ -15,6 +15,7 @@ import {
   fetchAfricanPlaceSuggestions,
   PlaceSuggestion,
 } from '../services/mapboxGeocoding';
+import { formatUsualPreview } from '../services/cities';
 import { useTranslation } from '../hooks/useTranslation';
 
 interface Props {
@@ -52,13 +53,14 @@ export function SearchScreen({ onNavigateHome: _onNavigateHome }: Props) {
           c.name.toLowerCase().includes(q) ||
           c.country.toLowerCase().includes(q),
       )
-      .slice(0, 5)
+      .slice(0, 12)
       .map((c) => ({
         id: `offline-${c.name}-${c.lat}-${c.lon}`,
         placeName: `${c.name}, ${c.country}`,
         lat: c.lat,
         lon: c.lon,
         country: c.country,
+        usual: c.usual,
       }));
     setSuggestions(offline);
 
@@ -209,6 +211,11 @@ export function SearchScreen({ onNavigateHome: _onNavigateHome }: Props) {
                 <Text style={[styles.rowCountry, { color: colors.subtext }]} numberOfLines={1}>
                   {item.placeName}
                 </Text>
+                {formatUsualPreview(item) ? (
+                  <Text style={[styles.rowUsual, { color: colors.muted }]} numberOfLines={1}>
+                    {formatUsualPreview(item)}
+                  </Text>
+                ) : null}
               </View>
               {loadingId === item.id ? (
                 <ActivityIndicator size="small" color={Colors.brandGreen} />
@@ -265,6 +272,7 @@ const styles = StyleSheet.create({
   rowText: { flex: 1 },
   rowCity: { fontSize: 16, fontWeight: '700' },
   rowCountry: { fontSize: 13, marginTop: 2 },
+  rowUsual: { fontSize: 12, marginTop: 2 },
   emptyState: { alignItems: 'center', paddingTop: 80, paddingHorizontal: 32, gap: 12 },
   emptyTitle: { fontSize: 18, fontWeight: '700' },
   emptyBody: { fontSize: 14, textAlign: 'center' },

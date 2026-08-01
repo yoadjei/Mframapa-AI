@@ -63,6 +63,17 @@ export interface City {
   lat: number;
   lon: number;
   urban: boolean;
+  usual?: {
+    pm25: number;
+    aqi_category: string;
+    temp: number;
+    humidity: number;
+    kind?: string;
+    months?: Record<
+      string,
+      { pm25: number; aqi_category: string; temp: number; humidity: number }
+    >;
+  };
 }
 
 export interface Notification {

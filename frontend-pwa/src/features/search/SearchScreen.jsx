@@ -6,6 +6,7 @@ import { useCityPack } from "../../hooks/useCityPack.js";
 import { useStackChrome, stackTitlePad } from "../../hooks/useStackChrome.js";
 import { getColors, Colors, getAQIColor, aqiSymbol } from "../../utils/colors.js";
 import { getPrediction, generateInsight } from "../../services/api.js";
+import { formatUsualPreview } from "../../services/cityPackService.js";
 
 // ── AQI dot indicator ────────────────────────────────────────────
 function StatusDot({ category, size = 10, isDark }) {
@@ -229,8 +230,16 @@ export function SearchScreen({ isOnline, isDark }) {
                         className="text-[0.8125rem] mt-0.5 truncate"
                         style={{ color: colors.subtext }}
                       >
-                        {city.name}{city.country ? `, ${city.country}` : ""}
+                        {city.country || city.name}
                       </p>
+                      {formatUsualPreview(city) ? (
+                        <p
+                          className="text-[0.75rem] mt-0.5 truncate"
+                          style={{ color: colors.muted ?? colors.subtext }}
+                        >
+                          {formatUsualPreview(city)}
+                        </p>
+                      ) : null}
                     </div>
                     {isLoading ? (
                       <span

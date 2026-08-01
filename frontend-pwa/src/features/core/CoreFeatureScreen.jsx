@@ -5,10 +5,9 @@ import { useNavigation } from "../../hooks/useNavigation.js";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { getPrediction, generateInsight, getMapSummary } from "../../services/api.js";
 import { useCityPack } from "../../hooks/useCityPack.js";
+import { formatUsualPreview } from "../../services/cityPackService.js";
 import { getColors, Colors, getAQIColor } from "../../utils/colors.js";
 
-/** a city we have no reading for: visibly not a judgement about its air. */
-const UNKNOWN_DOT = "#64748B";
 import { aqiCategoryKey } from "../../utils/i18nHelpers.js";
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN ?? "";
@@ -52,11 +51,29 @@ function nearestCity(lat, lon, cities) {
   return best;
 }
 
+/** ~9 km — close enough to label with the city name without moving the reading. */
+const CITY_LABEL_DEG2 = 0.08 * 0.08;
+
+function placeLabelForTap(lat, lon, cities) {
+  const near = nearestCity(lat, lon, cities);
+  if (!near) return { name: `${lat.toFixed(2)}°, ${lon.toFixed(2)}°`, lat, lon };
+  const d2 = squaredDist(lat, lon, near.lat, near.lon);
+  if (d2 <= CITY_LABEL_DEG2) {
+    return { name: near.name, lat, lon, country: near.country };
+  }
+  if (d2 <= 0.5 * 0.5) {
+    return { name: `Near ${near.name}`, lat, lon, country: near.country };
+  }
+  return { name: `${lat.toFixed(2)}°, ${lon.toFixed(2)}°`, lat, lon };
+}
+
 async function fetchFullPrediction(city, language) {
   const response = await getPrediction(city.lat, city.lon, city.name);
   let insight;
   try {
     insight = await generateInsight({
+      lat: city.lat,
+      lon: city.lon,
       pm25: response.pm25,
       aqi_category: response.aqi_category,
       weather: response.weather ?? {},
@@ -85,7 +102,7 @@ export function CoreFeatureScreen({ isOnline, isDark }) {
   const colors = getColors(isDark);
   const language = state.preferences?.language ?? "en";
 
-  const { cities, loading: cityPackLoading } = useCityPack(isOnline);
+  const { cities } = useCityPack(isOnline);
 
   // the city pack carries no air quality, so every marker fell through to the
   // default green dot. green means "good" in our own legend, so the map was
@@ -98,11 +115,9 @@ export function CoreFeatureScreen({ isOnline, isDark }) {
     return () => { active = false; };
   }, []);
 
-  // colour every city we have a reading for; the summary covers all 55 countries
-  // so none is a blank space. offline cities without a reading fill in neutral.
+  // Map dots = warm map-summary only (~200). Search uses the full city pack.
   const mapCities = useMemo(() => {
-    const named = new Set(summary.map((r) => r.name.toLowerCase()));
-    const coloured = summary.map((r) => ({
+    return summary.map((r) => ({
       name: r.name,
       lat: r.lat,
       lon: r.lon,
@@ -111,19 +126,7 @@ export function CoreFeatureScreen({ isOnline, isDark }) {
       label: `${r.name}: ${Math.round(r.pm25)} µg/m³`,
       hasReading: true,
     }));
-    const neutral = cities
-      .filter((c) => !named.has(String(c.name).toLowerCase()))
-      .map((city) => ({
-        ...city,
-        color: UNKNOWN_DOT,
-        size: 9,
-        label: city.name,
-        hasReading: false,
-      }));
-    // Coloured AQI readings first. neutrals-first + MapCanvas slice used to
-    // drop every map-summary city and leave whole countries blank.
-    return [...coloured, ...neutral];
-  }, [cities, summary, isDark]);
+  }, [summary, isDark]);
 
   const [search, setSearch] = useState("");
   const [searchFocused, setSearchFocused] = useState(false);
@@ -151,7 +154,7 @@ export function CoreFeatureScreen({ isOnline, isDark }) {
           c.name.toLowerCase().includes(q) ||
           (c.country ?? "").toLowerCase().includes(q)
       )
-      .slice(0, 8)
+      .slice(0, 12)
       .map((c) => ({
         id: `offline-${c.name}-${c.lat}-${c.lon}`,
         placeName: c.country ? `${c.name}, ${c.country}` : c.name,
@@ -159,6 +162,7 @@ export function CoreFeatureScreen({ isOnline, isDark }) {
         lon: c.lon,
         country: c.country,
         name: c.name,
+        usual: c.usual,
       }));
     setSuggestions(offline);
 
@@ -262,8 +266,8 @@ export function CoreFeatureScreen({ isOnline, isDark }) {
     } catch {
       // Map may not be fully loaded yet. proceed
     }
-    const city = nearestCity(lat, lon, cities);
-    if (city) loadPredictionAndNavigate(city);
+    const place = placeLabelForTap(lat, lon, cities);
+    loadPredictionAndNavigate(place);
   }
 
   function handleLocate() {
@@ -283,11 +287,9 @@ export function CoreFeatureScreen({ isOnline, isDark }) {
         }
         setViewState((prev) => ({ ...prev, longitude, latitude, zoom: 13, pitch: 45 }));
         if (isOnline) {
-          const city = nearestCity(latitude, longitude, cities);
-          if (city) loadPredictionAndNavigate(city);
+          loadPredictionAndNavigate(placeLabelForTap(latitude, longitude, cities));
         }
-      },
-      () => {
+      },      () => {
         setLocating(false);
         setError(t("error.location"));
       },
@@ -303,7 +305,7 @@ export function CoreFeatureScreen({ isOnline, isDark }) {
     return (
       <NoCityListFallback
         cities={cities}
-        loading={cityPackLoading || loading}
+        loading={loading}
         onSelectCity={loadPredictionAndNavigate}
         colors={colors}
         isDark={isDark}
@@ -420,11 +422,21 @@ export function CoreFeatureScreen({ isOnline, isDark }) {
                 }}
               >
                 <MapPin size={16} color={colors.subtext} style={{ flexShrink: 0 }} />
-                <span
-                  className="flex-1 truncate text-[0.875rem]"
-                  style={{ color: colors.text }}
-                >
-                  {s.placeName}
+                <span className="min-w-0 flex-1">
+                  <span
+                    className="block truncate text-[0.875rem] font-medium"
+                    style={{ color: colors.text }}
+                  >
+                    {s.placeName}
+                  </span>
+                  {formatUsualPreview(s) ? (
+                    <span
+                      className="mt-0.5 block truncate text-[0.75rem]"
+                      style={{ color: colors.subtext }}
+                    >
+                      {formatUsualPreview(s)}
+                    </span>
+                  ) : null}
                 </span>
               </button>
             ))}
@@ -458,7 +470,7 @@ export function CoreFeatureScreen({ isOnline, isDark }) {
           </div>
         ) : null}
 
-        {cityPackLoading || loading ? (
+        {loading ? (
           <div
             className="flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-semibold"
             style={{
@@ -470,7 +482,7 @@ export function CoreFeatureScreen({ isOnline, isDark }) {
             aria-live="polite"
           >
             <Loader2 size={18} className="animate-spin" color={Colors.brandGreen} />
-            {t("map.loading")}
+            {t("map.loading_short") ?? t("map.loading")}
           </div>
         ) : null}
 

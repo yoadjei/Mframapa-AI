@@ -18,9 +18,8 @@ import { isLocationInAfricanNation, nearestCityWithin, MAX_CITY_SNAP_DEG } from 
 import { getColors, Colors } from '../theme';
 import { getAQIColor } from '../theme/colors';
 import { getMapSummary, MapSummaryCity } from '../services/api';
+import { formatUsualPreview } from '../services/cities';
 
-/** a city we have no reading for: not a judgement about its air. */
-const UNKNOWN_DOT = '#64748B';
 import { useTheme } from '../hooks/useTheme';
 import { AfricaMapView, AfricaMapViewHandle, MapMarker } from '../components/AfricaMapView';
 import { useTranslation } from '../hooks/useTranslation';
@@ -78,22 +77,14 @@ export function MapScreen() {
   }, []);
 
   const mapMarkers: MapMarker[] = useMemo(() => {
-    const limit = liteMode ? 80 : 250;
-    // Coloured summary first so every country with a reading stays on the map;
-    // neutrals only fill density and never displace AQI markers.
-    const named = new Set(summary.map((r) => r.name.toLowerCase()));
-    const coloured: MapMarker[] = summary.map((r) => ({
+    // Map dots stay on the warm summary (~200). Search uses the full offline list.
+    return summary.map((r) => ({
       name: r.name,
       lat: r.lat,
       lon: r.lon,
       color: getAQIColor(r.aqi_category, isDark),
     }));
-    const neutral: MapMarker[] = offlineCities
-      .filter((c) => !named.has(c.name.toLowerCase()))
-      .slice(0, limit)
-      .map((c) => ({ name: c.name, lat: c.lat, lon: c.lon, color: UNKNOWN_DOT }));
-    return [...coloured, ...neutral];
-  }, [offlineCities, liteMode, summary, isDark]);
+  }, [summary, isDark]);
 
   // ── Search suggestions (offline-instant + debounced Mapbox enrich) ────────
   const [searchFocused, setSearchFocused] = useState(false);
@@ -115,13 +106,14 @@ export function MapScreen() {
           c.name.toLowerCase().includes(q) ||
           c.country.toLowerCase().includes(q),
       )
-      .slice(0, 5)
+      .slice(0, 12)
       .map((c) => ({
         id: `offline-${c.name}-${c.lat}-${c.lon}`,
         placeName: `${c.name}, ${c.country}`,
         lat: c.lat,
         lon: c.lon,
         country: c.country,
+        usual: c.usual,
       }));
     setSuggestions(offline);
 
@@ -360,12 +352,22 @@ export function MapScreen() {
                   ]}
                 >
                   <Ionicons name="location-outline" size={16} color={colors.subtext} />
-                  <Text
-                    style={[styles.suggestionText, { color: colors.text }]}
-                    numberOfLines={1}
-                  >
-                    {s.placeName}
-                  </Text>
+                  <View style={{ flex: 1, minWidth: 0 }}>
+                    <Text
+                      style={[styles.suggestionText, { color: colors.text }]}
+                      numberOfLines={1}
+                    >
+                      {s.placeName}
+                    </Text>
+                    {formatUsualPreview(s) ? (
+                      <Text
+                        style={[styles.suggestionUsual, { color: colors.muted }]}
+                        numberOfLines={1}
+                      >
+                        {formatUsualPreview(s)}
+                      </Text>
+                    ) : null}
+                  </View>
                 </Pressable>
               );
             })}
@@ -439,8 +441,11 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   suggestionText: {
-    flex: 1,
     fontSize: 14,
+  },
+  suggestionUsual: {
+    fontSize: 12,
+    marginTop: 2,
   },
   zoomStack: {
     alignSelf: 'flex-end',

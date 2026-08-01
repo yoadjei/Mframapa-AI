@@ -8,6 +8,16 @@ export interface PlaceSuggestion {
   lat: number;
   lon: number;
   country?: string;
+  usual?: {
+    pm25: number;
+    aqi_category: string;
+    temp: number;
+    humidity: number;
+    months?: Record<
+      string,
+      { pm25: number; aqi_category: string; temp: number; humidity: number }
+    >;
+  };
 }
 
 type MapboxFeature = {

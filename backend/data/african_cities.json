@@ -1,15 +1,15 @@
 {
-  "total": 1002,
+  "total": 1006,
   "regions": {
-    "west_africa": 270,
+    "west_africa": 274,
     "east_africa": 191,
     "north_africa": 160,
     "central_africa": 141,
     "southern_africa": 160,
     "horn_of_africa": 80
   },
-  "urban": 415,
-  "rural": 587,
+  "urban": 416,
+  "rural": 590,
   "cities": [
     {
       "name": "Lagos",

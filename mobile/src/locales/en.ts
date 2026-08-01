@@ -87,7 +87,7 @@ const base: Record<string, string> = {
   'search.saved_results': 'Saved results',
 
   'map.title': 'Map',
-  'map.loading': 'Loading heat map… first load may take 10–15 seconds',
+  'map.loading': 'Updating map…',
   'map.recent': 'Recent checks',
   'map.no_recent': 'No recent checks yet',
   'map.empty_tap': 'Tap anywhere on the map to check air quality',
