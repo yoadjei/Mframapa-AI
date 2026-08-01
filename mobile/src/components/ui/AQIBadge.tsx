@@ -6,7 +6,7 @@ interface Props {
   category: string;
   /** Localized AQI label; falls back to capitalized category string. */
   label?: string;
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
 }
 
 export function AQIBadge({ category, label: labelProp, size = 'md' }: Props) {
@@ -14,9 +14,9 @@ export function AQIBadge({ category, label: labelProp, size = 'md' }: Props) {
   const label =
     labelProp ?? category.charAt(0).toUpperCase() + category.slice(1);
 
-  const padV = size === 'sm' ? 3 : size === 'lg' ? 8 : 5;
-  const padH = size === 'sm' ? 8 : size === 'lg' ? 16 : 12;
-  const fs   = size === 'sm' ? 11 : size === 'lg' ? 14 : 12;
+  const padV = size === 'sm' ? 4 : size === 'xl' ? 10 : size === 'lg' ? 8 : 5;
+  const padH = size === 'sm' ? 10 : size === 'xl' ? 18 : size === 'lg' ? 16 : 12;
+  const fs   = size === 'sm' ? 13 : size === 'xl' ? 18 : size === 'lg' ? 15 : 14;
 
   return (
     <View style={[styles.badge, { backgroundColor: color, paddingVertical: padV, paddingHorizontal: padH }]}>

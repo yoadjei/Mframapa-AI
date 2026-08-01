@@ -270,10 +270,10 @@ export function GlassTabBar({ state, descriptors, navigation }: BottomTabBarProp
             setMenuOpen((open) => !open);
           }}
           accessibilityRole="button"
-          accessibilityLabel={menuOpen ? 'Close menu' : 'More options'}
+          accessibilityLabel={menuOpen ? t('nav.close_more') : t('nav.more')}
         >
           <Ionicons
-            name={menuOpen ? 'close' : 'add'}
+            name={menuOpen ? 'close' : 'menu'}
             size={28}
             color="#fff"
           />

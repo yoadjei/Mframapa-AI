@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Satellite, BellRing, MapPin } from "lucide-react";
+import { BellRing, MapPin, Globe2 } from "lucide-react";
 import { MorphBackground } from "../../components/background/MorphBackground.jsx";
 import { useAppState } from "../../state/appState.jsx";
 import { useTranslation } from "../../hooks/useTranslation.js";
@@ -17,7 +17,7 @@ const SLIDES = [
     subKey: "screen.onboarding.slide1_sub",
   },
   {
-    icon: Satellite,
+    icon: Globe2,
     titleKey: "screen.onboarding.slide2_title",
     subKey: "screen.onboarding.slide2_sub",
   },

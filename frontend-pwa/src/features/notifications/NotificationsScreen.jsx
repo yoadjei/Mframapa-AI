@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createPortal } from "react-dom";
-import { Bell, Settings, AlertTriangle, FileText, Satellite, Lightbulb, CheckCheck, X } from "lucide-react";
+import { Bell, Settings, AlertTriangle, FileText, Wind, Lightbulb, CheckCheck, X } from "lucide-react";
 import { useAppState } from "../../state/appState.jsx";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { getColors, Colors, liquidGlass } from "../../utils/colors.js";
@@ -18,7 +18,7 @@ import {
 const CATEGORIES = [
   { key: "alert",   labelKey: "notif_prefs.air_quality_alerts",  Icon: AlertTriangle },
   { key: "summary", labelKey: "notif_prefs.daily_summaries",     Icon: FileText },
-  { key: "update",  labelKey: "notif_prefs.air_quality_updates", Icon: Satellite },
+  { key: "update",  labelKey: "notif_prefs.air_quality_updates", Icon: Wind },
   { key: "tip",     labelKey: "notif_prefs.tips_and_guidance",   Icon: Lightbulb },
 ];
 
@@ -185,7 +185,7 @@ function NotificationSettingsSheet({
 function iconForType(type) {
   if (type === "alert")   return AlertTriangle;
   if (type === "summary") return FileText;
-  if (type === "update")  return Satellite;
+  if (type === "update")  return Wind;
   if (type === "tip")     return Lightbulb;
   return Bell;
 }

@@ -298,8 +298,8 @@ export function CityDetailScreen({ isDark, params }) {
             className="mb-2 flex items-start gap-2 rounded-xl border px-3 py-2.5"
             style={{ backgroundColor: colors.card, borderColor: colors.border }}
           >
-            <AlertTriangle size={14} color={colors.muted} style={{ marginTop: 2, flexShrink: 0 }} />
-            <p className="m-0 text-[0.75rem] leading-snug" style={{ color: colors.muted }}>
+            <AlertTriangle size={18} color={colors.subtext} style={{ marginTop: 2, flexShrink: 0 }} />
+            <p className="m-0 text-sm leading-snug" style={{ color: colors.text }}>
               {t("screen.city_detail.degraded_banner")}
             </p>
           </div>

@@ -8,8 +8,8 @@ export const Colors = {
   brandGreenDim:'#00A87C',
 
   textPrimary:   '#FFFFFF',
-  textSecondary: '#9AA7B5',
-  textMuted:     '#647182',
+  textSecondary: '#B0BAC6',
+  textMuted:     '#8B97A6',
 
   aqiGood:          '#00C896',
   aqiModerate:      '#F5C518',
@@ -26,7 +26,8 @@ export const Colors = {
   lightCard:            '#FFFFFF',
   lightBorder:          '#D4DAE3',
   lightTextPrimary:     '#0F1419',
-  lightTextSecondary:   '#5C6B7A',
+  lightTextSecondary:   '#3D4A57',
+  lightTextMuted:       '#4A5866',
 } as const;
 
 export type ColorKey = keyof typeof Colors;
@@ -56,6 +57,17 @@ const AQI_LIGHT: Record<string, string> = {
 
 export function getAQIColor(category: string, isDark = true): string {
   return (isDark ? AQI_DARK : AQI_LIGHT)[aqiBand(category)];
+}
+
+/** Match backend aqi_category_from_pm25 for chart day coloring. */
+export function aqiCategoryFromPm25(pm25: number): string {
+  const v = Number(pm25);
+  if (!Number.isFinite(v)) return 'Moderate';
+  if (v <= 12) return 'Good';
+  if (v <= 35) return 'Moderate';
+  if (v <= 55) return 'Unhealthy for Sensitive Groups';
+  if (v <= 150) return 'Unhealthy';
+  return 'Hazardous';
 }
 
 // a shape per band, so severity is legible without seeing colour (roughly one

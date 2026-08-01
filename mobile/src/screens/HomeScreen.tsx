@@ -13,7 +13,6 @@ import { getDailyFact } from '../services/api';
 import { fetchPredictionAtCoords } from '../services/prediction';
 import { isAfricanCountryCode } from '../utils/africanCountries';
 import { OfflineBanner } from '../components/OfflineBanner';
-import { AQIBadge } from '../components/ui/AQIBadge';
 import { getColors, Colors } from '../theme';
 import { getAQIColor } from '../theme/colors';
 import { useTheme } from '../hooks/useTheme';
@@ -120,15 +119,16 @@ export function HomeScreen() {
   const heroCardContent = (
     <>
       <Text style={[styles.pm25Label, { color: colors.subtext }]}>{t('home.air_now')}</Text>
+      {pred ? (
+        <Text style={[styles.statusTitle, { color: aqiColor }]}>
+          {t(aqiCategoryKey(pred.aqi_category))}
+        </Text>
+      ) : (
+        <Text style={[styles.statusTitle, { color: colors.subtext }]}>—</Text>
+      )}
       <View style={styles.aqiRow}>
         <Text style={[styles.aqiNumber, { color: colors.text }]}>{pred ? displayNum : '--'}</Text>
-        {pred ? (
-          <AQIBadge
-            category={pred.aqi_category}
-            label={t(aqiCategoryKey(pred.aqi_category))}
-            size="lg"
-          />
-        ) : null}
+        <Text style={[styles.aqiUnit, { color: colors.subtext }]}>µg/m³ PM2.5</Text>
       </View>
       <Text style={[styles.locationStamp, { color: colors.subtext }]}>
         {pred
@@ -146,8 +146,8 @@ export function HomeScreen() {
         {/* Header */}
         <View style={styles.header}>
           <MframapaLogo size="sm" markOnly />
-          <TouchableOpacity onPress={() => navigation.navigate('Alerts')} style={styles.bellBtn}>
-            <Ionicons name="notifications-outline" size={22} color={colors.text} />
+          <TouchableOpacity onPress={() => navigation.navigate('Alerts')} style={styles.bellBtn} accessibilityLabel={t('tab.alerts')}>
+            <Ionicons name="notifications-outline" size={26} color={colors.text} />
             {unreadCount > 0 ? (
               <View style={styles.badge}>
                 <Text style={styles.badgeText}>{unreadCount > 9 ? '9+' : unreadCount}</Text>
@@ -160,12 +160,14 @@ export function HomeScreen() {
         <TouchableOpacity
           onPress={() => navigation.navigate('Search')}
           style={[styles.locationChip, { backgroundColor: colors.card, borderColor: colors.border }]}
+          accessibilityRole="button"
+          accessibilityLabel={t('home.select_city')}
         >
-          <Ionicons name="location-outline" size={14} color={Colors.brandGreen} />
+          <Ionicons name="location-outline" size={20} color={Colors.brandGreen} />
           <Text style={[styles.locationText, { color: colors.text }]}>
             {pred ? `${pred.location.name}` : t('home.select_city')}
           </Text>
-          <Ionicons name="chevron-down" size={14} color={colors.subtext} />
+          <Ionicons name="chevron-down" size={18} color={colors.subtext} />
         </TouchableOpacity>
 
         <OfflineBanner />
@@ -248,7 +250,7 @@ export function HomeScreen() {
             >
               {item.loading
                 ? <ActivityIndicator size="small" color={Colors.brandGreen} />
-                : <Ionicons name={item.icon} size={24} color={isRateLimited && i === 0 ? Colors.warning : Colors.brandGreen} />
+                : <Ionicons name={item.icon} size={28} color={isRateLimited && i === 0 ? Colors.warning : Colors.brandGreen} />
               }
               <Text style={[styles.actionLabel, { color: colors.text }]}>{item.label}</Text>
             </TouchableOpacity>
@@ -283,7 +285,7 @@ export function HomeScreen() {
               },
             ].filter(Boolean).map((w: any, i) => (
               <View key={i} style={[styles.weatherCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                <Ionicons name={w.icon} size={20} color={Colors.brandGreen} />
+                <Ionicons name={w.icon} size={24} color={Colors.brandGreen} />
                 <Text style={[styles.weatherValue, { color: colors.text }]}>{w.value}</Text>
                 <Text style={[styles.weatherLabel, { color: colors.subtext }]}>{w.label}</Text>
               </View>
@@ -311,14 +313,15 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     right: 0,
-    width: 16,
-    height: 16,
-    borderRadius: 8,
+    minWidth: 18,
+    height: 18,
+    borderRadius: 9,
+    paddingHorizontal: 4,
     backgroundColor: Colors.danger,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  badgeText: { color: '#fff', fontSize: 9, fontWeight: '700' },
+  badgeText: { color: '#fff', fontSize: 11, fontWeight: '700' },
   locationChip: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -327,11 +330,11 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     borderRadius: 999,
     borderWidth: 1,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    gap: 6,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    gap: 8,
   },
-  locationText: { fontSize: 14, fontWeight: '600' },
+  locationText: { fontSize: 17, fontWeight: '700' },
   errorBox: {
     marginHorizontal: 16,
     marginBottom: 8,
@@ -365,14 +368,21 @@ const styles = StyleSheet.create({
   },
   heroChevron: { position: 'absolute', top: 20, right: 16 },
   pm25Label: {
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: '600',
     letterSpacing: 1,
     textTransform: 'uppercase',
   },
-  aqiRow: { flexDirection: 'row', alignItems: 'center', gap: 12, marginVertical: 8 },
-  aqiNumber: { fontSize: 56, fontWeight: '800', lineHeight: 60 },
-  locationStamp: { fontSize: 12 },
+  statusTitle: {
+    fontSize: 28,
+    fontWeight: '800',
+    lineHeight: 34,
+    marginTop: 8,
+  },
+  aqiRow: { flexDirection: 'row', alignItems: 'baseline', gap: 8, marginTop: 8, marginBottom: 8 },
+  aqiNumber: { fontSize: 32, fontWeight: '800', lineHeight: 36 },
+  aqiUnit: { fontSize: 14, fontWeight: '600' },
+  locationStamp: { fontSize: 14 },
   statRow: {
     flexDirection: 'row',
     paddingHorizontal: 16,
@@ -386,9 +396,9 @@ const styles = StyleSheet.create({
     padding: 14,
     gap: 4,
   },
-  statLabel: { fontSize: 11, fontWeight: '500', textTransform: 'uppercase', letterSpacing: 0.5 },
+  statLabel: { fontSize: 13, fontWeight: '500', textTransform: 'uppercase', letterSpacing: 0.5 },
   statValue: { fontSize: 22, fontWeight: '800' },
-  statSub: { fontSize: 12, fontWeight: '500' },
+  statSub: { fontSize: 14, fontWeight: '500' },
   actionRow: {
     flexDirection: 'row',
     paddingHorizontal: 16,
@@ -402,13 +412,13 @@ const styles = StyleSheet.create({
     padding: 14,
     alignItems: 'center',
     gap: 8,
-    minHeight: 80,
+    minHeight: 88,
     justifyContent: 'center',
   },
-  actionLabel: { fontSize: 10, fontWeight: '700', letterSpacing: 0.5 },
+  actionLabel: { fontSize: 14, fontWeight: '700' },
   factCard: { marginHorizontal: 16, marginTop: 12, padding: 16, borderRadius: 16, borderWidth: 1 },
-  factLabel: { fontSize: 11, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6 },
-  factBody: { fontSize: 14, lineHeight: 20 },
+  factLabel: { fontSize: 13, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 6 },
+  factBody: { fontSize: 16, lineHeight: 24 },
   weatherRow: {
     flexDirection: 'row',
     paddingHorizontal: 16,
@@ -424,5 +434,5 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
   },
   weatherValue: { fontSize: 18, fontWeight: '700' },
-  weatherLabel: { fontSize: 12 },
+  weatherLabel: { fontSize: 14 },
 });

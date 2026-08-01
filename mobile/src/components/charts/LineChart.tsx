@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, Dimensions, Text } from 'react-native';
 import Svg, { Path, Circle, Defs, LinearGradient, Stop } from 'react-native-svg';
-import { Colors } from '../../theme/colors';
+import { Colors, getAQIColor, aqiCategoryFromPm25 } from '../../theme/colors';
 
 interface Props {
   data: number[];
@@ -77,9 +77,10 @@ export function LineChart({
           <Path d={buildPath(pts2)} stroke={secondaryColor} strokeWidth={2.5} fill="none" strokeLinecap="round" strokeLinejoin="round" />
         ) : null}
         {showDots &&
-          pts1.map((p, i) => (
-            <Circle key={i} cx={p.x} cy={p.y} r={4} fill={lineColor} />
-          ))}
+          pts1.map((p, i) => {
+            const dotColor = getAQIColor(aqiCategoryFromPm25(data[i]), isDark);
+            return <Circle key={i} cx={p.x} cy={p.y} r={5} fill={dotColor} />;
+          })}
         {showDots && pts2 &&
           pts2.map((p, i) => (
             <Circle key={`s${i}`} cx={p.x} cy={p.y} r={4} fill={secondaryColor} />
@@ -89,7 +90,7 @@ export function LineChart({
         {data.map((v, i) => (
           <Text
             key={`v${i}`}
-            style={[styles.value, { color: isDark ? Colors.textSecondary : '#5C6B7A' }]}
+            style={[styles.value, { color: isDark ? Colors.textSecondary : Colors.lightTextSecondary }]}
           >
             {Math.round(v)}
           </Text>
@@ -98,7 +99,7 @@ export function LineChart({
       {labels && labels.length > 0 ? (
         <View style={[styles.labelRow, { width: W, paddingHorizontal: padH }]}>
           {labels.map((l, i) => (
-            <Text key={i} style={[styles.label, { color: isDark ? Colors.textMuted : '#5C6B7A' }]}>
+            <Text key={i} style={[styles.label, { color: isDark ? Colors.textMuted : Colors.lightTextMuted }]}>
               {l}
             </Text>
           ))}
@@ -115,7 +116,7 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   value: {
-    fontSize: 10,
+    fontSize: 13,
     fontWeight: '600',
     flex: 1,
     textAlign: 'center',
@@ -126,7 +127,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   label: {
-    fontSize: 11,
+    fontSize: 13,
     flex: 1,
     textAlign: 'center',
   },

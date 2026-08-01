@@ -52,7 +52,7 @@ function buildCluster(width: number, height: number, isDark: boolean): PlacedIco
       const left = col * CELL + (h0 - 0.5) * CELL * 0.55;
       const top = row * CELL + (h1 - 0.5) * CELL * 0.55;
       const size = 34 + Math.floor(h2 * 18);
-      const opacity = isDark ? 0.10 + h3 * 0.04 : 0.08 + h3 * 0.04;
+      const opacity = isDark ? 0.04 + h3 * 0.02 : 0.03 + h3 * 0.02;
 
       items.push({
         key: `${row}-${col}`,

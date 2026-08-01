@@ -143,6 +143,8 @@ export function CityDetailScreen() {
       weather: pred.weather,
       language,
       language_name: languageName(language),
+      lat: pred.location?.lat,
+      lon: pred.location?.lon,
     })
       .then((text) => {
         if (cancelled) return;
@@ -243,8 +245,8 @@ export function CityDetailScreen() {
         <View style={[styles.aqiBlock, { backgroundColor: aqiColor + '18' }]}>
           {isDegradedPrediction(pred) ? (
             <View style={[styles.degradedBanner, { backgroundColor: colors.card, borderColor: colors.border }]}>
-              <Ionicons name="information-circle-outline" size={16} color={colors.muted} />
-              <Text style={[styles.degradedText, { color: colors.muted }]}>
+              <Ionicons name="information-circle-outline" size={18} color={colors.subtext} />
+              <Text style={[styles.degradedText, { color: colors.text }]}>
                 {t('screen.city_detail.degraded_banner')}
               </Text>
             </View>
@@ -420,7 +422,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     width: '100%',
   },
-  degradedText: { fontSize: 12, lineHeight: 17, flex: 1 },
+  degradedText: { fontSize: 14, lineHeight: 20, flex: 1 },
   updatedText: { fontSize: 12, marginBottom: 4 },
   aqiLabel: { fontSize: 13, fontWeight: '500' },
   aqiRow: { flexDirection: 'row', alignItems: 'flex-end', gap: 16, marginTop: 4 },

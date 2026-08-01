@@ -391,8 +391,9 @@ export function MapScreen() {
       </View>
 
       {loading ? (
-        <View style={styles.loadingOverlay} pointerEvents="none">
+        <View style={styles.loadingOverlay} pointerEvents="none" accessibilityRole="progressbar">
           <ActivityIndicator size="large" color={Colors.brandGreen} />
+          <Text style={[styles.loadingText, { color: colors.text }]}>{t('map.loading')}</Text>
         </View>
       ) : null}
     </View>
@@ -463,6 +464,14 @@ const styles = StyleSheet.create({
     zIndex: 3,
     alignItems: 'center',
     justifyContent: 'center',
+    gap: 12,
+    paddingHorizontal: 24,
     backgroundColor: 'rgba(0,0,0,0.15)',
+  },
+  loadingText: {
+    fontSize: 14,
+    fontWeight: '600',
+    textAlign: 'center',
+    maxWidth: 280,
   },
 });

@@ -368,7 +368,7 @@ export function HomeScreen({ isOnline, isDark: isDarkProp }) {
                   className="rounded-full px-2.5 py-1 text-[0.8125rem] font-semibold"
                   style={{
                     backgroundColor: colors.cardAlt,
-                    color: colors.muted,
+                    color: colors.subtext,
                     border: `1px solid ${colors.border}`,
                   }}
                 >

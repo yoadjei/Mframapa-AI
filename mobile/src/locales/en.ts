@@ -76,7 +76,7 @@ const base: Record<string, string> = {
   'search.title': 'Search',
   'search.clear': 'Clear',
   'search.placeholder': 'Search African cities...',
-  'search.city_placeholder': 'Search for a city',
+  'search.city_placeholder': 'Search city',
   'search.locate': 'Use my location',
   'search.no_results': 'No cities found. Try a different name.',
   'search.recent': 'Recent searches',
@@ -87,22 +87,25 @@ const base: Record<string, string> = {
   'search.saved_results': 'Saved results',
 
   'map.title': 'Map',
-  'map.loading': 'Checking air quality…',
+  'map.loading': 'Loading heat map… first load may take 10–15 seconds',
   'map.recent': 'Recent checks',
   'map.no_recent': 'No recent checks yet',
   'map.empty_tap': 'Tap anywhere on the map to check air quality',
   'map.fetching': 'Fetching air quality for this location…',
-  'map.mapbox_token_required': 'Set EXPO_PUBLIC_MAPBOX_TOKEN to enable maps.',
+  'map.mapbox_token_required': 'The map isn’t loading right now. You can still search for a city to check air quality.',
   'map.zoom_in': 'Zoom in',
   'map.zoom_out': 'Zoom out',
 
   'alerts.title': 'Notifications',
   'alerts.toggle_title': 'AQI notifications',
   'alerts.toggle_sub': 'Get alerted when air quality changes in the cities you follow.',
-  'alerts.mark_all': 'Mark all read',
+  'alerts.mark_all': 'Mark all as read',
+  'alerts.mark_read_hint': 'Tap to mark read',
   'alerts.all_caught_up': 'You\'re all caught up.',
   'alerts.marked_as_read': '{{count}} notification(s) marked as read.',
   'alerts.open_settings': 'Notification settings',
+  'nav.more': 'More',
+  'nav.close_more': 'Close more menu',
 
   'notif_prefs.title': 'Notifications',
   'notif_prefs.all_notifications': 'All notifications',
@@ -453,7 +456,7 @@ const base: Record<string, string> = {
   'screen.health_risk.uv_desc_estimate':
     'No UV sensor data. midday estimate. Seek shade and wear sunscreen when outdoors.',
   'screen.city_detail.degraded_banner':
-    'Using backup estimate. satellite model confidence is reduced.',
+    'This reading is approximate. More detailed data isn\'t available right now.',
 
   'screen.prediction.range_24h': '24h',
   'screen.prediction.range_48h': '48h',

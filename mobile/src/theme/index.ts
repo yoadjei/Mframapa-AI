@@ -53,7 +53,7 @@ const lightColors = {
   cardAlt:         '#F1F5F9',
   text:            Colors.lightTextPrimary,
   subtext:         Colors.lightTextSecondary,
-  muted:           '#7B8A99',
+  muted:           Colors.lightTextMuted,
   accent:          Colors.brandGreen,
   accentDim:       '#D6F5EC',
   border:          Colors.lightBorder,
@@ -92,5 +92,5 @@ export const HERO_GRADIENT: readonly [string, string, string] = [
 export const spacing = Spacing;
 export const borderRadius = Radius;
 export const fontSize = {
-  xs: 11, sm: 13, md: 15, lg: 18, xl: 22, xxl: 28, xxxl: 36, hero: 56,
+  xs: 13, sm: 14, md: 15, lg: 18, xl: 22, xxl: 28, xxxl: 36, hero: 56,
 } as const;

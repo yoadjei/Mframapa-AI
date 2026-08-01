@@ -13,9 +13,9 @@ export const Typography = {
 
   bodyLg: { fontSize: 16, fontWeight: '400' as const, lineHeight: 24 },
   bodyMd: { fontSize: 14, fontWeight: '400' as const, lineHeight: 20 },
-  bodySm: { fontSize: 12, fontWeight: '400' as const, lineHeight: 16 },
+  bodySm: { fontSize: 14, fontWeight: '400' as const, lineHeight: 20 },
 
-  labelSm: { fontSize: 11, fontWeight: '600' as const, textTransform: 'uppercase' as const, letterSpacing: 0.8 },
+  labelSm: { fontSize: 13, fontWeight: '600' as const, textTransform: 'uppercase' as const, letterSpacing: 0.6 },
 
-  tabLabel: { fontSize: 11, fontWeight: '500' as const },
+  tabLabel: { fontSize: 12, fontWeight: '500' as const },
 } as const;

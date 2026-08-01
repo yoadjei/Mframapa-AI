@@ -41,10 +41,17 @@ Uncertainty bands and factors are part of the same override payload so the scree
 ## Enable locally / for pitch window
 
 ```bash
-# .env
+# .env (API)
 MFRAMAPA_DEMO_OVERRIDES=1
 ```
 
-Restart the API. Search **Manso / Nsuta / Damongo / Kejetia** in the PWA and screenshot City Detail.
+Restart the API. On **Render** (api.mframapa.live), set the same env var and redeploy — without it the apps hit the slow live path and can spin past the client timeout (“failed to load”).
 
-Turn off (`0` or unset) after the pitch so production stays honest.
+**Local PWA against local API:**
+```bash
+# frontend-pwa
+$env:VITE_DEV_API_TARGET="http://127.0.0.1:8000"
+npm run dev
+```
+
+Search **Manso / Nsuta / Damongo / Kejetia** only for pitch screenshots.

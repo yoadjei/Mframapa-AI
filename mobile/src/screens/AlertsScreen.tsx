@@ -37,9 +37,10 @@ export function AlertsScreen() {
   }
 
   const iconName = (type: Notification['type']): React.ComponentProps<typeof Ionicons>['name'] => {
-    if (type === 'alert')   return 'notifications';
-    if (type === 'summary') return 'notifications-outline';
-    if (type === 'tip')     return 'notifications-outline';
+    if (type === 'alert')   return 'warning-outline';
+    if (type === 'summary') return 'document-text-outline';
+    if (type === 'update')  return 'planet-outline';
+    if (type === 'tip')     return 'bulb-outline';
     return 'notifications-outline';
   };
 
@@ -67,7 +68,7 @@ export function AlertsScreen() {
           { backgroundColor: unread ? Colors.brandGreen + '22' : colors.surface }]}>
           <Ionicons
             name={iconName(item.type)}
-            size={18}
+            size={22}
             color={unread ? Colors.brandGreen : colors.subtext}
           />
         </View>
@@ -78,7 +79,11 @@ export function AlertsScreen() {
           <Text style={[styles.subtitle, { color: colors.subtext }]}>{text.subtitle}</Text>
           <Text style={[styles.time, { color: colors.muted }]}>{text.timestamp}</Text>
         </View>
-        <Ionicons name="notifications-outline" size={16} color={colors.subtext} />
+        {unread ? (
+          <Text style={[styles.markHint, { color: Colors.brandGreen }]}>
+            {t('alerts.mark_read_hint')}
+          </Text>
+        ) : null}
       </TouchableOpacity>
     );
   }
@@ -164,7 +169,8 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   headerRight: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  markAll: { fontSize: 13, fontWeight: '600', color: Colors.brandGreen },
+  markAll: { fontSize: 14, fontWeight: '600', color: Colors.brandGreen },
+  markHint: { fontSize: 12, fontWeight: '600', maxWidth: 72, textAlign: 'right' },
   row: {
     flexDirection: 'row',
     alignItems: 'center',

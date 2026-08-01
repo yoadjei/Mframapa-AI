@@ -12,7 +12,8 @@ if (__DEV__) {
 
 const client = axios.create({
   baseURL: BASE_URL,
-  timeout: 20000,
+  // Cold upstreams (esp. sparse northern sites) can exceed 20s before answering.
+  timeout: 45000,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -132,6 +133,8 @@ export async function getPrediction(
       weather: data.weather,
       language,
       language_name: targetLanguageName,
+      lat,
+      lon,
     });
   } catch {
     insight = undefined;
@@ -249,6 +252,8 @@ export async function generateInsight(body: {
   weather?: Record<string, unknown>;
   language?: string;
   language_name?: string;
+  lat?: number;
+  lon?: number;
 }): Promise<string> {
   const { data } = await client.post('/api/v1/generate-insight', body);
   return data.insight as string;
