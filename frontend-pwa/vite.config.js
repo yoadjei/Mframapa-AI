@@ -51,7 +51,7 @@ export default defineConfig({
       },
       workbox: {
         // Bump when shipping visual parity so installed PWAs drop stale caches.
-        cacheId: 'mframapa-pwa-v1.0.1',
+        cacheId: 'mframapa-pwa-v1.0.2',
         // Web Push handlers (push + notificationclick) live beside the generated SW.
         importScripts: ['/sw-push.js'],
         globPatterns: ['**/*.{css,html,ico,woff2}', 'assets/index-*.js'],
@@ -107,7 +107,8 @@ export default defineConfig({
             handler: 'NetworkFirst',
             options: {
               cacheName: 'api-cache',
-              networkTimeoutSeconds: 10,
+              // Must stay above axios predict timeout; cold upstreams exceed 10s.
+              networkTimeoutSeconds: 40,
               expiration: { maxEntries: 50, maxAgeSeconds: 60 * 60 * 6 },
               cacheableResponse: { statuses: [0, 200] }
             }

@@ -18,7 +18,7 @@ function localCalendarDate() {
   return `${y}-${m}-${day}`;
 }
 import { MframapaLogo } from "../../components/brand/MframapaLogo.jsx";
-import { getAQIColor, aqiSymbol, resolveIsDark } from "../../utils/colors.js";
+import { getAQIColor, aqiSymbol, resolveIsDark, getColors } from "../../utils/colors.js";
 import { cleanGuidanceText } from "../../utils/cleanGuidanceText.js";
 
 // ── AQI helpers ───────────────────────────────────────────────────────────────
@@ -70,14 +70,15 @@ export function HomeScreen({ isOnline, isDark: isDarkProp }) {
 
   const displayNum = useCountUp(prediction?.pm25 ?? null);
 
+  const themeColors = getColors(isDark);
   const colors = {
-    card:    isDark ? "#171E28" : "#FFFFFF",
-    cardAlt: isDark ? "#10161F" : "#F1F5F9",
-    border:  isDark ? "#25303C" : "#D4DAE3",
-    text:    isDark ? "#FFFFFF" : "#0F1419",
-    sub:     isDark ? "#9AA7B5" : "#5C6B7A",
-    muted:   isDark ? "#647182" : "#7B8A99",
-    bg:      isDark ? "#0A0D12" : "#E8ECF2",
+    card:    themeColors.card,
+    cardAlt: themeColors.cardAlt,
+    border:  themeColors.border,
+    text:    themeColors.text,
+    sub:     themeColors.subtext,
+    muted:   themeColors.muted,
+    bg:      themeColors.bg,
   };
 
   // Offline: show the last saved reading instead of an empty "--" hero.
@@ -246,10 +247,10 @@ export function HomeScreen({ isOnline, isDark: isDarkProp }) {
             className="relative p-1"
             aria-label={t("a11y.notifications", { count: unreadCount })}
           >
-            <Bell size={22} color={colors.text} aria-hidden="true" />
+            <Bell size={26} color={colors.text} aria-hidden="true" />
             {unreadCount > 0 && (
               <span
-                className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center rounded-full text-[0.5625rem] font-bold text-white"
+                className="absolute right-0 top-0 flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[0.6875rem] font-bold text-white"
                 style={{ backgroundColor: "#E53935" }}
               >
                 {unreadCount > 9 ? "9+" : unreadCount}
@@ -262,14 +263,15 @@ export function HomeScreen({ isOnline, isDark: isDarkProp }) {
         <button
           type="button"
           onClick={() => dispatch({ type: "NAVIGATE", payload: { name: "search", params: {} } })}
-          className="mx-4 mb-3 flex items-center gap-1.5 self-start rounded-full border px-3 py-2"
+          className="mx-4 mb-3 flex items-center gap-2 self-start rounded-full border px-4 py-2.5"
           style={{ backgroundColor: colors.card, borderColor: colors.border }}
+          aria-label={t("home.select_city")}
         >
-          <MapPin size={14} color="#00C896" />
-          <span className="text-sm font-semibold" style={{ color: colors.text }}>
+          <MapPin size={20} color="#00C896" aria-hidden="true" />
+          <span className="text-base font-bold" style={{ color: colors.text }}>
             {pred?.city?.name ?? state.homeSummary?.city ?? t("home.select_city")}
           </span>
-          <ChevronDown size={14} color={colors.sub} />
+          <ChevronDown size={18} color={colors.sub} aria-hidden="true" />
         </button>
 
         {/* ── Offline banner — only claim a cached reading when we actually have one ── */}
@@ -328,34 +330,42 @@ export function HomeScreen({ isOnline, isDark: isDarkProp }) {
               minHeight: 160,
             }}
           >
-            {/* PM2.5 label */}
-            <p className="text-[0.6875rem] font-semibold uppercase tracking-widest" style={{ color: colors.sub }}>
+            {/* Status first — category is the primary signal */}
+            <p className="text-[0.8125rem] font-semibold uppercase tracking-widest" style={{ color: colors.sub }}>
               {t("home.air_now")}
             </p>
 
-            {/* Big number + badge */}
-            <div className="my-2 flex items-center gap-3 flex-wrap">
+            {pred ? (
+              <p
+                className="mt-2 font-black leading-tight"
+                style={{ fontSize: "1.75rem", color: aqiColor }}
+              >
+                <span aria-hidden="true" style={{ marginRight: 8 }}>
+                  {aqiSymbol(pred.aqi_category ?? pred.category)}
+                </span>
+                {t(aqiCategoryKey(pred.aqi_category ?? pred.category))}
+              </p>
+            ) : (
+              <p className="mt-2 font-black leading-tight" style={{ fontSize: "1.75rem", color: colors.sub }}>
+                —
+              </p>
+            )}
+
+            {/* PM2.5 secondary */}
+            <div className="mt-2 flex items-baseline gap-2 flex-wrap">
               <span
                 aria-hidden="true"
-                className="font-black leading-none"
-                style={{ fontSize: "3.5rem", color: colors.text }}
+                className="font-bold leading-none tabular-nums"
+                style={{ fontSize: "2rem", color: colors.text }}
               >
                 {pred ? (loading ? "…" : displayNum) : "--"}
               </span>
-              {pred && (
-                <span
-                  className="rounded-full px-3 py-1 text-xs font-bold"
-                  style={{ backgroundColor: aqiColor + "28", color: aqiColor }}
-                >
-                  <span aria-hidden="true" style={{ marginRight: 6 }}>
-                    {aqiSymbol(pred.aqi_category ?? pred.category)}
-                  </span>
-                  {t(aqiCategoryKey(pred.aqi_category ?? pred.category))}
-                </span>
-              )}
+              <span className="text-sm font-semibold" style={{ color: colors.sub }}>
+                µg/m³ PM2.5
+              </span>
               {(pred?.degraded || state.homeSummary?.degraded) && (
                 <span
-                  className="rounded-full px-2.5 py-1 text-[0.6875rem] font-semibold"
+                  className="rounded-full px-2.5 py-1 text-[0.8125rem] font-semibold"
                   style={{
                     backgroundColor: colors.cardAlt,
                     color: colors.muted,
@@ -368,7 +378,7 @@ export function HomeScreen({ isOnline, isDark: isDarkProp }) {
             </div>
 
             {/* Location + time stamp */}
-            <p className="text-xs" style={{ color: colors.sub }}>
+            <p className="mt-3 text-sm" style={{ color: colors.sub }}>
               {pred
                 ? `${pred.city?.name ?? ""} | ${t("card.today") ?? "Today"}, ${new Date().toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}`
                 : t("home.tap_check") ?? "Tap Check to get started"}
@@ -376,9 +386,10 @@ export function HomeScreen({ isOnline, isDark: isDarkProp }) {
 
             {pred && (
               <ChevronRight
-                size={18}
+                size={22}
                 color={colors.sub}
                 style={{ position: "absolute", top: 20, right: 16 }}
+                aria-hidden="true"
               />
             )}
           </button>
@@ -392,12 +403,12 @@ export function HomeScreen({ isOnline, isDark: isDarkProp }) {
             aria-live="polite"
           >
             <p
-              className="mb-1.5 text-[0.6875rem] font-semibold uppercase tracking-widest"
+              className="mb-1.5 text-[0.8125rem] font-semibold uppercase tracking-widest"
               style={{ color: colors.sub }}
             >
               {t("home.advice_title")}
             </p>
-            <p className="text-[0.9375rem] leading-[22px] m-0" style={{ color: colors.text }}>
+            <p className="text-base leading-6 m-0" style={{ color: colors.text }}>
               {cleanGuidanceText(pred.insight)}
             </p>
           </div>
@@ -429,13 +440,13 @@ export function HomeScreen({ isOnline, isDark: isDarkProp }) {
                 onClick={item.action}
                 disabled={item.loading}
                 className="flex flex-1 flex-col items-center justify-center gap-2 rounded-2xl border py-4 active:opacity-70 disabled:opacity-50"
-                style={{ backgroundColor: colors.card, borderColor: colors.border, minHeight: 80 }}
+                style={{ backgroundColor: colors.card, borderColor: colors.border, minHeight: 88 }}
               >
                 {item.loading
-                  ? <span className="h-6 w-6 animate-spin rounded-full border-2 border-app-green border-t-transparent" />
-                  : <Icon size={24} color={item.color} />
+                  ? <span className="h-7 w-7 animate-spin rounded-full border-2 border-app-green border-t-transparent" />
+                  : <Icon size={28} color={item.color} aria-hidden="true" />
                 }
-                <span className="text-[0.625rem] font-bold uppercase tracking-[0.5px]" style={{ color: colors.text }}>
+                <span className="text-sm font-bold" style={{ color: colors.text }}>
                   {item.label}
                 </span>
               </button>
@@ -447,12 +458,12 @@ export function HomeScreen({ isOnline, isDark: isDarkProp }) {
         {fact && (
           <div className="mf-glass mx-4 mb-3 rounded-2xl p-4">
             <p
-              className="mb-1.5 text-[0.6875rem] font-semibold uppercase tracking-widest"
+              className="mb-1.5 text-[0.8125rem] font-semibold uppercase tracking-widest"
               style={{ color: colors.sub }}
             >
               {t("home.did_you_know")}
             </p>
-            <p className="text-[0.875rem] leading-[1.375rem] m-0" style={{ color: colors.text }}>
+            <p className="text-[0.9375rem] leading-6 m-0" style={{ color: colors.text }}>
               {fact}
             </p>
           </div>
@@ -470,13 +481,13 @@ export function HomeScreen({ isOnline, isDark: isDarkProp }) {
               return (
                 <div
                   key={i}
-                  className="mf-glass flex flex-1 flex-col items-center gap-1 rounded-2xl p-3.5"
+                  className="mf-glass flex flex-1 flex-col items-center gap-1.5 rounded-2xl p-3.5"
                   role="group"
                   aria-label={`${w.label}: ${w.value}`}
                 >
-                  <Icon size={20} color="#00C896" aria-hidden="true" />
-                  <p className="text-[1.125rem] font-bold" style={{ color: colors.text }}>{w.value}</p>
-                  <p className="text-xs" style={{ color: colors.sub }}>{w.label}</p>
+                  <Icon size={24} color="#00C896" aria-hidden="true" />
+                  <p className="text-[1.125rem] font-bold m-0" style={{ color: colors.text }}>{w.value}</p>
+                  <p className="text-sm m-0" style={{ color: colors.sub }}>{w.label}</p>
                 </div>
               );
             })}

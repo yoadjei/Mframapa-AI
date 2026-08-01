@@ -10,7 +10,8 @@ const apiKey = import.meta.env.VITE_API_KEY;
 
 export const httpClient = axios.create({
   baseURL,
-  timeout: 20000,
+  // Predict can stall >20s on cold upstreams; keep below SW networkTimeout.
+  timeout: 45000,
   headers: {
     "Content-Type": "application/json",
     ...(apiKey ? { "X-API-Key": apiKey } : {}),

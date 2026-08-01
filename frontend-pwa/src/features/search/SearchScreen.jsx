@@ -43,6 +43,7 @@ export function SearchScreen({ isOnline, isDark }) {
 
   const [query, setQuery] = useState("");
   const [loadingId, setLoadingId] = useState(null);
+  const [selectError, setSelectError] = useState("");
   const inputRef = useRef(null);
 
   // Recent searches come from state.activity (prediction type) or state.homeSummary
@@ -69,6 +70,7 @@ export function SearchScreen({ isOnline, isDark }) {
     if (loadingId) return;
     const cityId = `${city.lat.toFixed(3)}-${city.lon.toFixed(3)}`;
     setLoadingId(cityId);
+    setSelectError("");
 
     try {
       const response = await getPrediction(city.lat, city.lon, city.name);
@@ -80,6 +82,8 @@ export function SearchScreen({ isOnline, isDark }) {
           aqi_category: response.aqi_category,
           weather: response.weather ?? {},
           language: state.preferences?.language ?? "en",
+          lat: city.lat,
+          lon: city.lon,
         });
       } catch {
         insight = undefined;
@@ -129,7 +133,7 @@ export function SearchScreen({ isOnline, isDark }) {
         payload: { name: "cityDetail", params: { city: prediction.city, prediction } },
       });
     } catch {
-      // swallow error silently for now
+      setSelectError(t("error.prediction"));
     } finally {
       setLoadingId(null);
     }
@@ -158,7 +162,7 @@ export function SearchScreen({ isOnline, isDark }) {
           className="flex items-center gap-3 rounded-xl border px-4 py-3"
           style={{ backgroundColor: colors.card, borderColor: colors.border }}
         >
-          <Search size={16} color={colors.subtext} style={{ flexShrink: 0 }} />
+          <Search size={20} color={colors.subtext} style={{ flexShrink: 0 }} />
           <input
             ref={inputRef}
             type="text"
@@ -180,6 +184,11 @@ export function SearchScreen({ isOnline, isDark }) {
             </button>
           ) : null}
         </div>
+        {selectError ? (
+          <p className="mt-2 text-sm" style={{ color: Colors.danger }}>
+            {selectError}
+          </p>
+        ) : null}
       </div>
 
       {isSearching ? (

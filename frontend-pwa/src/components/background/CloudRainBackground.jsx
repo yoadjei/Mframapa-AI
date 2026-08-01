@@ -48,7 +48,8 @@ const CLUSTER = (() => {
 
 export function CloudRainBackground({ isDark }) {
   const bgColor    = isDark ? "#0A0D12" : "#E8ECF2";
-  const iconColor  = isDark ? "#4A5668" : "#8A9AAD";
+  // Cooler, lower-contrast icons so body text never fights the watermark.
+  const iconColor  = isDark ? "#2E3744" : "#A8B4C2";
 
   return (
     <div
@@ -72,13 +73,13 @@ export function CloudRainBackground({ isDark }) {
               position: "absolute",
               left:     `${leftPct}%`,
               top:      `${topPct}%`,
-              // Keep watermark soft so cards/text stay the readable layer.
-              opacity:  isDark ? 0.10 + opacityBase * 0.04 : 0.08 + opacityBase * 0.04,
+              // Significantly quieter — content cards carry readability.
+              opacity:  isDark ? 0.04 + opacityBase * 0.02 : 0.03 + opacityBase * 0.02,
               transform: `rotate(${rotate}deg)`,
               color:    iconColor,
             }}
           >
-            <ItemIcon size={size} strokeWidth={1.2} />
+            <ItemIcon size={size} strokeWidth={1.1} />
           </div>
         );
       })}

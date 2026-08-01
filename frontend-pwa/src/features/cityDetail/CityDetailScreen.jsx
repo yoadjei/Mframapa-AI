@@ -13,7 +13,7 @@ import {
 import { useAppState } from "../../state/appState.jsx";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { useNavigation } from "../../hooks/useNavigation.js";
-import { getColors, Colors, getAQIColor } from "../../utils/colors.js";
+import { getColors, Colors, getAQIColor, aqiCategoryFromPm25 } from "../../utils/colors.js";
 import { factorEntries } from "../../utils/factors.js";
 import { cleanGuidanceText } from "../../utils/cleanGuidanceText.js";
 import { aqiCategoryKey } from "../../utils/i18nHelpers.js";
@@ -42,31 +42,41 @@ function healthAdviceKey(category) {
   return "advice.good";
 }
 
-// Sparkline bar chart for the 7-day trend, mirrors mobile LineChart height/proportions
-function TrendChart({ data, labels, color, labelColor, valueColor }) {
+// Sparkline bar chart for the 7-day trend — per-day AQI colour (not one wash).
+function TrendChart({ data, labels, isDark, labelColor, valueColor, weekendIndices = [] }) {
   const max = Math.max(...data, 1);
   return (
-    <div className="flex items-end gap-1.5" style={{ height: 140 }}>
-      {data.map((val, i) => (
-        <div key={i} className="flex flex-1 flex-col items-center justify-end gap-1">
-          <span
-            className="text-[0.625rem] font-semibold tabular-nums"
-            style={{ color: valueColor ?? labelColor }}
-          >
-            {Math.round(val)}
-          </span>
-          <div
-            className="w-full rounded-sm"
-            style={{
-              height: `${Math.max(8, Math.round((val / max) * 88))}px`,
-              backgroundColor: color,
-            }}
-          />
-          <span className="text-[0.625rem] font-medium" style={{ color: labelColor }}>
-            {labels[i]}
-          </span>
-        </div>
-      ))}
+    <div className="flex items-end gap-1.5" style={{ height: 148 }}>
+      {data.map((val, i) => {
+        const dayColor = getAQIColor(aqiCategoryFromPm25(val), isDark);
+        const isWeekend = weekendIndices.includes(i);
+        return (
+          <div key={i} className="flex flex-1 flex-col items-center justify-end gap-1.5">
+            <span
+              className="text-[0.8125rem] font-semibold tabular-nums"
+              style={{ color: valueColor ?? labelColor }}
+            >
+              {Math.round(val)}
+            </span>
+            <div
+              className="w-full rounded-sm"
+              style={{
+                height: `${Math.max(10, Math.round((val / max) * 88))}px`,
+                backgroundColor: dayColor,
+                opacity: isWeekend ? 1 : 0.92,
+                outline: isWeekend ? `2px solid ${dayColor}` : undefined,
+                outlineOffset: 1,
+              }}
+            />
+            <span
+              className="text-[0.8125rem] font-medium"
+              style={{ color: labelColor, fontWeight: isWeekend ? 700 : 500 }}
+            >
+              {labels[i]}
+            </span>
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -97,13 +107,25 @@ export function CityDetailScreen({ isDark, params }) {
   const trendLabels = TREND_DAY_KEYS.map((key) => t(key));
   // real recent days rather than multipliers applied to today's number
   const [trendData, setTrendData] = useState([]);
+  const [trendWeekendIdx, setTrendWeekendIdx] = useState([]);
   useEffect(() => {
     const lat = city?.lat, lon = city?.lon;
-    if (lat == null || lon == null) { setTrendData([]); return; }
+    if (lat == null || lon == null) { setTrendData([]); setTrendWeekendIdx([]); return; }
     let cancelled = false;
     getHistory(lat, lon, city?.name ?? "Unknown", 7)
-      .then((days) => { if (!cancelled) setTrendData(days.map((d) => Math.round(d.pm25))); })
-      .catch(() => { if (!cancelled) setTrendData([]); });
+      .then((days) => {
+        if (cancelled) return;
+        setTrendData(days.map((d) => Math.round(d.pm25)));
+        setTrendWeekendIdx(
+          days
+            .map((d, i) => {
+              const wd = d.date ? new Date(d.date).getDay() : -1;
+              return wd === 0 || wd === 6 ? i : -1;
+            })
+            .filter((i) => i >= 0)
+        );
+      })
+      .catch(() => { if (!cancelled) { setTrendData([]); setTrendWeekendIdx([]); } });
     return () => { cancelled = true; };
   }, [city?.lat, city?.lon, city?.name]);
   const cityName = city?.name ?? "";
@@ -152,6 +174,8 @@ export function CityDetailScreen({ isDark, params }) {
           aqi_category: prediction.category ?? prediction.aqi_category,
           weather: prediction.weather ?? {},
           language,
+          lat: city?.lat,
+          lon: city?.lon,
         });
         if (!cancelled) setInsight(text);
       } catch {
@@ -405,9 +429,10 @@ export function CityDetailScreen({ isDark, params }) {
           <TrendChart
             data={trendData}
             labels={trendLabels}
-            color={aqiColor}
+            isDark={isDark}
             labelColor={colors.subtext}
             valueColor={colors.text}
+            weekendIndices={trendWeekendIdx}
           />
         </div>
       ) : null}

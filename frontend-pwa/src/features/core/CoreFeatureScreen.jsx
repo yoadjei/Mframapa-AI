@@ -458,16 +458,18 @@ export function CoreFeatureScreen({ isOnline, isDark }) {
           </div>
         ) : null}
 
-        {cityPackLoading ? (
+        {cityPackLoading || loading ? (
           <div
-            className="flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold"
+            className="flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-semibold"
             style={{
               backgroundColor: colors.card,
-              color: colors.subtext,
+              color: colors.text,
               border: `1px solid ${colors.border}`,
             }}
+            role="status"
+            aria-live="polite"
           >
-            <Loader2 size={12} className="animate-spin" color={Colors.brandGreen} />
+            <Loader2 size={18} className="animate-spin" color={Colors.brandGreen} />
             {t("map.loading")}
           </div>
         ) : null}

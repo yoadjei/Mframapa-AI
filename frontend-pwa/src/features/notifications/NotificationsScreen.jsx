@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createPortal } from "react-dom";
-import { Bell, Settings, AlertTriangle, FileText, Cloud, Lightbulb, CheckCheck, X } from "lucide-react";
+import { Bell, Settings, AlertTriangle, FileText, Satellite, Lightbulb, CheckCheck, X } from "lucide-react";
 import { useAppState } from "../../state/appState.jsx";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { getColors, Colors, liquidGlass } from "../../utils/colors.js";
@@ -18,7 +18,7 @@ import {
 const CATEGORIES = [
   { key: "alert",   labelKey: "notif_prefs.air_quality_alerts",  Icon: AlertTriangle },
   { key: "summary", labelKey: "notif_prefs.daily_summaries",     Icon: FileText },
-  { key: "update",  labelKey: "notif_prefs.air_quality_updates", Icon: Cloud },
+  { key: "update",  labelKey: "notif_prefs.air_quality_updates", Icon: Satellite },
   { key: "tip",     labelKey: "notif_prefs.tips_and_guidance",   Icon: Lightbulb },
 ];
 
@@ -185,7 +185,7 @@ function NotificationSettingsSheet({
 function iconForType(type) {
   if (type === "alert")   return AlertTriangle;
   if (type === "summary") return FileText;
-  if (type === "update")  return Cloud;
+  if (type === "update")  return Satellite;
   if (type === "tip")     return Lightbulb;
   return Bell;
 }
@@ -291,7 +291,7 @@ export function NotificationsScreen({ isOnline, isDark }) {
               className="text-[0.8125rem] font-semibold active:opacity-60 disabled:opacity-40"
               style={{ color: Colors.brandGreen }}
             >
-              {t("alerts.mark_all")}
+              {t("alerts.mark_all_action", "Mark all as read")}
             </button>
             <button
               type="button"
@@ -367,7 +367,7 @@ export function NotificationsScreen({ isOnline, isDark }) {
                       }}
                     >
                       <Icon
-                        size={18}
+                        size={22}
                         color={isUnread ? Colors.brandGreen : colors.subtext}
                       />
                     </div>
@@ -395,8 +395,12 @@ export function NotificationsScreen({ isOnline, isDark }) {
                       ) : null}
                     </div>
 
-                    {/* trailing bell — matches mobile chevron/bell */}
-                    <Bell size={16} color={colors.subtext} style={{ flexShrink: 0 }} />
+                    {/* Type icon only — no redundant trailing bell */}
+                    {isUnread ? (
+                      <span className="text-sm font-semibold flex-shrink-0" style={{ color: Colors.brandGreen }}>
+                        {t("alerts.mark_read_hint", "Tap to mark read")}
+                      </span>
+                    ) : null}
                   </button>
                 </li>
               );

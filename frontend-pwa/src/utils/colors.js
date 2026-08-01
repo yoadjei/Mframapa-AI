@@ -35,6 +35,17 @@ export function getAQIColor(category, isDark = true) {
   return (isDark ? AQI_DARK : AQI_LIGHT)[aqiBand(category)];
 }
 
+/** Match backend aqi_category_from_pm25 for chart day coloring. */
+export function aqiCategoryFromPm25(pm25) {
+  const v = Number(pm25);
+  if (!Number.isFinite(v)) return "Moderate";
+  if (v <= 12) return "Good";
+  if (v <= 35) return "Moderate";
+  if (v <= 55) return "Unhealthy for Sensitive Groups";
+  if (v <= 150) return "Unhealthy";
+  return "Hazardous";
+}
+
 /** a shape for each band, so severity is legible without seeing colour.
  *  around one in twelve men has some colour vision deficiency. */
 export function aqiSymbol(category) {
@@ -98,8 +109,9 @@ export function getColors(isDark) {
         surface:  "#1E2733",
         border:   "#25303C",
         text:     "#FFFFFF",
-        subtext:  "#9AA7B5",
-        muted:    "#647182",
+        // Brighter secondary/muted so small labels clear AA on #0A0D12.
+        subtext:  "#B0BAC6",
+        muted:    "#8B97A6",
         accentDim: "rgba(0,200,150,0.12)",
       }
     : {
@@ -110,8 +122,9 @@ export function getColors(isDark) {
         surface:  "#E2E8F0",
         border:   "#D4DAE3",
         text:     "#0F1419",
-        subtext:  "#5C6B7A",
-        muted:    "#7B8A99",
+        // Darker secondary/muted for AA on white / #E8ECF2 (≥4.5:1).
+        subtext:  "#3D4A57",
+        muted:    "#4A5866",
         accentDim: "rgba(0,200,150,0.10)",
       };
 }

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Home, Map, User, Plus, X, Search, Activity, Settings, Download } from "lucide-react";
+import { Home, Map, User, Menu, X, Search, Activity, Settings, Download } from "lucide-react";
 import { useAppState } from "../../state/appState.jsx";
 import { useTranslation } from "../../hooks/useTranslation.js";
 import { liquidGlass } from "../../utils/colors.js";
@@ -98,8 +98,8 @@ export function GlassTabBar({ isDark, canInstall, onInstall }) {
                   color: isDark ? "#FFFFFF" : "#0F1419",
                 }}
               >
-                <Icon size={18} color="#00C896" />
-                <span className="text-[0.9375rem] font-medium">{t(item.labelKey)}</span>
+                <Icon size={22} color="#00C896" />
+                <span className="text-base font-medium">{t(item.labelKey)}</span>
               </button>
             );
           })}
@@ -144,9 +144,9 @@ export function GlassTabBar({ isDark, canInstall, onInstall }) {
                   className="flex items-center gap-1.5 rounded-full px-3 py-2 transition-all duration-200"
                   style={focused ? { backgroundColor: pillBg } : {}}
                 >
-                  <Icon size={22} color={focused ? "#00C896" : textSub} fill={focused ? "#00C896" : "none"} />
+                  <Icon size={26} color={focused ? "#00C896" : textSub} fill={focused ? "#00C896" : "none"} />
                   {focused && (
-                    <span className="text-xs font-semibold" style={{ color: "#00C896" }}>
+                    <span className="text-sm font-semibold" style={{ color: "#00C896" }}>
                       {t(tab.labelKey)}
                     </span>
                   )}
@@ -156,20 +156,21 @@ export function GlassTabBar({ isDark, canInstall, onInstall }) {
           })}
         </div>
 
-        {/* FAB — explicit open/close, not toggle, to prevent double-fire with outside-click handler */}
+        {/* FAB opens More menu (search / activity / settings) — not a create action */}
         <button
           ref={fabRef}
           type="button"
           data-testid="more-fab"
-          aria-label={menuOpen ? "Close menu" : "More"}
+          aria-label={menuOpen ? t("nav.close_more", "Close more menu") : t("nav.more", "More")}
+          aria-expanded={menuOpen}
           onClick={() => setMenuOpen((o) => !o)}
-          className="flex h-14 w-14 items-center justify-center rounded-full active:scale-95 transition-transform"
+          className="flex h-14 w-14 flex-col items-center justify-center rounded-full active:scale-95 transition-transform"
           style={{
             background: "linear-gradient(145deg, #00E5A8 0%, #00C896 60%, #00A87E 100%)",
             boxShadow: "0 4px 16px rgba(0,200,150,0.38), inset 0 1px 0 rgba(255,255,255,0.28)",
           }}
         >
-          {menuOpen ? <X size={26} color="#fff" /> : <Plus size={26} color="#fff" />}
+          {menuOpen ? <X size={28} color="#fff" /> : <Menu size={28} color="#fff" />}
         </button>
       </div>
     </>
