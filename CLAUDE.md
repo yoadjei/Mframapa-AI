@@ -192,6 +192,7 @@ Copy `.env.example` → `.env`. Required for data ingestion (not needed to run t
 - `NASA_EARTHDATA_TOKEN` — NASA Earthdata (MODIS)
 - `REDIS_URL` — Upstash Redis (`redis://...`)
 - `MFRAMAPA_INTERNAL_KEY` — internal API key (default `mframapa-internal-dev-key` in dev)
+- `SUPABASE_URL` — same Supabase project as `VITE_SUPABASE_URL`/`EXPO_PUBLIC_SUPABASE_URL`, without a client prefix. Required for the backend to verify signed-in users' tokens (`backend/api/auth.py`); without it, every authenticated request 401s and the caller is silently treated as anonymous. `/api/v1/health`'s `auth` field reports whether verification is actually wired up.
 - `SENTRY_DSN` — optional, leave blank to disable
 
 For the mobile app: `EXPO_PUBLIC_API_URL` (defaults to `https://mframapa.ai`).

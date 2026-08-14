@@ -32,23 +32,81 @@ httpClient.interceptors.request.use(async (config) => {
   return config;
 });
 
-// if a request 401s, the stored session token is stale/expired: drop it and retry
-// once anonymously so core (public) features keep working instead of getting stuck.
+// Home fires several requests (predict, daily-fact, events, welcome) at once
+// on load. If the shared token is bad, they all 401 within the same tick —
+// and each independently calling supabase.auth.refreshSession() races them
+// against each other. Supabase refresh tokens are single-use: the first
+// concurrent call rotates it and succeeds, the rest are then trying to
+// redeem a refresh token that is already spent and fail. Funneling every
+// caller through one shared in-flight promise means only one actual refresh
+// call ever goes out; everyone else just awaits its result.
+let _refreshPromise = null;
+function refreshSessionOnce() {
+  if (!_refreshPromise) {
+    _refreshPromise = supabase.auth.refreshSession().finally(() => {
+      _refreshPromise = null;
+    });
+  }
+  return _refreshPromise;
+}
+
+// if a request 401s, the backend rejected the token we sent (it deliberately
+// refuses a bad credential rather than quietly treating it as anonymous —
+// see authenticate_or_anonymous in backend/api/security.py). try once to
+// refresh the session and retry with the new token before giving up on it —
+// autoRefreshToken only fires on its own proactive timer, it does not react
+// to a 401 from us, so a token that the backend has started rejecting (clock
+// skew, a rotated signing key, a backend blip) would otherwise sit there and
+// get resent, unrefreshed, on every future request forever.
+//
+// this used to instead call supabase.auth.signOut() unconditionally on any
+// 401, on the theory that a 401 always meant the session was dead. it does
+// not always mean that — a single endpoint can 401 for reasons that have
+// nothing to do with the session being invalid (a backend misconfiguration, a
+// transient blip, a route that just requires a different tier). signOut() is
+// a real, global sign-out: one unrelated background call failing (e.g. the
+// best-effort welcome email sent right after login) was enough to silently
+// sign out a user with a perfectly valid session. refreshing first, and only
+// falling back to an anonymous retry if that refresh itself fails, fixes a
+// merely-stale token without ever forcing a valid one out.
 httpClient.interceptors.response.use(
   (response) => response,
   async (error) => {
     const original = error.config;
-    if (error?.response?.status === 401 && original && !original._retriedAnon) {
+    if (error?.response?.status !== 401 || !original) {
+      return Promise.reject(error);
+    }
+
+    // attempt 1: the request carried a token — try refreshing it and retrying
+    // with the new one. this is a separate attempt/flag from the anonymous
+    // retry below: a refreshed token can itself still be rejected (the
+    // backend problem was never actually about staleness), and that must not
+    // consume the one retry a public endpoint needs to fall back to anonymous.
+    if (Boolean(original.headers?.Authorization) && !original._retriedRefresh) {
+      original._retriedRefresh = true;
+      if (supabase) {
+        try {
+          const { data } = await refreshSessionOnce();
+          const token = data?.session?.access_token;
+          if (token) {
+            original.headers.Authorization = `Bearer ${token}`;
+            return httpClient(original);
+          }
+        } catch {
+          /* refresh failed outright — fall through to the anonymous retry */
+        }
+      }
+    }
+
+    // attempt 2: no token, or refreshing didn't produce one that helped —
+    // retry once with no Authorization header so a public endpoint still
+    // works for a caller whose session is genuinely unusable right now.
+    if (!original._retriedAnon) {
       original._retriedAnon = true;
       if (original.headers) delete original.headers.Authorization;
-      // Drop a stale JWT so later calls stay anonymous (same as mobile).
-      try {
-        await supabase?.auth.signOut({ scope: "local" });
-      } catch {
-        /* ignore */
-      }
       return httpClient(original);
     }
+
     return Promise.reject(error);
   }
 );

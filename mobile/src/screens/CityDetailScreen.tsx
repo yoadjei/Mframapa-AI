@@ -94,7 +94,6 @@ export function CityDetailScreen() {
   const cityName = pred?.location?.name ?? t('home.select_city');
   const pm25 = pred?.pm25 ?? 0;
   const category = pred?.aqi_category ?? 'good';
-  const weather = pred?.weather ?? { temp: null, humidity: null, wind: null };
   const aqiColor = getAQIColor(category, isDark);
   const pageBg = isDark ? AppBackgroundColors.dark : AppBackgroundColors.light;
   // Light AQI washes are pale — white chrome fails contrast (PWA parity).
@@ -272,34 +271,6 @@ export function CityDetailScreen() {
           </Text>
         </View>
 
-        {(weather.temp != null || weather.humidity != null || weather.wind != null) ? (
-          <View style={styles.weatherRow}>
-            {[
-              weather.temp != null && {
-                icon: 'thermometer-outline' as const,
-                val: `${Number(weather.temp).toFixed(0)}°C`,
-                label: t('weather.temp'),
-              },
-              weather.humidity != null && {
-                icon: 'water-outline' as const,
-                val: `${Number(weather.humidity).toFixed(0)}%`,
-                label: t('weather.humidity'),
-              },
-              weather.wind != null && {
-                icon: 'speedometer-outline' as const,
-                val: t('screen.city_detail.wind_kmh', { speed: Number(weather.wind).toFixed(0) }),
-                label: t('weather.wind'),
-              },
-            ].filter(Boolean).map((chip: any, i) => (
-              <View key={i} style={[styles.chip, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                <Ionicons name={chip.icon} size={14} color={Colors.brandGreen} />
-                <Text style={[styles.chipVal, { color: colors.text }]}>{chip.val}</Text>
-                <Text style={[styles.chipLabel, { color: colors.subtext }]}>{chip.label}</Text>
-              </View>
-            ))}
-          </View>
-        ) : null}
-
         <View style={styles.sectionHeader}>
           <Ionicons name="sparkles" size={18} color={Colors.brandGreen} />
           <Text style={[styles.sectionHeaderText, { color: colors.text }]}>
@@ -432,23 +403,6 @@ const styles = StyleSheet.create({
   aqiMeta: { gap: 8, paddingBottom: 8 },
   aqiUnit: { fontSize: 13, fontWeight: '600' },
   uncertaintyText: { fontSize: 13, marginTop: 4 },
-  weatherRow: {
-    flexDirection: 'row',
-    paddingHorizontal: 16,
-    gap: 8,
-    marginVertical: 12,
-  },
-  chip: {
-    flex: 1,
-    alignItems: 'center',
-    borderRadius: 14,
-    borderWidth: 1,
-    paddingHorizontal: 8,
-    paddingVertical: 10,
-    gap: 4,
-  },
-  chipVal: { fontSize: 13, fontWeight: '700' },
-  chipLabel: { fontSize: 11, textAlign: 'center' },
   sectionHeader: {
     flexDirection: 'row',
     alignItems: 'center',

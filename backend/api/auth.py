@@ -83,13 +83,21 @@ def _decode(token: str) -> Optional[Dict[str, Any]]:
     """verify a supabase token: asymmetric (modern) first, shared secret (legacy) second."""
     audience = os.getenv("SUPABASE_JWT_AUDIENCE", "authenticated")
     require = {"require": ["exp", "sub"]}
+    # PyJWT's default leeway is zero, so exp/nbf are compared against this
+    # server's clock with no tolerance. a token issued by supabase and checked
+    # here a moment later can land right on that boundary if the two clocks
+    # drift by even a couple of seconds — rejected on first use, then accepted
+    # once refreshed, which looks like an intermittent auth bug but is really
+    # just clock skew between two different servers. ten seconds absorbs that
+    # without meaningfully loosening expiry enforcement.
+    leeway = 10
 
     client = _get_jwks_client()
     if client is not None:
         try:
             key = client.get_signing_key_from_jwt(token).key
             return _jwt.decode(token, key, algorithms=_ASYMMETRIC_ALGS,
-                               audience=audience, options=require)
+                               audience=audience, options=require, leeway=leeway)
         except Exception as e:
             logger.debug("asymmetric verification failed: %s", e)
 
@@ -97,7 +105,7 @@ def _decode(token: str) -> Optional[Dict[str, Any]]:
     if secret:
         try:
             return _jwt.decode(token, secret, algorithms=["HS256"],
-                               audience=audience, options=require)
+                               audience=audience, options=require, leeway=leeway)
         except Exception as e:
             logger.debug("hs256 verification failed: %s", e)
     return None

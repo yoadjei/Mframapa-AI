@@ -3,12 +3,9 @@ import {
   AlertTriangle,
   CheckCircle2,
   ChevronRight,
-  Droplets,
   Loader2,
   Share,
   Sparkles,
-  Thermometer,
-  Wind,
 } from "lucide-react";
 import { useAppState } from "../../state/appState.jsx";
 import { useTranslation } from "../../hooks/useTranslation.js";
@@ -94,7 +91,6 @@ export function CityDetailScreen({ isDark, params }) {
 
   const pm25 = prediction?.pm25 ?? 0;
   const category = prediction?.category ?? prediction?.aqi_category ?? "good";
-  const weather = prediction?.weather ?? {};
   const uncertainty = prediction?.uncertainty ?? null;
   const factorList = factorEntries(prediction?.factors);
   const aqiColor = getAQIColor(category, isDark);
@@ -340,42 +336,6 @@ export function CityDetailScreen({ isDark, params }) {
         ) : null}
       </div>
 
-      {/* ── Weather chips (omit missing values — never fake 0) ── */}
-      {(weather.temp != null || weather.humidity != null || weather.wind != null) ? (
-        <div className="flex gap-2 px-4 py-3">
-          {[
-            weather.temp != null && {
-              icon: <Thermometer size={14} color={Colors.brandGreen} />,
-              val: `${Math.round(weather.temp)}°C`,
-              label: t("weather.temp"),
-            },
-            weather.humidity != null && {
-              icon: <Droplets size={14} color={Colors.brandGreen} />,
-              val: `${Math.round(weather.humidity)}%`,
-              label: t("weather.humidity"),
-            },
-            weather.wind != null && {
-              icon: <Wind size={14} color={Colors.brandGreen} />,
-              val: t("screen.city_detail.wind_kmh", { speed: Math.round(weather.wind).toString() }),
-              label: t("weather.wind"),
-            },
-          ].filter(Boolean).map(({ icon, val, label }, i) => (
-            <div
-              key={i}
-              className="flex flex-1 flex-col items-center gap-1 rounded-2xl border px-2 py-2.5"
-              style={{ backgroundColor: colors.card, borderColor: colors.border }}
-            >
-              {icon}
-              <span className="text-[0.8125rem] font-bold" style={{ color: colors.text }}>
-                {val}
-              </span>
-              <span className="text-center text-[0.6875rem]" style={{ color: colors.subtext }}>
-                {label}
-              </span>
-            </div>
-          ))}
-        </div>
-      ) : null}
 
       {/* ── AI Insights section header ── */}
       <div className="mt-2 flex items-center gap-2 px-4 pb-1">

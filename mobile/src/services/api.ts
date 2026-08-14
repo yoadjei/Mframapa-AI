@@ -1,4 +1,5 @@
 import axios, { AxiosError } from 'axios';
+import type { AuthResponse } from '@supabase/supabase-js';
 import { PredictionResult } from '../store/useStore';
 import { API_BASE_URL, languageName } from '../utils/constants';
 import { factorLabels } from '../utils/factors';
@@ -39,29 +40,82 @@ export function onRateLimit(listener: RateLimitListener): () => void {
   return () => _rateLimitListeners.delete(listener);
 }
 
+// Home / CityDetail can fire several authenticated calls at once. If the
+// shared token is bad, they all 401 in the same tick — and each independently
+// calling refreshSession() races them against each other. Supabase refresh
+// tokens are single-use: the first concurrent call rotates it and succeeds,
+// the rest are then trying to redeem a refresh token that is already spent
+// and fail. Funneling every caller through one shared in-flight promise means
+// only one actual refresh call ever goes out; everyone else awaits its result.
+let _refreshPromise: Promise<AuthResponse> | null = null;
+function refreshSessionOnce(): Promise<AuthResponse> {
+  if (!_refreshPromise) {
+    const supabase = getSupabase();
+    if (!supabase) {
+      return Promise.resolve({ data: { session: null, user: null }, error: null } as AuthResponse);
+    }
+    _refreshPromise = supabase.auth.refreshSession().finally(() => {
+      _refreshPromise = null;
+    });
+  }
+  return _refreshPromise;
+}
+
 client.interceptors.response.use(
   (res) => res,
-  (err: AxiosError) => {
+  async (err: AxiosError) => {
     if (err.response?.status === 429) {
       const retryAfterHeader =
         (err.response.headers as Record<string, string>)['retry-after'] ?? '60';
       const retryAfterMs = parseFloat(retryAfterHeader) * 1000;
       _rateLimitListeners.forEach((fn) => fn(retryAfterMs));
     }
-    // Stale/expired Supabase JWT → 401. Core routes allow anonymous access; retry
-    // once without the bearer so iOS does not get stuck on cached offline readings
-    // (PWA httpClient does the same).
-    const original = err.config as (typeof err.config & { _retriedAnon?: boolean }) | undefined;
-    if (err.response?.status === 401 && original && !original._retriedAnon) {
+    // The backend deliberately rejects a bad credential with 401 instead of
+    // quietly treating it as anonymous (see authenticate_or_anonymous in
+    // backend/api/security.py) — so a 401 here means the token we sent was
+    // rejected. Try refreshing it once and retrying with the fresh token
+    // before giving up: autoRefreshToken only fires on its own proactive
+    // timer, it does not react to a 401 from us, so a token the backend has
+    // started rejecting (clock skew, a rotated key, a backend blip) would
+    // otherwise sit there and get resent, unrefreshed, on every request.
+    //
+    // These are two separate attempts with two separate flags on purpose: a
+    // refreshed token can itself still be rejected (the backend problem was
+    // never actually about staleness), and that must not consume the one
+    // retry a public endpoint needs to fall back to anonymous — otherwise a
+    // persistently-invalid session breaks every request forever with no
+    // recovery, which is what happened when both were folded into one flag.
+    const original = err.config as
+      | (typeof err.config & { _retriedRefresh?: boolean; _retriedAnon?: boolean })
+      | undefined;
+    if (err.response?.status !== 401 || !original) {
+      return Promise.reject(err);
+    }
+
+    const hadToken = Boolean(original.headers?.Authorization || original.headers?.authorization);
+    if (hadToken && !original._retriedRefresh) {
+      original._retriedRefresh = true;
+      try {
+        const { data } = await refreshSessionOnce();
+        const token = data?.session?.access_token;
+        if (token && original.headers) {
+          original.headers.Authorization = `Bearer ${token}`;
+          return client.request(original);
+        }
+      } catch {
+        /* refresh failed outright — fall through to the anonymous retry */
+      }
+    }
+
+    if (!original._retriedAnon) {
       original._retriedAnon = true;
       if (original.headers) {
         delete original.headers.Authorization;
         delete original.headers.authorization;
       }
-      // Clear stale JWT locally so subsequent requests stay anonymous.
-      void getSupabase()?.auth.signOut({ scope: 'local' }).catch(() => undefined);
       return client.request(original);
     }
+
     return Promise.reject(err);
   },
 );
