@@ -222,7 +222,7 @@ function SignUpView({ onAuth, onBack, c, isDark }) {
   async function handleSubmit(e) {
     e.preventDefault();
     setError(""); setNotice("");
-    if (!email.trim() || !password) { setError(t("auth.error.fill_required")); return; }
+    if (!firstName.trim() || !email.trim() || !password) { setError(t("auth.error.fill_required")); return; }
     if (!isValidEmail(email)) { setError(t("auth.error.email_invalid")); return; }
     const pwProblem = passwordProblem(password);
     if (pwProblem) { setError(t(pwProblem)); return; }

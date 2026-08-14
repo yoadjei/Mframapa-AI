@@ -7,11 +7,18 @@ function cityKey(lat: number, lon: number): string {
   return `${lat.toFixed(2)}:${lon.toFixed(2)}`;
 }
 
+// "Guest" is a placeholder profile name for guest mode, never a real first
+// name, so it must never be dropped into personalized advice text.
+function personalizationName(): string | undefined {
+  const fullName = useStore.getState().profile.fullName;
+  return fullName && fullName !== 'Guest' ? fullName : undefined;
+}
+
 export async function fetchPredictionForCity(
   city: City,
   language: string
 ): Promise<PredictionResult> {
-  const result = await getPrediction(city.lat, city.lon, city.name, language);
+  const result = await getPrediction(city.lat, city.lon, city.name, language, personalizationName());
   await savePredictionForCity(
     cityKey(city.lat, city.lon),
     result as unknown as Record<string, unknown>

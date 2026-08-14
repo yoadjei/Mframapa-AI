@@ -95,7 +95,9 @@ export async function signUpWithPassword(
     password,
     options: {
       data: {
-        ...(firstName ? { first_name: firstName } : {}),
+        // keyed as full_name to match signIn's hydration and updateProfile's
+        // write — first_name here would never be read back after a fresh login.
+        ...(firstName ? { full_name: firstName } : {}),
         ...(homeCity ? { home_city: homeCity.name, home_lat: homeCity.lat, home_lon: homeCity.lon } : {}),
       },
     },

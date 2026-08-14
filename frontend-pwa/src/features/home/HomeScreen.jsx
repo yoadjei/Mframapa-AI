@@ -1,4 +1,4 @@
-import { Bell, ChevronDown, MapPin, Navigation, Search, AlertTriangle, Clock, Droplets, Wind, Thermometer, ChevronRight } from "lucide-react";
+import { Bell, ChevronDown, MapPin, Navigation, Search, AlertTriangle, Clock, ChevronRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useAppState } from "../../state/appState.jsx";
 import { useNavigation } from "../../hooks/useNavigation.js";
@@ -468,32 +468,6 @@ export function HomeScreen({ isOnline, isDark: isDarkProp }) {
             </p>
           </div>
         )}
-
-        {/* ── Weather strip (when available) ── */}
-        {pred?.weather && (
-          <div className="mx-4 mb-3 flex gap-2.5">
-            {[
-              pred.weather.humidity != null && { icon: Droplets, value: `${Math.round(pred.weather.humidity)}%`, label: t("weather.humidity") },
-              pred.weather.wind     != null && { icon: Wind,     value: `${pred.weather.wind.toFixed(1)} m/s`, label: t("weather.wind") },
-              pred.weather.temp     != null && { icon: Thermometer, value: `${Math.round(pred.weather.temp)}°C`, label: t("weather.temp") },
-            ].filter(Boolean).map((w, i) => {
-              const Icon = w.icon;
-              return (
-                <div
-                  key={i}
-                  className="mf-glass flex flex-1 flex-col items-center gap-1.5 rounded-2xl p-3.5"
-                  role="group"
-                  aria-label={`${w.label}: ${w.value}`}
-                >
-                  <Icon size={24} color="#00C896" aria-hidden="true" />
-                  <p className="text-[1.125rem] font-bold m-0" style={{ color: colors.text }}>{w.value}</p>
-                  <p className="text-sm m-0" style={{ color: colors.sub }}>{w.label}</p>
-                </div>
-              );
-            })}
-          </div>
-        )}
-
 
     </div>
   );

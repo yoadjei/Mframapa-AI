@@ -1,4 +1,19 @@
 import { httpClient, normalizeError } from "./httpClient.js";
+import { PERSISTENCE_KEY } from "../state/appState.jsx";
+
+// read straight from the persisted store rather than threading a name prop
+// through every screen that calls generateInsight — Home, Search, City Detail
+// and Core Feature all go through this one function.
+function currentFirstName() {
+  try {
+    const raw = localStorage.getItem(PERSISTENCE_KEY);
+    if (!raw) return "";
+    const name = JSON.parse(raw)?.profile?.firstName;
+    return typeof name === "string" ? name.trim() : "";
+  } catch {
+    return "";
+  }
+}
 
 const predictionCache = new Map();
 const PREDICTION_CACHE_TTL_MS = 5 * 60 * 1000;
@@ -73,7 +88,7 @@ export async function translateUiStrings(strings, targetLanguage, targetLanguage
   };
 }
 
-export async function generateInsight({ pm25, aqi_category, weather = {}, language = "en", language_name = "", lat, lon }) {
+export async function generateInsight({ pm25, aqi_category, weather = {}, language = "en", language_name = "", lat, lon, name }) {
   const response = await httpClient.post("/api/v1/generate-insight", {
     pm25,
     aqi_category,
@@ -82,6 +97,7 @@ export async function generateInsight({ pm25, aqi_category, weather = {}, langua
     language_name,
     lat,
     lon,
+    name: name ?? currentFirstName(),
   });
   return response.data.insight;
 }

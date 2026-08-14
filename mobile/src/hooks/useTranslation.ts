@@ -49,12 +49,14 @@ export function useTranslation() {
     let cancelled = false;
     (async () => {
       try {
+        const fullName = useStore.getState().profile.fullName;
         const insight = await generateInsight({
           pm25: pred.pm25,
           aqi_category: pred.aqi_category,
           weather: pred.weather,
           language,
           language_name: languageName(language),
+          name: fullName && fullName !== 'Guest' ? fullName : undefined,
         });
         if (!cancelled) {
           useStore.getState().setPrediction({ ...pred, insight });

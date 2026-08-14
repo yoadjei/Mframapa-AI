@@ -8,6 +8,13 @@ place, and then flows through the same translation pipeline as the rest of the
 interface. it also costs nothing, answers instantly, and works offline.
 
 variety comes from category x season x rotation rather than from a model.
+
+a handful of lines per category/season carry a ``{{name}}`` placeholder so a
+signed-in user occasionally gets addressed directly ("Wear a mask today,
+Davis."). the placeholder survives translation untouched (see
+backend/services/gemini_client.py's NEVER TRANSLATE list) and is filled in by
+the router after translation. callers with no name simply never draw one of
+these lines — see generate_insight() in backend/api/v1/router.py.
 """
 
 from datetime import date as dt_date
@@ -51,6 +58,7 @@ _LINES: Dict[str, Dict[str, List[str]]] = {
             "Air quality is good, so outdoor plans are fine for everyone.",
             "Clear air today. A good time for a long walk or exercise.",
             "No need for precautions today. Open the windows and let air move through.",
+            "Clean air today {{name}}, a great day to be outside.",
         ],
         RAINY: [
             "Rain has washed the air clean. Good conditions outside today.",
@@ -58,6 +66,7 @@ _LINES: Dict[str, Dict[str, List[str]]] = {
             "Clean air today. Watch the weather rather than the air.",
             "Good air quality. Outdoor plans are fine when the rain allows.",
             "Nothing in the air to avoid today. Enjoy the cooler weather.",
+            "Clean air today {{name}}, watch the weather rather than the air quality.",
         ],
         HARMATTAN: [
             "A rare clear day in the harmattan. Make the most of it.",
@@ -65,6 +74,7 @@ _LINES: Dict[str, Dict[str, List[str]]] = {
             "Air is clean at the moment, though harmattan dust can return quickly.",
             "Good conditions today. Keep windows open while the air is clear.",
             "Clear air right now. A good day for outdoor work.",
+            "Clear skies right now {{name}}, though harmattan dust can return fast.",
         ],
     },
     "moderate": {
@@ -74,6 +84,7 @@ _LINES: Dict[str, Dict[str, List[str]]] = {
             "Air quality is average today. Normal activity is fine.",
             "A little dust in the air. Nothing most people need to act on.",
             "Air is passable. If you tire easily outdoors, keep exercise light.",
+            "Air is fine today {{name}}, but ease off exercise if your chest feels tight.",
         ],
         RAINY: [
             "Air is reasonable between showers. Normal plans are fine.",
@@ -81,6 +92,7 @@ _LINES: Dict[str, Dict[str, List[str]]] = {
             "Nothing serious in the air. Most people can carry on as usual.",
             "Air quality is fair. Sensitive people may prefer indoor exercise.",
             "Average air today. Watch how you feel if you have a chest condition.",
+            "Nothing serious in the air today {{name}}. Normal plans are fine.",
         ],
         HARMATTAN: [
             "Some dust in the air. Most people are fine, but keep water nearby.",
@@ -88,6 +100,7 @@ _LINES: Dict[str, Dict[str, List[str]]] = {
             "Moderate dust levels. Wipe surfaces indoors and keep drinking water.",
             "The air is dusty but manageable. Take breaks if you work outside.",
             "Light haze today. If your throat feels dry, stay indoors a while.",
+            "Some dust today {{name}}, keep water nearby if you're outdoors.",
         ],
     },
     "sensitive": {
@@ -97,6 +110,7 @@ _LINES: Dict[str, Dict[str, List[str]]] = {
             "Keep children's outdoor play shorter than usual today.",
             "If you have asthma, keep your inhaler with you today.",
             "Older relatives should avoid long spells outside this afternoon.",
+            "{{name}}, keep outdoor time short today if you have asthma or a chest condition.",
         ],
         RAINY: [
             "Air is heavier today. Sensitive people should limit time outside.",
@@ -104,6 +118,7 @@ _LINES: Dict[str, Dict[str, List[str]]] = {
             "Keep children indoors during the worst of it today.",
             "Not the day for outdoor exercise if your chest is sensitive.",
             "Older people should keep activity light today.",
+            "{{name}}, sensitive lungs should stay in more today. Air is heavier than usual.",
         ],
         HARMATTAN: [
             "Dust is high enough to bother children and anyone with asthma. Keep them indoors.",
@@ -111,6 +126,7 @@ _LINES: Dict[str, Dict[str, List[str]]] = {
             "If you have asthma, carry your inhaler and avoid the open road.",
             "Cover your nose and mouth if you must travel far today.",
             "Keep young children inside where you can. The dust is irritating.",
+            "{{name}}, carry your inhaler today if you're asthmatic. Harmattan dust is high enough to bother sensitive chests.",
         ],
     },
     "unhealthy": {
@@ -120,6 +136,8 @@ _LINES: Dict[str, Dict[str, List[str]]] = {
             "Poor air. Keep children indoors and postpone anything strenuous.",
             "Not a day to be outside longer than you need to be.",
             "If you can move work indoors today, do.",
+            "Wear a mask outdoors today if you can, especially near traffic.",
+            "{{name}}, you should wear a mask if you're heading out today. Air is poor.",
         ],
         RAINY: [
             "Air is poor despite the rain. Stay in where you can.",
@@ -127,6 +145,8 @@ _LINES: Dict[str, Dict[str, List[str]]] = {
             "Poor air quality. Postpone exercise and outdoor chores.",
             "Everyone should reduce time outside today, not only sensitive people.",
             "Not a good day for children to play outside.",
+            "A mask helps if you have to be outside for long today.",
+            "{{name}}, keep outdoor time short today. Air is poor despite the rain.",
         ],
         HARMATTAN: [
             "Heavy dust today. Stay indoors where you can and keep windows shut.",
@@ -134,6 +154,7 @@ _LINES: Dict[str, Dict[str, List[str]]] = {
             "Keep children and older relatives inside today.",
             "Avoid the roadside, where dust and traffic fumes combine.",
             "Poor air. Damp cloth on window gaps helps keep dust out.",
+            "{{name}}, put on a mask before you go out. Dust and traffic fumes are both heavy today.",
         ],
     },
     "hazardous": {
@@ -143,6 +164,7 @@ _LINES: Dict[str, Dict[str, List[str]]] = {
             "Do not exercise outdoors under any circumstances today.",
             "Keep everyone inside, especially children and older people.",
             "If you have a breathing condition and feel worse, get medical help.",
+            "{{name}}, please stay indoors today. The air is dangerous to breathe.",
         ],
         RAINY: [
             "Air is dangerous. Stay indoors with windows and doors closed.",
@@ -150,6 +172,7 @@ _LINES: Dict[str, Dict[str, List[str]]] = {
             "Everyone is at risk today, not only sensitive groups.",
             "Keep children inside and avoid all outdoor activity.",
             "If breathing becomes hard, get medical help without waiting.",
+            "{{name}}, stay indoors with windows shut today. Conditions are dangerous.",
         ],
         HARMATTAN: [
             "Severe dust. Stay indoors, seal gaps around windows and doors.",
@@ -157,6 +180,7 @@ _LINES: Dict[str, Dict[str, List[str]]] = {
             "Everyone is at risk. Keep children and older people inside.",
             "If breathing becomes difficult, seek medical help.",
             "Avoid all outdoor work today. The dust is dangerous to breathe.",
+            "{{name}}, you must wear a mask if you step outside today. Dust levels are severe.",
         ],
     },
 }

@@ -264,34 +264,6 @@ export function HomeScreen() {
           </View>
         ) : null}
 
-        {/* Weather strip — all platforms (PWA parity); hide missing values */}
-        {pred?.weather && (pred.weather.humidity != null || pred.weather.wind != null || pred.weather.temp != null) ? (
-          <View style={styles.weatherRow}>
-            {[
-              pred.weather.humidity != null && {
-                icon: 'water-outline' as const,
-                value: `${Number(pred.weather.humidity).toFixed(0)}%`,
-                label: t('weather.humidity'),
-              },
-              pred.weather.wind != null && {
-                icon: 'speedometer-outline' as const,
-                value: `${Number(pred.weather.wind).toFixed(1)} m/s`,
-                label: t('weather.wind'),
-              },
-              pred.weather.temp != null && {
-                icon: 'thermometer-outline' as const,
-                value: `${Number(pred.weather.temp).toFixed(0)}°C`,
-                label: t('weather.temp'),
-              },
-            ].filter(Boolean).map((w: any, i) => (
-              <View key={i} style={[styles.weatherCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                <Ionicons name={w.icon} size={24} color={Colors.brandGreen} />
-                <Text style={[styles.weatherValue, { color: colors.text }]}>{w.value}</Text>
-                <Text style={[styles.weatherLabel, { color: colors.subtext }]}>{w.label}</Text>
-              </View>
-            ))}
-          </View>
-        ) : null}
       </ScrollView>
     </View>
   );
@@ -419,20 +391,4 @@ const styles = StyleSheet.create({
   factCard: { marginHorizontal: 16, marginTop: 12, padding: 16, borderRadius: 16, borderWidth: 1 },
   factLabel: { fontSize: 13, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 6 },
   factBody: { fontSize: 16, lineHeight: 24 },
-  weatherRow: {
-    flexDirection: 'row',
-    paddingHorizontal: 16,
-    gap: 10,
-    marginBottom: 12,
-  },
-  weatherCard: {
-    flex: 1,
-    borderRadius: 16,
-    padding: 14,
-    alignItems: 'center',
-    gap: 4,
-    borderWidth: StyleSheet.hairlineWidth,
-  },
-  weatherValue: { fontSize: 18, fontWeight: '700' },
-  weatherLabel: { fontSize: 14 },
 });

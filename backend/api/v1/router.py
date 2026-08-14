@@ -1,5 +1,6 @@
 import hashlib
 import json
+import re
 from datetime import date as dt_date, timedelta
 from functools import lru_cache
 from typing import Any, Dict, List, Optional
@@ -793,6 +794,10 @@ class InsightBody(BaseModel):
     language_name: str = ""
     lat: Optional[float] = Field(default=None, ge=-90, le=90)
     lon: Optional[float] = Field(default=None, ge=-180, le=180)
+    # first name of the signed-in user, if any — lets a fraction of the reviewed
+    # lines address them directly ("Wear a mask today, Davis."). blank for
+    # anonymous callers, who never draw one of those lines (see generate_insight).
+    name: str = Field(default="", max_length=40)
 
 class TranslateBody(BaseModel):
     strings: Dict[str, str] = Field(..., min_length=1)
@@ -905,6 +910,14 @@ def generate_insight(body: InsightBody, request: Request) -> Dict[str, str]:
             except Exception as exc:
                 logger.warning("insight translation failed, serving english: %s", exc)
 
+    # a portion of lines address the user by name ("{{name}}"). anonymous
+    # callers must never see a raw placeholder, so those lines simply drop out
+    # of the pool unless a name was supplied.
+    name = _sanitize_name(body.name)
+    pool = lines if name else [l for l in lines if "{{name}}" not in l]
+    if not pool:
+        pool = lines
+
     # a shared counter meant the line changed on every tap, so the advice read
     # as though it kept changing its mind. the choice is instead fixed by who is
     # asking and what day it is: steady while you use the app, different for the
@@ -912,13 +925,24 @@ def generate_insight(body: InsightBody, request: Request) -> Dict[str, str]:
     who = _client_ip(request)
     seed = f"{who}:{key}:{season}:{dt_date.today().isoformat()}"
     index = int(hashlib.sha1(seed.encode()).hexdigest()[:8], 16)
-    return {"insight": _clean_guidance(lines[index % len(lines)])}
+    chosen = pool[index % len(pool)]
+    if name:
+        chosen = chosen.replace("{{name}}", name)
+    return {"insight": _clean_guidance(chosen)}
+
+
+def _sanitize_name(raw: str) -> str:
+    """First name only, trimmed to a plausible name shape.
+
+    this is inserted verbatim into health-advice text shown in the ui, so it is
+    reduced to a single alphabetic-ish token rather than trusted as free text.
+    """
+    first = (raw or "").strip().split()[0] if (raw or "").strip() else ""
+    return re.sub(r"[^\w'\-]", "", first)[:24]
 
 
 def _clean_guidance(text: str) -> str:
     """Strip separator punctuation from health lines shown in What to do."""
-    import re
-
     out = text.replace("\u2014", " ").replace("\u2013", " ").replace("—", " ").replace("–", " ")
     out = re.sub(r"\s*[-–—]\s*", " ", out)
     out = re.sub(r"[;:]", ".", out)

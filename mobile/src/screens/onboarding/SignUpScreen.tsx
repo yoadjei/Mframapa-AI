@@ -34,7 +34,7 @@ export function SignUpScreen({ onAuth }: Props) {
   const [loading, setLoading] = useState(false);
 
   async function handleSignUp() {
-    if (!email.trim() || !password) {
+    if (!firstName.trim() || !email.trim() || !password) {
       Alert.alert(t('screen.auth.fill_required_fields'));
       return;
     }

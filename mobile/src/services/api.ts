@@ -117,7 +117,8 @@ export async function getPrediction(
   lat: number,
   lon: number,
   name: string,
-  language = 'en'
+  language = 'en',
+  firstName?: string
 ): Promise<PredictionResult> {
   const { data } = await client.get('/api/v1/predict', {
     params: { lat, lon, name },
@@ -135,6 +136,7 @@ export async function getPrediction(
       language_name: targetLanguageName,
       lat,
       lon,
+      name: firstName,
     });
   } catch {
     insight = undefined;
@@ -254,6 +256,8 @@ export async function generateInsight(body: {
   language_name?: string;
   lat?: number;
   lon?: number;
+  /** first name of the signed-in user, if any — personalizes a fraction of the lines. */
+  name?: string;
 }): Promise<string> {
   const { data } = await client.post('/api/v1/generate-insight', body);
   return data.insight as string;

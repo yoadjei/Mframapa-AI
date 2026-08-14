@@ -23,6 +23,7 @@ export async function login({ email, password }) {
     user: {
       id: data.user.id,
       email: data.user.email,
+      firstName: data.user.user_metadata?.first_name ?? null,
       homeCity: homeFromMeta(data.user.user_metadata),
     },
   };
@@ -73,6 +74,7 @@ export async function signup({ firstName, email, password, homeCity }) {
     user: {
       id: data.user.id,
       email: data.user.email,
+      firstName: data.user.user_metadata?.first_name ?? firstName ?? null,
     },
   };
 }

@@ -77,6 +77,10 @@ export function ProfileScreen() {
           </View>
         </TouchableOpacity>
 
+        {hasAccount && profile.fullName?.trim() ? (
+          <Text style={[styles.displayName, { color: colors.text }]}>{profile.fullName.trim()}</Text>
+        ) : null}
+
         <View style={styles.tierRow}>
           <Text style={[styles.tierLabel, { color: colors.subtext }]}>{t('screen.profile.account_tier')}</Text>
           <Badge label={profile.tier.charAt(0).toUpperCase() + profile.tier.slice(1)} variant={profile.tier as any} />
@@ -190,6 +194,7 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     alignItems: 'center', justifyContent: 'center',
   },
+  displayName: { fontSize: 17, fontWeight: '600', textAlign: 'center', marginBottom: 4 },
   tierRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 24 },
   tierLabel: { fontSize: 14 },
   form: { marginBottom: 8 },

@@ -137,6 +137,7 @@ export function CityDetailScreen() {
     let cancelled = false;
     setInsightLoading(true);
 
+    const fullName = useStore.getState().profile.fullName;
     generateInsight({
       pm25: pred.pm25,
       aqi_category: pred.aqi_category,
@@ -145,6 +146,7 @@ export function CityDetailScreen() {
       language_name: languageName(language),
       lat: pred.location?.lat,
       lon: pred.location?.lon,
+      name: fullName && fullName !== 'Guest' ? fullName : undefined,
     })
       .then((text) => {
         if (cancelled) return;

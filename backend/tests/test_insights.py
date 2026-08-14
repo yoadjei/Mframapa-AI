@@ -48,9 +48,15 @@ def test_no_api_call_is_needed_for_english(monkeypatch):
 
 
 def test_every_line_is_reachable_across_callers(monkeypatch):
-    """no line should be dead: across enough people, all of them get used."""
+    """no line should be dead: across enough people, all of them get used.
+
+    lines carrying a {{name}} placeholder are excluded here: those only ever
+    surface for a caller who supplied a name (see
+    test_personalized_line_is_reachable_when_a_name_is_supplied below), so an
+    anonymous caller must never draw one.
+    """
     _patch(monkeypatch, FakeCache())
-    expected = set(variants("moderate", DRY))
+    expected = {line for line in variants("moderate", DRY) if "{{name}}" not in line}
     seen = set()
     for i in range(400):
         r = client.post(
@@ -60,6 +66,32 @@ def test_every_line_is_reachable_across_callers(monkeypatch):
         )
         seen.add(r.json()["insight"])
     assert seen == expected
+
+
+def test_anonymous_callers_never_see_a_raw_placeholder(monkeypatch):
+    _patch(monkeypatch, FakeCache())
+    for i in range(400):
+        r = client.post(
+            "/api/v1/generate-insight",
+            json=BODY,
+            headers={"cf-connecting-ip": f"41.{i // 250}.{i % 250}.9"},
+        )
+        assert "{{name}}" not in r.json()["insight"]
+
+
+def test_personalized_line_is_reachable_when_a_name_is_supplied(monkeypatch):
+    """with a name supplied, the {{name}} line is in rotation and gets filled in."""
+    _patch(monkeypatch, FakeCache())
+    seen = set()
+    for i in range(400):
+        r = client.post(
+            "/api/v1/generate-insight",
+            json={**BODY, "name": "Davis"},
+            headers={"cf-connecting-ip": f"41.{i // 250}.{i % 250}.3"},
+        )
+        seen.add(r.json()["insight"])
+    assert any("Davis" in line for line in seen)
+    assert not any("{{name}}" in line for line in seen)
 
 
 def test_west_africa_gets_harmattan_wording_in_january():

@@ -132,6 +132,16 @@ export function ProfileScreen({ isOnline, isDark }) {
           </button>
         </div>
 
+        {/* First name — signed-in users only; there is nothing to show a guest. */}
+        {authenticated && displayName && (
+          <p
+            className="text-[1.0625rem] font-semibold text-center mb-1"
+            style={{ color: colors.text }}
+          >
+            {displayName}
+          </p>
+        )}
+
       <ConfirmDialog
         open={signOutOpen}
         title={t("signout.confirm_title")}

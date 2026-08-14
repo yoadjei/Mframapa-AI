@@ -3,7 +3,7 @@ import { createContext, useContext, useEffect, useMemo, useReducer } from "react
 import { detectDeviceLanguage } from "../i18n/languages.js";
 import { applyDocumentTheme, resolveIsDark } from "../utils/colors.js";
 
-const PERSISTENCE_KEY = "mframapa:v2:pwa-state";
+export const PERSISTENCE_KEY = "mframapa:v2:pwa-state";
 export const SESSION_KEY = "mframapa:v2:session-token";
 
 const initialState = {
@@ -17,6 +17,7 @@ const initialState = {
   },
   profile: {
     fullName: "",
+    firstName: "",
     email: "",
     organization: "",
     avatar: null,
